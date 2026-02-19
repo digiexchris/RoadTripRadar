@@ -1,17 +1,50 @@
-# Weather Radar App
+# Road Trip Radar
 
-An Android app built with Ionic React that displays weather radar similar to aircraft weather radar systems. The map rotates to keep your heading at the top of the screen.
+Weather radar display ahead of your current direction! Pretend you're an airplane with weather radar on board, and weave between those thunder heads! Intended mostly for motorcycle travel, but may be useful for you on any journey.
 
-## Features
+![Road Trip Radar](doc/Portrait.png)
 
-- ✅ Real-time GPS tracking with heading calculation
-- ✅ Rotating map display (heading always up)
-- ✅ Speed and heading indicators
-- ✅ Zoom controls
-- ✅ OpenStreetMap integration
-- ✅ Weather radar overlay (OpenWeatherMap)
-- ✅ Radar animation (5 frames over 30 minutes)
-- ✅ Manual refresh control
+[Latest Releases](https://github.com/digiexchris/RoadTripRadar/releases)
+
+# Features
+
+Layers button
+- Light and dark base maps
+- Light and dark range circles
+- Turn off range circles, weather radar, or base maps
+- Change opacity of the weather radar
+
+Settings button
+- Default Zoom Level (0–18)
+- Radar History Frames (1–10, how many past frames to animate)
+- Animation Speed (0.5–5.0s per frame)
+- Movement Threshold (5–50m, distance before switching from compass to GPS heading)
+- Motion Detection Sensitivity (1–5, how quickly it detects movement vs stationary)
+- Speed Unit (km/h or mph)
+- Compass Rotation toggle (rotate map via compass when stationary)
+- Keep Screen On toggle
+- Map Center Position (10–90%, how far ahead of your location the map shows)
+- Default Orientation (Portrait or Landscape)
+- Default Radar Mode (History/Animated or Current Only)
+- Reset to Defaults
+- View Terms & Conditions
+
+Landscape/Portrait button
+- Guess
+
+Zoom in/Zoom out
+- Changes current zoom, but doesn't affect heading tracking.
+
+Lock button
+- Unlock to allow you to manually move/reorient the map. Hit the lock button again to reset to your default zoom level set in settings, and resume heading tracking.
+
+Refresh button
+- Refresh weather now. Keep in mind that RainViewer's free tier only provides 10 minute intervals, so refreshing might not get any newer info than the app gets naturally
+
+Weather radar history
+- Tap on the history bar at the top to lock the weather to the most current report. It will continue to update the weather radar with the latest report as new reports come in.
+
+# Developnent
 
 ## Prerequisites
 
@@ -20,155 +53,7 @@ An Android app built with Ionic React that displays weather radar similar to air
 - Android Studio
 - Android SDK (API 29+)
 
-## Running the App
-
-### Quick Build (Recommended)
-
-**Windows (PowerShell):**
-```powershell
-.\build.ps1
-```
-
-**Linux/Mac (Bash):**
-```bash
-chmod +x build.sh  # First time only
-./build.sh
-```
-
-For detailed build options and troubleshooting, see [BUILD.md](BUILD.md).
-
-### Development (Web Preview)
-```bash
-npm start
-```
-Note: GPS features won't work in browser preview.
-
-### Manual Build for Android
-```bash
-npm run build
-npx cap sync android
-npx cap open android
-```
-
-Then use Android Studio to:
-1. Build the APK
-2. Run on an emulator or physical device
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── RadarMap.tsx          # Main map component with rotation
-│   ├── RadarMap.css
-│   ├── RadarControls.tsx     # UI controls and info display
-│   └── RadarControls.css
-├── hooks/
-│   ├── useGPS.ts             # GPS tracking and heading calculation
-│   └── useWeatherRadar.ts    # Weather radar data fetching
-├── pages/
-│   └── Home.tsx              # Main page integrating all components
-└── App.tsx                    # App root
-```
-
-## How It Works
-
-### GPS & Heading
-- Uses Capacitor Geolocation API for position tracking
-- Calculates heading from movement between GPS points
-- Only updates heading when moving (> 0.5 m/s)
-- Persists last heading during current session
-- Defaults to North (0°) on app start
-
-### Map Rotation
-- Map rotates using CSS transforms
-- Smooth transitions between heading changes
-- Handles wrap-around (359° to 1°)
-- 50km x 50km view area
-
-### Weather Radar
-- Polls OpenWeatherMap API every 5 minutes
-- Displays 5 frames covering last 30 minutes
-- Animates frames at 1 second intervals
-- Overlay opacity: 60%
-
-## Known Limitations & Future Improvements
-
-### Current Limitations
-1. **Radar Data**: OpenWeatherMap's free tier has limited radar imagery. Consider using:
-   - RainViewer API (free, better radar data)
-   - Weather.gov API (US only, free)
-   - Local weather service APIs
-
-2. **Heading Accuracy**: Heading is calculated from GPS movement, not compass
-   - Best accuracy when moving
-   - May be inaccurate at low speeds
-
-3. **Battery Usage**: Continuous GPS tracking can drain battery
-   - Consider adding power-saving modes
-   - Option to reduce GPS update frequency
-
-### Suggested Improvements
-
-1. **Better Radar Source**
-   ```typescript
-   // Consider switching to RainViewer API
-   // https://www.rainviewer.com/api.html
-   ```
-
-2. **Compass Integration**
-   - Add device compass for heading when stationary
-   - Combine GPS heading (when moving) + compass (when stopped)
-
-3. **Offline Support**
-   - Cache map tiles
-   - Cache recent radar frames
-   - Work without internet for basic map view
-
-4. **Additional Features**
-   - Multiple layer support (temperature, wind, clouds)
-   - Time scrubber to view past/future radar
-   - Alerts for severe weather
-   - Route planning with weather overlay
-
-5. **Performance**
-   - Optimize map rendering
-   - Reduce bundle size
-   - Add service worker for caching
-
-## Building for Production
-
-### Debug APK
-```bash
-cd android
-./gradlew assembleDebug
-```
-Output: `android/app/build/outputs/apk/debug/app-debug.apk`
-
-### Release APK
-1. Configure signing in `android/app/build.gradle`
-2. Build:
-```bash
-cd android
-./gradlew assembleRelease
-```
-
-## Troubleshooting
-
-### GPS Not Working
-- Check location permissions in Android settings
-- Ensure location services are enabled
-- Try on a physical device (emulator GPS can be unreliable)
-
-### Map Not Displaying
-- Check internet connection
-- Verify OpenStreetMap tiles are accessible
-- Check browser console for errors
-
-### Radar Not Showing
-- Verify OpenWeatherMap API is accessible
-- Check API key if using premium tier
-- Monitor console for API errors
+Open the android subfolder in android studio, the gradle tasks should be detected.
 
 ## Permissions
 
@@ -179,12 +64,12 @@ The app requires:
 
 ## License
 
-This project is for educational/demonstration purposes.
+This project is licensed under the [MIT License](LICENSE).
 
 ## Credits
 
 - Ionic Framework
 - React
-- Leaflet & OpenStreetMap
+- MapLibre & OpenStreetMap
 - Capacitor
-- OpenWeatherMap
+- RainViewer
