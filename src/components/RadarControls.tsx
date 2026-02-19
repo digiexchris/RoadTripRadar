@@ -9,11 +9,6 @@ import {
     IonLabel,
     IonToggle,
     IonRange,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButtons,
-    IonPage,
 } from '@ionic/react';
 import { addOutline, removeOutline, refreshOutline, navigateOutline, settingsOutline, layersOutline, lockOpenOutline, phonePortraitOutline, phoneLandscapeOutline, closeOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
@@ -28,11 +23,15 @@ interface RadarControlsProps {
     onToggleManualMode: () => void;
     isTrackingMode: boolean;
     showBaseMap: boolean;
-    onToggleBaseMap: () => void;
+    onSetShowBaseMap: (v: boolean) => void;
+    darkBaseMap: boolean;
+    onSetDarkBaseMap: (v: boolean) => void;
     showRadar: boolean;
-    onToggleRadar: () => void;
+    onSetShowRadar: (v: boolean) => void;
     showRangeRings: boolean;
-    onToggleRangeRings: () => void;
+    onSetShowRangeRings: (v: boolean) => void;
+    darkRings: boolean;
+    onSetDarkRings: (v: boolean) => void;
     radarOpacity: number;
     onRadarOpacityChange: (opacity: number) => void;
     onToggleOrientation: () => void;
@@ -47,11 +46,15 @@ export const RadarControls: React.FC<RadarControlsProps> = ({
     onToggleManualMode,
     isTrackingMode,
     showBaseMap,
-    onToggleBaseMap,
+    onSetShowBaseMap,
+    darkBaseMap,
+    onSetDarkBaseMap,
     showRadar,
-    onToggleRadar,
+    onSetShowRadar,
     showRangeRings,
-    onToggleRangeRings,
+    onSetShowRangeRings,
+    darkRings,
+    onSetDarkRings,
     radarOpacity,
     onRadarOpacityChange,
     onToggleOrientation,
@@ -136,26 +139,29 @@ export const RadarControls: React.FC<RadarControlsProps> = ({
             <IonModal
                 isOpen={showLayersModal}
                 onDidDismiss={() => setShowLayersModal(false)}
-                initialBreakpoint={0.4}
-                breakpoints={[0, 0.4, 0.6]}
+                initialBreakpoint={0.55}
+                breakpoints={[0, 0.55, 0.75]}
                 className="layers-modal"
+                handleBehavior="cycle"
             >
-                <IonHeader>
-                    <IonToolbar>
-                        <IonTitle>Map Layers</IonTitle>
-                        <IonButtons slot="end">
-                            <IonButton onClick={() => setShowLayersModal(false)}>Done</IonButton>
-                        </IonButtons>
-                    </IonToolbar>
-                </IonHeader>
                 <IonContent>
+                    <div className="layers-modal-title">Map Layers</div>
                     <IonList>
                         <IonItem>
                             <IonLabel>Base Map</IonLabel>
                             <IonToggle
                                 slot="end"
                                 checked={showBaseMap}
-                                onIonChange={() => onToggleBaseMap()}
+                                onIonChange={(e) => onSetShowBaseMap(e.detail.checked)}
+                            />
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel>Dark Base Map</IonLabel>
+                            <IonToggle
+                                slot="end"
+                                checked={darkBaseMap}
+                                disabled={!showBaseMap}
+                                onIonChange={(e) => onSetDarkBaseMap(e.detail.checked)}
                             />
                         </IonItem>
                         <IonItem>
@@ -163,7 +169,7 @@ export const RadarControls: React.FC<RadarControlsProps> = ({
                             <IonToggle
                                 slot="end"
                                 checked={showRadar}
-                                onIonChange={() => onToggleRadar()}
+                                onIonChange={(e) => onSetShowRadar(e.detail.checked)}
                             />
                         </IonItem>
                         <IonItem>
@@ -190,7 +196,16 @@ export const RadarControls: React.FC<RadarControlsProps> = ({
                             <IonToggle
                                 slot="end"
                                 checked={showRangeRings}
-                                onIonChange={() => onToggleRangeRings()}
+                                onIonChange={(e) => onSetShowRangeRings(e.detail.checked)}
+                            />
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel>Dark Rings</IonLabel>
+                            <IonToggle
+                                slot="end"
+                                checked={darkRings}
+                                disabled={!showRangeRings}
+                                onIonChange={(e) => onSetDarkRings(e.detail.checked)}
                             />
                         </IonItem>
                     </IonList>

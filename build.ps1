@@ -1,5 +1,6 @@
-# Weather Radar App - Build Script (PowerShell)
-# This script builds the app and syncs it with Android
+# RoadTripRadar - Build Script (PowerShell)
+# This script builds the web app and syncs it with the Android project.
+# Debug vs release is controlled by Android Studio's build variant selector.
 
 param(
     [switch]$OpenAndroidStudio,
@@ -9,7 +10,7 @@ param(
 
 function Show-Help {
     Write-Host @"
-Weather Radar App - Build Script
+RoadTripRadar - Build Script
 
 Usage: .\build.ps1 [options]
 
@@ -17,6 +18,11 @@ Options:
     -OpenAndroidStudio    Open Android Studio after syncing
     -SkipBuild           Skip the npm build step (useful if already built)
     -Help                Show this help message
+
+Debug vs Release:
+    Use Android Studio's Build Variants panel to switch between
+    debug and release. WebView debugging is automatically enabled
+    in debug builds and disabled in release builds.
 
 Examples:
     .\build.ps1                           # Build and sync
@@ -32,7 +38,7 @@ if ($Help) {
 }
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  Weather Radar App - Build Script" -ForegroundColor Cyan
+Write-Host "  RoadTripRadar - Build Script" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 

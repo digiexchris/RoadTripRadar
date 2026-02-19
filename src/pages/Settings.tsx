@@ -24,14 +24,9 @@ import './Settings.css';
 
 const Settings: React.FC = () => {
     const { settings, updateSettings } = useSettings();
-    const [localSettings, setLocalSettings] = useState(settings);
     const [showTerms, setShowTerms] = useState(false);
 
-    const handleSave = async () => {
-        await updateSettings(localSettings);
-    };
-
-    const handleReset = () => {
+    const handleReset = async () => {
         const defaults = {
             defaultZoom: 7,
             frameCount: 5,
@@ -43,8 +38,9 @@ const Settings: React.FC = () => {
             defaultOrientation: 'portrait' as 'portrait' | 'landscape',
             defaultRadarMode: 'history' as 'history' | 'now',
             useCompassRotation: false,
+            motionSensitivity: 3,
         };
-        setLocalSettings(defaults);
+        await updateSettings(defaults);
     };
 
     return (
@@ -55,11 +51,6 @@ const Settings: React.FC = () => {
                         <IonBackButton defaultHref="/home" />
                     </IonButtons>
                     <IonTitle>Settings</IonTitle>
-                    <IonButtons slot="end">
-                        <IonButton onClick={handleSave} color="primary">
-                            Save
-                        </IonButton>
-                    </IonButtons>
                 </IonToolbar>
             </IonHeader>
             <IonContent className="settings-content">
@@ -73,21 +64,21 @@ const Settings: React.FC = () => {
                     </IonItem>
                     <IonItem>
                         <IonRange
-                            min={8}
+                            min={0}
                             max={18}
                             step={1}
-                            value={localSettings.defaultZoom}
+                            value={settings.defaultZoom}
                             pin={true}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, defaultZoom: e.detail.value as number })
+                                updateSettings({ ...settings, defaultZoom: e.detail.value as number })
                             }
                         >
-                            <IonLabel slot="start">8</IonLabel>
+                            <IonLabel slot="start">0</IonLabel>
                             <IonLabel slot="end">18</IonLabel>
                         </IonRange>
                     </IonItem>
                     <IonItem lines="none">
-                        <IonNote slot="end">Current: {localSettings.defaultZoom}</IonNote>
+                        <IonNote slot="end">Current: {settings.defaultZoom}</IonNote>
                     </IonItem>
 
                     {/* Frame Count */}
@@ -102,12 +93,12 @@ const Settings: React.FC = () => {
                             min={1}
                             max={10}
                             step={1}
-                            value={localSettings.frameCount}
+                            value={settings.frameCount}
                             pin={true}
                             snaps={true}
                             ticks={true}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, frameCount: e.detail.value as number })
+                                updateSettings({ ...settings, frameCount: e.detail.value as number })
                             }
                         >
                             <IonLabel slot="start">1</IonLabel>
@@ -116,7 +107,7 @@ const Settings: React.FC = () => {
                     </IonItem>
                     <IonItem lines="none">
                         <IonNote slot="end">
-                            {localSettings.frameCount === 1 ? 'Current only' : `${localSettings.frameCount} frames`}
+                            {settings.frameCount === 1 ? 'Current only' : `${settings.frameCount} frames`}
                         </IonNote>
                     </IonItem>
 
@@ -132,10 +123,10 @@ const Settings: React.FC = () => {
                             min={0.5}
                             max={5.0}
                             step={0.1}
-                            value={localSettings.playbackSpeed}
+                            value={settings.playbackSpeed}
                             pin={true}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, playbackSpeed: e.detail.value as number })
+                                updateSettings({ ...settings, playbackSpeed: e.detail.value as number })
                             }
                         >
                             <IonLabel slot="start">0.5s</IonLabel>
@@ -143,7 +134,7 @@ const Settings: React.FC = () => {
                         </IonRange>
                     </IonItem>
                     <IonItem lines="none">
-                        <IonNote slot="end">{localSettings.playbackSpeed.toFixed(1)}s per frame</IonNote>
+                        <IonNote slot="end">{settings.playbackSpeed.toFixed(1)}s per frame</IonNote>
                     </IonItem>
 
                     {/* Movement Threshold */}
@@ -158,11 +149,11 @@ const Settings: React.FC = () => {
                             min={5}
                             max={50}
                             step={5}
-                            value={localSettings.movementThreshold}
+                            value={settings.movementThreshold}
                             pin={true}
                             snaps={true}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, movementThreshold: e.detail.value as number })
+                                updateSettings({ ...settings, movementThreshold: e.detail.value as number })
                             }
                         >
                             <IonLabel slot="start">5m</IonLabel>
@@ -170,7 +161,40 @@ const Settings: React.FC = () => {
                         </IonRange>
                     </IonItem>
                     <IonItem lines="none">
-                        <IonNote slot="end">{localSettings.movementThreshold} meters</IonNote>
+                        <IonNote slot="end">{settings.movementThreshold} meters</IonNote>
+                    </IonItem>
+
+                    {/* Motion Sensitivity */}
+                    <IonItem className="setting-item-header">
+                        <IonLabel>
+                            <h2>Motion Detection Sensitivity</h2>
+                            <p>How quickly the app switches between moving and stationary modes</p>
+                        </IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonRange
+                            min={1}
+                            max={5}
+                            step={1}
+                            value={settings.motionSensitivity}
+                            pin={true}
+                            snaps={true}
+                            onIonChange={(e) =>
+                                updateSettings({ ...settings, motionSensitivity: e.detail.value as number })
+                            }
+                        >
+                            <IonLabel slot="start">Fast</IonLabel>
+                            <IonLabel slot="end">Stable</IonLabel>
+                        </IonRange>
+                    </IonItem>
+                    <IonItem lines="none">
+                        <IonNote slot="end">
+                            {settings.motionSensitivity === 1 && 'Very Sensitive (instant)'}
+                            {settings.motionSensitivity === 2 && 'Sensitive (quick)'}
+                            {settings.motionSensitivity === 3 && 'Normal (balanced)'}
+                            {settings.motionSensitivity === 4 && 'Less Sensitive (stable)'}
+                            {settings.motionSensitivity === 5 && 'Least Sensitive (very stable)'}
+                        </IonNote>
                     </IonItem>
 
                     {/* Speed Unit */}
@@ -183,9 +207,9 @@ const Settings: React.FC = () => {
                     <IonItem>
                         <IonLabel>Unit</IonLabel>
                         <IonSelect
-                            value={localSettings.speedUnit}
+                            value={settings.speedUnit}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, speedUnit: e.detail.value })
+                                updateSettings({ ...settings, speedUnit: e.detail.value })
                             }
                         >
                             <IonSelectOption value="kmh">km/h</IonSelectOption>
@@ -200,9 +224,9 @@ const Settings: React.FC = () => {
                         </IonLabel>
                         <IonToggle
                             slot="end"
-                            checked={localSettings.useCompassRotation}
+                            checked={settings.useCompassRotation}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, useCompassRotation: e.detail.checked })
+                                updateSettings({ ...settings, useCompassRotation: e.detail.checked })
                             }
                         />
                     </IonItem>
@@ -215,9 +239,9 @@ const Settings: React.FC = () => {
                         </IonLabel>
                         <IonToggle
                             slot="end"
-                            checked={localSettings.keepScreenOn}
+                            checked={settings.keepScreenOn}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, keepScreenOn: e.detail.checked })
+                                updateSettings({ ...settings, keepScreenOn: e.detail.checked })
                             }
                         />
                     </IonItem>
@@ -234,11 +258,11 @@ const Settings: React.FC = () => {
                             min={10}
                             max={90}
                             step={5}
-                            value={localSettings.mapCenterPosition}
+                            value={settings.mapCenterPosition}
                             pin={true}
                             snaps={true}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, mapCenterPosition: e.detail.value as number })
+                                updateSettings({ ...settings, mapCenterPosition: e.detail.value as number })
                             }
                         >
                             <IonLabel slot="start">Bottom</IonLabel>
@@ -246,7 +270,7 @@ const Settings: React.FC = () => {
                         </IonRange>
                     </IonItem>
                     <IonItem lines="none">
-                        <IonNote slot="end">{localSettings.mapCenterPosition}% ahead</IonNote>
+                        <IonNote slot="end">{settings.mapCenterPosition}% ahead</IonNote>
                     </IonItem>
 
                     {/* Default Orientation */}
@@ -259,9 +283,9 @@ const Settings: React.FC = () => {
                     <IonItem>
                         <IonLabel>Orientation</IonLabel>
                         <IonSelect
-                            value={localSettings.defaultOrientation}
+                            value={settings.defaultOrientation}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, defaultOrientation: e.detail.value })
+                                updateSettings({ ...settings, defaultOrientation: e.detail.value })
                             }
                         >
                             <IonSelectOption value="portrait">Portrait</IonSelectOption>
@@ -279,9 +303,9 @@ const Settings: React.FC = () => {
                     <IonItem>
                         <IonLabel>Mode</IonLabel>
                         <IonSelect
-                            value={localSettings.defaultRadarMode}
+                            value={settings.defaultRadarMode}
                             onIonChange={(e) =>
-                                setLocalSettings({ ...localSettings, defaultRadarMode: e.detail.value })
+                                updateSettings({ ...settings, defaultRadarMode: e.detail.value })
                             }
                         >
                             <IonSelectOption value="history">History (Animated)</IonSelectOption>

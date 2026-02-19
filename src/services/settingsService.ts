@@ -11,6 +11,7 @@ export interface AppSettings {
     defaultOrientation: 'portrait' | 'landscape'; // default screen orientation
     defaultRadarMode: 'history' | 'now'; // default timeline mode
     useCompassRotation: boolean; // rotate map using compass when stationary
+    motionSensitivity: number; // 1-5: samples needed to change moving/stationary state (1=very sensitive, 5=least sensitive)
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -24,6 +25,7 @@ const DEFAULT_SETTINGS: AppSettings = {
     defaultOrientation: 'portrait',
     defaultRadarMode: 'history',
     useCompassRotation: false,
+    motionSensitivity: 3,
 };
 
 const SETTINGS_KEY = 'app_settings';

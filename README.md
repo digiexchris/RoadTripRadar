@@ -16,13 +16,9 @@ An Android app built with Ionic React that displays weather radar similar to air
 ## Prerequisites
 
 - Node.js (v18+)
-- Java JDK 17
+- Java JDK 17 or higher
 - Android Studio
 - Android SDK (API 29+)
-
-## Installation
-
-All dependencies are already installed. The project is ready to build.
 
 ## Running the App
 
@@ -57,20 +53,6 @@ npx cap open android
 Then use Android Studio to:
 1. Build the APK
 2. Run on an emulator or physical device
-
-## Configuration
-
-### Weather Radar API Key
-
-The app currently uses **RainViewer's free API** (no API key required). If you want to switch to OpenWeatherMap:
-
-1. Get an API key from [OpenWeatherMap](https://openweathermap.org/api)
-2. Open `src/hooks/useWeatherRadar.ts`
-3. Replace `YOUR_API_KEY_HERE` with your actual API key
-
-```typescript
-const OPENWEATHER_API_KEY = 'your_actual_api_key_here';
-```
 
 ## Project Structure
 

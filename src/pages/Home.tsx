@@ -17,12 +17,15 @@ const Home: React.FC = () => {
   const { gpsData, error: gpsError, isTracking } = useGPS({
     compassHeading: settings.useCompassRotation ? compassHeading : null,
     movementThreshold: settings.movementThreshold,
+    motionSensitivity: settings.motionSensitivity,
   });
   const [zoom, setZoom] = useState(settings.defaultZoom);
   const [isTrackingMode, setIsTrackingMode] = useState(true);
   const [showBaseMap, setShowBaseMap] = useState(true);
+  const [darkBaseMap, setDarkBaseMap] = useState(false);
   const [showRadar, setShowRadar] = useState(true);
   const [showRangeRings, setShowRangeRings] = useState(true);
+  const [darkRings, setDarkRings] = useState(true);
   const [radarOpacity, setRadarOpacity] = useState(0.6);
   const [isLandscape, setIsLandscape] = useState(settings.defaultOrientation === 'landscape');
   const [radarMode, setRadarMode] = useState<'history' | 'now'>(settings.defaultRadarMode);
@@ -101,7 +104,7 @@ const Home: React.FC = () => {
   };
 
   const handleZoomOut = () => {
-    setZoom((prev) => Math.max(prev - 1, 8));
+    setZoom((prev) => Math.max(prev - 1, 0));
   };
 
   const handleToggleManualMode = () => {
@@ -157,8 +160,10 @@ const Home: React.FC = () => {
                 radarImageUrl={currentRadarFrame?.url}
                 isTrackingMode={isTrackingMode}
                 showBaseMap={showBaseMap}
+                darkBaseMap={darkBaseMap}
                 showRadar={showRadar}
                 showRangeRings={showRangeRings}
+                darkRings={darkRings}
                 radarOpacity={radarOpacity}
                 isLandscape={isLandscape}
               />
@@ -170,11 +175,15 @@ const Home: React.FC = () => {
                 onToggleManualMode={handleToggleManualMode}
                 isTrackingMode={isTrackingMode}
                 showBaseMap={showBaseMap}
-                onToggleBaseMap={() => setShowBaseMap(!showBaseMap)}
+                onSetShowBaseMap={setShowBaseMap}
+                darkBaseMap={darkBaseMap}
+                onSetDarkBaseMap={setDarkBaseMap}
                 showRadar={showRadar}
-                onToggleRadar={() => setShowRadar(!showRadar)}
+                onSetShowRadar={setShowRadar}
                 showRangeRings={showRangeRings}
-                onToggleRangeRings={() => setShowRangeRings(!showRangeRings)}
+                onSetShowRangeRings={setShowRangeRings}
+                darkRings={darkRings}
+                onSetDarkRings={setDarkRings}
                 radarOpacity={radarOpacity}
                 onRadarOpacityChange={setRadarOpacity}
                 onToggleOrientation={handleToggleOrientation}

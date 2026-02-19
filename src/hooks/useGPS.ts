@@ -47,17 +47,16 @@ const calculateDistance = (
 interface UseGPSOptions {
     compassHeading: number | null;
     movementThreshold: number; // in meters
+    motionSensitivity?: number; // 1-5: samples needed to transition state
 }
 
 // Minimum GPS speed (m/s) to consider the user moving (~3.6 km/h / ~2.2 mph)
 const MIN_MOVING_SPEED = 1.0;
 // Maximum acceptable accuracy (meters) — ignore noisy fixes
 const MAX_ACCURACY = 30;
-// Consecutive samples needed to transition between moving/stationary
-const STATE_TRANSITION_COUNT = 3;
 
 export const useGPS = (options?: UseGPSOptions) => {
-    const { compassHeading = null, movementThreshold = 10 } = options || {};
+    const { compassHeading = null, movementThreshold = 10, motionSensitivity = 3 } = options || {};
     const [gpsData, setGpsData] = useState<GPSData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isTracking, setIsTracking] = useState(false);
@@ -150,19 +149,19 @@ export const useGPS = (options?: UseGPSOptions) => {
                             if (votesMoving) {
                                 movingVoteCount.current = Math.min(
                                     movingVoteCount.current + 1,
-                                    STATE_TRANSITION_COUNT
+                                    motionSensitivity
                                 );
                             } else {
                                 movingVoteCount.current = Math.max(
                                     movingVoteCount.current - 1,
-                                    -STATE_TRANSITION_COUNT
+                                    -motionSensitivity
                                 );
                             }
 
                             // Only transition state after enough consecutive votes
-                            if (!isMoving && movingVoteCount.current >= STATE_TRANSITION_COUNT) {
+                            if (!isMoving && movingVoteCount.current >= motionSensitivity) {
                                 isMoving = true;
-                            } else if (isMoving && movingVoteCount.current <= -STATE_TRANSITION_COUNT) {
+                            } else if (isMoving && movingVoteCount.current <= -motionSensitivity) {
                                 isMoving = false;
                                 // Reset anchor to current position when becoming stationary
                                 anchorPosition.current = { lat: latitude, lon: longitude };

@@ -8,12 +8,13 @@ import './RadarMap.css';
 
 // Ring interval in km for each integer zoom level (index = zoom)
 const RING_INTERVALS_KM: Record<number, number> = {
+    0: 5000, 1: 2500, 2: 1000, 3: 500, 4: 200,
     5: 100, 6: 50, 7: 50, 8: 25, 9: 20, 10: 10,
     11: 5, 12: 2, 13: 1, 14: 0.5, 15: 0.25,
     16: 0.1, 17: 0.05, 18: 0.025,
 };
 
-/** Generate a GeoJSON circle polygon at a given center and radius (km). */
+/** Generate a GeoJSON circle LineString at a given center and radius (km). */
 function generateCircle(centerLng: number, centerLat: number, radiusKm: number, points = 64): GeoJSON.Feature {
     const coords: [number, number][] = [];
     const latRad = centerLat * Math.PI / 180;
@@ -28,27 +29,30 @@ function generateCircle(centerLng: number, centerLat: number, radiusKm: number, 
 
     return {
         type: 'Feature',
-        geometry: { type: 'Polygon', coordinates: [coords] },
+        geometry: { type: 'LineString', coordinates: coords },
         properties: { radiusKm },
     };
 }
 
-/** Generate label points at the top of each ring (north). */
-function generateLabel(centerLng: number, centerLat: number, radiusKm: number): GeoJSON.Feature {
-    const dLat = radiusKm / 111.32;
+/** Generate label point at the top of the screen (in the direction of travel). */
+function generateLabel(centerLng: number, centerLat: number, radiusKm: number, bearingDeg: number): GeoJSON.Feature {
+    const bearingRad = bearingDeg * Math.PI / 180;
+    const latRad = centerLat * Math.PI / 180;
+    const dLat = (radiusKm / 111.32) * Math.cos(bearingRad);
+    const dLng = (radiusKm / (111.32 * Math.cos(latRad))) * Math.sin(bearingRad);
     const label = radiusKm >= 1
         ? `${radiusKm} km`
         : `${Math.round(radiusKm * 1000)} m`;
     return {
         type: 'Feature',
-        geometry: { type: 'Point', coordinates: [centerLng, centerLat + dLat] },
+        geometry: { type: 'Point', coordinates: [centerLng + dLng, centerLat + dLat] },
         properties: { label },
     };
 }
 
-/** Build range ring + label GeoJSON for a given position and zoom. */
-function buildRangeRingData(lng: number, lat: number, zoom: number) {
-    const floorZoom = Math.max(5, Math.min(18, Math.floor(zoom)));
+/** Build range ring + label GeoJSON for a given position, zoom, and heading. */
+function buildRangeRingData(lng: number, lat: number, zoom: number, heading: number) {
+    const floorZoom = Math.max(0, Math.min(18, Math.floor(zoom)));
     const intervalKm = RING_INTERVALS_KM[floorZoom] ?? 50;
     const ringCount = 5;
 
@@ -57,7 +61,7 @@ function buildRangeRingData(lng: number, lat: number, zoom: number) {
     for (let i = 1; i <= ringCount; i++) {
         const r = intervalKm * i;
         rings.push(generateCircle(lng, lat, r));
-        labels.push(generateLabel(lng, lat, r));
+        labels.push(generateLabel(lng, lat, r, heading));
     }
 
     return {
@@ -74,8 +78,10 @@ interface RadarMapProps {
     radarImageUrl?: string;
     isTrackingMode: boolean;
     showBaseMap?: boolean;
+    darkBaseMap?: boolean;
     showRadar?: boolean;
     showRangeRings?: boolean;
+    darkRings?: boolean;
     radarOpacity?: number;
     isLandscape?: boolean;
 }
@@ -88,8 +94,10 @@ export const RadarMap: React.FC<RadarMapProps> = ({
     radarImageUrl,
     isTrackingMode,
     showBaseMap = true,
+    darkBaseMap = false,
     showRadar = true,
     showRangeRings = true,
+    darkRings = true,
     radarOpacity = 0.6,
     isLandscape = false,
 }) => {
@@ -210,6 +218,8 @@ export const RadarMap: React.FC<RadarMapProps> = ({
     // In manual mode, leave bearing as-is (don't reset to north)
     // The user can rotate manually if they want
 
+    // Keep mapStyle stable (no volatile deps) so GeoJSON sources are never reset.
+    // All visibility / opacity changes are handled via dynamic effects below.
     const mapStyle = useMemo(() => ({
         version: 8 as const,
         sources: {
@@ -218,6 +228,12 @@ export const RadarMap: React.FC<RadarMapProps> = ({
                 tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
                 tileSize: 256,
                 attribution: '&copy; OpenStreetMap contributors',
+            },
+            'dark-tiles': {
+                type: 'raster' as const,
+                tiles: ['https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
+                tileSize: 256,
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
             },
             'radar': {
                 type: 'raster' as const,
@@ -247,17 +263,25 @@ export const RadarMap: React.FC<RadarMapProps> = ({
             },
         },
         layers: [
-            ...(showBaseMap ? [{
+            {
                 id: 'osm',
                 type: 'raster' as const,
                 source: 'osm-tiles',
-            }] : []),
+            },
+            {
+                id: 'dark-basemap',
+                type: 'raster' as const,
+                source: 'dark-tiles',
+                layout: {
+                    'visibility': 'none' as const,
+                },
+            },
             {
                 id: 'radar-layer',
                 type: 'raster' as const,
                 source: 'radar',
                 paint: {
-                    'raster-opacity': showRadar ? radarOpacity : 0,
+                    'raster-opacity': 0.6,
                     'raster-fade-duration': 0,
                 },
             },
@@ -265,12 +289,9 @@ export const RadarMap: React.FC<RadarMapProps> = ({
                 id: 'range-rings-layer',
                 type: 'line' as const,
                 source: 'range-rings',
-                layout: {
-                    'visibility': (showRangeRings ? 'visible' : 'none') as 'visible' | 'none',
-                },
                 paint: {
-                    'line-color': 'rgba(255, 255, 255, 0.45)',
-                    'line-width': 1,
+                    'line-color': 'rgba(0, 0, 0, 0.6)',
+                    'line-width': 1.5,
                     'line-dasharray': [4, 4],
                 },
             },
@@ -279,17 +300,18 @@ export const RadarMap: React.FC<RadarMapProps> = ({
                 type: 'symbol' as const,
                 source: 'range-ring-labels',
                 layout: {
-                    'visibility': (showRangeRings ? 'visible' : 'none') as 'visible' | 'none',
                     'text-field': ['get', 'label'] as unknown as string,
                     'text-size': 12,
                     'text-anchor': 'bottom' as const,
                     'text-offset': [0, -0.3] as [number, number],
                     'text-allow-overlap': true,
                     'text-ignore-placement': true,
+                    'text-rotation-alignment': 'viewport' as const,
+                    'text-pitch-alignment': 'viewport' as const,
                 },
                 paint: {
-                    'text-color': 'rgba(255, 255, 255, 0.7)',
-                    'text-halo-color': 'rgba(0, 0, 0, 0.6)',
+                    'text-color': 'rgba(0, 0, 0, 0.7)',
+                    'text-halo-color': 'rgba(255, 255, 255, 0.6)',
                     'text-halo-width': 1.5,
                 },
             },
@@ -305,7 +327,7 @@ export const RadarMap: React.FC<RadarMapProps> = ({
                 },
             },
         ],
-    }), [showBaseMap, showRadar, showRangeRings, radarOpacity]);
+    }), []); // Stable — no volatile deps
 
     // Update radar tiles when radarImageUrl changes
     useEffect(() => {
@@ -353,14 +375,42 @@ export const RadarMap: React.FC<RadarMapProps> = ({
         }
     }, [positionData]);
 
+    // Update base-map visibility and dark/light mode dynamically
+    useEffect(() => {
+        if (!mapRef.current) return;
+        const map = mapRef.current.getMap();
+
+        const apply = () => {
+            if (map.getLayer('osm')) {
+                map.setLayoutProperty('osm', 'visibility', (showBaseMap && !darkBaseMap) ? 'visible' : 'none');
+            }
+            if (map.getLayer('dark-basemap')) {
+                map.setLayoutProperty('dark-basemap', 'visibility', (showBaseMap && darkBaseMap) ? 'visible' : 'none');
+            }
+        };
+
+        if (map.isStyleLoaded()) {
+            apply();
+        } else {
+            map.once('styledata', apply);
+        }
+    }, [showBaseMap, darkBaseMap]);
+
     // Update radar opacity & visibility dynamically
     useEffect(() => {
         if (!mapRef.current) return;
         const map = mapRef.current.getMap();
-        if (!map.isStyleLoaded()) return;
 
-        if (map.getLayer('radar-layer')) {
-            map.setPaintProperty('radar-layer', 'raster-opacity', showRadar ? radarOpacity : 0);
+        const apply = () => {
+            if (map.getLayer('radar-layer')) {
+                map.setPaintProperty('radar-layer', 'raster-opacity', showRadar ? radarOpacity : 0);
+            }
+        };
+
+        if (map.isStyleLoaded()) {
+            apply();
+        } else {
+            map.once('styledata', apply);
         }
     }, [showRadar, radarOpacity]);
 
@@ -368,16 +418,48 @@ export const RadarMap: React.FC<RadarMapProps> = ({
     useEffect(() => {
         if (!mapRef.current) return;
         const map = mapRef.current.getMap();
-        if (!map.isStyleLoaded()) return;
 
-        const vis = showRangeRings ? 'visible' : 'none';
-        if (map.getLayer('range-rings-layer')) {
-            map.setLayoutProperty('range-rings-layer', 'visibility', vis);
-        }
-        if (map.getLayer('range-ring-labels-layer')) {
-            map.setLayoutProperty('range-ring-labels-layer', 'visibility', vis);
+        const apply = () => {
+            const vis = showRangeRings ? 'visible' : 'none';
+            if (map.getLayer('range-rings-layer')) {
+                map.setLayoutProperty('range-rings-layer', 'visibility', vis);
+            }
+            if (map.getLayer('range-ring-labels-layer')) {
+                map.setLayoutProperty('range-ring-labels-layer', 'visibility', vis);
+            }
+        };
+
+        if (map.isStyleLoaded()) {
+            apply();
+        } else {
+            map.once('styledata', apply);
         }
     }, [showRangeRings]);
+
+    // Update range ring colors (dark/light) dynamically
+    useEffect(() => {
+        if (!mapRef.current) return;
+        const map = mapRef.current.getMap();
+
+        const apply = () => {
+            if (map.getLayer('range-rings-layer')) {
+                map.setPaintProperty('range-rings-layer', 'line-color',
+                    darkRings ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)');
+            }
+            if (map.getLayer('range-ring-labels-layer')) {
+                map.setPaintProperty('range-ring-labels-layer', 'text-color',
+                    darkRings ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.7)');
+                map.setPaintProperty('range-ring-labels-layer', 'text-halo-color',
+                    darkRings ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)');
+            }
+        };
+
+        if (map.isStyleLoaded()) {
+            apply();
+        } else {
+            map.once('styledata', apply);
+        }
+    }, [darkRings]);
 
     // Update range rings when position or zoom changes
     useEffect(() => {
@@ -388,11 +470,11 @@ export const RadarMap: React.FC<RadarMapProps> = ({
         const labelsSource = map.getSource('range-ring-labels');
 
         if (ringsSource && labelsSource) {
-            const { rings, labels } = buildRangeRingData(longitude, latitude, zoom);
+            const { rings, labels } = buildRangeRingData(longitude, latitude, zoom, heading);
             (ringsSource as GeoJSONSource).setData(rings);
             (labelsSource as GeoJSONSource).setData(labels);
         }
-    }, [longitude, latitude, zoom]);
+    }, [longitude, latitude, zoom, heading]);
 
     // Add navigation control (compass) on mount
     useEffect(() => {
@@ -428,17 +510,45 @@ export const RadarMap: React.FC<RadarMapProps> = ({
     const handleMapLoad = () => {
         if (!mapRef.current) return;
         const map = mapRef.current.getMap();
+
+        // Set initial position marker
         const source = map.getSource('current-position');
         if (source && source.type === 'geojson') {
             (source as GeoJSONSource).setData(positionData);
         }
+
         // Set initial range rings
         const ringsSource = map.getSource('range-rings');
         const labelsSource = map.getSource('range-ring-labels');
         if (ringsSource && labelsSource) {
-            const { rings, labels } = buildRangeRingData(longitude, latitude, zoom);
+            const { rings, labels } = buildRangeRingData(longitude, latitude, zoom, heading);
             (ringsSource as GeoJSONSource).setData(rings);
             (labelsSource as GeoJSONSource).setData(labels);
+        }
+
+        // Apply initial visibility states
+        if (map.getLayer('osm')) {
+            map.setLayoutProperty('osm', 'visibility', (showBaseMap && !darkBaseMap) ? 'visible' : 'none');
+        }
+        if (map.getLayer('dark-basemap')) {
+            map.setLayoutProperty('dark-basemap', 'visibility', (showBaseMap && darkBaseMap) ? 'visible' : 'none');
+        }
+        if (map.getLayer('radar-layer')) {
+            map.setPaintProperty('radar-layer', 'raster-opacity', showRadar ? radarOpacity : 0);
+        }
+        const ringVis = showRangeRings ? 'visible' : 'none';
+        if (map.getLayer('range-rings-layer')) {
+            map.setLayoutProperty('range-rings-layer', 'visibility', ringVis);
+            if (darkRings) {
+                map.setPaintProperty('range-rings-layer', 'line-color', 'rgba(0, 0, 0, 0.6)');
+            }
+        }
+        if (map.getLayer('range-ring-labels-layer')) {
+            map.setLayoutProperty('range-ring-labels-layer', 'visibility', ringVis);
+            if (darkRings) {
+                map.setPaintProperty('range-ring-labels-layer', 'text-color', 'rgba(0, 0, 0, 0.7)');
+                map.setPaintProperty('range-ring-labels-layer', 'text-halo-color', 'rgba(255, 255, 255, 0.6)');
+            }
         }
     };
 

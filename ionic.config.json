@@ -1,5 +1,5 @@
 {
-  "name": "weather-radar",
+  "name": "RoadTripRadar",
   "integrations": {
     "capacitor": {}
   },
