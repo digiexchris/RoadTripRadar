@@ -1,0 +1,117 @@
+.radar-timeline {
+  background: #000;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.timeline-bar {
+  display: flex;
+  height: 2.5rem;
+  gap: 0.125rem;
+  justify-content: space-around;
+}
+
+.timeline-segment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.timeline-marker {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.timeline-segment.past .timeline-marker {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.timeline-segment.active .timeline-marker {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--ion-color-primary);
+  box-shadow: 0 0 0.5rem var(--ion-color-primary);
+}
+
+.timeline-label {
+  font-size: 0.625rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.25rem;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.timeline-segment.active .timeline-label {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+  font-size: 0.6875rem;
+}
+
+/* ==================== LANDSCAPE TIMELINE ==================== */
+
+.landscape .radar-timeline {
+  padding: 4px 2px;
+  height: 100%;
+  min-width: 7ch;
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+}
+
+.landscape .timeline-bar {
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  gap: 0;
+  justify-content: space-around;
+}
+
+.landscape .timeline-segment {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.landscape .timeline-label {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.landscape .timeline-segment.active .timeline-label {
+  font-size: 9px;
+}
+
+/* ==================== NOW MODE ==================== */
+
+.radar-timeline.now-mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.now-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+}
+
+.now-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+
+/* Landscape now mode */
+.landscape .now-bar {
+  flex-direction: column;
+  height: 100%;
+}

@@ -1,0 +1,80 @@
+.radar-content {
+    --background: #000;
+}
+
+.radar-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Info area: instruments + timeline, natural flow */
+.info-area {
+    flex-shrink: 0;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Map viewport: fills remaining space, contains map + buttons */
+.map-viewport {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+}
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 20px;
+}
+
+.error-text {
+    color: var(--ion-color-danger);
+    margin-top: 12px;
+}
+
+.radar-error {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+/* ==================== LANDSCAPE ==================== */
+
+.radar-container.landscape {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-top: 0;
+}
+
+/* Safe area bar spans full width at top in landscape */
+.radar-container.landscape::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: env(safe-area-inset-top, 0px);
+    background: #000;
+    flex-shrink: 0;
+}
+
+.radar-container.landscape .info-area {
+    flex-direction: row;
+    height: calc(100% - env(safe-area-inset-top, 0px));
+    flex-shrink: 0;
+}
+
+.radar-container.landscape .map-viewport {
+    height: calc(100% - env(safe-area-inset-top, 0px));
+    min-width: 0;
+}

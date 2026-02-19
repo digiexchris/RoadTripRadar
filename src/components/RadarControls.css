@@ -1,0 +1,106 @@
+/* Button overlay — positioned within map-viewport */
+.radar-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.zoom-controls {
+    position: absolute;
+    right: 1rem;
+    bottom: 6.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: auto;
+}
+
+.zoom-button {
+    --border-radius: 50%;
+    width: 3rem;
+    height: 3rem;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mode-control {
+    position: absolute;
+    right: 1rem;
+    bottom: 1.5rem;
+    pointer-events: auto;
+}
+
+.mode-button {
+    --border-radius: 50%;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.refresh-control {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: auto;
+}
+
+.refresh-button {
+    --border-radius: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.settings-control {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1rem;
+    pointer-events: auto;
+}
+
+.settings-button {
+    --border-radius: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.layers-control {
+    position: absolute;
+    bottom: 5.25rem;
+    left: 1rem;
+    pointer-events: auto;
+}
+
+.layers-button {
+    --border-radius: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.orientation-control {
+    position: absolute;
+    bottom: 9rem;
+    left: 1rem;
+    pointer-events: auto;
+}
+
+.orientation-button {
+    --border-radius: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.exit-control {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    pointer-events: auto;
+}
+
+.exit-button {
+    --border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
