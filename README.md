@@ -8,6 +8,10 @@ Weather radar display ahead of your current direction! Pretend you're an airplan
 
 # Features
 
+- Rotates the map to follow your change in heading
+- Updates the weather map in 1 minute intervals (note: RainViewer provides maps in 10 minute increments)
+- Has ZERO trackers, not even to tell me how many people are using this! Spyware free! Though location access and internet access permissions will be requested the first time you run the app, because it needs to use your GPS to operate the map, and use hte internet to download the weather. But none of that gets sent back to me. What gets retrieved from Rainviewer, the base map providers, and your GPS remain on your device, and are deleted when you uninstall.
+
 Layers button
 - Light and dark base maps
 - Light and dark range circles
