@@ -142,20 +142,45 @@ export const RadarMap: React.FC<RadarMapProps> = ({
         properties: {},
     }), [longitude, latitude]);
 
-    // Update map position and rotation in tracking mode
+    // Update map position (center, zoom, padding) in tracking mode — independent of heading
+    useEffect(() => {
+        if (!mapRef.current || !isTrackingMode) return;
+
+        const map = mapRef.current.getMap();
+        const container = map.getContainer();
+        const height = container.offsetHeight;
+        const width = container.offsetWidth;
+
+        isProgrammaticChange.current = true;
+        if (resetProgrammaticTimeout.current) {
+            clearTimeout(resetProgrammaticTimeout.current);
+        }
+
+        map.easeTo({
+            center: [longitude, latitude],
+            zoom: zoom,
+            duration: 400,
+            easing: (t) => t * (2 - t),
+            padding: calcPadding(height, width),
+        });
+
+        resetProgrammaticTimeout.current = setTimeout(() => {
+            isProgrammaticChange.current = false;
+        }, 500);
+
+        return () => {
+            if (resetProgrammaticTimeout.current) {
+                clearTimeout(resetProgrammaticTimeout.current);
+            }
+        };
+    }, [latitude, longitude, zoom, isTrackingMode, settings.mapCenterPosition, isLandscape]);
+
+    // Update map rotation independently — responds to heading changes at compass rate
     useEffect(() => {
         if (!mapRef.current || !isTrackingMode) return;
 
         const map = mapRef.current.getMap();
 
-        // Get container dimensions for padding calculation
-        const container = map.getContainer();
-        const height = container.offsetHeight;
-        const width = container.offsetWidth;
-
-        // Smooth rotation - handle wrap-around
-        // MapLibre bearing = the compass direction that is "up" on screen,
-        // which equals the user's heading directly (no negation).
         let targetBearing = heading;
         const currentBearing = map.getBearing();
         const diff = targetBearing - currentBearing;
@@ -166,35 +191,8 @@ export const RadarMap: React.FC<RadarMapProps> = ({
             targetBearing += 360;
         }
 
-        // Mark this as a programmatic change
-        isProgrammaticChange.current = true;
-
-        // Clear any existing timeout
-        if (resetProgrammaticTimeout.current) {
-            clearTimeout(resetProgrammaticTimeout.current);
-        }
-
-        // Use padding to position user dot based on mapCenterPosition setting.
-        map.easeTo({
-            center: [longitude, latitude],
-            bearing: targetBearing,
-            zoom: zoom,
-            duration: 500,
-            easing: (t) => t * (2 - t), // easeOutQuad
-            padding: calcPadding(height, width),
-        });
-
-        // Reset the programmatic flag after animation completes
-        resetProgrammaticTimeout.current = setTimeout(() => {
-            isProgrammaticChange.current = false;
-        }, 600); // Slightly longer than animation duration
-
-        return () => {
-            if (resetProgrammaticTimeout.current) {
-                clearTimeout(resetProgrammaticTimeout.current);
-            }
-        };
-    }, [latitude, longitude, heading, zoom, isTrackingMode, settings.mapCenterPosition, isLandscape]);
+        map.rotateTo(targetBearing, { duration: 150 });
+    }, [heading, isTrackingMode]);
 
     // Reset padding when entering manual mode, preserving visual position
     useEffect(() => {

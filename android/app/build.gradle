@@ -67,28 +67,28 @@ apply from: 'capacitor.build.gradle'
 // ---------------------------------------------------------------------------
 def webAppDir = "${rootProject.projectDir}/.."
 
-task buildWebApp(type: Exec) {
-    description 'Build the React/Vite web app'
-    workingDir webAppDir
-    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', 'npm run build'
-    } else {
-        commandLine 'npm', 'run', 'build'
-    }
-}
+// task buildWebApp(type: Exec) {
+//     description 'Build the React/Vite web app'
+//     workingDir webAppDir
+//     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//         commandLine 'cmd', '/c', 'npm run build'
+//     } else {
+//         commandLine 'npm', 'run', 'build'
+//     }
+// }
 
-task capSync(type: Exec) {
-    description 'Sync web assets into the Android project via Capacitor'
-    dependsOn buildWebApp
-    workingDir webAppDir
-    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', 'npx cap sync android'
-    } else {
-        commandLine 'npx', 'cap', 'sync', 'android'
-    }
-}
+// task capSync(type: Exec) {
+//     description 'Sync web assets into the Android project via Capacitor'
+//     // dependsOn buildWebApp
+//     workingDir webAppDir
+//     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//         commandLine 'cmd', '/c', 'npx cap sync android'
+//     } else {
+//         commandLine 'npx', 'cap', 'sync', 'android'
+//     }
+// }
 
-preBuild.dependsOn capSync
+// preBuild.dependsOn capSync
 // ---------------------------------------------------------------------------
 
 try {

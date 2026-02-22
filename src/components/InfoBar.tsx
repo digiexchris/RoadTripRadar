@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { IonText } from '@ionic/react';
 import { useSettings } from '../contexts/SettingsContext';
 import './InfoBar.css';
@@ -10,6 +10,19 @@ interface InfoBarProps {
     isTrackingMode: boolean;
 }
 
+/**
+ * Track a continuous (unwrapped) rotation so CSS transitions always
+ * take the shortest path across the 0°/360° boundary.
+ */
+function useContinuousRotation(targetDeg: number): number {
+    const continuousRef = useRef(targetDeg);
+    let diff = targetDeg - ((continuousRef.current % 360) + 360) % 360;
+    if (diff > 180) diff -= 360;
+    else if (diff < -180) diff += 360;
+    continuousRef.current += diff;
+    return continuousRef.current;
+}
+
 export const InfoBar: React.FC<InfoBarProps> = ({
     heading,
     speed,
@@ -17,6 +30,7 @@ export const InfoBar: React.FC<InfoBarProps> = ({
     isTrackingMode,
 }) => {
     const { settings } = useSettings();
+    const needleRotation = useContinuousRotation((-heading % 360 + 360) % 360);
 
     // Convert speed to selected unit
     const speedValue = settings.speedUnit === 'mph'
@@ -36,7 +50,7 @@ export const InfoBar: React.FC<InfoBarProps> = ({
                     </IonText>
                 </div>
                 <div className="info-item">
-                    <div className="north-arrow" style={{ '--rotation': `${heading}deg` } as React.CSSProperties}>
+                    <div className="north-arrow" style={{ '--rotation': `${needleRotation}deg` } as React.CSSProperties}>
                         <svg viewBox="0 0 24 32" width="24" height="32" className="compass-needle">
                             <polygon points="12,0 6,16 12,13 18,16" fill="#e53935" />
                             <polygon points="12,32 6,16 12,19 18,16" fill="#ccc" />

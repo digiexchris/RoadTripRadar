@@ -5,8 +5,9 @@ import { RadarMap } from '../components/RadarMap';
 import { RadarControls } from '../components/RadarControls';
 import { InfoBar } from '../components/InfoBar';
 import { RadarTimeline } from '../components/RadarTimeline';
-import { useGPS } from '../hooks/useGPS';
+import { usePosition } from '../hooks/usePosition';
 import { useCompass } from '../hooks/useCompass';
+import { useHeading } from '../hooks/useHeading';
 import { useWeatherRadar } from '../hooks/useWeatherRadar';
 import { useSettings } from '../contexts/SettingsContext';
 import './Home.css';
@@ -14,10 +15,15 @@ import './Home.css';
 const Home: React.FC = () => {
   const { settings } = useSettings();
   const { heading: compassHeading } = useCompass();
-  const { gpsData, error: gpsError, isTracking } = useGPS({
-    compassHeading: settings.useCompassRotation ? compassHeading : null,
+  const { positionData, error: gpsError, isTracking } = usePosition({
     movementThreshold: settings.movementThreshold,
     motionSensitivity: settings.motionSensitivity,
+  });
+  const { heading } = useHeading({
+    compassHeading,
+    gpsHeading: positionData?.gpsHeading ?? null,
+    isMoving: positionData?.isMoving ?? false,
+    useCompassRotation: settings.useCompassRotation,
   });
   const [zoom, setZoom] = useState(settings.defaultZoom);
   const [isTrackingMode, setIsTrackingMode] = useState(true);
@@ -92,8 +98,8 @@ const Home: React.FC = () => {
   }, [settings.defaultZoom, isTrackingMode]);
 
   const { radarData, currentFrameIndex, error: radarError, refresh } = useWeatherRadar(
-    gpsData?.latitude || null,
-    gpsData?.longitude || null,
+    positionData?.latitude || null,
+    positionData?.longitude || null,
     settings.frameCount,
     settings.playbackSpeed,
     radarMode === 'now'
@@ -131,13 +137,13 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="radar-content">
-        {gpsData ? (
+        {positionData ? (
           <div className={`radar-container ${isLandscape ? 'landscape' : 'portrait'}`}>
             {/* Info Area: instruments + timeline */}
             <div className="info-area">
               <InfoBar
-                heading={gpsData.heading}
-                speed={gpsData.speed}
+                heading={heading}
+                speed={positionData.speed}
                 isTracking={isTracking}
                 isTrackingMode={isTrackingMode}
               />
@@ -153,9 +159,9 @@ const Home: React.FC = () => {
             {/* Map Viewport: map + button overlay */}
             <div className="map-viewport">
               <RadarMap
-                latitude={gpsData.latitude}
-                longitude={gpsData.longitude}
-                heading={gpsData.heading}
+                latitude={positionData.latitude}
+                longitude={positionData.longitude}
+                heading={heading}
                 zoom={zoom}
                 radarImageUrl={currentRadarFrame?.url}
                 isTrackingMode={isTrackingMode}
