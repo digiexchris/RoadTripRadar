@@ -1,7 +1,0 @@
-{
-  "name": "RoadTripRadar",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react-vite"
-}
