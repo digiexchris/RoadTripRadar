@@ -13,7 +13,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -21,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -79,6 +84,7 @@ import org.maplibre.spatialk.units.extensions.meters
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -209,6 +215,7 @@ fun MapScreen() {
     val locationState = rememberUserLocationState(locationProvider = locationProvider)
 
     var isTrackingCamera by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
 
     val prefs = remember { context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE) }
     val savedZoom = remember { prefs.getFloat("zoom_level", 14.0f).toDouble() }
@@ -321,18 +328,56 @@ fun MapScreen() {
             }
         }
 
-        if (!isTrackingCamera && locationState.location != null) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            if (!isTrackingCamera && locationState.location != null) {
+                LargeFloatingActionButton(
+                    onClick = { isTrackingCamera = true },
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = "Re-center on location",
+                    )
+                }
+            }
+
             LargeFloatingActionButton(
-                onClick = { isTrackingCamera = true },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
+                onClick = {
+                    scope.launch {
+                        cameraState.animateTo(
+                            cameraState.position.copy(zoom = cameraState.position.zoom + 1)
+                        )
+                    }
+                },
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = "Re-center on location",
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Zoom in",
+                )
+            }
+
+            LargeFloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        cameraState.animateTo(
+                            cameraState.position.copy(zoom = cameraState.position.zoom - 1)
+                        )
+                    }
+                },
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = "Zoom out",
                 )
             }
         }
