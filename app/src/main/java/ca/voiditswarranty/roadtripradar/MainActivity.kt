@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,26 +21,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -83,6 +77,7 @@ import org.maplibre.spatialk.units.extensions.inMiles
 import org.maplibre.spatialk.units.extensions.kilometers
 import org.maplibre.spatialk.units.extensions.meters
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
@@ -106,46 +101,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun RoadTripRadarApp() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
-                )
-            }
-        }
-    ) {
-        when (currentDestination) {
-            AppDestinations.HOME -> MapScreen()
-            else -> {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Text(
-                        text = currentDestination.label,
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
-    }
-}
-
-enum class AppDestinations(
-    val label: String,
-    val icon: ImageVector,
-) {
-    HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
+    MapScreen()
 }
 
 private fun ringDistancesForZoom(zoom: Double): List<Length> = when {
@@ -254,6 +210,9 @@ fun MapScreen() {
 
     var isTrackingCamera by remember { mutableStateOf(true) }
 
+    val prefs = remember { context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE) }
+    val savedZoom = remember { prefs.getFloat("zoom_level", 14.0f).toDouble() }
+
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Box(modifier = Modifier.fillMaxSize()) {
         val bottomPadding = screenHeight / 3
@@ -261,7 +220,7 @@ fun MapScreen() {
         val cameraState = rememberCameraState(
             firstPosition = CameraPosition(
                 target = Position(longitude = -75.6972, latitude = 45.4215),
-                zoom = 14.0,
+                zoom = savedZoom,
                 padding = PaddingValues(top = bottomPadding),
             )
         )
@@ -270,6 +229,13 @@ fun MapScreen() {
             if (cameraState.moveReason == CameraMoveReason.GESTURE) {
                 isTrackingCamera = false
             }
+        }
+
+        LaunchedEffect(Unit) {
+            snapshotFlow { cameraState.position.zoom }
+                .collect { zoom ->
+                    prefs.edit().putFloat("zoom_level", zoom.toFloat()).apply()
+                }
         }
 
         LocationTrackingEffect(
@@ -356,7 +322,7 @@ fun MapScreen() {
         }
 
         if (!isTrackingCamera && locationState.location != null) {
-            FloatingActionButton(
+            LargeFloatingActionButton(
                 onClick = { isTrackingCamera = true },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
