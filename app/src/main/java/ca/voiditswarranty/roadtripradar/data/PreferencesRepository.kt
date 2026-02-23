@@ -52,9 +52,10 @@ class PreferencesRepository(context: Context) {
         get() {
             val saved = prefs.getString("weather_mode", null)
             return try {
-                saved?.let { WeatherMode.valueOf(it) } ?: WeatherMode.OFF
+                saved?.let { WeatherMode.valueOf(it) }
+                    ?: WeatherMode.valueOf(PrefsDefaults.WEATHER_MODE)
             } catch (_: IllegalArgumentException) {
-                WeatherMode.OFF
+                WeatherMode.valueOf(PrefsDefaults.WEATHER_MODE)
             }
         }
         set(value) = prefs.edit().putString("weather_mode", value.name).apply()
@@ -82,6 +83,10 @@ class PreferencesRepository(context: Context) {
     var keepScreenOn: Boolean
         get() = prefs.getBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
         set(value) = prefs.edit().putBoolean("keep_screen_on", value).apply()
+
+    var acceptedTermsVersion: Int
+        get() = prefs.getInt("accepted_terms_version", -1)
+        set(value) = prefs.edit().putInt("accepted_terms_version", value).apply()
 
     var poiPosition: Position?
         get() {

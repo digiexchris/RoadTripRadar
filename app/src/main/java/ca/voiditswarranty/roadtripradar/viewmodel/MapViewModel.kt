@@ -63,6 +63,12 @@ class MapViewModel(
         private set
     var showPoiSearch by mutableStateOf(false)
         private set
+    var showHelp by mutableStateOf(false)
+        private set
+    var showTerms by mutableStateOf(false)
+        private set
+    var termsNeedAcceptance by mutableStateOf(false)
+        private set
 
     // Search state
     var searchQuery by mutableStateOf("")
@@ -84,6 +90,10 @@ class MapViewModel(
     private var searchJob: Job? = null
 
     init {
+        if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
+            showTerms = true
+            termsNeedAcceptance = true
+        }
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
     }
@@ -180,6 +190,23 @@ class MapViewModel(
     fun closeResetConfirm() { showResetConfirm = false }
     fun openPoiSearch() { showPoiSearch = true }
     fun closePoiSearch() { showPoiSearch = false }
+    fun openHelp() { showHelp = true }
+    fun closeHelp() { showHelp = false }
+
+    fun viewTerms() {
+        showHelp = false
+        showTerms = true
+    }
+
+    fun acceptTerms() {
+        prefsRepo.acceptedTermsVersion = PrefsDefaults.TERMS_VERSION
+        termsNeedAcceptance = false
+        showTerms = false
+    }
+
+    fun dismissTerms() {
+        showTerms = false
+    }
 
     // --- POI ---
 

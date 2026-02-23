@@ -44,6 +44,9 @@ import org.maplibre.compose.location.rememberUserLocationState
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ButtonDefaults
+import org.maplibre.compose.material3.CompassButton
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
 import org.maplibre.spatialk.geojson.Point
@@ -187,7 +190,7 @@ fun MapScreen(
             options = MapOptions(
                 ornamentOptions = OrnamentOptions(
                     isScaleBarEnabled = false,
-                    isCompassEnabled = true,
+                    isCompassEnabled = false,
                 ),
             ),
             onMapLongClick = { position, _ ->
@@ -204,10 +207,12 @@ fun MapScreen(
                     )
                 }
 
-                RadarRingsLayers(
-                    radarData = radarData,
-                    isDarkStyle = mapStyle.isDark,
-                )
+                if (radarData != null) {
+                    RadarRingsLayers(
+                        radarData = radarData,
+                        isDarkStyle = mapStyle.isDark,
+                    )
+                }
 
                 if (locationState.location != null) {
                     UserLocationPuck(
@@ -253,15 +258,28 @@ fun MapScreen(
             )
         }
 
-        // Search / Clear POI button (top-right)
-        PoiSearchClearFab(
-            hasPoi = vm.poiPosition != null,
-            onClearPoi = { vm.clearPoi() },
-            onOpenSearch = { vm.openPoiSearch() },
+        // Compass + Search/Clear POI (top-right)
+        Column(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 60.dp, end = 16.dp),
-        )
+                .padding(top = 16.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CompassButton(
+                cameraState = cameraState,
+                colors = ButtonDefaults.elevatedButtonColors(),
+                size = 56.dp,
+                contentPadding = PaddingValues(8.dp),
+                shape = CircleShape,
+                getHomePosition = { it.copy(bearing = 0.0, tilt = 0.0) },
+            )
+            PoiSearchClearFab(
+                hasPoi = vm.poiPosition != null,
+                onClearPoi = { vm.clearPoi() },
+                onOpenSearch = { vm.openPoiSearch() },
+            )
+        }
 
         // Bottom-left: timeline, play/pause, gear
         Column(
@@ -312,6 +330,9 @@ fun MapScreen(
             mapStyle = mapStyle,
             onStyleChange = onStyleChange,
         )
+
+        // Help sheet
+        HelpSheet(vm = vm)
 
         // POI search dialog
         PoiSearchDialog(vm = vm)

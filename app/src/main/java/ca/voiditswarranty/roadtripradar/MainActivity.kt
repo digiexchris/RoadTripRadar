@@ -16,7 +16,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ca.voiditswarranty.roadtripradar.model.MapStyle
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import ca.voiditswarranty.roadtripradar.ui.MapScreen
+import ca.voiditswarranty.roadtripradar.ui.TermsOverlay
 import ca.voiditswarranty.roadtripradar.ui.theme.RoadTripRadarTheme
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModelFactory
@@ -49,13 +53,16 @@ fun RoadTripRadarApp() {
     }
 
     RoadTripRadarTheme(darkTheme = mapStyle.isDark) {
-        MapScreen(
-            vm = vm,
-            mapStyle = mapStyle,
-            onStyleChange = { newStyle ->
-                mapStyle = newStyle
-                vm.prefsRepo.mapStyle = newStyle
-            },
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            MapScreen(
+                vm = vm,
+                mapStyle = mapStyle,
+                onStyleChange = { newStyle ->
+                    mapStyle = newStyle
+                    vm.prefsRepo.mapStyle = newStyle
+                },
+            )
+            TermsOverlay(vm = vm)
+        }
     }
 }

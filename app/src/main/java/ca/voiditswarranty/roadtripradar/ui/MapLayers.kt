@@ -60,18 +60,14 @@ fun WeatherRadarLayers(
 
 @Composable
 fun RadarRingsLayers(
-    radarData: RadarRingsData?,
+    radarData: RadarRingsData,
     isDarkStyle: Boolean,
 ) {
     val ringsSource = rememberGeoJsonSource(
-        data = GeoJsonData.Features(
-            radarData?.ringsFeatures ?: FeatureCollection<LineString, JsonObject>()
-        )
+        data = GeoJsonData.Features(radarData.ringsFeatures)
     )
     val labelsSource = rememberGeoJsonSource(
-        data = GeoJsonData.Features(
-            radarData?.labelsFeatures ?: FeatureCollection<Point, JsonObject>()
-        )
+        data = GeoJsonData.Features(radarData.labelsFeatures)
     )
 
     val ringColor = if (isDarkStyle) Color.LightGray else Color.Black
