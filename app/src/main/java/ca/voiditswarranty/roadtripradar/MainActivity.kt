@@ -13,21 +13,24 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,7 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.core.content.ContextCompat
@@ -98,16 +100,48 @@ class MainActivity : ComponentActivity() {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
         setContent {
-            RoadTripRadarTheme {
-                RoadTripRadarApp()
-            }
+            RoadTripRadarApp()
         }
+    }
+}
+
+private enum class MapStyle {
+    LIBERTY, DARK, LIBERTY_DARK;
+
+    val isDark get() = this != LIBERTY
+
+    val styleUri get() = when (this) {
+        LIBERTY -> "https://tiles.openfreemap.org/styles/liberty"
+        DARK -> "https://tiles.openfreemap.org/styles/dark"
+        LIBERTY_DARK -> "asset://liberty_dark.json"
+    }
+
+    fun next() = when (this) {
+        LIBERTY -> DARK
+        DARK -> LIBERTY_DARK
+        LIBERTY_DARK -> LIBERTY
     }
 }
 
 @Composable
 fun RoadTripRadarApp() {
-    MapScreen()
+    val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE) }
+    val systemDefault = if (isSystemInDarkTheme()) MapStyle.LIBERTY_DARK else MapStyle.LIBERTY
+    var mapStyle by remember {
+        val saved = prefs.getString("map_style", null)
+        mutableStateOf(saved?.let { MapStyle.valueOf(it) } ?: systemDefault)
+    }
+
+    RoadTripRadarTheme(darkTheme = mapStyle.isDark) {
+        MapScreen(
+            mapStyle = mapStyle,
+            onCycleStyle = {
+                mapStyle = mapStyle.next()
+                prefs.edit().putString("map_style", mapStyle.name).apply()
+            },
+        )
+    }
 }
 
 private fun ringDistancesForZoom(zoom: Double): List<Length> = when {
@@ -177,7 +211,7 @@ private fun buildRadarRingsData(center: Position, distances: List<Length>, beari
 
 @SuppressLint("MissingPermission")
 @Composable
-fun MapScreen() {
+private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
     val context = LocalContext.current
 
     var hasLocationPermission by remember {
@@ -276,10 +310,15 @@ fun MapScreen() {
         }
 
         MaplibreMap(
-            baseStyle = BaseStyle.Uri("https://tiles.openfreemap.org/styles/liberty"),
+            baseStyle = BaseStyle.Uri(mapStyle.styleUri),
             cameraState = cameraState,
             modifier = Modifier.fillMaxSize(),
-            options = MapOptions(ornamentOptions = OrnamentOptions(isScaleBarEnabled = false)),
+            options = MapOptions(
+                ornamentOptions = OrnamentOptions(
+                    isScaleBarEnabled = false,
+                    isCompassEnabled = true,
+                ),
+            ),
         ) {
             val ringsSource = rememberGeoJsonSource(
                 data = GeoJsonData.Features(
@@ -293,10 +332,13 @@ fun MapScreen() {
             )
 
             Anchor.Top {
+                val ringColor = if (mapStyle.isDark) Color.LightGray else Color.Black
+                val haloColor = if (mapStyle.isDark) Color.DarkGray else Color.White
+
                 LineLayer(
                     id = "radar-rings",
                     source = ringsSource,
-                    color = const(Color.Black),
+                    color = const(ringColor),
                     width = const(1.5.dp),
                     opacity = const(0.7f),
                     dasharray = const(listOf(4, 3)),
@@ -307,8 +349,8 @@ fun MapScreen() {
                     source = labelsSource,
                     textField = format(span(feature["label"].asString())),
                     textFont = const(listOf("Noto Sans Regular")),
-                    textColor = const(Color.Black),
-                    textHaloColor = const(Color.White),
+                    textColor = const(ringColor),
+                    textHaloColor = const(haloColor),
                     textHaloWidth = const(3.dp),
                     textSize = const(1.2f.em),
                     textRotationAlignment = const(TextRotationAlignment.Viewport),
@@ -334,9 +376,12 @@ fun MapScreen() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            val fabBorder = Modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+
             if (!isTrackingCamera && locationState.location != null) {
                 LargeFloatingActionButton(
                     onClick = { isTrackingCamera = true },
+                    modifier = fabBorder,
                     shape = CircleShape,
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                 ) {
@@ -355,6 +400,7 @@ fun MapScreen() {
                         )
                     }
                 },
+                modifier = fabBorder,
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
@@ -372,6 +418,7 @@ fun MapScreen() {
                         )
                     }
                 },
+                modifier = fabBorder,
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
@@ -380,6 +427,25 @@ fun MapScreen() {
                     contentDescription = "Zoom out",
                 )
             }
+        }
+
+        LargeFloatingActionButton(
+            onClick = onCycleStyle,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp)
+                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Icon(
+                imageVector = when (mapStyle) {
+                    MapStyle.LIBERTY -> Icons.Default.DarkMode
+                    MapStyle.DARK -> Icons.Default.Palette
+                    MapStyle.LIBERTY_DARK -> Icons.Default.LightMode
+                },
+                contentDescription = "Cycle map style",
+            )
         }
     }
 }
