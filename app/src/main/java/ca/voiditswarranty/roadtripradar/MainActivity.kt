@@ -2,10 +2,12 @@ package ca.voiditswarranty.roadtripradar
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -13,7 +15,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,8 +29,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -35,6 +43,7 @@ import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,6 +53,7 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -133,6 +143,7 @@ import org.maplibre.spatialk.units.extensions.inDegrees
 import org.maplibre.spatialk.units.extensions.kilometers
 import org.maplibre.spatialk.units.extensions.meters
 import java.net.URL
+import java.net.URLEncoder
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,6 +179,47 @@ private enum class MapStyle {
 
 private enum class WeatherMode { OFF, ON }
 
+private data class SearchResult(
+    val name: String,
+    val subtitle: String,
+    val position: Position,
+    val distance: Length? = null,
+)
+
+private data class PoiCategory(val label: String, val query: String)
+
+private val POI_CATEGORIES = listOf(
+    PoiCategory("Gas Station", "fuel"),
+    PoiCategory("EV Charging", "charging_station"),
+    PoiCategory("Restaurant", "restaurant"),
+    PoiCategory("Fast Food", "fast_food"),
+    PoiCategory("Cafe / Coffee", "cafe"),
+    PoiCategory("Bar / Pub", "pub"),
+    PoiCategory("Supermarket", "supermarket"),
+    PoiCategory("Convenience Store", "convenience"),
+    PoiCategory("Pharmacy", "pharmacy"),
+    PoiCategory("Hospital", "hospital"),
+    PoiCategory("Hotel", "hotel"),
+    PoiCategory("Motel", "motel"),
+    PoiCategory("Campsite", "camp_site"),
+    PoiCategory("Parking", "parking"),
+    PoiCategory("Rest Area", "rest_area"),
+    PoiCategory("ATM", "atm"),
+    PoiCategory("Bank", "bank"),
+    PoiCategory("Post Office", "post_office"),
+    PoiCategory("Car Repair", "car_repair"),
+    PoiCategory("Car Wash", "car_wash"),
+    PoiCategory("Laundry", "laundry"),
+    PoiCategory("Toilets", "toilets"),
+    PoiCategory("Police", "police"),
+    PoiCategory("Fire Station", "fire_station"),
+    PoiCategory("Library", "library"),
+    PoiCategory("Park", "park"),
+    PoiCategory("Viewpoint", "viewpoint"),
+    PoiCategory("Museum", "museum"),
+    PoiCategory("Tourist Info", "information"),
+)
+
 private object PrefsDefaults {
     const val ZOOM_LEVEL = 9.0f
     const val RADAR_OPACITY = 0.6f
@@ -175,6 +227,8 @@ private object PrefsDefaults {
     const val WEATHER_PLAYING = false
     const val WEATHER_MODE = "ON"
     const val SPEED_SIZE = 48f
+    const val NAV_WIDGET_SIZE = 48f
+    const val KEEP_SCREEN_ON = true
     const val PREFS_VERSION = 1
 }
 
@@ -368,7 +422,21 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
     }
     var showSettings by remember { mutableStateOf(false) }
     var showResetConfirm by remember { mutableStateOf(false) }
-    var poiPosition by remember { mutableStateOf<Position?>(null) }
+    var poiPosition by remember {
+        val lat = prefs.getString("poi_lat", null)?.toDoubleOrNull()
+        val lon = prefs.getString("poi_lon", null)?.toDoubleOrNull()
+        mutableStateOf(if (lat != null && lon != null) Position(latitude = lat, longitude = lon) else null)
+    }
+    var poiName by remember {
+        mutableStateOf(prefs.getString("poi_name", null) ?: if (poiPosition != null) "Dropped Pin" else null)
+    }
+    var navWidgetSize by remember {
+        mutableStateOf(prefs.getFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE))
+    }
+    var keepScreenOn by remember {
+        mutableStateOf(prefs.getBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON))
+    }
+    var showPoiSearch by remember { mutableStateOf(false) }
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Box(modifier = Modifier.fillMaxSize()) {
@@ -393,6 +461,28 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                 .collect { zoom ->
                     prefs.edit().putFloat("zoom_level", zoom.toFloat()).apply()
                 }
+        }
+
+        LaunchedEffect(poiPosition, poiName) {
+            val poi = poiPosition
+            if (poi != null) {
+                prefs.edit()
+                    .putString("poi_lat", poi.latitude.toString())
+                    .putString("poi_lon", poi.longitude.toString())
+                    .putString("poi_name", poiName)
+                    .apply()
+            } else {
+                prefs.edit().remove("poi_lat").remove("poi_lon").remove("poi_name").apply()
+            }
+        }
+
+        LaunchedEffect(keepScreenOn) {
+            val window = (context as? Activity)?.window ?: return@LaunchedEffect
+            if (keepScreenOn) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
         }
 
         LocationTrackingEffect(
@@ -483,6 +573,7 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
             ),
             onMapLongClick = { position, _ ->
                 poiPosition = position
+                poiName = "Dropped Pin"
                 ClickResult.Consume
             },
         ) {
@@ -589,10 +680,9 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         LineLayer(
                             id = "poi-line",
                             source = poiLineSource,
-                            color = const(ringColor),
+                            color = const(Color.Blue),
                             width = const(2.dp),
                             opacity = const(0.8f),
-                            dasharray = const(listOf(6, 4)),
                         )
                     }
                 }
@@ -635,6 +725,10 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
         if (poiPosition != null && poiInfo != null) {
             val (poiDist, poiBearingDeg) = poiInfo
             val arrowRotation = (poiBearingDeg - bearing).toFloat()
+            val iconSize = navWidgetSize.dp
+            val distFontSize = (navWidgetSize * 0.35f).sp
+            val showPoiName = navWidgetSize >= 50f && poiName != null
+            val nameFontSize = (navWidgetSize * 0.25f).sp
             Column(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -654,17 +748,32 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                     Icon(
                         imageVector = Icons.Default.Navigation,
                         contentDescription = "Direction to POI",
-                        modifier = Modifier.rotate(arrowRotation),
+                        modifier = Modifier
+                            .size(iconSize)
+                            .rotate(arrowRotation),
                         tint = MaterialTheme.colorScheme.primary,
                     )
                     Text(
                         text = formatDistanceLabel(poiDist, useMetric),
-                        fontSize = 14.sp,
+                        fontSize = distFontSize,
                         color = MaterialTheme.colorScheme.onSurface,
                     )
+                    if (showPoiName) {
+                        Text(
+                            text = poiName!!,
+                            fontSize = nameFontSize,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.widthIn(max = (navWidgetSize * 2.5f).dp),
+                        )
+                    }
                 }
                 FloatingActionButton(
-                    onClick = { poiPosition = null },
+                    onClick = {
+                        poiPosition = null
+                        poiName = null
+                    },
                     modifier = Modifier.border(
                         1.dp, MaterialTheme.colorScheme.outline, CircleShape,
                     ),
@@ -677,6 +786,18 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                     )
                 }
             }
+        } else {
+            FloatingActionButton(
+                onClick = { showPoiSearch = true },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 60.dp, end = 16.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(Icons.Default.Search, contentDescription = "Search for POI")
+            }
         }
 
         val fabBorder = Modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
@@ -688,7 +809,7 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (weatherActive && isWeatherPlaying && radarFramePaths.isNotEmpty()) {
+            if (weatherActive && radarFramePaths.isNotEmpty()) {
                 val frameCount = radarFramePaths.size
                 Column(
                     modifier = Modifier
@@ -833,6 +954,17 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
+                    // Quit
+                    OutlinedButton(
+                        onClick = {
+                            (context as? Activity)?.finishAffinity()
+                            System.exit(0)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Quit")
+                    }
+
                     // Map Style
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("Map Style", style = MaterialTheme.typography.titleSmall)
@@ -919,6 +1051,22 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         }
                     }
 
+                    // Keep Screen On
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Keep Screen On", style = MaterialTheme.typography.titleSmall)
+                        Switch(
+                            checked = keepScreenOn,
+                            onCheckedChange = { on ->
+                                keepScreenOn = on
+                                prefs.edit().putBoolean("keep_screen_on", on).apply()
+                            },
+                        )
+                    }
+
                     // Speed Size
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text("Speed Size", style = MaterialTheme.typography.titleSmall)
@@ -927,6 +1075,19 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                             onValueChange = { speedSize = it },
                             onValueChangeFinished = {
                                 prefs.edit().putFloat("speed_size", speedSize).apply()
+                            },
+                            valueRange = 24f..96f,
+                        )
+                    }
+
+                    // Nav Widget Size
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Nav Widget Size", style = MaterialTheme.typography.titleSmall)
+                        Slider(
+                            value = navWidgetSize,
+                            onValueChange = { navWidgetSize = it },
+                            onValueChangeFinished = {
+                                prefs.edit().putFloat("nav_widget_size", navWidgetSize).apply()
                             },
                             valueRange = 24f..96f,
                         )
@@ -959,6 +1120,8 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         radarOpacity = PrefsDefaults.RADAR_OPACITY
                         useMetric = PrefsDefaults.USE_METRIC
                         speedSize = PrefsDefaults.SPEED_SIZE
+                        navWidgetSize = PrefsDefaults.NAV_WIDGET_SIZE
+                        keepScreenOn = PrefsDefaults.KEEP_SCREEN_ON
                         prefs.edit()
                             .putString("map_style", systemDefault.name)
                             .putString("weather_mode", PrefsDefaults.WEATHER_MODE)
@@ -966,8 +1129,13 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
                             .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
                             .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)
+                            .putFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE)
+                            .putBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
                             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
+                            .remove("poi_lat").remove("poi_lon").remove("poi_name")
                             .apply()
+                        poiPosition = null
+                        poiName = null
                         scope.launch {
                             cameraState.animateTo(
                                 cameraState.position.copy(zoom = PrefsDefaults.ZOOM_LEVEL.toDouble())
@@ -981,6 +1149,252 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                 },
                 dismissButton = {
                     TextButton(onClick = { showResetConfirm = false }) {
+                        Text("Cancel")
+                    }
+                },
+            )
+        }
+
+        if (showPoiSearch) {
+            var searchQuery by remember { mutableStateOf("") }
+            var searchResults by remember { mutableStateOf<List<SearchResult>>(emptyList()) }
+            var searchByCategory by remember { mutableStateOf(false) }
+            var isSearching by remember { mutableStateOf(false) }
+            var selectedCategory by remember { mutableStateOf<PoiCategory?>(null) }
+            val filteredCategories = remember(searchQuery) {
+                if (searchQuery.isBlank()) POI_CATEGORIES
+                else POI_CATEGORIES.filter { it.label.contains(searchQuery, ignoreCase = true) }
+            }
+
+            LaunchedEffect(selectedCategory) {
+                val cat = selectedCategory ?: return@LaunchedEffect
+                isSearching = true
+                try {
+                    val camPos = cameraState.position
+                    val lat = camPos.target.latitude
+                    val lon = camPos.target.longitude
+                    val latDelta = 360.0 / Math.pow(2.0, camPos.zoom) * 0.5
+                    val lonDelta = latDelta / Math.cos(Math.toRadians(lat))
+                    val url = buildString {
+                        append("https://nominatim.openstreetmap.org/search?format=jsonv2")
+                        append("&amenity=")
+                        append(URLEncoder.encode(cat.query, "UTF-8"))
+                        append("&limit=20&addressdetails=1")
+                        append("&viewbox=${lon - lonDelta},${lat + latDelta},${lon + lonDelta},${lat - latDelta}")
+                        append("&bounded=1")
+                    }
+                    val jsonStr = withContext(Dispatchers.IO) {
+                        val conn = URL(url).openConnection()
+                        conn.setRequestProperty("User-Agent", "RoadTripRadar/1.0")
+                        conn.getInputStream().bufferedReader().readText()
+                    }
+                    val results = Json.parseToJsonElement(jsonStr).jsonArray
+                    searchResults = results.mapNotNull { element ->
+                        val obj = element.jsonObject
+                        val lat = obj["lat"]?.jsonPrimitive?.content?.toDoubleOrNull() ?: return@mapNotNull null
+                        val lon = obj["lon"]?.jsonPrimitive?.content?.toDoubleOrNull() ?: return@mapNotNull null
+                        val displayName = obj["display_name"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                        val name = obj["name"]?.jsonPrimitive?.content?.ifEmpty { null }
+                            ?: displayName.substringBefore(",")
+                        val subtitle = displayName.substringAfter(",").trim()
+                        val pos = Position(longitude = lon, latitude = lat)
+                        val dist = userPosition?.let { distance(Point(it), Point(pos)) }
+                        SearchResult(name = name, subtitle = subtitle, position = pos, distance = dist)
+                    }.let { list ->
+                        if (userPosition != null) list.sortedBy { it.distance?.inMeters ?: Double.MAX_VALUE }
+                        else list
+                    }
+                } catch (_: Exception) {
+                    searchResults = emptyList()
+                }
+                isSearching = false
+            }
+
+            LaunchedEffect(searchQuery, searchByCategory) {
+                if (searchByCategory) return@LaunchedEffect
+                if (searchQuery.length < 2) {
+                    searchResults = emptyList()
+                    return@LaunchedEffect
+                }
+                isSearching = true
+                delay(300L)
+                try {
+                    val camPos = cameraState.position
+                    val lat = camPos.target.latitude
+                    val lon = camPos.target.longitude
+                    val latD = 360.0 / Math.pow(2.0, camPos.zoom) * 0.5
+                    val lonD = latD / Math.cos(Math.toRadians(lat))
+                    val url = buildString {
+                        append("https://photon.komoot.io/api/?q=")
+                        append(URLEncoder.encode(searchQuery, "UTF-8"))
+                        append("&limit=10")
+                        append("&lat=$lat&lon=$lon")
+                        append("&bbox=${lon - lonD},${lat - latD},${lon + lonD},${lat + latD}")
+                    }
+                    val jsonStr = withContext(Dispatchers.IO) { URL(url).readText() }
+                    val json = Json.parseToJsonElement(jsonStr).jsonObject
+                    val features = json["features"]?.jsonArray ?: emptyList()
+                    searchResults = features.mapNotNull { element ->
+                        val obj = element.jsonObject
+                        val coords = obj["geometry"]?.jsonObject
+                            ?.get("coordinates")?.jsonArray ?: return@mapNotNull null
+                        val lon = coords[0].jsonPrimitive.content.toDoubleOrNull() ?: return@mapNotNull null
+                        val lat = coords[1].jsonPrimitive.content.toDoubleOrNull() ?: return@mapNotNull null
+                        val props = obj["properties"]?.jsonObject ?: return@mapNotNull null
+                        val name = props["name"]?.jsonPrimitive?.content ?: return@mapNotNull null
+                        val streetParts = listOfNotNull(
+                            props["housenumber"]?.jsonPrimitive?.content,
+                            props["street"]?.jsonPrimitive?.content,
+                        )
+                        val street = streetParts.joinToString(" ").ifEmpty { null }
+                        val parts = listOfNotNull(
+                            street,
+                            props["city"]?.jsonPrimitive?.content,
+                            props["state"]?.jsonPrimitive?.content,
+                            props["country"]?.jsonPrimitive?.content,
+                        )
+                        val pos = Position(longitude = lon, latitude = lat)
+                        val dist = userPosition?.let { distance(Point(it), Point(pos)) }
+                        SearchResult(name = name, subtitle = parts.joinToString(", "), position = pos, distance = dist)
+                    }
+                } catch (_: Exception) {
+                    searchResults = emptyList()
+                }
+                isSearching = false
+            }
+
+            AlertDialog(
+                onDismissRequest = { showPoiSearch = false },
+                title = { Text("Search Location") },
+                text = {
+                    Column {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                if (searchByCategory) "Category" else "Name",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Switch(
+                                checked = searchByCategory,
+                                onCheckedChange = {
+                                    searchByCategory = it
+                                    searchResults = emptyList()
+                                    selectedCategory = null
+                                    searchQuery = ""
+                                },
+                            )
+                        }
+                        Text(
+                            "Searching within the visible map area",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = {
+                                searchQuery = it
+                                if (searchByCategory) {
+                                    selectedCategory = null
+                                    searchResults = emptyList()
+                                }
+                            },
+                            label = { Text(if (searchByCategory) "Filter categories" else "Address or place name") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (isSearching) {
+                            Text(
+                                "Searching...",
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        if (searchByCategory && selectedCategory == null) {
+                            LazyColumn {
+                                items(filteredCategories) { cat ->
+                                    Text(
+                                        text = cat.label,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { selectedCategory = cat }
+                                            .padding(vertical = 10.dp),
+                                    )
+                                }
+                            }
+                        } else {
+                            if (searchByCategory && selectedCategory != null) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = selectedCategory!!.label,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                    TextButton(onClick = {
+                                        selectedCategory = null
+                                        searchResults = emptyList()
+                                    }) {
+                                        Text("Change")
+                                    }
+                                }
+                            }
+                            LazyColumn {
+                                items(searchResults) { result ->
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                poiPosition = result.position
+                                                poiName = result.name
+                                                showPoiSearch = false
+                                            }
+                                            .padding(vertical = 8.dp),
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.Top,
+                                        ) {
+                                            Text(
+                                                text = result.name,
+                                                fontSize = 16.sp,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                            if (result.distance != null) {
+                                                Text(
+                                                    text = formatDistanceLabel(result.distance, useMetric),
+                                                    fontSize = 13.sp,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.padding(start = 8.dp),
+                                                )
+                                            }
+                                        }
+                                        if (result.subtitle.isNotEmpty()) {
+                                            Text(
+                                                text = result.subtitle,
+                                                fontSize = 13.sp,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(onClick = { showPoiSearch = false }) {
                         Text("Cancel")
                     }
                 },
