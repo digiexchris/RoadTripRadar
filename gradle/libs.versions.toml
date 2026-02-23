@@ -9,9 +9,11 @@ activityCompose = "1.8.0"
 kotlin = "2.0.21"
 composeBom = "2025.07.00"
 maplibreCompose = "0.12.1"
+spatialKTurf = "0.6.0"
 
 [libraries]
 maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
+spatialk-turf = { module = "org.maplibre.spatialk:turf-jvm", version.ref = "spatialKTurf" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
