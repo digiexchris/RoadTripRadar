@@ -1,0 +1,164 @@
+package ca.voiditswarranty.roadtripradar.model
+
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import org.maplibre.spatialk.geojson.Feature
+import org.maplibre.spatialk.geojson.FeatureCollection
+import org.maplibre.spatialk.geojson.LineString
+import org.maplibre.spatialk.geojson.Point
+import org.maplibre.spatialk.geojson.Position
+import org.maplibre.spatialk.turf.transformation.circle
+import org.maplibre.spatialk.units.Length
+import org.maplibre.spatialk.units.extensions.inKilometers
+import org.maplibre.spatialk.units.extensions.inMeters
+import org.maplibre.spatialk.units.extensions.inMiles
+import org.maplibre.spatialk.units.extensions.kilometers
+import org.maplibre.spatialk.units.extensions.meters
+
+enum class MapStyle {
+    LIBERTY, DARK, LIBERTY_DARK;
+
+    val isDark get() = this != LIBERTY
+
+    val styleUri get() = when (this) {
+        LIBERTY -> "https://tiles.openfreemap.org/styles/liberty"
+        DARK -> "https://tiles.openfreemap.org/styles/dark"
+        LIBERTY_DARK -> "asset://liberty_dark.json"
+    }
+
+    val displayName get() = when (this) {
+        LIBERTY -> "Liberty"
+        DARK -> "Dark"
+        LIBERTY_DARK -> "Color Dark"
+    }
+}
+
+enum class WeatherMode { OFF, ON }
+
+data class SearchResult(
+    val name: String,
+    val subtitle: String,
+    val position: Position,
+    val distance: Length? = null,
+)
+
+data class PoiCategory(val label: String, val query: String)
+
+val POI_CATEGORIES = listOf(
+    PoiCategory("Gas Station", "fuel"),
+    PoiCategory("EV Charging", "charging_station"),
+    PoiCategory("Restaurant", "restaurant"),
+    PoiCategory("Fast Food", "fast_food"),
+    PoiCategory("Cafe / Coffee", "cafe"),
+    PoiCategory("Bar / Pub", "pub"),
+    PoiCategory("Supermarket", "supermarket"),
+    PoiCategory("Convenience Store", "convenience"),
+    PoiCategory("Pharmacy", "pharmacy"),
+    PoiCategory("Hospital", "hospital"),
+    PoiCategory("Hotel", "hotel"),
+    PoiCategory("Motel", "motel"),
+    PoiCategory("Campsite", "camp_site"),
+    PoiCategory("Parking", "parking"),
+    PoiCategory("Rest Area", "rest_area"),
+    PoiCategory("ATM", "atm"),
+    PoiCategory("Bank", "bank"),
+    PoiCategory("Post Office", "post_office"),
+    PoiCategory("Car Repair", "car_repair"),
+    PoiCategory("Car Wash", "car_wash"),
+    PoiCategory("Laundry", "laundry"),
+    PoiCategory("Toilets", "toilets"),
+    PoiCategory("Police", "police"),
+    PoiCategory("Fire Station", "fire_station"),
+    PoiCategory("Library", "library"),
+    PoiCategory("Park", "park"),
+    PoiCategory("Viewpoint", "viewpoint"),
+    PoiCategory("Museum", "museum"),
+    PoiCategory("Tourist Info", "information"),
+)
+
+object PrefsDefaults {
+    const val ZOOM_LEVEL = 9.0f
+    const val RADAR_OPACITY = 0.6f
+    const val USE_METRIC = true
+    const val WEATHER_PLAYING = false
+    const val WEATHER_MODE = "ON"
+    const val SPEED_SIZE = 48f
+    const val NAV_WIDGET_SIZE = 48f
+    const val KEEP_SCREEN_ON = true
+    const val PREFS_VERSION = 1
+}
+
+data class RadarRingsData(
+    val ringsFeatures: FeatureCollection<LineString, JsonObject>,
+    val labelsFeatures: FeatureCollection<Point, JsonObject>,
+)
+
+fun ringDistancesForZoom(zoom: Double): List<Length> = when {
+    zoom >= 16 -> listOf(250.meters, 500.meters, 1.kilometers, 2.kilometers)
+    zoom >= 14 -> listOf(500.meters, 1.kilometers, 2.kilometers, 5.kilometers)
+    zoom >= 12 -> listOf(1.kilometers, 2.kilometers, 5.kilometers, 10.kilometers)
+    zoom >= 10 -> listOf(2.kilometers, 5.kilometers, 10.kilometers, 25.kilometers)
+    zoom >= 8 -> listOf(10.kilometers, 25.kilometers, 50.kilometers)
+    zoom >= 6 -> listOf(25.kilometers, 50.kilometers, 100.kilometers, 200.kilometers)
+    zoom >= 4 -> listOf(100.kilometers, 250.kilometers, 500.kilometers, 1000.kilometers)
+    else -> listOf(200.kilometers, 500.kilometers, 1000.kilometers)
+}
+
+fun formatDistanceLabel(distance: Length, useMetric: Boolean): String {
+    return if (useMetric) {
+        val km = distance.inKilometers
+        if (km < 1.0) "${distance.inMeters.toInt()} m" else "${km.cleanString()} km"
+    } else {
+        "${distance.inMiles.cleanString()} mi"
+    }
+}
+
+fun Double.cleanString(): String =
+    if (this % 1.0 == 0.0) toInt().toString() else String.format("%.1f", this)
+
+fun buildRadarRingsData(
+    center: Position,
+    distances: List<Length>,
+    bearing: Double,
+    useMetric: Boolean,
+): RadarRingsData {
+    val ringFeatures = mutableListOf<Feature<LineString, JsonObject>>()
+    val labelFeatures = mutableListOf<Feature<Point, JsonObject>>()
+
+    for (distance in distances) {
+        val polygon = circle(center, distance, steps = 72)
+        val exteriorRing = polygon.coordinates[0]
+
+        ringFeatures.add(Feature(
+            geometry = LineString(exteriorRing),
+            properties = buildJsonObject {
+                put("distance", distance.inMeters)
+            }
+        ))
+
+        val targetBearingRad = Math.toRadians(bearing)
+        val cosLat = Math.cos(Math.toRadians(center.latitude))
+        val labelPoint = exteriorRing.minBy { pos ->
+            val pointBearingRad = Math.atan2(
+                (pos.longitude - center.longitude) * cosLat,
+                pos.latitude - center.latitude
+            )
+            Math.abs(Math.atan2(
+                Math.sin(pointBearingRad - targetBearingRad),
+                Math.cos(pointBearingRad - targetBearingRad),
+            ))
+        }
+        labelFeatures.add(Feature(
+            geometry = Point(labelPoint),
+            properties = buildJsonObject {
+                put("label", formatDistanceLabel(distance, useMetric))
+            }
+        ))
+    }
+
+    return RadarRingsData(
+        ringsFeatures = FeatureCollection(ringFeatures),
+        labelsFeatures = FeatureCollection(labelFeatures),
+    )
+}
