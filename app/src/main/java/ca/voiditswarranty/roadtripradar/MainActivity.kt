@@ -3,59 +3,88 @@ package ca.voiditswarranty.roadtripradar
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import ca.voiditswarranty.roadtripradar.ui.theme.RoadTripRadarTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.put
 import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
-import org.maplibre.compose.location.LocationPuck
-import org.maplibre.compose.location.LocationPuckSizes
-import org.maplibre.compose.location.LocationTrackingEffect
-import org.maplibre.compose.location.rememberDefaultLocationProvider
-import org.maplibre.compose.location.rememberNullLocationProvider
-import org.maplibre.compose.location.rememberUserLocationState
 import org.maplibre.compose.expressions.dsl.asString
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.feature
@@ -64,11 +93,19 @@ import org.maplibre.compose.expressions.dsl.span
 import org.maplibre.compose.expressions.value.TextRotationAlignment
 import org.maplibre.compose.layers.Anchor
 import org.maplibre.compose.layers.LineLayer
+import org.maplibre.compose.layers.RasterLayer
 import org.maplibre.compose.layers.SymbolLayer
-import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.location.LocationPuck
+import org.maplibre.compose.location.LocationPuckSizes
+import org.maplibre.compose.location.LocationTrackingEffect
+import org.maplibre.compose.location.rememberDefaultLocationProvider
+import org.maplibre.compose.location.rememberNullLocationProvider
+import org.maplibre.compose.location.rememberUserLocationState
 import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.RasterSource
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.spatialk.geojson.Feature
@@ -83,34 +120,6 @@ import org.maplibre.spatialk.units.extensions.inMeters
 import org.maplibre.spatialk.units.extensions.inMiles
 import org.maplibre.spatialk.units.extensions.kilometers
 import org.maplibre.spatialk.units.extensions.meters
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.material.icons.filled.Cloud
-import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.Opacity
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import org.maplibre.compose.layers.RasterLayer
-import org.maplibre.compose.sources.RasterSource
 import java.net.URL
 
 class MainActivity : ComponentActivity() {
@@ -138,20 +147,38 @@ private enum class MapStyle {
         LIBERTY_DARK -> "asset://liberty_dark.json"
     }
 
-    fun next() = when (this) {
-        LIBERTY -> DARK
-        DARK -> LIBERTY_DARK
-        LIBERTY_DARK -> LIBERTY
+    val displayName get() = when (this) {
+        LIBERTY -> "Liberty"
+        DARK -> "Dark"
+        LIBERTY_DARK -> "Color Dark"
     }
 }
 
-private enum class WeatherMode {
-    OFF, PAUSED, PLAY;
+private enum class WeatherMode { OFF, ON }
 
-    fun next() = when (this) {
-        OFF -> PAUSED
-        PAUSED -> PLAY
-        PLAY -> OFF
+private object PrefsDefaults {
+    const val ZOOM_LEVEL = 9.0f
+    const val RADAR_OPACITY = 0.6f
+    const val USE_METRIC = true
+    const val WEATHER_PLAYING = false
+    const val WEATHER_MODE = "ON"
+    const val PREFS_VERSION = 1
+}
+
+private fun migratePrefs(prefs: SharedPreferences) {
+    val version = prefs.getInt("prefs_version", 0)
+    if (version < 1) {
+        when (prefs.getString("weather_mode", null)) {
+            "PAUSED" -> prefs.edit()
+                .putString("weather_mode", "ON")
+                .putBoolean("weather_playing", false)
+                .apply()
+            "PLAY" -> prefs.edit()
+                .putString("weather_mode", "ON")
+                .putBoolean("weather_playing", true)
+                .apply()
+        }
+        prefs.edit().putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
     }
 }
 
@@ -159,18 +186,24 @@ private enum class WeatherMode {
 fun RoadTripRadarApp() {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE) }
+
+    remember { migratePrefs(prefs); true }
+
     val systemDefault = if (isSystemInDarkTheme()) MapStyle.LIBERTY_DARK else MapStyle.LIBERTY
     var mapStyle by remember {
         val saved = prefs.getString("map_style", null)
-        mutableStateOf(saved?.let { MapStyle.valueOf(it) } ?: systemDefault)
+        mutableStateOf(
+            try { saved?.let { MapStyle.valueOf(it) } ?: systemDefault }
+            catch (_: IllegalArgumentException) { systemDefault }
+        )
     }
 
     RoadTripRadarTheme(darkTheme = mapStyle.isDark) {
         MapScreen(
             mapStyle = mapStyle,
-            onCycleStyle = {
-                mapStyle = mapStyle.next()
-                prefs.edit().putString("map_style", mapStyle.name).apply()
+            onStyleChange = { newStyle ->
+                mapStyle = newStyle
+                prefs.edit().putString("map_style", newStyle.name).apply()
             },
         )
     }
@@ -187,12 +220,13 @@ private fun ringDistancesForZoom(zoom: Double): List<Length> = when {
     else -> listOf(200.kilometers, 500.kilometers, 1000.kilometers)
 }
 
-private fun formatDistanceLabel(distance: Length): String {
-    val km = distance.inKilometers
-    val mi = distance.inMiles
-    val kmPart = if (km < 1.0) "${distance.inMeters.toInt()} m" else "${km.cleanString()} km"
-    val miPart = "${mi.cleanString()} mi"
-    return "$kmPart / $miPart"
+private fun formatDistanceLabel(distance: Length, useMetric: Boolean): String {
+    return if (useMetric) {
+        val km = distance.inKilometers
+        if (km < 1.0) "${distance.inMeters.toInt()} m" else "${km.cleanString()} km"
+    } else {
+        "${distance.inMiles.cleanString()} mi"
+    }
 }
 
 private fun Double.cleanString(): String =
@@ -203,7 +237,12 @@ private data class RadarRingsData(
     val labelsFeatures: FeatureCollection<Point, JsonObject>,
 )
 
-private fun buildRadarRingsData(center: Position, distances: List<Length>, bearing: Double): RadarRingsData {
+private fun buildRadarRingsData(
+    center: Position,
+    distances: List<Length>,
+    bearing: Double,
+    useMetric: Boolean,
+): RadarRingsData {
     val ringFeatures = mutableListOf<Feature<LineString, JsonObject>>()
     val labelFeatures = mutableListOf<Feature<Point, JsonObject>>()
 
@@ -233,7 +272,7 @@ private fun buildRadarRingsData(center: Position, distances: List<Length>, beari
         labelFeatures.add(Feature(
             geometry = Point(labelPoint),
             properties = buildJsonObject {
-                put("label", formatDistanceLabel(distance))
+                put("label", formatDistanceLabel(distance, useMetric))
             }
         ))
     }
@@ -244,10 +283,12 @@ private fun buildRadarRingsData(center: Position, distances: List<Length>, beari
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("MissingPermission")
 @Composable
-private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
+private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
     val context = LocalContext.current
+    val systemIsDark = isSystemInDarkTheme()
 
     var hasLocationPermission by remember {
         mutableStateOf(
@@ -287,7 +328,7 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
     val scope = rememberCoroutineScope()
 
     val prefs = remember { context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE) }
-    val savedZoom = remember { prefs.getFloat("zoom_level", 14.0f).toDouble() }
+    val savedZoom = remember { prefs.getFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL).toDouble() }
 
     var weatherMode by remember {
         val saved = prefs.getString("weather_mode", null)
@@ -296,13 +337,21 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
             catch (_: IllegalArgumentException) { WeatherMode.OFF }
         )
     }
+    var isWeatherPlaying by remember {
+        mutableStateOf(prefs.getBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING))
+    }
     var radarFramePaths by remember { mutableStateOf(emptyList<String>()) }
     var radarFrameTimes by remember { mutableStateOf(emptyList<Long>()) }
     var lastGenerated by remember { mutableStateOf(0L) }
     var currentFrameIndex by remember { mutableStateOf(0) }
     var radarOpacity by remember {
-        mutableStateOf(prefs.getFloat("radar_opacity", 0.5f))
+        mutableStateOf(prefs.getFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY))
     }
+    var useMetric by remember {
+        mutableStateOf(prefs.getBoolean("use_metric", PrefsDefaults.USE_METRIC))
+    }
+    var showSettings by remember { mutableStateOf(false) }
+    var showResetConfirm by remember { mutableStateOf(false) }
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Box(modifier = Modifier.fillMaxSize()) {
@@ -337,7 +386,7 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
             cameraState.updateFromLocation()
         }
 
-        val weatherActive = weatherMode != WeatherMode.OFF
+        val weatherActive = weatherMode == WeatherMode.ON
         LaunchedEffect(weatherActive) {
             if (!weatherActive) return@LaunchedEffect
             while (true) {
@@ -364,8 +413,8 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
             }
         }
 
-        LaunchedEffect(weatherMode) {
-            if (weatherMode != WeatherMode.PLAY) return@LaunchedEffect
+        LaunchedEffect(weatherActive, isWeatherPlaying) {
+            if (!weatherActive || !isWeatherPlaying) return@LaunchedEffect
             while (true) {
                 delay(500)
                 if (radarFramePaths.isNotEmpty()) {
@@ -391,9 +440,9 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
 
         val userPosition = locationState.location?.position
         val bearing = cameraState.position.bearing
-        val radarData = remember(userPosition?.latitude, userPosition?.longitude, zoomTier, bearing) {
+        val radarData = remember(userPosition?.latitude, userPosition?.longitude, zoomTier, bearing, useMetric) {
             val center = userPosition ?: return@remember null
-            buildRadarRingsData(center, ringDistancesForZoom(cameraState.position.zoom), bearing)
+            buildRadarRingsData(center, ringDistancesForZoom(cameraState.position.zoom), bearing, useMetric)
         }
 
         MaplibreMap(
@@ -479,13 +528,14 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
 
         val fabBorder = Modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
 
+        // Bottom-left: timeline, play/pause, gear
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (weatherMode == WeatherMode.PLAY && radarFramePaths.isNotEmpty()) {
+            if (weatherActive && isWeatherPlaying && radarFramePaths.isNotEmpty()) {
                 val frameCount = radarFramePaths.size
                 Column(
                     modifier = Modifier
@@ -530,67 +580,40 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
                 }
             }
 
-            if (weatherMode != WeatherMode.OFF) {
+            if (weatherActive) {
                 LargeFloatingActionButton(
                     onClick = {
-                        val levels = listOf(0.3f, 0.5f, 0.7f, 0.9f)
-                        val nextIndex = (levels.indexOf(radarOpacity).coerceAtLeast(0) + 1) % levels.size
-                        radarOpacity = levels[nextIndex]
-                        prefs.edit().putFloat("radar_opacity", radarOpacity).apply()
+                        isWeatherPlaying = !isWeatherPlaying
+                        prefs.edit().putBoolean("weather_playing", isWeatherPlaying).apply()
+                        if (!isWeatherPlaying) {
+                            currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
+                        }
                     },
                     modifier = fabBorder,
                     shape = CircleShape,
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Opacity,
-                        contentDescription = "Cycle radar opacity",
+                        imageVector = if (isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                        contentDescription = "Toggle weather animation",
                     )
                 }
             }
 
             LargeFloatingActionButton(
-                onClick = {
-                    weatherMode = weatherMode.next()
-                    if (weatherMode == WeatherMode.PAUSED) {
-                        currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
-                    }
-                    prefs.edit().putString("weather_mode", weatherMode.name).apply()
-                },
+                onClick = { showSettings = true },
                 modifier = fabBorder,
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Icon(
-                    imageVector = when (weatherMode) {
-                        WeatherMode.OFF -> Icons.Default.CloudOff
-                        WeatherMode.PAUSED -> Icons.Default.Cloud
-                        WeatherMode.PLAY -> Icons.Default.PlayArrow
-                    },
-                    contentDescription = "Cycle weather radar",
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Settings",
                 )
             }
         }
 
-        LargeFloatingActionButton(
-            onClick = onCycleStyle,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(16.dp)
-                .then(fabBorder),
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ) {
-            Icon(
-                imageVector = when (mapStyle) {
-                    MapStyle.LIBERTY -> Icons.Default.DarkMode
-                    MapStyle.DARK -> Icons.Default.Palette
-                    MapStyle.LIBERTY_DARK -> Icons.Default.LightMode
-                },
-                contentDescription = "Cycle map style",
-            )
-        }
-
+        // Bottom-right: recenter, zoom in, zoom out
         Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -646,6 +669,154 @@ private fun MapScreen(mapStyle: MapStyle, onCycleStyle: () -> Unit) {
                     contentDescription = "Zoom out",
                 )
             }
+        }
+
+        // Settings bottom sheet
+        if (showSettings) {
+            ModalBottomSheet(onDismissRequest = { showSettings = false }) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    // Map Style
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Map Style", style = MaterialTheme.typography.titleSmall)
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            MapStyle.entries.forEachIndexed { index, style ->
+                                SegmentedButton(
+                                    selected = mapStyle == style,
+                                    onClick = { onStyleChange(style) },
+                                    shape = SegmentedButtonDefaults.itemShape(index, MapStyle.entries.size),
+                                ) {
+                                    Text(style.displayName)
+                                }
+                            }
+                        }
+                    }
+
+                    // Weather Radar
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Weather Radar", style = MaterialTheme.typography.titleSmall)
+                        Switch(
+                            checked = weatherActive,
+                            onCheckedChange = { on ->
+                                weatherMode = if (on) WeatherMode.ON else WeatherMode.OFF
+                                prefs.edit().putString("weather_mode", weatherMode.name).apply()
+                                if (on) {
+                                    currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
+                                }
+                            },
+                        )
+                    }
+
+                    // Radar Opacity (visible when weather is on)
+                    if (weatherActive) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Text("Radar Opacity", style = MaterialTheme.typography.titleSmall)
+                                Text(
+                                    "${(radarOpacity * 100).toInt()}%",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
+                            Slider(
+                                value = radarOpacity,
+                                onValueChange = { radarOpacity = it },
+                                onValueChangeFinished = {
+                                    prefs.edit().putFloat("radar_opacity", radarOpacity).apply()
+                                },
+                                valueRange = 0.1f..1.0f,
+                            )
+                        }
+                    }
+
+                    // Units
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Units", style = MaterialTheme.typography.titleSmall)
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            SegmentedButton(
+                                selected = useMetric,
+                                onClick = {
+                                    useMetric = true
+                                    prefs.edit().putBoolean("use_metric", true).apply()
+                                },
+                                shape = SegmentedButtonDefaults.itemShape(0, 2),
+                            ) {
+                                Text("Metric")
+                            }
+                            SegmentedButton(
+                                selected = !useMetric,
+                                onClick = {
+                                    useMetric = false
+                                    prefs.edit().putBoolean("use_metric", false).apply()
+                                },
+                                shape = SegmentedButtonDefaults.itemShape(1, 2),
+                            ) {
+                                Text("Imperial")
+                            }
+                        }
+                    }
+
+                    // Reset to Defaults
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = { showResetConfirm = true },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Reset to Defaults")
+                    }
+                }
+            }
+        }
+
+        // Reset confirmation dialog
+        if (showResetConfirm) {
+            AlertDialog(
+                onDismissRequest = { showResetConfirm = false },
+                title = { Text("Reset to Defaults") },
+                text = { Text("All settings will be reset to their default values.") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val systemDefault = if (systemIsDark) MapStyle.LIBERTY_DARK else MapStyle.LIBERTY
+                        onStyleChange(systemDefault)
+                        weatherMode = WeatherMode.valueOf(PrefsDefaults.WEATHER_MODE)
+                        isWeatherPlaying = PrefsDefaults.WEATHER_PLAYING
+                        radarOpacity = PrefsDefaults.RADAR_OPACITY
+                        useMetric = PrefsDefaults.USE_METRIC
+                        prefs.edit()
+                            .putString("map_style", systemDefault.name)
+                            .putString("weather_mode", PrefsDefaults.WEATHER_MODE)
+                            .putBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING)
+                            .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
+                            .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
+                            .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
+                            .apply()
+                        scope.launch {
+                            cameraState.animateTo(
+                                cameraState.position.copy(zoom = PrefsDefaults.ZOOM_LEVEL.toDouble())
+                            )
+                        }
+                        showResetConfirm = false
+                        showSettings = false
+                    }) {
+                        Text("Reset")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showResetConfirm = false }) {
+                        Text("Cancel")
+                    }
+                },
+            )
         }
     }
 }
