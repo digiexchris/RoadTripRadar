@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">RoadTripRadar</string>
-    <string name="title_activity_main">RoadTripRadar</string>
-    <string name="package_name">ca.voiditswarranty.roadtripradar</string>
-    <string name="custom_url_scheme">ca.voiditswarranty.roadtripradar</string>
-</resources>
