@@ -162,6 +162,7 @@ private object PrefsDefaults {
     const val USE_METRIC = true
     const val WEATHER_PLAYING = false
     const val WEATHER_MODE = "ON"
+    const val SPEED_SIZE = 48f
     const val PREFS_VERSION = 1
 }
 
@@ -350,6 +351,9 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
     var useMetric by remember {
         mutableStateOf(prefs.getBoolean("use_metric", PrefsDefaults.USE_METRIC))
     }
+    var speedSize by remember {
+        mutableStateOf(prefs.getFloat("speed_size", PrefsDefaults.SPEED_SIZE))
+    }
     var showSettings by remember { mutableStateOf(false) }
     var showResetConfirm by remember { mutableStateOf(false) }
 
@@ -523,6 +527,38 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         sizes = LocationPuckSizes(bearingSize = 16.dp),
                     )
                 }
+            }
+        }
+
+        // Speed readout
+        if (locationState.location != null) {
+            val speedMps = locationState.location?.speed ?: 0.0
+            val displaySpeed = if (useMetric) (speedMps * 3.6).toInt() else (speedMps * 2.23694).toInt()
+            val unitLabel = if (useMetric) "km/h" else "mph"
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                        RoundedCornerShape(8.dp),
+                    )
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = displaySpeed.coerceAtLeast(0).toString(),
+                    fontSize = speedSize.sp,
+                    lineHeight = speedSize.sp,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = unitLabel,
+                    fontSize = (speedSize / 3).sp,
+                    lineHeight = (speedSize / 3).sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
         }
 
@@ -766,6 +802,19 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         }
                     }
 
+                    // Speed Size
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Speed Size", style = MaterialTheme.typography.titleSmall)
+                        Slider(
+                            value = speedSize,
+                            onValueChange = { speedSize = it },
+                            onValueChangeFinished = {
+                                prefs.edit().putFloat("speed_size", speedSize).apply()
+                            },
+                            valueRange = 24f..96f,
+                        )
+                    }
+
                     // Reset to Defaults
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(
@@ -792,12 +841,14 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         isWeatherPlaying = PrefsDefaults.WEATHER_PLAYING
                         radarOpacity = PrefsDefaults.RADAR_OPACITY
                         useMetric = PrefsDefaults.USE_METRIC
+                        speedSize = PrefsDefaults.SPEED_SIZE
                         prefs.edit()
                             .putString("map_style", systemDefault.name)
                             .putString("weather_mode", PrefsDefaults.WEATHER_MODE)
                             .putBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING)
                             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
                             .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
+                            .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)
                             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
                             .apply()
                         scope.launch {
