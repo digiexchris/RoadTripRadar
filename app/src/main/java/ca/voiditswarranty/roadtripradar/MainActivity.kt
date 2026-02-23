@@ -721,7 +721,7 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
             }
         }
 
-        // POI direction indicator + clear button
+        // POI direction indicator (top center)
         if (poiPosition != null && poiInfo != null) {
             val (poiDist, poiBearingDeg) = poiInfo
             val arrowRotation = (poiBearingDeg - bearing).toFloat()
@@ -731,60 +731,56 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
             val nameFontSize = (navWidgetSize * 0.25f).sp
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 60.dp, end = 16.dp),
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                        RoundedCornerShape(8.dp),
+                    )
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Column(
+                Icon(
+                    imageVector = Icons.Default.Navigation,
+                    contentDescription = "Direction to POI",
                     modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
-                            RoundedCornerShape(8.dp),
-                        )
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Navigation,
-                        contentDescription = "Direction to POI",
-                        modifier = Modifier
-                            .size(iconSize)
-                            .rotate(arrowRotation),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
+                        .size(iconSize)
+                        .rotate(arrowRotation),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = formatDistanceLabel(poiDist, useMetric),
+                    fontSize = distFontSize,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (showPoiName) {
                     Text(
-                        text = formatDistanceLabel(poiDist, useMetric),
-                        fontSize = distFontSize,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    if (showPoiName) {
-                        Text(
-                            text = poiName!!,
-                            fontSize = nameFontSize,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.widthIn(max = (navWidgetSize * 2.5f).dp),
-                        )
-                    }
-                }
-                FloatingActionButton(
-                    onClick = {
-                        poiPosition = null
-                        poiName = null
-                    },
-                    modifier = Modifier.border(
-                        1.dp, MaterialTheme.colorScheme.outline, CircleShape,
-                    ),
-                    shape = CircleShape,
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Clear POI",
+                        text = poiName!!,
+                        fontSize = nameFontSize,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.widthIn(max = (navWidgetSize * 2.5f).dp),
                     )
                 }
+            }
+        }
+
+        // Search / Clear POI button (top end)
+        if (poiPosition != null) {
+            FloatingActionButton(
+                onClick = {
+                    poiPosition = null
+                    poiName = null
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 60.dp, end = 16.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Clear POI")
             }
         } else {
             FloatingActionButton(
