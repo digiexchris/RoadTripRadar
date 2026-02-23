@@ -55,6 +55,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -111,6 +112,7 @@ import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.RasterSource
+import org.maplibre.compose.sources.TileSetOptions
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
@@ -495,25 +497,26 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                 )
             )
 
-            val radarSources = remember(radarFramePaths) {
-                radarFramePaths.mapIndexed { index, path ->
-                    RasterSource(
-                        id = "rainviewer-$index",
-                        tiles = listOf("https://tilecache.rainviewer.com$path/512/{z}/{x}/{y}/2/1_1.png"),
-                        tileSize = 512,
-                    )
-                }
-            }
-
             Anchor.Top {
-                if (weatherActive && radarSources.isNotEmpty()) {
-                    radarSources.forEachIndexed { index, source ->
-                        RasterLayer(
-                            id = "rainviewer-layer-$index",
-                            source = source,
-                            visible = index == currentFrameIndex,
-                            opacity = const(radarOpacity),
-                        )
+                if (weatherActive && radarFramePaths.isNotEmpty()) {
+                    radarFramePaths.forEachIndexed { index, path ->
+                        key(path) {
+                            val pathId = path.replace("/", "-")
+                            val source = remember {
+                                RasterSource(
+                                    id = "rv$pathId",
+                                    tiles = listOf("https://tilecache.rainviewer.com$path/512/{z}/{x}/{y}/2/1_1.png"),
+                                    options = TileSetOptions(maxZoom = 7),
+                                    tileSize = 512,
+                                )
+                            }
+                            RasterLayer(
+                                id = "rvl$pathId",
+                                source = source,
+                                visible = index == currentFrameIndex,
+                                opacity = const(radarOpacity),
+                            )
+                        }
                     }
                 }
                 val ringColor = if (mapStyle.isDark) Color.LightGray else Color.Black
