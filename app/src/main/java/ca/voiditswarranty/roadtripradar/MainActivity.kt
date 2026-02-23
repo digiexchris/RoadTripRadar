@@ -29,13 +29,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -59,6 +62,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -92,6 +96,7 @@ import org.maplibre.compose.expressions.dsl.format
 import org.maplibre.compose.expressions.dsl.span
 import org.maplibre.compose.expressions.value.TextRotationAlignment
 import org.maplibre.compose.layers.Anchor
+import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.LineLayer
 import org.maplibre.compose.layers.RasterLayer
 import org.maplibre.compose.layers.SymbolLayer
@@ -108,16 +113,21 @@ import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.RasterSource
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.ClickResult
 import org.maplibre.spatialk.geojson.Feature
 import org.maplibre.spatialk.geojson.FeatureCollection
 import org.maplibre.spatialk.geojson.LineString
 import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
+import org.maplibre.spatialk.turf.measurement.bearingTo
+import org.maplibre.spatialk.turf.measurement.distance
 import org.maplibre.spatialk.turf.transformation.circle
+import org.maplibre.spatialk.units.Bearing
 import org.maplibre.spatialk.units.Length
 import org.maplibre.spatialk.units.extensions.inKilometers
 import org.maplibre.spatialk.units.extensions.inMeters
 import org.maplibre.spatialk.units.extensions.inMiles
+import org.maplibre.spatialk.units.extensions.inDegrees
 import org.maplibre.spatialk.units.extensions.kilometers
 import org.maplibre.spatialk.units.extensions.meters
 import java.net.URL
@@ -356,6 +366,7 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
     }
     var showSettings by remember { mutableStateOf(false) }
     var showResetConfirm by remember { mutableStateOf(false) }
+    var poiPosition by remember { mutableStateOf<Position?>(null) }
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     Box(modifier = Modifier.fillMaxSize()) {
@@ -449,6 +460,15 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
             buildRadarRingsData(center, ringDistancesForZoom(cameraState.position.zoom), bearing, useMetric)
         }
 
+        val poiInfo = remember(userPosition?.latitude, userPosition?.longitude, poiPosition) {
+            val user = userPosition ?: return@remember null
+            val poi = poiPosition ?: return@remember null
+            val dist = distance(user, poi)
+            val poiBearing = user.bearingTo(poi)
+            val poiBearingDeg = (poiBearing - Bearing.North).inDegrees
+            Pair(dist, poiBearingDeg)
+        }
+
         MaplibreMap(
             baseStyle = BaseStyle.Uri(mapStyle.styleUri),
             cameraState = cameraState,
@@ -459,6 +479,10 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                     isCompassEnabled = true,
                 ),
             ),
+            onMapLongClick = { position, _ ->
+                poiPosition = position
+                ClickResult.Consume
+            },
         ) {
             val ringsSource = rememberGeoJsonSource(
                 data = GeoJsonData.Features(
@@ -527,6 +551,48 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                         sizes = LocationPuckSizes(bearingSize = 16.dp),
                     )
                 }
+
+                if (poiPosition != null) {
+                    val poiPointData = remember(poiPosition) {
+                        FeatureCollection(listOf(Feature(
+                            geometry = Point(poiPosition!!),
+                            properties = buildJsonObject {},
+                        )))
+                    }
+                    val poiSource = rememberGeoJsonSource(
+                        data = GeoJsonData.Features(poiPointData),
+                    )
+                    CircleLayer(
+                        id = "poi-marker",
+                        source = poiSource,
+                        radius = const(12.dp),
+                        color = const(Color.Red),
+                        strokeColor = const(Color.White),
+                        strokeWidth = const(2.dp),
+                    )
+
+                    if (userPosition != null) {
+                        val poiLineData = remember(
+                            userPosition.latitude, userPosition.longitude, poiPosition,
+                        ) {
+                            FeatureCollection(listOf(Feature(
+                                geometry = LineString(listOf(userPosition, poiPosition!!)),
+                                properties = buildJsonObject {},
+                            )))
+                        }
+                        val poiLineSource = rememberGeoJsonSource(
+                            data = GeoJsonData.Features(poiLineData),
+                        )
+                        LineLayer(
+                            id = "poi-line",
+                            source = poiLineSource,
+                            color = const(ringColor),
+                            width = const(2.dp),
+                            opacity = const(0.8f),
+                            dasharray = const(listOf(6, 4)),
+                        )
+                    }
+                }
             }
         }
 
@@ -559,6 +625,54 @@ private fun MapScreen(mapStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
                     lineHeight = (speedSize / 3).sp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+            }
+        }
+
+        // POI direction indicator + clear button
+        if (poiPosition != null && poiInfo != null) {
+            val (poiDist, poiBearingDeg) = poiInfo
+            val arrowRotation = (poiBearingDeg - bearing).toFloat()
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 60.dp, end = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                            RoundedCornerShape(8.dp),
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Navigation,
+                        contentDescription = "Direction to POI",
+                        modifier = Modifier.rotate(arrowRotation),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                    Text(
+                        text = formatDistanceLabel(poiDist, useMetric),
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+                FloatingActionButton(
+                    onClick = { poiPosition = null },
+                    modifier = Modifier.border(
+                        1.dp, MaterialTheme.colorScheme.outline, CircleShape,
+                    ),
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Clear POI",
+                    )
+                }
             }
         }
 
