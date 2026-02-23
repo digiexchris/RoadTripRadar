@@ -1,0 +1,24 @@
+Categories:
+  - Navigation
+License: MIT
+AuthorName: Chris Chatelain
+SourceCode: https://github.com/digiexchris/RoadTripRadar
+IssueTracker: https://github.com/digiexchris/RoadTripRadar/issues
+
+AutoName: RoadTripRadar
+
+RepoType: git
+Repo: https://github.com/digiexchris/RoadTripRadar.git
+
+Builds:
+  - versionName: 1.0
+    versionCode: 1
+    commit: v1.0
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 1.0
+CurrentVersionCode: 1
