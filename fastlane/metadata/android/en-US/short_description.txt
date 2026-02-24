@@ -1,1 +1,0 @@
-RoadTripRadar overlays live weather radar imagery on an interactive map, helping you see precipitation along your route at a glance.
