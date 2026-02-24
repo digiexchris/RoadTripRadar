@@ -1,0 +1,56 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version name (e.g. 1.2.0)'
+        required: true
+      changelog:
+        description: 'Changelog / release notes for this version'
+        required: true
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate versionCode
+        run: |
+          CURRENT=$(git tag --list 'v*' | wc -l)
+          CODE=$((CURRENT + 1))
+          echo "VERSION_CODE=$CODE" >> $GITHUB_ENV
+          echo "VERSION_NAME=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+
+      - name: Update build.gradle.kts
+        run: |
+          sed -i "s/versionCode = [0-9]*/versionCode = $VERSION_CODE/" app/build.gradle.kts
+          sed -i "s/versionName = \"[^\"]*\"/versionName = \"$VERSION_NAME\"/" app/build.gradle.kts
+
+      - name: Create Fastlane changelog
+        run: |
+          mkdir -p fastlane/metadata/android/en-US/changelogs
+          printf '%s\n' "${{ github.event.inputs.changelog }}" \
+            > "fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
+
+      - name: Commit and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle.kts fastlane/
+          git commit -m "Release v${VERSION_NAME}"
+          git tag "v${VERSION_NAME}"
+          git push origin ${{ github.ref_name }} --tags
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${VERSION_NAME}" \
+            --title "v${VERSION_NAME}" \
+            --notes "${{ github.event.inputs.changelog }}"
