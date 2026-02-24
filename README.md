@@ -2,7 +2,7 @@
 
 Weather radar display ahead of your current direction! Pretend you're an airplane with weather radar on board, and weave between those thunder heads! Intended mostly for motorcycle travel, but may be useful for you on any journey.
 
-![Road Trip Radar](doc/Portrait.png)
+![Road Trip Radar](doc/RoadTripRadar.png)
 
 [Latest Releases](https://github.com/digiexchris/RoadTripRadar/releases)
 
@@ -42,3 +42,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 - MapLibre & OpenFreeMap
 - RainViewer
+
