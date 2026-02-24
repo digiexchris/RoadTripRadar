@@ -45,7 +45,7 @@ jobs:
           git add app/build.gradle.kts fastlane/
           git commit -m "Release v${VERSION_NAME}"
           git tag "v${VERSION_NAME}"
-          git push origin main --tags
+          git push origin ${{ github.ref_name }} --tags
 
       - name: Create GitHub Release
         env:
