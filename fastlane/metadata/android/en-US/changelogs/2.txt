@@ -1,1 +1,5 @@
-Adjust app versioning to increment properly
+- Improved weather radar tile loading performance (preload all frames)
+- Compass button now toggles between north-up and previous heading
+- Default map style changed to Color Dark for new installs
+- Added Fastlane metadata for F-Droid
+- Removed foojay-resolver plugin for F-Droid compatibility

@@ -1,4 +1,4 @@
-name: Prepare Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ on:
         required: true
 
 jobs:
-  prepare:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -47,10 +47,33 @@ jobs:
           git tag "v${VERSION_NAME}"
           git push origin ${{ github.ref_name }} --tags
 
-      - name: Create GitHub Release
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Build signed APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+
+      - name: Rename APK
+        run: |
+          cd app/build/outputs/apk/release
+          mv *.apk "RoadTripRadar-v${VERSION_NAME}.apk"
+
+      - name: Create GitHub Release with APK
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "v${VERSION_NAME}" \
             --title "v${VERSION_NAME}" \
-            --notes "${{ github.event.inputs.changelog }}"
+            --notes "${{ github.event.inputs.changelog }}" \
+            app/build/outputs/apk/release/*.apk
