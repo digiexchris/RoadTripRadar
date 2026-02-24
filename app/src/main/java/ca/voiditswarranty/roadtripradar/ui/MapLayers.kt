@@ -51,8 +51,8 @@ fun WeatherRadarLayers(
             RasterLayer(
                 id = "rvl$pathId",
                 source = source,
-                visible = index == currentFrameIndex,
-                opacity = const(radarOpacity),
+                visible = true,
+                opacity = const(if (index == currentFrameIndex) radarOpacity else 0f),
             )
         }
     }

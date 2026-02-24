@@ -181,6 +181,9 @@ fun MapScreen(
         zoom = cameraState.position.zoom,
     )
 
+    // Track last non-zero bearing for compass toggle
+    var savedBearing by remember { mutableStateOf<Double?>(null) }
+
     // UI
     Box(modifier = Modifier.fillMaxSize()) {
         MaplibreMap(
@@ -272,7 +275,19 @@ fun MapScreen(
                 size = 56.dp,
                 contentPadding = PaddingValues(8.dp),
                 shape = CircleShape,
-                getHomePosition = { it.copy(bearing = 0.0, tilt = 0.0) },
+                getHomePosition = { current ->
+                    val isAtNorth = kotlin.math.abs(current.bearing) < 1.0
+                    if (isAtNorth && savedBearing != null) {
+                        // Already at north — restore previous bearing
+                        val restored = savedBearing!!
+                        savedBearing = null
+                        current.copy(bearing = restored, tilt = 0.0)
+                    } else {
+                        // Save current bearing and snap to north
+                        if (!isAtNorth) savedBearing = current.bearing
+                        current.copy(bearing = 0.0, tilt = 0.0)
+                    }
+                },
             )
             PoiSearchClearFab(
                 hasPoi = vm.poiPosition != null,

@@ -14,12 +14,14 @@ data class WeatherFrameData(
     val times: List<Long>,
 )
 
-class WeatherRepository {
+class WeatherRepository(
+    private val baseUrl: String = "https://api.rainviewer.com",
+) {
 
     suspend fun fetchFrames(lastGenerated: Long): WeatherFrameData? {
         return try {
             val jsonStr = withContext(Dispatchers.IO) {
-                URL("https://api.rainviewer.com/public/weather-maps.json").readText()
+                URL("$baseUrl/public/weather-maps.json").readText()
             }
             val json = Json.parseToJsonElement(jsonStr).jsonObject
             val generated = json["generated"]?.jsonPrimitive?.content?.toLongOrNull() ?: 0L

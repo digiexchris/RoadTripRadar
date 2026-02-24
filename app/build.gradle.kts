@@ -53,7 +53,6 @@ android {
         compose = true
         buildConfig = true
     }
-    compileSdk = 29
 
 }
 
@@ -73,6 +72,9 @@ dependencies {
     implementation(libs.maplibre.compose.material3)
     implementation(libs.spatialk.turf)
     testImplementation(libs.junit)
+    testImplementation(libs.okhttp)
+    testImplementation(libs.okhttp.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

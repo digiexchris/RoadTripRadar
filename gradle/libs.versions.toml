@@ -9,12 +9,17 @@ activityCompose = "1.12.4"
 kotlin = "2.0.21"
 composeBom = "2026.02.00"
 maplibreCompose = "0.12.1"
+okhttp = "4.12.0"
+coroutinesTest = "1.9.0"
 spatialKTurf = "0.6.1"
 
 [libraries]
 maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
 maplibre-compose-material3 = { module = "org.maplibre.compose:maplibre-compose-material3", version.ref = "maplibreCompose" }
 spatialk-turf = { module = "org.maplibre.spatialk:turf-jvm", version.ref = "spatialKTurf" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

@@ -37,9 +37,9 @@ class PreferencesRepository(context: Context) {
         get() {
             val saved = prefs.getString("map_style", null)
             return try {
-                saved?.let { MapStyle.valueOf(it) } ?: MapStyle.LIBERTY
+                saved?.let { MapStyle.valueOf(it) } ?: MapStyle.LIBERTY_DARK
             } catch (_: IllegalArgumentException) {
-                MapStyle.LIBERTY
+                MapStyle.LIBERTY_DARK
             }
         }
         set(value) = prefs.edit().putString("map_style", value.name).apply()
