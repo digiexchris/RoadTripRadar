@@ -53,6 +53,7 @@ android {
         compose = true
         buildConfig = true
     }
+    compileSdk = 29
 
 }
 
