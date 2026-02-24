@@ -9,6 +9,10 @@ on:
       changelog:
         description: 'Changelog / release notes for this version'
         required: true
+      prerelease:
+        description: 'Mark as pre-release (e.g. for RC builds)'
+        type: boolean
+        default: false
 
 jobs:
   release:
@@ -73,7 +77,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          PRERELEASE_FLAG=""
+          if [ "${{ github.event.inputs.prerelease }}" = "true" ]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
           gh release create "v${VERSION_NAME}" \
             --title "v${VERSION_NAME}" \
             --notes "${{ github.event.inputs.changelog }}" \
+            $PRERELEASE_FLAG \
             app/build/outputs/apk/release/*.apk
