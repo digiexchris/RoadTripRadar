@@ -11,14 +11,12 @@ android {
         }
     }
 
-    val envVersion = System.getenv("VERSION_NAME")
-
     defaultConfig {
         applicationId = "ca.voiditswarranty.roadtripradar"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = envVersion ?: "dev"
+        versionCode = 3
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
