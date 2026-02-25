@@ -41,6 +41,12 @@ android {
 
 }
 
+// Ensure reproducible APK builds (deterministic ZIP ordering and no timestamps)
+tasks.withType<Zip>().configureEach {
+    isReproducibleFileOrder = true
+    isPreserveFileTimestamps = false
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
