@@ -4,18 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version name (e.g. 1.2.0)'
+        description: "Version name (e.g. 1.2.0)"
         required: true
       changelog:
-        description: 'Changelog / release notes for this version (ignored for rebuild)'
+        description: "Changelog / release notes for this version (ignored for rebuild)"
         required: false
-        default: ''
+        default: ""
       prerelease:
-        description: 'Mark as pre-release (e.g. for RC builds)'
+        description: "Mark as pre-release (e.g. for RC builds)"
         type: boolean
         default: false
       rebuild_only:
-        description: 'Rebuild and re-sign only (skip version bump, reuse existing tag/release)'
+        description: "Rebuild and re-sign only (skip version bump, reuse existing tag/release)"
         type: boolean
         default: false
 
