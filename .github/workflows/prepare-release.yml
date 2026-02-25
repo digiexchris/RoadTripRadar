@@ -7,8 +7,9 @@ on:
         description: 'Version name (e.g. 1.2.0)'
         required: true
       changelog:
-        description: 'Changelog / release notes for this version'
-        required: true
+        description: 'Changelog / release notes for this version (ignored for rebuild)'
+        required: false
+        default: ''
       prerelease:
         description: 'Mark as pre-release (e.g. for RC builds)'
         type: boolean
@@ -27,6 +28,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Validate inputs
+        if: ${{ github.event.inputs.rebuild_only != 'true' && github.event.inputs.changelog == '' }}
+        run: |
+          echo "::error::Changelog is required for new releases"
+          exit 1
 
       - name: Calculate versionCode
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
