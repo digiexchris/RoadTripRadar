@@ -17,7 +17,7 @@ Do you wish you could see what weather was coming up ahead so you could decide t
 <img src="https://github.com/digiexchris/RoadTripRadar/blob/main/doc/RoadTripRadar.png?raw=true" width="320">
 
 ## Why is this free with no ads?
-Because money makes me feel weird, I hate haggling, and I just want to make cool things and put them on the internet. Besides, I've already paid what it cost to make this thing. I wanted it for myself, and it doesn't cost me anything to let you use it too.
+I just want to make cool things and put them on the internet. Besides, I wanted it for myself, and it doesn't cost me anything to let you use it too.
 
 However, if you do feel like supporting this project monetarily, feel free to buy me a coffee! [https://ko-fi.com/voiditswarranty](https://ko-fi.com/voiditswarranty)
 

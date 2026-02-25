@@ -1,4 +1,4 @@
-RoadTripRadar overlays live weather radar imagery on an interactive map, helping you see precipitation along your route at a glance.
+RoadTripRadar overlays live weather radar imagery on an interactive map, helping you see precipitation along your direction of travel at a glance.
 
 Features:
 - Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!

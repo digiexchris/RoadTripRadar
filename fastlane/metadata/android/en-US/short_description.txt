@@ -1,1 +1,1 @@
-Live weather radar imagery on an interactive map along your route at a glance.
+Live weather radar imagery ahead of you on an interactive map

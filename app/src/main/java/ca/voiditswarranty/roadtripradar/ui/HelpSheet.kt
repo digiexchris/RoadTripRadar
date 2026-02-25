@@ -50,6 +50,17 @@ fun HelpSheet(vm: MapViewModel) {
                 Text("Documentation")
             }
 
+            OutlinedButton(
+                onClick = {
+                    context.startActivity(
+                        Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/digiexchris/RoadTripRadar/wiki/Privacy-Policy"))
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Privacy Policy")
+            }
+
             Text(
                 text = "Version ${BuildConfig.VERSION_NAME}",
                 style = MaterialTheme.typography.bodySmall,
