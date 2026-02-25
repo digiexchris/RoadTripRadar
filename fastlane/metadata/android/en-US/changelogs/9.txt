@@ -1,0 +1,1 @@
+Remove signing config to build unsigned APKs for FDroid
