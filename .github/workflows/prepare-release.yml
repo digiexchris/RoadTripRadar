@@ -139,12 +139,15 @@ jobs:
             "$UNSIGNED_AAB" \
             "$KEY_ALIAS"
 
+      - name: Verify AAB signature
+        run: |
+          SIGNED_AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
+          jarsigner -verify -verbose -certs "$SIGNED_AAB"
+
       - name: Rename APK and AAB
         run: |
-          cd app/build/outputs/apk/release
-          mv *.apk "RoadTripRadar-v${VERSION_NAME}.apk"
-          cd ../../../bundle/release
-          mv *.aab "RoadTripRadar-v${VERSION_NAME}.aab"
+          mv app/build/outputs/apk/release/*.apk "app/build/outputs/apk/release/RoadTripRadar-v${VERSION_NAME}.apk"
+          mv app/build/outputs/bundle/release/*.aab "app/build/outputs/bundle/release/RoadTripRadar-v${VERSION_NAME}.aab"
 
       - name: Create or update GitHub Release with APK
         env:
