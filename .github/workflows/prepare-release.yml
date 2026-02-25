@@ -98,13 +98,16 @@ jobs:
           path: app/build/outputs/apk/release/*.apk
           retention-days: 90
 
+      - name: Install build-tools 34
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;34.0.0" || true
+
       - name: Sign APK with apksigner
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
+          APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
           UNSIGNED_APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
           "$APKSIGNER" sign \
             --ks keystore.jks \
@@ -115,7 +118,7 @@ jobs:
 
       - name: Verify APK signature
         run: |
-          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
+          APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
           SIGNED_APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
           "$APKSIGNER" verify --print-certs "$SIGNED_APK"
 

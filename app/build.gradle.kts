@@ -24,6 +24,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            vcsInfo.include = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -45,6 +46,13 @@ android {
 tasks.withType<Zip>().configureEach {
     isReproducibleFileOrder = true
     isPreserveFileTimestamps = false
+}
+
+// Disable baseline profile generation for reproducible builds
+tasks.whenTaskAdded {
+    if (name.contains("ArtProfile")) {
+        enabled = false
+    }
 }
 
 dependencies {
