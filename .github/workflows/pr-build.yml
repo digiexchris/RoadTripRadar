@@ -27,6 +27,12 @@ jobs:
           key_alias: ${{ secrets.KEY_ALIAS }}
           key_password: ${{ secrets.KEY_PASSWORD }}
 
+      - name: Rename artifacts for PR
+        run: |
+          PR_NUM=${{ github.event.pull_request.number }}
+          mv app/build/outputs/apk/release/*.apk "app/build/outputs/apk/release/RoadTripRadar-PR-${PR_NUM}.apk"
+          mv app/build/outputs/bundle/release/*.aab "app/build/outputs/bundle/release/RoadTripRadar-PR-${PR_NUM}.aab"
+
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
