@@ -1,1 +1,1 @@
-Testing version updater
+Fix CompassButton not locking map to north-is-up when the user moves
