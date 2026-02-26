@@ -57,6 +57,7 @@ class MapViewModel(
 
     // UI state
     var isTrackingCamera by mutableStateOf(true)
+    var isNorthUp by mutableStateOf(false)
     var showSettings by mutableStateOf(false)
         private set
     var showResetConfirm by mutableStateOf(false)

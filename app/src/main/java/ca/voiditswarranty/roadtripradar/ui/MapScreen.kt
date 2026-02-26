@@ -136,7 +136,7 @@ fun MapScreen(
     LocationTrackingEffect(
         locationState = locationState,
         enabled = vm.isTrackingCamera,
-        trackBearing = true,
+        trackBearing = !vm.isNorthUp,
     ) {
         cameraState.updateFromLocation()
     }
@@ -180,9 +180,6 @@ fun MapScreen(
         lon = cameraState.position.target.longitude,
         zoom = cameraState.position.zoom,
     )
-
-    // Track last non-zero bearing for compass toggle
-    var savedBearing by remember { mutableStateOf<Double?>(null) }
 
     // UI
     Box(modifier = Modifier.fillMaxSize()) {
@@ -276,16 +273,13 @@ fun MapScreen(
                 contentPadding = PaddingValues(8.dp),
                 shape = CircleShape,
                 getHomePosition = { current ->
-                    val isAtNorth = kotlin.math.abs(current.bearing) < 1.0
-                    if (isAtNorth && savedBearing != null) {
-                        // Already at north — restore previous bearing
-                        val restored = savedBearing!!
-                        savedBearing = null
-                        current.copy(bearing = restored, tilt = 0.0)
-                    } else {
-                        // Save current bearing and snap to north
-                        if (!isAtNorth) savedBearing = current.bearing
+                    vm.isNorthUp = !vm.isNorthUp
+                    if (vm.isNorthUp) {
+                        // Switch to north-up: snap bearing to 0
                         current.copy(bearing = 0.0, tilt = 0.0)
+                    } else {
+                        // Switch to bearing-up: GPS will provide bearing on next fix
+                        current.copy(tilt = 0.0)
                     }
                 },
             )
