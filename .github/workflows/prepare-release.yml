@@ -78,71 +78,13 @@ jobs:
         if: ${{ github.event.inputs.rebuild_only == 'true' }}
         run: git checkout "v${VERSION_NAME}"
 
-      - uses: actions/setup-java@v4
+      - name: Build and sign
+        uses: ./.github/actions/build-sign
         with:
-          distribution: temurin
-          java-version: 21
-
-      - uses: gradle/actions/setup-gradle@v4
-
-      - name: Decode keystore
-        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
-
-      - name: Build unsigned APK
-        run: ./gradlew assembleRelease --no-configuration-cache
-
-      - name: Build unsigned AAB
-        run: ./gradlew bundleRelease --no-configuration-cache
-
-      - name: Upload unsigned APK for reproducibility comparison
-        uses: actions/upload-artifact@v4
-        with:
-          name: unsigned-apk
-          path: app/build/outputs/apk/release/*.apk
-          retention-days: 90
-
-      - name: Install build-tools 34
-        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;34.0.0" || true
-
-      - name: Sign APK with apksigner
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
-          UNSIGNED_APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
-          "$APKSIGNER" sign \
-            --ks keystore.jks \
-            --ks-key-alias "$KEY_ALIAS" \
-            --ks-pass "pass:$KEYSTORE_PASSWORD" \
-            --key-pass "pass:$KEY_PASSWORD" \
-            "$UNSIGNED_APK"
-
-      - name: Verify APK signature
-        run: |
-          APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
-          SIGNED_APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
-          "$APKSIGNER" verify --print-certs "$SIGNED_APK"
-
-      - name: Sign AAB with jarsigner
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          UNSIGNED_AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
-            -keystore keystore.jks \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            "$UNSIGNED_AAB" \
-            "$KEY_ALIAS"
-
-      - name: Verify AAB signature
-        run: |
-          SIGNED_AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
-          jarsigner -verify -verbose -certs "$SIGNED_AAB"
+          keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
+          keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}
+          key_alias: ${{ secrets.KEY_ALIAS }}
+          key_password: ${{ secrets.KEY_PASSWORD }}
 
       - name: Rename APK and AAB
         run: |

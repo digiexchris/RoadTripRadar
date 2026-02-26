@@ -1,0 +1,110 @@
+name: Build and Sign
+description: Build, sign, and verify APK and AAB
+
+inputs:
+  keystore_base64:
+    description: Base64-encoded keystore file
+    required: true
+  keystore_password:
+    description: Keystore password
+    required: true
+  key_alias:
+    description: Key alias
+    required: true
+  key_password:
+    description: Key password
+    required: true
+
+outputs:
+  apk_path:
+    description: Path to the signed APK
+    value: ${{ steps.find-artifacts.outputs.apk_path }}
+  aab_path:
+    description: Path to the signed AAB
+    value: ${{ steps.find-artifacts.outputs.aab_path }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: 21
+
+    - uses: gradle/actions/setup-gradle@v4
+
+    - name: Decode keystore
+      shell: bash
+      run: echo "${{ inputs.keystore_base64 }}" | base64 -d > keystore.jks
+
+    - name: Build unsigned APK
+      shell: bash
+      run: ./gradlew assembleRelease --no-configuration-cache
+
+    - name: Build unsigned AAB
+      shell: bash
+      run: ./gradlew bundleRelease --no-configuration-cache
+
+    - name: Upload unsigned APK for reproducibility comparison
+      uses: actions/upload-artifact@v4
+      with:
+        name: unsigned-apk
+        path: app/build/outputs/apk/release/*.apk
+        retention-days: 90
+
+    - name: Install build-tools 34
+      shell: bash
+      run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "build-tools;34.0.0" || true
+
+    - name: Sign APK with apksigner
+      shell: bash
+      env:
+        KEYSTORE_PASSWORD: ${{ inputs.keystore_password }}
+        KEY_ALIAS: ${{ inputs.key_alias }}
+        KEY_PASSWORD: ${{ inputs.key_password }}
+      run: |
+        APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
+        UNSIGNED_APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
+        "$APKSIGNER" sign \
+          --ks keystore.jks \
+          --ks-key-alias "$KEY_ALIAS" \
+          --ks-pass "pass:$KEYSTORE_PASSWORD" \
+          --key-pass "pass:$KEY_PASSWORD" \
+          "$UNSIGNED_APK"
+
+    - name: Verify APK signature
+      shell: bash
+      run: |
+        APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
+        SIGNED_APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
+        "$APKSIGNER" verify --print-certs "$SIGNED_APK"
+
+    - name: Sign AAB with jarsigner
+      shell: bash
+      env:
+        KEYSTORE_PASSWORD: ${{ inputs.keystore_password }}
+        KEY_ALIAS: ${{ inputs.key_alias }}
+        KEY_PASSWORD: ${{ inputs.key_password }}
+      run: |
+        UNSIGNED_AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
+        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+          -keystore keystore.jks \
+          -storepass "$KEYSTORE_PASSWORD" \
+          -keypass "$KEY_PASSWORD" \
+          "$UNSIGNED_AAB" \
+          "$KEY_ALIAS"
+
+    - name: Verify AAB signature
+      shell: bash
+      run: |
+        SIGNED_AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
+        jarsigner -verify -verbose -certs "$SIGNED_AAB"
+
+    - name: Find signed artifacts
+      id: find-artifacts
+      shell: bash
+      run: |
+        APK_PATH=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
+        AAB_PATH=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
+        echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+        echo "aab_path=$AAB_PATH" >> $GITHUB_OUTPUT
