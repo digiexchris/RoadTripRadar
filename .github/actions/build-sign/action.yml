@@ -100,6 +100,16 @@ runs:
         SIGNED_AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
         jarsigner -verify -verbose -certs "$SIGNED_AAB"
 
+    - name: Rename signed artifacts
+      shell: bash
+      run: |
+        APK=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
+        AAB=$(find app/build/outputs/bundle/release -name '*.aab' | head -1)
+        APK_DIR=$(dirname "$APK")
+        AAB_DIR=$(dirname "$AAB")
+        mv "$APK" "$APK_DIR/RoadTripRadar.apk"
+        mv "$AAB" "$AAB_DIR/RoadTripRadar.aab"
+
     - name: Find signed artifacts
       id: find-artifacts
       shell: bash
