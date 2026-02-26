@@ -37,6 +37,7 @@ import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.layers.Anchor
+import org.maplibre.compose.location.BearingUpdate
 import org.maplibre.compose.location.LocationTrackingEffect
 import org.maplibre.compose.location.rememberDefaultLocationProvider
 import org.maplibre.compose.location.rememberNullLocationProvider
@@ -138,7 +139,9 @@ fun MapScreen(
         enabled = vm.isTrackingCamera,
         trackBearing = !vm.isNorthUp,
     ) {
-        cameraState.updateFromLocation()
+        cameraState.updateFromLocation(
+            updateBearing = if (vm.isNorthUp) BearingUpdate.ALWAYS_NORTH else BearingUpdate.TRACK_LOCATION,
+        )
     }
 
     // Derived state
