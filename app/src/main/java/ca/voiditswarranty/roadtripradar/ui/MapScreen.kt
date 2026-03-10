@@ -278,9 +278,12 @@ fun MapScreen(
             }
         }
 
-        // Portrait top-left: speed readout with nav widget directly beneath it
-        if (!isLandscape && (hasLocation || (vm.poiPosition != null && poiInfo != null))) {
-            Column(
+        // Speed readout (top-left)
+        if (hasLocation) {
+            SpeedReadout(
+                speedMps = locationState.location?.speed ?: 0.0,
+                useMetric = vm.useMetric,
+                speedSize = vm.speedSize,
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(16.dp),
@@ -327,40 +330,31 @@ fun MapScreen(
                 }
             }
 
-            // Top-right: legend + compass, search/clear
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .navigationBarsPadding()
-                    .padding(top = 16.dp, end = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
-                    WeatherLegend(horizontal = true)
-                }
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    CompassButton(
-                        cameraState = cameraState,
-                        colors = ButtonDefaults.elevatedButtonColors(),
-                        size = 96.dp,
-                        contentPadding = PaddingValues(8.dp),
-                        shape = CircleShape,
-                        getHomePosition = { current ->
-                            vm.isNorthUp = !vm.isNorthUp
-                            if (vm.isNorthUp) {
-                                current.copy(bearing = 0.0, tilt = 0.0)
-                            } else {
-                                current.copy(tilt = 0.0)
-                            }
-                        },
-                    )
-                }
-            }
-
+        // Compass + Search/Clear POI + GPS status (top-right)
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 16.dp, end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CompassButton(
+                cameraState = cameraState,
+                colors = ButtonDefaults.elevatedButtonColors(),
+                size = 56.dp,
+                contentPadding = PaddingValues(8.dp),
+                shape = CircleShape,
+                getHomePosition = { current ->
+                    vm.isNorthUp = !vm.isNorthUp
+                    if (vm.isNorthUp) {
+                        // Switch to north-up: snap bearing to 0
+                        current.copy(bearing = 0.0, tilt = 0.0)
+                    } else {
+                        // Switch to bearing-up: GPS will provide bearing on next fix
+                        current.copy(tilt = 0.0)
+                    }
+                },
+            )
             PoiSearchClearFab(
                 hasPoi = vm.poiPosition != null,
                 onClearPoi = { vm.clearPoi() },
@@ -404,140 +398,35 @@ fun MapScreen(
                     .padding(16.dp),
             )
 
-            if (vm.poiPosition != null && poiInfo != null) {
-                val (poiDist, poiBearingDeg) = poiInfo
-                NavWidget(
-                    poiDistance = poiDist,
-                    poiBearingDeg = poiBearingDeg,
-                    cameraBearing = bearing,
-                    navWidgetSize = vm.navWidgetSize,
-                    poiName = vm.poiName,
-                    useMetric = vm.useMetric,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .navigationBarsPadding()
-                        .padding(start = 16.dp),
-                )
-            }
-
-            // Bottom-center timeline (landscape only)
-            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
-                WeatherTimeline(
-                    frameTimes = vm.radarFrameTimes,
-                    currentFrameIndex = vm.currentFrameIndex,
-                    horizontal = true,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                        .padding(bottom = 16.dp),
-                )
-            }
-
-            // Bottom-right horizontal rail: recenter, zoom in, zoom out
-            BottomRightFabsRow(
-                isTrackingCamera = vm.isTrackingCamera,
-                hasLocation = hasLocation,
-                onRecenter = { vm.isTrackingCamera = true },
-                onZoomIn = {
-                    scope.launch {
-                        cameraState.animateTo(
-                            cameraState.position.copy(zoom = cameraState.position.zoom + 1)
-                        )
-                    }
-                },
-                onZoomOut = {
-                    scope.launch {
-                        cameraState.animateTo(
-                            cameraState.position.copy(zoom = cameraState.position.zoom - 1)
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .navigationBarsPadding()
-                    .padding(16.dp),
-            )
-        } else {
-            // Portrait: keep controls split between top-right, center-right, and bottom-right.
-            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
-                WeatherTimeline(
-                    frameTimes = vm.radarFrameTimes,
-                    currentFrameIndex = vm.currentFrameIndex,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(start = 16.dp),
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .navigationBarsPadding()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                BottomLeftFabs(
-                    weatherActive = vm.weatherActive,
-                    isWeatherPlaying = vm.isWeatherPlaying,
-                    onToggleWeatherPlaying = { vm.toggleWeatherPlaying() },
-                    onOpenSettings = { vm.openSettings() },
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                CompassButton(
-                    cameraState = cameraState,
-                    colors = ButtonDefaults.elevatedButtonColors(),
-                    size = 96.dp,
-                    contentPadding = PaddingValues(8.dp),
-                    shape = CircleShape,
-                    getHomePosition = { current ->
-                        vm.isNorthUp = !vm.isNorthUp
-                        if (vm.isNorthUp) {
-                            current.copy(bearing = 0.0, tilt = 0.0)
-                        } else {
-                            current.copy(tilt = 0.0)
-                        }
-                    },
-                )
-                PoiSearchClearFab(
-                    hasPoi = vm.poiPosition != null,
-                    onClearPoi = { vm.clearPoi() },
-                    onOpenSearch = { vm.openPoiSearch() },
-                )
-            }
-
-            // Portrait right-side legend, vertically centered
-            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
-                WeatherLegend(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 16.dp),
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                NetworkStatusIcon(
-                    status = vm.networkStatus,
+        // Status icons (right side, centered vertically)
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (vm.useGps) {
+                GpsStatusIcon(
+                    hasGpsFix = hasGpsFix,
                     opacity = vm.gpsIconOpacity,
                 )
-                if (vm.useGps) {
-                    GpsStatusIcon(
-                        hasGpsFix = hasGpsFix,
-                        opacity = vm.gpsIconOpacity,
+            }
+            NetworkStatusIcon(
+                status = vm.networkStatus,
+                opacity = vm.gpsIconOpacity,
+            )
+        }
+
+        // Bottom-right: recenter, zoom in, zoom out
+        BottomRightFabs(
+            isTrackingCamera = vm.isTrackingCamera,
+            hasLocation = hasLocation,
+            onRecenter = { vm.isTrackingCamera = true },
+            onZoomIn = {
+                scope.launch {
+                    cameraState.animateTo(
+                        cameraState.position.copy(zoom = cameraState.position.zoom + 1)
                     )
                 }
             },
