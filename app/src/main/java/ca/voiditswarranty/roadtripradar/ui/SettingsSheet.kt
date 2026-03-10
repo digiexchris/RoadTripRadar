@@ -70,6 +70,41 @@ fun SettingsSheet(
                     Text("Quit")
                 }
 
+                // Use GPS Location
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Use GPS Location", style = MaterialTheme.typography.titleSmall)
+                    Switch(
+                        checked = vm.useGps,
+                        onCheckedChange = { vm.updateUseGps(it) },
+                    )
+                }
+
+                // GPS Icon Opacity (visible when GPS is on)
+                if (vm.useGps) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text("GPS Icon Opacity", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                "${(vm.gpsIconOpacity * 100).toInt()}%",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Slider(
+                            value = vm.gpsIconOpacity,
+                            onValueChange = { vm.updateGpsIconOpacity(it) },
+                            onValueChangeFinished = { vm.saveGpsIconOpacity() },
+                            valueRange = 0f..1f,
+                        )
+                    }
+                }
+
                 // Map Style
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("Map Style", style = MaterialTheme.typography.titleSmall)

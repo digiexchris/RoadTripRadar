@@ -36,6 +36,14 @@ enum class MapStyle {
 
 enum class WeatherMode { OFF, ON }
 
+enum class NetworkTransport { WIFI, CELLULAR }
+
+data class NetworkStatus(
+    val transport: NetworkTransport? = null,
+    val validated: Boolean = false,
+    val connected: Boolean = false,
+)
+
 data class SearchResult(
     val name: String,
     val subtitle: String,
@@ -86,6 +94,10 @@ object PrefsDefaults {
     const val SPEED_SIZE = 48f
     const val NAV_WIDGET_SIZE = 48f
     const val KEEP_SCREEN_ON = true
+    const val USE_GPS = true
+    const val GPS_ICON_OPACITY = 0.5f
+    const val LAST_KNOWN_LAT = 45.4215
+    const val LAST_KNOWN_LON = -75.6972
     const val PREFS_VERSION = 1
     const val TERMS_VERSION = 1
 }

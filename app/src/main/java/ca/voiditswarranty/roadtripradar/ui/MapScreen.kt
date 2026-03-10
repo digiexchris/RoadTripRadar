@@ -48,6 +48,7 @@ import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
+import kotlinx.coroutines.delay
 import org.maplibre.compose.material3.CompassButton
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
@@ -78,37 +79,39 @@ fun MapScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        hasLocationPermission =
-            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        hasLocationPermission = granted
+        if (!granted) {
+            vm.updateUseGps(false)
+        }
     }
-    LaunchedEffect(Unit) {
-        if (!hasLocationPermission) {
+    LaunchedEffect(vm.useGps) {
+        if (vm.useGps && !hasLocationPermission) {
             permissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                )
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
             )
         }
     }
 
     // Location
-    val locationProvider = if (hasLocationPermission) {
+    val locationProvider = if (hasLocationPermission && vm.useGps) {
         rememberDefaultLocationProvider()
     } else {
         rememberNullLocationProvider()
     }
     val locationState = rememberUserLocationState(locationProvider = locationProvider)
+    val hasLocation = vm.useGps && locationState.location != null
+    val hasGpsFix = hasLocation && locationState.location!!.accuracy < 50.0
 
     // Camera
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val bottomPadding = screenHeight / 3
     val savedZoom = remember { vm.prefsRepo.zoomLevel.toDouble() }
+    val startPosition = remember { vm.prefsRepo.lastKnownPosition }
 
     val cameraState = rememberCameraState(
         firstPosition = CameraPosition(
-            target = Position(longitude = -75.6972, latitude = 45.4215),
+            target = startPosition,
             zoom = savedZoom,
             padding = PaddingValues(top = bottomPadding),
         )
@@ -135,9 +138,22 @@ fun MapScreen(
         }
     }
 
+    // Store location every 15 seconds for next startup
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(15_000)
+            val pos = if (locationState.location != null && vm.useGps) {
+                locationState.location!!.position
+            } else {
+                cameraState.position.target
+            }
+            vm.saveLastKnownPosition(pos)
+        }
+    }
+
     LocationTrackingEffect(
         locationState = locationState,
-        enabled = vm.isTrackingCamera,
+        enabled = vm.isTrackingCamera && hasLocation,
         trackBearing = !vm.isNorthUp,
     ) {
         cameraState.updateFromLocation(
@@ -163,9 +179,9 @@ fun MapScreen(
 
     val userPosition = locationState.location?.position
     val bearing = cameraState.position.bearing
-    val radarData = remember(userPosition?.latitude, userPosition?.longitude, zoomTier, bearing, vm.useMetric) {
-        val center = userPosition ?: return@remember null
-        buildRadarRingsData(center, ringDistancesForZoom(cameraState.position.zoom), bearing, vm.useMetric)
+    val ringsCenter = if (hasLocation && userPosition != null) userPosition else cameraState.position.target
+    val radarData = remember(ringsCenter.latitude, ringsCenter.longitude, zoomTier, bearing, vm.useMetric) {
+        buildRadarRingsData(ringsCenter, ringDistancesForZoom(cameraState.position.zoom), bearing, vm.useMetric)
     }
 
     val poiInfo = remember(userPosition?.latitude, userPosition?.longitude, vm.poiPosition) {
@@ -211,14 +227,12 @@ fun MapScreen(
                     )
                 }
 
-                if (radarData != null) {
-                    RadarRingsLayers(
-                        radarData = radarData,
-                        isDarkStyle = mapStyle.isDark,
-                    )
-                }
+                RadarRingsLayers(
+                    radarData = radarData,
+                    isDarkStyle = mapStyle.isDark,
+                )
 
-                if (locationState.location != null) {
+                if (hasLocation) {
                     UserLocationPuck(
                         locationState = locationState,
                         cameraState = cameraState,
@@ -235,7 +249,7 @@ fun MapScreen(
         }
 
         // Speed readout (top-left)
-        if (locationState.location != null) {
+        if (hasLocation) {
             SpeedReadout(
                 speedMps = locationState.location?.speed ?: 0.0,
                 useMetric = vm.useMetric,
@@ -262,7 +276,7 @@ fun MapScreen(
             )
         }
 
-        // Compass + Search/Clear POI (top-right)
+        // Compass + Search/Clear POI + GPS status (top-right)
         Column(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -316,10 +330,30 @@ fun MapScreen(
             )
         }
 
+        // Status icons (right side, centered vertically)
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (vm.useGps) {
+                GpsStatusIcon(
+                    hasGpsFix = hasGpsFix,
+                    opacity = vm.gpsIconOpacity,
+                )
+            }
+            NetworkStatusIcon(
+                status = vm.networkStatus,
+                opacity = vm.gpsIconOpacity,
+            )
+        }
+
         // Bottom-right: recenter, zoom in, zoom out
         BottomRightFabs(
             isTrackingCamera = vm.isTrackingCamera,
-            hasLocation = locationState.location != null,
+            hasLocation = hasLocation,
             onRecenter = { vm.isTrackingCamera = true },
             onZoomIn = {
                 scope.launch {
