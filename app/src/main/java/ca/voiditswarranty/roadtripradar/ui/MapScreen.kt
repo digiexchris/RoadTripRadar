@@ -371,16 +371,18 @@ fun MapScreen(
                     .padding(end = 16.dp),
             )
 
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                NetworkStatusIcon(
-                    status = vm.networkStatus,
-                    opacity = vm.gpsIconOpacity,
+        // Bottom-left: timeline, play/pause, gear
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .navigationBarsPadding()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                WeatherTimeline(
+                    frameTimes = vm.radarFrameTimes,
+                    currentFrameIndex = vm.currentFrameIndex,
                 )
                 if (vm.useGps) {
                     GpsStatusIcon(
@@ -538,7 +540,18 @@ fun MapScreen(
                         opacity = vm.gpsIconOpacity,
                     )
                 }
-            }
+            },
+            onZoomOut = {
+                scope.launch {
+                    cameraState.animateTo(
+                        cameraState.position.copy(zoom = cameraState.position.zoom - 1)
+                    )
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding(),
+        )
 
             BottomRightFabs(
                 isTrackingCamera = vm.isTrackingCamera,
