@@ -1,0 +1,21 @@
+{
+  "name": "RoadTripRadar Android",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": ["--privileged"],
+  "remoteEnv": {
+    "ANDROID_HOME": "/opt/android-sdk"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "fwcd.kotlin",
+        "vscjava.vscode-gradle",
+        "naco-siren.gradle-language"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

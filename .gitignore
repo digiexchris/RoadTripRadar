@@ -15,3 +15,5 @@
 local.properties
 keystore.jks
 *.keystore
+.devcontainer/signing.env
+.devcontainer/adb.env

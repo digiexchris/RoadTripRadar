@@ -3,6 +3,18 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+fun gitVersionName(): String {
+    val tag = providers.exec {
+        commandLine("git", "describe", "--tags", "--exact-match")
+        isIgnoreExitValue = true
+    }.standardOutput.asText.get().trim()
+    if (tag.isNotEmpty()) return tag.removePrefix("v")
+
+    return providers.exec {
+        commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
+    }.standardOutput.asText.get().trim()
+}
+
 android {
     namespace = "ca.voiditswarranty.roadtripradar"
     compileSdk {
@@ -16,7 +28,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 16
-        versionName = "1.3.1"
+        versionName = gitVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
