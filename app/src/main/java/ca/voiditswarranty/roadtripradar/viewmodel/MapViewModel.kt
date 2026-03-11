@@ -59,6 +59,10 @@ class MapViewModel(
         private set
     var gpsIconOpacity by mutableStateOf(prefsRepo.gpsIconOpacity)
         private set
+    var mapCenterOffsetPortraitFraction by mutableStateOf(prefsRepo.mapCenterOffsetPortraitFraction)
+        private set
+    var mapCenterOffsetLandscapeFraction by mutableStateOf(prefsRepo.mapCenterOffsetLandscapeFraction)
+        private set
 
     // Network
     var networkStatus by mutableStateOf(NetworkStatus())
@@ -234,7 +238,6 @@ class MapViewModel(
         useGps = on
         prefsRepo.useGps = on
         if (!on) {
-            isNorthUp = true
             isTrackingCamera = false
         } else {
             isTrackingCamera = true
@@ -247,6 +250,22 @@ class MapViewModel(
 
     fun saveGpsIconOpacity() {
         prefsRepo.gpsIconOpacity = gpsIconOpacity
+    }
+
+    fun updateMapCenterOffsetPortraitFraction(value: Float) {
+        mapCenterOffsetPortraitFraction = value
+    }
+
+    fun saveMapCenterOffsetPortraitFraction() {
+        prefsRepo.mapCenterOffsetPortraitFraction = mapCenterOffsetPortraitFraction
+    }
+
+    fun updateMapCenterOffsetLandscapeFraction(value: Float) {
+        mapCenterOffsetLandscapeFraction = value
+    }
+
+    fun saveMapCenterOffsetLandscapeFraction() {
+        prefsRepo.mapCenterOffsetLandscapeFraction = mapCenterOffsetLandscapeFraction
     }
 
     fun saveLastKnownPosition(pos: Position) {
@@ -397,6 +416,8 @@ class MapViewModel(
         keepScreenOn = PrefsDefaults.KEEP_SCREEN_ON
         useGps = PrefsDefaults.USE_GPS
         gpsIconOpacity = PrefsDefaults.GPS_ICON_OPACITY
+        mapCenterOffsetPortraitFraction = PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION
+        mapCenterOffsetLandscapeFraction = PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION
         isTrackingCamera = true
         isNorthUp = false
         poiPosition = null

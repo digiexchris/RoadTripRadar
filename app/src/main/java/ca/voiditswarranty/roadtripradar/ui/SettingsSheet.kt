@@ -102,14 +102,14 @@ fun SettingsSheet(
                     )
                 }
 
-                // GPS Icon Opacity (visible when GPS is on)
+                // Status Icon Opacity (visible when GPS is on)
                 if (vm.useGps) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
-                            Text("GPS Icon Opacity", style = MaterialTheme.typography.titleSmall)
+                            Text("Status Icon Opacity", style = MaterialTheme.typography.titleSmall)
                             Text(
                                 "${(vm.gpsIconOpacity * 100).toInt()}%",
                                 style = MaterialTheme.typography.bodyMedium,
@@ -122,6 +122,52 @@ fun SettingsSheet(
                             valueRange = 0f..1f,
                         )
                     }
+                }
+
+                // Map Center Offset (Portrait)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Map Center Offset (Portrait)", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            "${(vm.mapCenterOffsetPortraitFraction * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    Slider(
+                        value = vm.mapCenterOffsetPortraitFraction,
+                        onValueChange = { vm.updateMapCenterOffsetPortraitFraction(it) },
+                        onValueChangeFinished = {
+                            vm.saveMapCenterOffsetPortraitFraction()
+                        },
+                        valueRange = 0f..1f,
+                        interactionSource = portraitCenterOffsetInteraction,
+                    )
+                }
+
+                // Map Center Offset (Landscape)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Map Center Offset (Landscape)", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            "${(vm.mapCenterOffsetLandscapeFraction * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    Slider(
+                        value = vm.mapCenterOffsetLandscapeFraction,
+                        onValueChange = { vm.updateMapCenterOffsetLandscapeFraction(it) },
+                        onValueChangeFinished = {
+                            vm.saveMapCenterOffsetLandscapeFraction()
+                        },
+                        valueRange = 0f..1f,
+                        interactionSource = landscapeCenterOffsetInteraction,
+                    )
                 }
 
                 // Map Style

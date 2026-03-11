@@ -106,6 +106,47 @@ fun BottomLeftFabs(
 }
 
 @Composable
+fun BottomLeftFabsRow(
+    weatherActive: Boolean,
+    isWeatherPlaying: Boolean,
+    onToggleWeatherPlaying: () -> Unit,
+    onOpenSettings: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (weatherActive) {
+            LargeFloatingActionButton(
+                onClick = onToggleWeatherPlaying,
+                modifier = fabBorderModifier,
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = if (isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = "Toggle weather animation",
+                )
+            }
+        }
+
+        LargeFloatingActionButton(
+            onClick = onOpenSettings,
+            modifier = fabBorderModifier,
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+            )
+        }
+    }
+}
+
+@Composable
 fun GpsStatusIcon(
     hasGpsFix: Boolean,
     opacity: Float = 1f,
@@ -121,7 +162,7 @@ fun GpsStatusIcon(
         ),
         label = "gps-blink-alpha",
     )
-    val tint = if (hasGpsFix) Color.Green else lerp(Color.White, Color.Red, blinkProgress)
+    val tint = if (hasGpsFix) Color.White else lerp(Color.White, Color.Red, blinkProgress)
     Icon(
         imageVector = Icons.Default.SatelliteAlt,
         contentDescription = if (hasGpsFix) "GPS fix acquired" else "Waiting for GPS fix",
@@ -168,7 +209,7 @@ fun NetworkStatusIcon(
             NetworkTransport.CELLULAR -> "Cellular"
             else -> "Unknown network"
         }
-        tint = if (status.validated) Color.Green else lerp(Color.White, Color.Red, blinkProgress)
+        tint = if (status.validated) Color.White else lerp(Color.White, Color.Red, blinkProgress)
     }
 
     Icon(
