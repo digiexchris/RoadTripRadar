@@ -8,8 +8,10 @@ ENV PATH="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platf
 RUN apt-get update && apt-get install -y --no-install-recommends \
         unzip \
         wget \
-        usbutils \
+        usbutils android-sdk-platform-tools-common \
     && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -f plugdev && usermod -aG plugdev vscode
 
 RUN mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools" \
     && cd /tmp \

@@ -87,11 +87,14 @@ val POI_CATEGORIES = listOf(
 
 object PrefsDefaults {
     const val ZOOM_LEVEL = 9.0f
+    const val MAP_CENTER_OFFSET_FRACTION = 0.30f
+    const val MAP_CENTER_OFFSET_PORTRAIT_FRACTION = 0.30f
+    const val MAP_CENTER_OFFSET_LANDSCAPE_FRACTION = 0.30f
     const val RADAR_OPACITY = 0.6f
     const val USE_METRIC = true
     const val WEATHER_PLAYING = true
     const val WEATHER_MODE = "ON"
-    const val SPEED_SIZE = 48f
+    const val SPEED_SIZE = 64f
     const val NAV_WIDGET_SIZE = 48f
     const val KEEP_SCREEN_ON = true
     const val USE_GPS = true

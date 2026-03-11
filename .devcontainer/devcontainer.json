@@ -4,7 +4,9 @@
     "context": "..",
     "dockerfile": "Dockerfile"
   },
-  "runArgs": ["--privileged"],
+  "runArgs": [
+    "--privileged",
+    "--device=/dev/bus/usb"],
   "remoteEnv": {
     "ANDROID_HOME": "/opt/android-sdk"
   },

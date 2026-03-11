@@ -48,6 +48,30 @@ class PreferencesRepository(context: Context) {
         get() = prefs.getFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
         set(value) = prefs.edit().putFloat("zoom_level", value).apply()
 
+    var mapCenterOffsetPortraitFraction: Float
+        get() = if (prefs.contains("map_center_offset_portrait_fraction")) {
+            prefs.getFloat(
+                "map_center_offset_portrait_fraction",
+                PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION,
+            )
+        } else {
+            // Backward compatibility with the original single offset key.
+            prefs.getFloat("map_center_offset_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
+        }
+        set(value) = prefs.edit().putFloat("map_center_offset_portrait_fraction", value).apply()
+
+    var mapCenterOffsetLandscapeFraction: Float
+        get() = if (prefs.contains("map_center_offset_landscape_fraction")) {
+            prefs.getFloat(
+                "map_center_offset_landscape_fraction",
+                PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION,
+            )
+        } else {
+            // Backward compatibility with the original single offset key.
+            prefs.getFloat("map_center_offset_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
+        }
+        set(value) = prefs.edit().putFloat("map_center_offset_landscape_fraction", value).apply()
+
     var weatherMode: WeatherMode
         get() {
             val saved = prefs.getString("weather_mode", null)
@@ -149,6 +173,8 @@ class PreferencesRepository(context: Context) {
             .putBoolean("use_gps", PrefsDefaults.USE_GPS)
             .putFloat("gps_icon_opacity", PrefsDefaults.GPS_ICON_OPACITY)
             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
+            .putFloat("map_center_offset_portrait_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
+            .putFloat("map_center_offset_landscape_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
             .remove("poi_lat").remove("poi_lon").remove("poi_name")
             .remove("last_known_lat").remove("last_known_lon")
             .apply()

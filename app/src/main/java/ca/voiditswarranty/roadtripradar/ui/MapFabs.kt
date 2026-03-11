@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,7 +25,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +51,7 @@ fun PoiSearchClearFab(
     modifier: Modifier = Modifier,
 ) {
     if (hasPoi) {
-        FloatingActionButton(
+        LargeFloatingActionButton(
             onClick = onClearPoi,
             modifier = modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
             shape = CircleShape,
@@ -60,7 +60,7 @@ fun PoiSearchClearFab(
             Icon(Icons.Default.Close, contentDescription = "Clear POI")
         }
     } else {
-        FloatingActionButton(
+        LargeFloatingActionButton(
             onClick = onOpenSearch,
             modifier = modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape),
             shape = CircleShape,
@@ -106,6 +106,47 @@ fun BottomLeftFabs(
 }
 
 @Composable
+fun BottomLeftFabsRow(
+    weatherActive: Boolean,
+    isWeatherPlaying: Boolean,
+    onToggleWeatherPlaying: () -> Unit,
+    onOpenSettings: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (weatherActive) {
+            LargeFloatingActionButton(
+                onClick = onToggleWeatherPlaying,
+                modifier = fabBorderModifier,
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = if (isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = "Toggle weather animation",
+                )
+            }
+        }
+
+        LargeFloatingActionButton(
+            onClick = onOpenSettings,
+            modifier = fabBorderModifier,
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+            )
+        }
+    }
+}
+
+@Composable
 fun GpsStatusIcon(
     hasGpsFix: Boolean,
     opacity: Float = 1f,
@@ -121,7 +162,7 @@ fun GpsStatusIcon(
         ),
         label = "gps-blink-alpha",
     )
-    val tint = if (hasGpsFix) Color.Green else lerp(Color.White, Color.Red, blinkProgress)
+    val tint = if (hasGpsFix) Color.White else lerp(Color.White, Color.Red, blinkProgress)
     Icon(
         imageVector = Icons.Default.SatelliteAlt,
         contentDescription = if (hasGpsFix) "GPS fix acquired" else "Waiting for GPS fix",
@@ -168,7 +209,7 @@ fun NetworkStatusIcon(
             NetworkTransport.CELLULAR -> "Cellular"
             else -> "Unknown network"
         }
-        tint = if (status.validated) Color.Green else lerp(Color.White, Color.Red, blinkProgress)
+        tint = if (status.validated) Color.White else lerp(Color.White, Color.Red, blinkProgress)
     }
 
     Icon(
@@ -193,6 +234,60 @@ fun BottomRightFabs(
     Column(
         modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        if (!isTrackingCamera && hasLocation) {
+            LargeFloatingActionButton(
+                onClick = onRecenter,
+                modifier = fabBorderModifier,
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Re-center on location",
+                )
+            }
+        }
+
+        LargeFloatingActionButton(
+            onClick = onZoomIn,
+            modifier = fabBorderModifier,
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Zoom in",
+            )
+        }
+
+        LargeFloatingActionButton(
+            onClick = onZoomOut,
+            modifier = fabBorderModifier,
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Remove,
+                contentDescription = "Zoom out",
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomRightFabsRow(
+    isTrackingCamera: Boolean,
+    hasLocation: Boolean,
+    onRecenter: () -> Unit,
+    onZoomIn: () -> Unit,
+    onZoomOut: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (!isTrackingCamera && hasLocation) {
             LargeFloatingActionButton(
