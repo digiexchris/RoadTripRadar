@@ -107,6 +107,8 @@ class MapViewModel(
         private set
     var showHelp by mutableStateOf(false)
         private set
+    var showLegendDetail by mutableStateOf(false)
+        private set
     var showTerms by mutableStateOf(false)
         private set
     var termsNeedAcceptance by mutableStateOf(false)
@@ -278,6 +280,12 @@ class MapViewModel(
     fun closePoiSearch() { showPoiSearch = false }
     fun openHelp() { showHelp = true }
     fun closeHelp() { showHelp = false }
+
+    fun openLegendDetail() {
+        showHelp = false
+        showLegendDetail = true
+    }
+    fun closeLegendDetail() { showLegendDetail = false }
 
     fun viewTerms() {
         showHelp = false

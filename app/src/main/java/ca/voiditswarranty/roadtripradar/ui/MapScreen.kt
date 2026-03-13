@@ -313,6 +313,7 @@ fun MapScreen(
             Row(
                 modifier = Modifier
                     .align(Alignment.TopStart)
+                    .navigationBarsPadding()
                     .padding(top = 16.dp, start = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top,
@@ -326,29 +327,38 @@ fun MapScreen(
                 }
             }
 
-            // Top-right vertical stack: compass, search/clear
-            Column(
+            // Top-right: legend + compass, search/clear
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
+                    .navigationBarsPadding()
                     .padding(top = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.Top,
             ) {
-                CompassButton(
-                    cameraState = cameraState,
-                    colors = ButtonDefaults.elevatedButtonColors(),
-                    size = 96.dp,
-                    contentPadding = PaddingValues(8.dp),
-                    shape = CircleShape,
-                    getHomePosition = { current ->
-                        vm.isNorthUp = !vm.isNorthUp
-                        if (vm.isNorthUp) {
-                            current.copy(bearing = 0.0, tilt = 0.0)
-                        } else {
-                            current.copy(tilt = 0.0)
-                        }
-                    },
-                )
+                if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                    WeatherLegend(horizontal = true)
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CompassButton(
+                        cameraState = cameraState,
+                        colors = ButtonDefaults.elevatedButtonColors(),
+                        size = 96.dp,
+                        contentPadding = PaddingValues(8.dp),
+                        shape = CircleShape,
+                        getHomePosition = { current ->
+                            vm.isNorthUp = !vm.isNorthUp
+                            if (vm.isNorthUp) {
+                                current.copy(bearing = 0.0, tilt = 0.0)
+                            } else {
+                                current.copy(tilt = 0.0)
+                            }
+                        },
+                    )
+                }
             }
 
             PoiSearchClearFab(
@@ -357,6 +367,7 @@ fun MapScreen(
                 onOpenSearch = { vm.openPoiSearch() },
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
+                    .navigationBarsPadding()
                     .padding(end = 16.dp),
             )
 
@@ -391,7 +402,6 @@ fun MapScreen(
                     .padding(16.dp),
             )
 
-            // Left-center nav widget (landscape)
             if (vm.poiPosition != null && poiInfo != null) {
                 val (poiDist, poiBearingDeg) = poiInfo
                 NavWidget(
@@ -403,6 +413,7 @@ fun MapScreen(
                     useMetric = vm.useMetric,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
+                        .navigationBarsPadding()
                         .padding(start = 16.dp),
                 )
             }
@@ -446,6 +457,16 @@ fun MapScreen(
             )
         } else {
             // Portrait: keep controls split between top-right, center-right, and bottom-right.
+            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                WeatherTimeline(
+                    frameTimes = vm.radarFrameTimes,
+                    currentFrameIndex = vm.currentFrameIndex,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 16.dp),
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
@@ -454,12 +475,6 @@ fun MapScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
-                    WeatherTimeline(
-                        frameTimes = vm.radarFrameTimes,
-                        currentFrameIndex = vm.currentFrameIndex,
-                    )
-                }
                 BottomLeftFabs(
                     weatherActive = vm.weatherActive,
                     isWeatherPlaying = vm.isWeatherPlaying,
@@ -494,6 +509,15 @@ fun MapScreen(
                     hasPoi = vm.poiPosition != null,
                     onClearPoi = { vm.clearPoi() },
                     onOpenSearch = { vm.openPoiSearch() },
+                )
+            }
+
+            // Portrait right-side legend, vertically centered
+            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                WeatherLegend(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 16.dp),
                 )
             }
 
@@ -549,6 +573,9 @@ fun MapScreen(
 
         // Help sheet
         HelpSheet(vm = vm)
+
+        // Legend detail sheet
+        LegendDetailSheet(vm = vm)
 
         // POI search dialog
         PoiSearchDialog(vm = vm)

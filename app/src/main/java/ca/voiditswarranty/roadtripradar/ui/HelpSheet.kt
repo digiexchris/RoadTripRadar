@@ -40,6 +40,13 @@ fun HelpSheet(vm: MapViewModel) {
             }
 
             OutlinedButton(
+                onClick = { vm.openLegendDetail() },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Radar Legend")
+            }
+
+            OutlinedButton(
                 onClick = {
                     context.startActivity(
                         Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/digiexchris/RoadTripRadar/wiki"))
