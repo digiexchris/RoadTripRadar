@@ -67,17 +67,6 @@ fun SettingsSheet(
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Help & Information
-                OutlinedButton(
-                    onClick = {
-                        vm.closeSettings()
-                        vm.openHelp()
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text("Help & Information")
-                }
-
                 // Quit
                 OutlinedButton(
                     onClick = {

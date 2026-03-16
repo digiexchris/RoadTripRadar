@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeFloatingActionButton
@@ -109,6 +110,14 @@ fun ActionsDrawer(
             icon = Icons.Default.Settings,
             onClick = {
                 vm.openSettings()
+                vm.closeActionsDrawer()
+            },
+        ),
+        DrawerAction(
+            label = "Help",
+            icon = Icons.AutoMirrored.Filled.Help,
+            onClick = {
+                vm.openHelp()
                 vm.closeActionsDrawer()
             },
         ),

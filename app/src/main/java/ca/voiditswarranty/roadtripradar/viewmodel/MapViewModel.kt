@@ -113,6 +113,8 @@ class MapViewModel(
         private set
     var showHelp by mutableStateOf(false)
         private set
+    var showQuickHelp by mutableStateOf(false)
+        private set
     var showLegendDetail by mutableStateOf(false)
         private set
     var showTerms by mutableStateOf(false)
@@ -143,6 +145,8 @@ class MapViewModel(
         if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
             showTerms = true
             termsNeedAcceptance = true
+        } else if (prefsRepo.showStartupHelp) {
+            showQuickHelp = true
         }
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
@@ -298,6 +302,11 @@ class MapViewModel(
     fun closePoiSearch() { showPoiSearch = false }
     fun openHelp() { showHelp = true }
     fun closeHelp() { showHelp = false }
+    fun closeQuickHelp() { showQuickHelp = false }
+    fun disableStartupQuickHelp() {
+        prefsRepo.showStartupHelp = false
+        showQuickHelp = false
+    }
 
     fun openLegendDetail() {
         showHelp = false
@@ -314,6 +323,7 @@ class MapViewModel(
         prefsRepo.acceptedTermsVersion = PrefsDefaults.TERMS_VERSION
         termsNeedAcceptance = false
         showTerms = false
+        showQuickHelp = prefsRepo.showStartupHelp
     }
 
     fun dismissTerms() {
