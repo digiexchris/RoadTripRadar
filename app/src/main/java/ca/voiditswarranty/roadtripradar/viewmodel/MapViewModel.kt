@@ -37,6 +37,10 @@ class MapViewModel(
         private set
     var isWeatherPlaying by mutableStateOf(prefsRepo.isWeatherPlaying)
         private set
+    var showLegend by mutableStateOf(prefsRepo.showLegend)
+        private set
+    var showTimeline by mutableStateOf(prefsRepo.showTimeline)
+        private set
     var radarFramePaths by mutableStateOf(emptyList<String>())
         private set
     var radarFrameTimes by mutableStateOf(emptyList<Long>())
@@ -100,6 +104,8 @@ class MapViewModel(
     var isTrackingCamera by mutableStateOf(true)
     var isNorthUp by mutableStateOf(!prefsRepo.useGps)
     var showSettings by mutableStateOf(false)
+        private set
+    var showActionsDrawer by mutableStateOf(false)
         private set
     var showResetConfirm by mutableStateOf(false)
         private set
@@ -166,6 +172,16 @@ class MapViewModel(
             currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
         }
         startWeatherAnimationIfPlaying()
+    }
+
+    fun updateShowLegend(show: Boolean) {
+        showLegend = show
+        prefsRepo.showLegend = show
+    }
+
+    fun updateShowTimeline(show: Boolean) {
+        showTimeline = show
+        prefsRepo.showTimeline = show
     }
 
     fun updateRadarOpacity(opacity: Float) {
@@ -274,6 +290,8 @@ class MapViewModel(
 
     fun openSettings() { showSettings = true }
     fun closeSettings() { showSettings = false }
+    fun openActionsDrawer() { showActionsDrawer = true }
+    fun closeActionsDrawer() { showActionsDrawer = false }
     fun openResetConfirm() { showResetConfirm = true }
     fun closeResetConfirm() { showResetConfirm = false }
     fun openPoiSearch() { showPoiSearch = true }
@@ -409,6 +427,8 @@ class MapViewModel(
         onStyleChange(systemDefault)
         weatherMode = WeatherMode.valueOf(PrefsDefaults.WEATHER_MODE)
         isWeatherPlaying = PrefsDefaults.WEATHER_PLAYING
+        showLegend = PrefsDefaults.SHOW_LEGEND
+        showTimeline = PrefsDefaults.SHOW_TIMELINE
         radarOpacity = PrefsDefaults.RADAR_OPACITY
         useMetric = PrefsDefaults.USE_METRIC
         speedSize = PrefsDefaults.SPEED_SIZE
@@ -425,6 +445,7 @@ class MapViewModel(
         prefsRepo.resetToDefaults(systemDefault)
         showResetConfirm = false
         showSettings = false
+        showActionsDrawer = false
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
     }

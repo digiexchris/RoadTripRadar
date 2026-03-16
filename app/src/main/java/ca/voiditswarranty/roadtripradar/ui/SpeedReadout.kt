@@ -2,7 +2,6 @@ package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,9 +23,8 @@ fun SpeedReadout(
     val unitLabel = if (useMetric) "km/h" else "mph"
     Column(
         modifier = modifier
-            .width(144.dp)
             .padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = displaySpeed.coerceAtLeast(0).toString(),
@@ -34,14 +32,14 @@ fun SpeedReadout(
             lineHeight = speedSize.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Center,
         )
         Text(
             text = unitLabel,
             fontSize = (speedSize / 3).sp,
             lineHeight = (speedSize / 3).sp,
             color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Center,
         )
     }
 }
