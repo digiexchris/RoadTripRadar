@@ -106,7 +106,7 @@ fun WeatherLegend(
                     MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
                     RoundedCornerShape(8.dp),
                 )
-                .padding(horizontal = 8.dp, vertical = 6.dp),
+                .padding(horizontal = 0.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
             legendGrid.forEach { row ->
@@ -126,7 +126,7 @@ fun WeatherLegend(
                     MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
                     RoundedCornerShape(8.dp),
                 )
-                .padding(horizontal = 8.dp, vertical = 8.dp),
+                .padding(horizontal = 0.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
             portraitLegendEntries.forEach { entry -> LegendCell(entry) }

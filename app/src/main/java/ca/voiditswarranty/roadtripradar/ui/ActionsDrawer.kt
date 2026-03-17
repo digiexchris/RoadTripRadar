@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.ui
 
+import android.app.Activity
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Navigation
+import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
@@ -32,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
@@ -50,6 +53,7 @@ fun ActionsDrawer(
 ) {
     if (!vm.showActionsDrawer) return
 
+    val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val weatherDependentEnabled = vm.weatherActive
 
@@ -119,6 +123,14 @@ fun ActionsDrawer(
             onClick = {
                 vm.openHelp()
                 vm.closeActionsDrawer()
+            },
+        ),
+        DrawerAction(
+            label = "Quit",
+            icon = Icons.Default.PowerSettingsNew,
+            onClick = {
+                (context as? Activity)?.finishAffinity()
+                System.exit(0)
             },
         ),
     )

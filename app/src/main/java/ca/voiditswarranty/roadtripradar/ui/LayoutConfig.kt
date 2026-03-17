@@ -30,7 +30,7 @@ data class LayoutConfig(
             val fabScale = if (isTablet) 1.15f else 1.0f
             val edgePadding = if (isTablet) 24.dp else 16.dp
             val controlSpacing = if (isTablet) 16.dp else 12.dp
-            val compassSize = if (isTablet) 120.dp else 96.dp
+            val compassSize = if (isTablet) 96.dp else 72.dp
 
             return LayoutConfig(
                 navWidgetAlignment = if (isWide && !isTall) Alignment.CenterStart else Alignment.TopStart,

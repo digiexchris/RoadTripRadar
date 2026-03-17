@@ -61,21 +61,6 @@ fun BoxScope.MapOverlay(
         config.controlSpacing
     val bottomBandHeight = bottomRowContentHeight + navBottomInset + (config.edgePadding * 2)
 
-    if (vm.poiPosition != null && poiInfo != null) {
-        val (poiDist, poiBearingDeg) = poiInfo
-        NavWidget(
-            poiDistance = poiDist,
-            poiBearingDeg = poiBearingDeg,
-            cameraBearing = bearing,
-            navWidgetSize = vm.navWidgetSize * config.widgetScale,
-            poiName = vm.poiName,
-            useMetric = vm.useMetric,
-            modifier = Modifier
-                .align(config.navWidgetAlignment)
-                .then(sharedEdgeModifier),
-        )
-    }
-
     Row(
         modifier = Modifier
             .align(Alignment.TopCenter)
@@ -83,8 +68,16 @@ fun BoxScope.MapOverlay(
             .onSizeChanged { topRowHeightPx = it.height }
             .then(sharedEdgeModifier),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
+        if (hasLocation) {
+            SpeedReadout(
+                speedMps = speedMps,
+                useMetric = vm.useMetric,
+                speedSize = vm.speedSize * config.widgetScale,
+            )
+        }
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.Top,
@@ -165,7 +158,7 @@ fun BoxScope.MapOverlay(
         )
     }
 
-    SpeedZoomFabs(
+    NavZoomFabs(
         onZoomIn = {
             scope.launch {
                 cameraState.animateTo(
@@ -180,12 +173,17 @@ fun BoxScope.MapOverlay(
                 )
             }
         },
-        speedContent = {
-            if (hasLocation) {
-                SpeedReadout(
-                    speedMps = speedMps,
+        navContent = {
+
+            if (vm.poiPosition != null && poiInfo != null) {
+                val (poiDist, poiBearingDeg) = poiInfo
+                NavWidget(
+                    poiDistance = poiDist,
+                    poiBearingDeg = poiBearingDeg,
+                    cameraBearing = bearing,
+                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
+                    poiName = vm.poiName,
                     useMetric = vm.useMetric,
-                    speedSize = vm.speedSize * config.widgetScale,
                 )
             }
         },

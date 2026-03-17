@@ -141,10 +141,10 @@ fun NetworkStatusIcon(
 }
 
 @Composable
-fun SpeedZoomFabs(
+fun NavZoomFabs(
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
-    speedContent: @Composable () -> Unit,
+    navContent: @Composable () -> Unit,
     scale: Float = 1f,
     modifier: Modifier = Modifier,
 ) {
@@ -168,7 +168,7 @@ fun SpeedZoomFabs(
             )
         }
 
-        speedContent()
+        navContent()
 
         LargeFloatingActionButton(
             onClick = onZoomIn,
