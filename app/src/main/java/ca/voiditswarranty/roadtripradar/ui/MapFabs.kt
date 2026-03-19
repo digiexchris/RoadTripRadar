@@ -5,22 +5,28 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.border
+
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PublicOff
 import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.SignalCellular4Bar
-import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,8 +39,7 @@ import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.model.NetworkStatus
 import ca.voiditswarranty.roadtripradar.model.NetworkTransport
 
-private val fabBorderModifier: Modifier
-    @Composable get() = Modifier.border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+private val fabBorderModifier: Modifier = Modifier
 
 @Composable
 fun RecenterFab(
@@ -48,7 +53,6 @@ fun RecenterFab(
         LargeFloatingActionButton(
             onClick = onRecenter,
             modifier = modifier
-                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                 .graphicsLayer {
                     scaleX = scale
                     scaleY = scale
@@ -57,10 +61,66 @@ fun RecenterFab(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
         ) {
             Icon(
-                imageVector = Icons.Default.LocationOn,
+                imageVector = Icons.Default.MyLocation,
                 contentDescription = "Re-center on location",
             )
         }
+    }
+}
+
+@Composable
+fun RecenterTextButton(
+    hasLocation: Boolean,
+    isTrackingCamera: Boolean,
+    onRecenter: () -> Unit,
+    scale: Float = 1f,
+    modifier: Modifier = Modifier,
+) {
+    if (!isTrackingCamera && hasLocation) {
+        Button(
+            onClick = onRecenter,
+            modifier = modifier.graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
+        ) {
+            Text("Recenter")
+        }
+    }
+}
+
+@Composable
+fun LeftContent(
+    verticalArrangement: Arrangement.Vertical = Arrangement.Center,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = Alignment.Start,
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun RightContent(
+    verticalArrangement: Arrangement.Vertical = Arrangement.Center,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = Alignment.End,
+    ) {
+        content()
     }
 }
 
@@ -141,7 +201,7 @@ fun NetworkStatusIcon(
 }
 
 @Composable
-fun NavZoomFabs(
+fun BottomContent(
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
     navContent: @Composable () -> Unit,
@@ -184,5 +244,27 @@ fun NavZoomFabs(
                 contentDescription = "Zoom in",
             )
         }
+    }
+}
+
+@Composable
+fun TopContent(
+    leftContent: @Composable () -> Unit,
+    leftMiddleContent: @Composable () -> Unit = {},
+    centerContent: @Composable () -> Unit,
+    rightMiddleContent: @Composable () -> Unit = {},
+    rightContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+    ) {
+        leftContent()
+        leftMiddleContent()
+        centerContent()
+        rightMiddleContent()
+        rightContent()
     }
 }

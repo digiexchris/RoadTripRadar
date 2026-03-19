@@ -15,7 +15,7 @@ fun QuickHelpDialog(vm: MapViewModel) {
         title = { Text("Quick Help") },
         text = {
             Text(
-                "Long-press the map to drop or move a POI.\n" +
+                "Long-press the map to drop or move a target location.\n" +
                     "Tap the map once to open Quick Actions.\n" +
                     "Documentation is available from Quick Actions -> Help."
             )

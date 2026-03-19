@@ -33,7 +33,7 @@ fun HelpSheet(vm: MapViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
-                text = "Quick start: long-press the map to drop a POI, or tap once to open Quick Actions.",
+                text = "Quick start: long-press the map to drop a target location, or tap once to open Quick Actions.",
                 style = MaterialTheme.typography.bodyMedium,
             )
             Text(

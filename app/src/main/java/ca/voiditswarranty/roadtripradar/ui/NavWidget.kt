@@ -48,7 +48,7 @@ fun NavWidget(
     ) {
         Icon(
             imageVector = Icons.Default.Navigation,
-            contentDescription = "Direction to POI",
+            contentDescription = "Direction to target location",
             modifier = Modifier
                 .size(iconSize)
                 .rotate(arrowRotation),

@@ -2,13 +2,14 @@ package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.ui.layout.onSizeChanged
@@ -24,7 +25,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.maplibre.compose.camera.CameraState
@@ -47,71 +47,78 @@ fun BoxScope.MapOverlay(
     val density = LocalDensity.current
     var topRowHeightPx by remember { mutableIntStateOf(0) }
     val navBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val speedReadoutHeight = remember(vm.speedSize, config.widgetScale, density) {
-        with(density) {
-            (vm.speedSize * config.widgetScale).sp.toDp() +
-                ((vm.speedSize / 3f) * config.widgetScale).sp.toDp() +
-                16.dp
-        }
-    }
-    val bottomRowContentHeight = maxOf(96.dp * config.fabScale, speedReadoutHeight)
+    val bottomRowContentHeight = 96.dp * config.fabScale
     val measuredTopBandHeight = with(density) { topRowHeightPx.toDp() }
     val estimatedTopBandHeight = config.compassSize + (config.edgePadding * 2)
     val topBandHeight = (if (topRowHeightPx > 0) measuredTopBandHeight else estimatedTopBandHeight) +
         config.controlSpacing
     val bottomBandHeight = bottomRowContentHeight + navBottomInset + (config.edgePadding * 2)
+    var legendHeightPx by remember { mutableIntStateOf(0) }
+    val legendHeight = with(density) { legendHeightPx.toDp() }
 
-    Row(
+    TopContent(
         modifier = Modifier
             .align(Alignment.TopCenter)
             .fillMaxWidth()
             .onSizeChanged { topRowHeightPx = it.height }
             .then(sharedEdgeModifier),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
-    ) {
-        if (hasLocation) {
-            SpeedReadout(
-                speedMps = speedMps,
-                useMetric = vm.useMetric,
-                speedSize = vm.speedSize * config.widgetScale,
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.Top,
-        ) {
+        leftContent = {
+            if (hasLocation) {
+                SpeedReadout(
+                    speedMps = speedMps,
+                    useMetric = vm.useMetric,
+                    speedSize = vm.speedSize * config.widgetScale,
+                )
+            }
+        },
+        leftMiddleContent = {
             NetworkStatusIcon(
                 status = vm.networkStatus,
                 opacity = vm.gpsIconOpacity,
             )
+        },
+        centerContent = {
+            if (vm.poiPosition != null && poiInfo != null) {
+                val (poiDist, poiBearingDeg) = poiInfo
+                NavWidget(
+                    poiDistance = poiDist,
+                    poiBearingDeg = poiBearingDeg,
+                    cameraBearing = bearing,
+                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
+                    poiName = vm.poiName,
+                    useMetric = vm.useMetric,
+                )
+            }
+        },
+        rightMiddleContent = {
             if (vm.useGps) {
                 GpsStatusIcon(
                     hasGpsFix = hasGpsFix,
                     opacity = vm.gpsIconOpacity,
                 )
             }
-        }
+        },
+        rightContent = {
+            CompassButton(
+                cameraState = cameraState,
+                colors = ButtonDefaults.elevatedButtonColors(),
+                size = config.compassSize,
+                contentPadding = PaddingValues(8.dp),
+                shape = CircleShape,
+                getHomePosition = { current ->
+                    vm.isNorthUp = !vm.isNorthUp
+                    if (vm.isNorthUp) {
+                        current.copy(bearing = 0.0, tilt = 0.0)
+                    } else {
+                        current.copy(tilt = 0.0)
+                    }
+                },
+            )
+        },
+    )
 
-        CompassButton(
-            cameraState = cameraState,
-            colors = ButtonDefaults.elevatedButtonColors(),
-            size = config.compassSize,
-            contentPadding = PaddingValues(8.dp),
-            shape = CircleShape,
-            getHomePosition = { current ->
-                vm.isNorthUp = !vm.isNorthUp
-                if (vm.isNorthUp) {
-                    current.copy(bearing = 0.0, tilt = 0.0)
-                } else {
-                    current.copy(tilt = 0.0)
-                }
-            },
-        )
-    }
-
-    Column(
+    LeftContent(
+        verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .align(Alignment.CenterStart)
             .fillMaxHeight()
@@ -120,19 +127,24 @@ fun BoxScope.MapOverlay(
                 top = topBandHeight,
                 bottom = bottomBandHeight,
             ),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.Start,
     ) {
         if (vm.weatherActive && vm.showTimeline && vm.radarFramePaths.isNotEmpty()) {
+            val timelineMod = if (legendHeightPx > 0) {
+                Modifier.height(legendHeight)
+            } else {
+                Modifier
+            }
             WeatherTimeline(
                 frameTimes = vm.radarFrameTimes,
                 currentFrameIndex = vm.currentFrameIndex,
-                horizontal = config.timelineHorizontal,
+                horizontal = false,
+                modifier = timelineMod,
             )
         }
     }
 
-    Column(
+    RightContent(
+        verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .align(Alignment.CenterEnd)
             .fillMaxHeight()
@@ -141,24 +153,18 @@ fun BoxScope.MapOverlay(
                 top = topBandHeight,
                 bottom = bottomBandHeight,
             ),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.End,
     ) {
+        Spacer(modifier = Modifier.weight(1f))
+
         if (vm.weatherActive && vm.showLegend && vm.radarFramePaths.isNotEmpty()) {
             WeatherLegend(
-                horizontal = config.legendHorizontal,
+                horizontal = false,
+                modifier = Modifier.onSizeChanged { legendHeightPx = it.height },
             )
         }
-
-        RecenterFab(
-            hasLocation = hasLocation,
-            isTrackingCamera = vm.isTrackingCamera,
-            onRecenter = { vm.isTrackingCamera = true },
-            scale = config.fabScale,
-        )
     }
 
-    NavZoomFabs(
+    BottomContent(
         onZoomIn = {
             scope.launch {
                 cameraState.animateTo(
@@ -174,18 +180,12 @@ fun BoxScope.MapOverlay(
             }
         },
         navContent = {
-
-            if (vm.poiPosition != null && poiInfo != null) {
-                val (poiDist, poiBearingDeg) = poiInfo
-                NavWidget(
-                    poiDistance = poiDist,
-                    poiBearingDeg = poiBearingDeg,
-                    cameraBearing = bearing,
-                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
-                    poiName = vm.poiName,
-                    useMetric = vm.useMetric,
-                )
-            }
+            RecenterTextButton(
+                hasLocation = hasLocation,
+                isTrackingCamera = vm.isTrackingCamera,
+                onRecenter = { vm.isTrackingCamera = true },
+                scale = config.fabScale * 1.3f,
+            )
         },
         scale = config.fabScale,
         modifier = Modifier

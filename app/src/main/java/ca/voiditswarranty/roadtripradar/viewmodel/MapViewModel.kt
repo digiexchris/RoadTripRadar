@@ -97,7 +97,9 @@ class MapViewModel(
     // POI
     var poiPosition by mutableStateOf(prefsRepo.poiPosition)
         private set
-    var poiName by mutableStateOf(prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null)
+    var poiName by mutableStateOf(
+        prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Target Location" else null
+    )
         private set
 
     // UI state
@@ -334,7 +336,7 @@ class MapViewModel(
 
     fun setPoiFromLongPress(position: Position) {
         poiPosition = position
-        poiName = "Dropped Pin"
+        poiName = "Dropped Target Location"
         persistPoi()
     }
 
