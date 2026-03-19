@@ -1,6 +1,10 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import android.app.Activity
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +25,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -39,12 +45,25 @@ fun SettingsSheet(
 ) {
     val context = LocalContext.current
     val systemIsDark = isSystemInDarkTheme()
+    val portraitCenterOffsetInteraction = remember { MutableInteractionSource() }
+    val isAdjustingPortraitCenterOffset by portraitCenterOffsetInteraction.collectIsDraggedAsState()
+    val landscapeCenterOffsetInteraction = remember { MutableInteractionSource() }
+    val isAdjustingLandscapeCenterOffset by landscapeCenterOffsetInteraction.collectIsDraggedAsState()
+    val isAdjustingCenterOffset = isAdjustingPortraitCenterOffset || isAdjustingLandscapeCenterOffset
 
     if (vm.showSettings) {
-        ModalBottomSheet(onDismissRequest = { vm.closeSettings() }) {
+        ModalBottomSheet(
+            onDismissRequest = { vm.closeSettings() },
+            containerColor = if (isAdjustingCenterOffset) {
+                MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            },
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
@@ -68,6 +87,87 @@ fun SettingsSheet(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text("Quit")
+                }
+
+                // Use GPS Location
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text("Use GPS Location", style = MaterialTheme.typography.titleSmall)
+                    Switch(
+                        checked = vm.useGps,
+                        onCheckedChange = { vm.updateUseGps(it) },
+                    )
+                }
+
+                // Status Icon Opacity (visible when GPS is on)
+                if (vm.useGps) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text("Status Icon Opacity", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                "${(vm.gpsIconOpacity * 100).toInt()}%",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Slider(
+                            value = vm.gpsIconOpacity,
+                            onValueChange = { vm.updateGpsIconOpacity(it) },
+                            onValueChangeFinished = { vm.saveGpsIconOpacity() },
+                            valueRange = 0f..1f,
+                        )
+                    }
+                }
+
+                // Map Center Offset (Portrait)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Map Center Offset (Portrait)", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            "${(vm.mapCenterOffsetPortraitFraction * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    Slider(
+                        value = vm.mapCenterOffsetPortraitFraction,
+                        onValueChange = { vm.updateMapCenterOffsetPortraitFraction(it) },
+                        onValueChangeFinished = {
+                            vm.saveMapCenterOffsetPortraitFraction()
+                        },
+                        valueRange = 0f..1f,
+                        interactionSource = portraitCenterOffsetInteraction,
+                    )
+                }
+
+                // Map Center Offset (Landscape)
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("Map Center Offset (Landscape)", style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            "${(vm.mapCenterOffsetLandscapeFraction * 100).toInt()}%",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    Slider(
+                        value = vm.mapCenterOffsetLandscapeFraction,
+                        onValueChange = { vm.updateMapCenterOffsetLandscapeFraction(it) },
+                        onValueChangeFinished = {
+                            vm.saveMapCenterOffsetLandscapeFraction()
+                        },
+                        valueRange = 0f..1f,
+                        interactionSource = landscapeCenterOffsetInteraction,
+                    )
                 }
 
                 // Map Style

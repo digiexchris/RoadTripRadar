@@ -48,6 +48,30 @@ class PreferencesRepository(context: Context) {
         get() = prefs.getFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
         set(value) = prefs.edit().putFloat("zoom_level", value).apply()
 
+    var mapCenterOffsetPortraitFraction: Float
+        get() = if (prefs.contains("map_center_offset_portrait_fraction")) {
+            prefs.getFloat(
+                "map_center_offset_portrait_fraction",
+                PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION,
+            )
+        } else {
+            // Backward compatibility with the original single offset key.
+            prefs.getFloat("map_center_offset_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
+        }
+        set(value) = prefs.edit().putFloat("map_center_offset_portrait_fraction", value).apply()
+
+    var mapCenterOffsetLandscapeFraction: Float
+        get() = if (prefs.contains("map_center_offset_landscape_fraction")) {
+            prefs.getFloat(
+                "map_center_offset_landscape_fraction",
+                PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION,
+            )
+        } else {
+            // Backward compatibility with the original single offset key.
+            prefs.getFloat("map_center_offset_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
+        }
+        set(value) = prefs.edit().putFloat("map_center_offset_landscape_fraction", value).apply()
+
     var weatherMode: WeatherMode
         get() {
             val saved = prefs.getString("weather_mode", null)
@@ -83,6 +107,27 @@ class PreferencesRepository(context: Context) {
     var keepScreenOn: Boolean
         get() = prefs.getBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
         set(value) = prefs.edit().putBoolean("keep_screen_on", value).apply()
+
+    var useGps: Boolean
+        get() = prefs.getBoolean("use_gps", PrefsDefaults.USE_GPS)
+        set(value) = prefs.edit().putBoolean("use_gps", value).apply()
+
+    var gpsIconOpacity: Float
+        get() = prefs.getFloat("gps_icon_opacity", PrefsDefaults.GPS_ICON_OPACITY)
+        set(value) = prefs.edit().putFloat("gps_icon_opacity", value).apply()
+
+    var lastKnownPosition: Position
+        get() {
+            val lat = prefs.getFloat("last_known_lat", PrefsDefaults.LAST_KNOWN_LAT.toFloat()).toDouble()
+            val lon = prefs.getFloat("last_known_lon", PrefsDefaults.LAST_KNOWN_LON.toFloat()).toDouble()
+            return Position(latitude = lat, longitude = lon)
+        }
+        set(value) {
+            prefs.edit()
+                .putFloat("last_known_lat", value.latitude.toFloat())
+                .putFloat("last_known_lon", value.longitude.toFloat())
+                .apply()
+        }
 
     var acceptedTermsVersion: Int
         get() = prefs.getInt("accepted_terms_version", -1)
@@ -125,8 +170,13 @@ class PreferencesRepository(context: Context) {
             .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)
             .putFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE)
             .putBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
+            .putBoolean("use_gps", PrefsDefaults.USE_GPS)
+            .putFloat("gps_icon_opacity", PrefsDefaults.GPS_ICON_OPACITY)
             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
+            .putFloat("map_center_offset_portrait_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
+            .putFloat("map_center_offset_landscape_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
             .remove("poi_lat").remove("poi_lon").remove("poi_name")
+            .remove("last_known_lat").remove("last_known_lon")
             .apply()
     }
 }

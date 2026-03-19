@@ -3,6 +3,7 @@ package ca.voiditswarranty.roadtripradar.ui
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.res.Configuration
 import android.content.pm.PackageManager
 import android.view.WindowManager
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -11,8 +12,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -25,6 +30,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -47,6 +53,7 @@ import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.OrnamentOptions
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ButtonDefaults
+import kotlinx.coroutines.delay
 import org.maplibre.compose.material3.CompassButton
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
@@ -77,41 +84,68 @@ fun MapScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        hasLocationPermission =
-            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        hasLocationPermission = granted
+        if (!granted) {
+            vm.updateUseGps(false)
+        }
     }
-    LaunchedEffect(Unit) {
-        if (!hasLocationPermission) {
+    LaunchedEffect(vm.useGps) {
+        if (vm.useGps && !hasLocationPermission) {
             permissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                )
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
             )
         }
     }
 
     // Location
-    val locationProvider = if (hasLocationPermission) {
+    val locationProvider = if (hasLocationPermission && vm.useGps) {
         rememberDefaultLocationProvider()
     } else {
         rememberNullLocationProvider()
     }
     val locationState = rememberUserLocationState(locationProvider = locationProvider)
+    val hasLocation = vm.useGps && locationState.location != null
+    val hasGpsFix = hasLocation && locationState.location!!.accuracy < 50.0
 
     // Camera
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val bottomPadding = screenHeight / 3
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val screenHeight = configuration.screenHeightDp.dp
+    val density = LocalDensity.current
+    val safeInsets = WindowInsets.safeDrawing
+    val topInset = with(density) { safeInsets.getTop(density).toDp() }
+    val bottomInset = with(density) { safeInsets.getBottom(density).toDp() }
+    val usableHeight = (screenHeight - topInset - bottomInset).coerceAtLeast(1.dp)
+    val centerOffsetFraction =
+        if (isLandscape) vm.mapCenterOffsetLandscapeFraction else vm.mapCenterOffsetPortraitFraction
+
+    // Treat slider value as desired map-center distance from bottom of the usable map area.
+    val desiredBottomOffset = usableHeight * centerOffsetFraction
+    val computedTopPadding = (usableHeight - (desiredBottomOffset * 2f)).coerceAtLeast(0.dp)
+    val computedBottomPadding = ((desiredBottomOffset * 2f) - usableHeight).coerceAtLeast(0.dp)
+    val cameraPadding = PaddingValues(
+        top = topInset + computedTopPadding,
+        bottom = bottomInset + computedBottomPadding,
+    )
     val savedZoom = remember { vm.prefsRepo.zoomLevel.toDouble() }
+    val startPosition = remember { vm.prefsRepo.lastKnownPosition }
 
     val cameraState = rememberCameraState(
         firstPosition = CameraPosition(
-            target = Position(longitude = -75.6972, latitude = 45.4215),
+            target = startPosition,
             zoom = savedZoom,
-            padding = PaddingValues(top = bottomPadding),
+            padding = cameraPadding,
         )
     )
+
+    LaunchedEffect(centerOffsetFraction, isLandscape, screenHeight, topInset, bottomInset) {
+        cameraState.animateTo(
+            cameraState.position.copy(
+                padding = cameraPadding,
+            )
+        )
+    }
 
     LaunchedEffect(cameraState.moveReason) {
         if (cameraState.moveReason == CameraMoveReason.GESTURE) {
@@ -134,9 +168,22 @@ fun MapScreen(
         }
     }
 
+    // Store location every 15 seconds for next startup
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(15_000)
+            val pos = if (locationState.location != null && vm.useGps) {
+                locationState.location!!.position
+            } else {
+                cameraState.position.target
+            }
+            vm.saveLastKnownPosition(pos)
+        }
+    }
+
     LocationTrackingEffect(
         locationState = locationState,
-        enabled = vm.isTrackingCamera,
+        enabled = vm.isTrackingCamera && hasLocation,
         trackBearing = !vm.isNorthUp,
     ) {
         cameraState.updateFromLocation(
@@ -162,9 +209,9 @@ fun MapScreen(
 
     val userPosition = locationState.location?.position
     val bearing = cameraState.position.bearing
-    val radarData = remember(userPosition?.latitude, userPosition?.longitude, zoomTier, bearing, vm.useMetric) {
-        val center = userPosition ?: return@remember null
-        buildRadarRingsData(center, ringDistancesForZoom(cameraState.position.zoom), bearing, vm.useMetric)
+    val ringsCenter = if (hasLocation && userPosition != null) userPosition else cameraState.position.target
+    val radarData = remember(ringsCenter.latitude, ringsCenter.longitude, zoomTier, bearing, vm.useMetric) {
+        buildRadarRingsData(ringsCenter, ringDistancesForZoom(cameraState.position.zoom), bearing, vm.useMetric)
     }
 
     val poiInfo = remember(userPosition?.latitude, userPosition?.longitude, vm.poiPosition) {
@@ -210,14 +257,12 @@ fun MapScreen(
                     )
                 }
 
-                if (radarData != null) {
-                    RadarRingsLayers(
-                        radarData = radarData,
-                        isDarkStyle = mapStyle.isDark,
-                    )
-                }
+                RadarRingsLayers(
+                    radarData = radarData,
+                    isDarkStyle = mapStyle.isDark,
+                )
 
-                if (locationState.location != null) {
+                if (hasLocation) {
                     UserLocationPuck(
                         locationState = locationState,
                         cameraState = cameraState,
@@ -233,108 +278,291 @@ fun MapScreen(
             }
         }
 
-        // Speed readout (top-left)
-        if (locationState.location != null) {
-            SpeedReadout(
-                speedMps = locationState.location?.speed ?: 0.0,
-                useMetric = vm.useMetric,
-                speedSize = vm.speedSize,
+        // Portrait top-left: speed readout with nav widget directly beneath it
+        if (!isLandscape && (hasLocation || (vm.poiPosition != null && poiInfo != null))) {
+            Column(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(16.dp),
-            )
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                if (hasLocation) {
+                    SpeedReadout(
+                        speedMps = locationState.location?.speed ?: 0.0,
+                        useMetric = vm.useMetric,
+                        speedSize = vm.speedSize,
+                    )
+                }
+                if (vm.poiPosition != null && poiInfo != null) {
+                    val (poiDist, poiBearingDeg) = poiInfo
+                    NavWidget(
+                        poiDistance = poiDist,
+                        poiBearingDeg = poiBearingDeg,
+                        cameraBearing = bearing,
+                        navWidgetSize = vm.navWidgetSize,
+                        poiName = vm.poiName,
+                        useMetric = vm.useMetric,
+                    )
+                }
+            }
         }
 
-        // Nav widget (top-center)
-        if (vm.poiPosition != null && poiInfo != null) {
-            val (poiDist, poiBearingDeg) = poiInfo
-            NavWidget(
-                poiDistance = poiDist,
-                poiBearingDeg = poiBearingDeg,
-                cameraBearing = bearing,
-                navWidgetSize = vm.navWidgetSize,
-                poiName = vm.poiName,
-                useMetric = vm.useMetric,
+        if (isLandscape) {
+            // Top-left horizontal rail: timeline, speed
+            Row(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 16.dp),
-            )
-        }
+                    .align(Alignment.TopStart)
+                    .navigationBarsPadding()
+                    .padding(top = 16.dp, start = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                if (hasLocation) {
+                    SpeedReadout(
+                        speedMps = locationState.location?.speed ?: 0.0,
+                        useMetric = vm.useMetric,
+                        speedSize = vm.speedSize,
+                    )
+                }
+            }
 
-        // Compass + Search/Clear POI (top-right)
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 16.dp, end = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            CompassButton(
-                cameraState = cameraState,
-                colors = ButtonDefaults.elevatedButtonColors(),
-                size = 56.dp,
-                contentPadding = PaddingValues(8.dp),
-                shape = CircleShape,
-                getHomePosition = { current ->
-                    vm.isNorthUp = !vm.isNorthUp
-                    if (vm.isNorthUp) {
-                        // Switch to north-up: snap bearing to 0
-                        current.copy(bearing = 0.0, tilt = 0.0)
-                    } else {
-                        // Switch to bearing-up: GPS will provide bearing on next fix
-                        current.copy(tilt = 0.0)
-                    }
-                },
-            )
+            // Top-right: legend + compass, search/clear
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .navigationBarsPadding()
+                    .padding(top = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                    WeatherLegend(horizontal = true)
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CompassButton(
+                        cameraState = cameraState,
+                        colors = ButtonDefaults.elevatedButtonColors(),
+                        size = 96.dp,
+                        contentPadding = PaddingValues(8.dp),
+                        shape = CircleShape,
+                        getHomePosition = { current ->
+                            vm.isNorthUp = !vm.isNorthUp
+                            if (vm.isNorthUp) {
+                                current.copy(bearing = 0.0, tilt = 0.0)
+                            } else {
+                                current.copy(tilt = 0.0)
+                            }
+                        },
+                    )
+                }
+            }
+
             PoiSearchClearFab(
                 hasPoi = vm.poiPosition != null,
                 onClearPoi = { vm.clearPoi() },
                 onOpenSearch = { vm.openPoiSearch() },
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .navigationBarsPadding()
+                    .padding(end = 16.dp),
             )
-        }
 
-        // Bottom-left: timeline, play/pause, gear
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
-                WeatherTimeline(
-                    frameTimes = vm.radarFrameTimes,
-                    currentFrameIndex = vm.currentFrameIndex,
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                NetworkStatusIcon(
+                    status = vm.networkStatus,
+                    opacity = vm.gpsIconOpacity,
                 )
+                if (vm.useGps) {
+                    GpsStatusIcon(
+                        hasGpsFix = hasGpsFix,
+                        opacity = vm.gpsIconOpacity,
+                    )
+                }
             }
-            BottomLeftFabs(
+
+            // Bottom-left controls: pause, settings
+            BottomLeftFabsRow(
                 weatherActive = vm.weatherActive,
                 isWeatherPlaying = vm.isWeatherPlaying,
                 onToggleWeatherPlaying = { vm.toggleWeatherPlaying() },
                 onOpenSettings = { vm.openSettings() },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .navigationBarsPadding()
+                    .padding(16.dp),
+            )
+
+            if (vm.poiPosition != null && poiInfo != null) {
+                val (poiDist, poiBearingDeg) = poiInfo
+                NavWidget(
+                    poiDistance = poiDist,
+                    poiBearingDeg = poiBearingDeg,
+                    cameraBearing = bearing,
+                    navWidgetSize = vm.navWidgetSize,
+                    poiName = vm.poiName,
+                    useMetric = vm.useMetric,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .navigationBarsPadding()
+                        .padding(start = 16.dp),
+                )
+            }
+
+            // Bottom-center timeline (landscape only)
+            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                WeatherTimeline(
+                    frameTimes = vm.radarFrameTimes,
+                    currentFrameIndex = vm.currentFrameIndex,
+                    horizontal = true,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                        .padding(bottom = 16.dp),
+                )
+            }
+
+            // Bottom-right horizontal rail: recenter, zoom in, zoom out
+            BottomRightFabsRow(
+                isTrackingCamera = vm.isTrackingCamera,
+                hasLocation = hasLocation,
+                onRecenter = { vm.isTrackingCamera = true },
+                onZoomIn = {
+                    scope.launch {
+                        cameraState.animateTo(
+                            cameraState.position.copy(zoom = cameraState.position.zoom + 1)
+                        )
+                    }
+                },
+                onZoomOut = {
+                    scope.launch {
+                        cameraState.animateTo(
+                            cameraState.position.copy(zoom = cameraState.position.zoom - 1)
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .navigationBarsPadding()
+                    .padding(16.dp),
+            )
+        } else {
+            // Portrait: keep controls split between top-right, center-right, and bottom-right.
+            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                WeatherTimeline(
+                    frameTimes = vm.radarFrameTimes,
+                    currentFrameIndex = vm.currentFrameIndex,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 16.dp),
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .navigationBarsPadding()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                BottomLeftFabs(
+                    weatherActive = vm.weatherActive,
+                    isWeatherPlaying = vm.isWeatherPlaying,
+                    onToggleWeatherPlaying = { vm.toggleWeatherPlaying() },
+                    onOpenSettings = { vm.openSettings() },
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 16.dp, end = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CompassButton(
+                    cameraState = cameraState,
+                    colors = ButtonDefaults.elevatedButtonColors(),
+                    size = 96.dp,
+                    contentPadding = PaddingValues(8.dp),
+                    shape = CircleShape,
+                    getHomePosition = { current ->
+                        vm.isNorthUp = !vm.isNorthUp
+                        if (vm.isNorthUp) {
+                            current.copy(bearing = 0.0, tilt = 0.0)
+                        } else {
+                            current.copy(tilt = 0.0)
+                        }
+                    },
+                )
+                PoiSearchClearFab(
+                    hasPoi = vm.poiPosition != null,
+                    onClearPoi = { vm.clearPoi() },
+                    onOpenSearch = { vm.openPoiSearch() },
+                )
+            }
+
+            // Portrait right-side legend, vertically centered
+            if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
+                WeatherLegend(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 16.dp),
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                NetworkStatusIcon(
+                    status = vm.networkStatus,
+                    opacity = vm.gpsIconOpacity,
+                )
+                if (vm.useGps) {
+                    GpsStatusIcon(
+                        hasGpsFix = hasGpsFix,
+                        opacity = vm.gpsIconOpacity,
+                    )
+                }
+            }
+
+            BottomRightFabs(
+                isTrackingCamera = vm.isTrackingCamera,
+                hasLocation = hasLocation,
+                onRecenter = { vm.isTrackingCamera = true },
+                onZoomIn = {
+                    scope.launch {
+                        cameraState.animateTo(
+                            cameraState.position.copy(zoom = cameraState.position.zoom + 1)
+                        )
+                    }
+                },
+                onZoomOut = {
+                    scope.launch {
+                        cameraState.animateTo(
+                            cameraState.position.copy(zoom = cameraState.position.zoom - 1)
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .navigationBarsPadding(),
             )
         }
-
-        // Bottom-right: recenter, zoom in, zoom out
-        BottomRightFabs(
-            isTrackingCamera = vm.isTrackingCamera,
-            hasLocation = locationState.location != null,
-            onRecenter = { vm.isTrackingCamera = true },
-            onZoomIn = {
-                scope.launch {
-                    cameraState.animateTo(
-                        cameraState.position.copy(zoom = cameraState.position.zoom + 1)
-                    )
-                }
-            },
-            onZoomOut = {
-                scope.launch {
-                    cameraState.animateTo(
-                        cameraState.position.copy(zoom = cameraState.position.zoom - 1)
-                    )
-                }
-            },
-            modifier = Modifier.align(Alignment.BottomEnd),
-        )
 
         // Settings + Reset dialogs
         SettingsSheet(
@@ -345,6 +573,9 @@ fun MapScreen(
 
         // Help sheet
         HelpSheet(vm = vm)
+
+        // Legend detail sheet
+        LegendDetailSheet(vm = vm)
 
         // POI search dialog
         PoiSearchDialog(vm = vm)

@@ -1,5 +1,9 @@
 package ca.voiditswarranty.roadtripradar.viewmodel
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +14,8 @@ import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.data.ViewBox
 import ca.voiditswarranty.roadtripradar.data.WeatherRepository
 import ca.voiditswarranty.roadtripradar.model.MapStyle
+import ca.voiditswarranty.roadtripradar.model.NetworkStatus
+import ca.voiditswarranty.roadtripradar.model.NetworkTransport
 import ca.voiditswarranty.roadtripradar.model.PoiCategory
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.model.SearchResult
@@ -20,6 +26,7 @@ import kotlinx.coroutines.launch
 import org.maplibre.spatialk.geojson.Position
 
 class MapViewModel(
+    appContext: Context,
     val prefsRepo: PreferencesRepository,
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val geocodingRepo: GeocodingRepository = GeocodingRepository(),
@@ -48,6 +55,40 @@ class MapViewModel(
         private set
     var keepScreenOn by mutableStateOf(prefsRepo.keepScreenOn)
         private set
+    var useGps by mutableStateOf(prefsRepo.useGps)
+        private set
+    var gpsIconOpacity by mutableStateOf(prefsRepo.gpsIconOpacity)
+        private set
+    var mapCenterOffsetPortraitFraction by mutableStateOf(prefsRepo.mapCenterOffsetPortraitFraction)
+        private set
+    var mapCenterOffsetLandscapeFraction by mutableStateOf(prefsRepo.mapCenterOffsetLandscapeFraction)
+        private set
+
+    // Network
+    var networkStatus by mutableStateOf(NetworkStatus())
+        private set
+
+    private val connectivityManager =
+        appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+            val transport = when {
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> NetworkTransport.WIFI
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> NetworkTransport.CELLULAR
+                else -> null
+            }
+            networkStatus = NetworkStatus(
+                transport = transport,
+                validated = caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED),
+                connected = true,
+            )
+        }
+
+        override fun onLost(network: Network) {
+            networkStatus = NetworkStatus()
+        }
+    }
 
     // POI
     var poiPosition by mutableStateOf(prefsRepo.poiPosition)
@@ -57,7 +98,7 @@ class MapViewModel(
 
     // UI state
     var isTrackingCamera by mutableStateOf(true)
-    var isNorthUp by mutableStateOf(false)
+    var isNorthUp by mutableStateOf(!prefsRepo.useGps)
     var showSettings by mutableStateOf(false)
         private set
     var showResetConfirm by mutableStateOf(false)
@@ -65,6 +106,8 @@ class MapViewModel(
     var showPoiSearch by mutableStateOf(false)
         private set
     var showHelp by mutableStateOf(false)
+        private set
+    var showLegendDetail by mutableStateOf(false)
         private set
     var showTerms by mutableStateOf(false)
         private set
@@ -97,6 +140,12 @@ class MapViewModel(
         }
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
     // --- Weather ---
@@ -185,6 +234,44 @@ class MapViewModel(
         prefsRepo.keepScreenOn = on
     }
 
+    fun updateUseGps(on: Boolean) {
+        useGps = on
+        prefsRepo.useGps = on
+        if (!on) {
+            isTrackingCamera = false
+        } else {
+            isTrackingCamera = true
+        }
+    }
+
+    fun updateGpsIconOpacity(opacity: Float) {
+        gpsIconOpacity = opacity
+    }
+
+    fun saveGpsIconOpacity() {
+        prefsRepo.gpsIconOpacity = gpsIconOpacity
+    }
+
+    fun updateMapCenterOffsetPortraitFraction(value: Float) {
+        mapCenterOffsetPortraitFraction = value
+    }
+
+    fun saveMapCenterOffsetPortraitFraction() {
+        prefsRepo.mapCenterOffsetPortraitFraction = mapCenterOffsetPortraitFraction
+    }
+
+    fun updateMapCenterOffsetLandscapeFraction(value: Float) {
+        mapCenterOffsetLandscapeFraction = value
+    }
+
+    fun saveMapCenterOffsetLandscapeFraction() {
+        prefsRepo.mapCenterOffsetLandscapeFraction = mapCenterOffsetLandscapeFraction
+    }
+
+    fun saveLastKnownPosition(pos: Position) {
+        prefsRepo.lastKnownPosition = pos
+    }
+
     fun openSettings() { showSettings = true }
     fun closeSettings() { showSettings = false }
     fun openResetConfirm() { showResetConfirm = true }
@@ -193,6 +280,12 @@ class MapViewModel(
     fun closePoiSearch() { showPoiSearch = false }
     fun openHelp() { showHelp = true }
     fun closeHelp() { showHelp = false }
+
+    fun openLegendDetail() {
+        showHelp = false
+        showLegendDetail = true
+    }
+    fun closeLegendDetail() { showLegendDetail = false }
 
     fun viewTerms() {
         showHelp = false
@@ -321,6 +414,12 @@ class MapViewModel(
         speedSize = PrefsDefaults.SPEED_SIZE
         navWidgetSize = PrefsDefaults.NAV_WIDGET_SIZE
         keepScreenOn = PrefsDefaults.KEEP_SCREEN_ON
+        useGps = PrefsDefaults.USE_GPS
+        gpsIconOpacity = PrefsDefaults.GPS_ICON_OPACITY
+        mapCenterOffsetPortraitFraction = PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION
+        mapCenterOffsetLandscapeFraction = PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION
+        isTrackingCamera = true
+        isNorthUp = false
         poiPosition = null
         poiName = null
         prefsRepo.resetToDefaults(systemDefault)

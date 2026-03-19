@@ -1,0 +1,12 @@
+Category,Label,dBZ,mm/h,Color
+RAIN,Overcast,<10,0,#2f7a2e
+RAIN,Drizzle,10,0,#5baa27
+RAIN,Rain?,20,1,#f7f713
+RAIN,Rain.,30,3,#f9a414
+RAIN,Rain!!,40,12,#f73514
+HAIL,Hail?,50,48,#dd1e42
+HAIL,Hail.,55,100,#c01c6f
+HAIL,Hail!!,>60,>205,#d41e99
+SNOW,Light Snow,,,#91cdfd
+SNOW,Moderate Snow,,,#508cfb
+SNOW,Heavy Snow,,,#195cfc

@@ -8,6 +8,6 @@ import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 class MapViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MapViewModel(PreferencesRepository(context)) as T
+        return MapViewModel(context.applicationContext, PreferencesRepository(context)) as T
     }
 }
