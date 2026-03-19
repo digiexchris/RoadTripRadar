@@ -32,6 +32,16 @@ fun HelpSheet(vm: MapViewModel) {
                 .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            Text(
+                text = "Quick start: long-press the map to drop a target location, or tap once to open Quick Actions.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = "For full documentation: tap the map, then tap Help in Quick Actions.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
             OutlinedButton(
                 onClick = { vm.viewTerms() },
                 modifier = Modifier.fillMaxWidth(),

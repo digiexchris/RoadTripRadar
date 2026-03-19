@@ -1,6 +1,8 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 /**
  * Weather radar colour legend matching RainViewer colour scheme.
@@ -26,54 +28,37 @@ import androidx.compose.ui.unit.sp
 
 private data class LegendEntry(val color: Color, val label: String)
 
-private val legendEntries = listOf(
-    // Rain
-    LegendEntry(Color(0xFF5BAA27), "Rain?"),
-    LegendEntry(Color(0xFFF9A414), "Rain"),
-    LegendEntry(Color(0xFFF73514), "Rain!!"),
-    // Hail
-    LegendEntry(Color(0xFFDD1E42), "Hail?"),
-    LegendEntry(Color(0xFFC01C6F), "Hail."),
-    LegendEntry(Color(0xFFD41E99), "Hail!!"),
-    // Snow
-    LegendEntry(Color(0xFF91CDFD), "Snow?"),
-    LegendEntry(Color(0xFF508CFB), "Snow."),
-    LegendEntry(Color(0xFF195CFC), "Snow!!                                                                                                                                                                                                                                                                                                  "),
+private val legendGroups = listOf(
+    listOf(
+        LegendEntry(Color(0xFF2F7A2E), "Overcast"),
+        LegendEntry(Color(0xFF5BAA27), "Drizzle"),
+        LegendEntry(Color(0xFFF7F713), "Rain?"),
+        LegendEntry(Color(0xFFF9A414), "Rain."),
+        LegendEntry(Color(0xFFF73514), "Rain!!"),
+    ),
+    listOf(
+        LegendEntry(Color(0xFFDD1E42), "Hail?"),
+        LegendEntry(Color(0xFFC01C6F), "Hail."),
+        LegendEntry(Color(0xFFD41E99), "Hail!!"),
+    ),
+    listOf(
+        LegendEntry(Color(0xFF91CDFD), "Snow?"),
+        LegendEntry(Color(0xFF508CFB), "Snow."),
+        LegendEntry(Color(0xFF195CFC), "Snow!!"),
+    ),
 )
 
-/** Full list for portrait mode – includes all original entries from radar_legend.csv. */
-private val portraitLegendEntries = listOf(
-    // Rain
-    LegendEntry(Color(0xFF2F7A2E), "Overcast"),
-    LegendEntry(Color(0xFF5BAA27), "Drizzle"),
-    LegendEntry(Color(0xFFF7F713), "Rain?"),
-    LegendEntry(Color(0xFFF9A414), "Rain."),
-    LegendEntry(Color(0xFFF73514), "Rain!!"),
-    // Hail
-    LegendEntry(Color(0xFFDD1E42), "Hail?"),
-    LegendEntry(Color(0xFFC01C6F), "Hail."),
-    LegendEntry(Color(0xFFD41E99), "Hail!!"),
-    // Snow
-    LegendEntry(Color(0xFF91CDFD), "Snow?"),
-    LegendEntry(Color(0xFF508CFB), "Snow."),
-    LegendEntry(Color(0xFF195CFC), "Snow!!"),
-)
+private val cornerRadius = 2.dp
 
-/**
- * Grid layout for landscape: 3 columns (Rain, Hail, Snow) x 3 rows.
- * Column order per row:
- *   Drizzle       | Small Hail    | Light Snow
- *   Moderate Rain | Hail Possible | Moderate Snow
- *   Shower        | Hail Likely   | Heavy Snow
- */
-private val legendGrid = listOf(
-    listOf(legendEntries[0], legendEntries[3], legendEntries[6]),  // row 1
-    listOf(legendEntries[1], legendEntries[4], legendEntries[7]),  // row 2
-    listOf(legendEntries[2], legendEntries[5], legendEntries[8]),  // row 3
-)
+private fun colorBlockShape(index: Int, groupSize: Int): Shape = when {
+    groupSize == 1 -> RoundedCornerShape(cornerRadius)
+    index == 0 -> RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius)
+    index == groupSize - 1 -> RoundedCornerShape(bottomStart = cornerRadius, bottomEnd = cornerRadius)
+    else -> RoundedCornerShape(0.dp)
+}
 
 @Composable
-private fun LegendCell(entry: LegendEntry) {
+private fun LegendCell(entry: LegendEntry, blockShape: Shape = RoundedCornerShape(cornerRadius)) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -82,13 +67,13 @@ private fun LegendCell(entry: LegendEntry) {
             modifier = Modifier
                 .width(14.dp)
                 .height(10.dp)
-                .clip(RoundedCornerShape(2.dp))
+                .clip(blockShape)
                 .background(entry.color),
         )
         Text(
             text = entry.label,
-            fontSize = 9.sp,
-            lineHeight = 10.sp,
+            fontSize = OverlayTypography.timelineLegendLabelFontSize,
+            lineHeight = OverlayTypography.timelineLegendLabelLineHeight,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
         )
     }
@@ -100,20 +85,20 @@ fun WeatherLegend(
     modifier: Modifier = Modifier,
 ) {
     if (horizontal) {
-        Column(
+        Row(
             modifier = modifier
                 .background(
                     MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
                     RoundedCornerShape(8.dp),
                 )
-                .padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
+                .padding(horizontal = 6.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            legendGrid.forEach { row ->
-                Row {
-                    row.forEach { entry ->
-                        Box(modifier = Modifier.width(50.dp)) {
-                            LegendCell(entry)
+            legendGroups.forEach { group ->
+                Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    group.forEachIndexed { i, entry ->
+                        Box(modifier = Modifier.width(52.dp)) {
+                            LegendCell(entry, colorBlockShape(i, group.size))
                         }
                     }
                 }
@@ -126,10 +111,17 @@ fun WeatherLegend(
                     MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
                     RoundedCornerShape(8.dp),
                 )
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 6.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            portraitLegendEntries.forEach { entry -> LegendCell(entry) }
+            legendGroups.forEach { group ->
+                Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
+                    group.forEachIndexed { i, entry ->
+                        LegendCell(entry, colorBlockShape(i, group.size))
+                    }
+                }
+            }
         }
     }
 }

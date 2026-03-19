@@ -1,6 +1,5 @@
 package ca.voiditswarranty.roadtripradar.ui
 
-import android.app.Activity
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.rememberScrollState
@@ -30,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
@@ -43,7 +41,6 @@ fun SettingsSheet(
     mapStyle: MapStyle,
     onStyleChange: (MapStyle) -> Unit,
 ) {
-    val context = LocalContext.current
     val systemIsDark = isSystemInDarkTheme()
     val portraitCenterOffsetInteraction = remember { MutableInteractionSource() }
     val isAdjustingPortraitCenterOffset by portraitCenterOffsetInteraction.collectIsDraggedAsState()
@@ -67,28 +64,6 @@ fun SettingsSheet(
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Help & Information
-                OutlinedButton(
-                    onClick = {
-                        vm.closeSettings()
-                        vm.openHelp()
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text("Help & Information")
-                }
-
-                // Quit
-                OutlinedButton(
-                    onClick = {
-                        (context as? Activity)?.finishAffinity()
-                        System.exit(0)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text("Quit")
-                }
-
                 // Use GPS Location
                 Row(
                     modifier = Modifier.fillMaxWidth(),

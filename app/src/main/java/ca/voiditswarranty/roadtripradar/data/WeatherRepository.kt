@@ -28,7 +28,7 @@ class WeatherRepository(
             if (generated == lastGenerated) return null
 
             val past = json["radar"]?.jsonObject?.get("past")?.jsonArray
-            val entries = past?.takeLast(10) ?: emptyList()
+            val entries = past?.takeLast(7) ?: emptyList()
             WeatherFrameData(
                 generated = generated,
                 paths = entries.map { it.jsonObject["path"]!!.jsonPrimitive.content },

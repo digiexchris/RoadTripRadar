@@ -77,7 +77,7 @@ fun RadarRingsLayers(
         id = "radar-rings",
         source = ringsSource,
         color = const(ringColor),
-        width = const(1.5.dp),
+        width = const(3.5.dp),
         opacity = const(0.7f),
         dasharray = const(listOf(4, 3)),
     )

@@ -2,24 +2,23 @@ package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun WeatherTimeline(
@@ -29,6 +28,44 @@ fun WeatherTimeline(
     modifier: Modifier = Modifier,
 ) {
     val frameCount = frameTimes.size
+    if (frameCount == 0) return
+
+    val dateFormat = remember { java.text.SimpleDateFormat("H:mm", java.util.Locale.getDefault()) }
+    val startLabel = dateFormat.format(java.util.Date(frameTimes.first() * 1000L))
+    val endLabel = dateFormat.format(java.util.Date(frameTimes.last() * 1000L))
+
+    @Composable
+    fun TimelineMarker(i: Int) {
+        val isActive = i == currentFrameIndex
+        val isThirtyMinuteTick = ((frameCount - 1 - i) % 3) == 0
+        val markerWidth = when {
+            isActive && isThirtyMinuteTick -> 22.dp
+            isActive -> 14.dp
+            isThirtyMinuteTick -> 16.dp
+            else -> 8.dp
+        }
+        val slotSize = 28.dp
+        val slotHeight = 4.dp
+        Box(
+            modifier = Modifier
+                .padding(2.dp)
+                .width(slotSize)
+                .height(slotHeight),
+            contentAlignment = Alignment.Center,
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(markerWidth)
+                    .height(if (isActive) 4.dp else 2.dp)
+                    .background(
+                        if (isActive) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                        RoundedCornerShape(1.dp),
+                    ),
+            )
+        }
+    }
+
     Column(
         modifier = modifier
             .background(
@@ -38,7 +75,6 @@ fun WeatherTimeline(
             .padding(horizontal = 6.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val dateFormat = remember { java.text.SimpleDateFormat("H:mm", java.util.Locale.getDefault()) }
         if (horizontal) {
             val splitIndex = (frameCount + 1) / 2
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -49,69 +85,59 @@ fun WeatherTimeline(
 
                     Row(
                         modifier = Modifier.horizontalScroll(rememberScrollState()),
-                        verticalAlignment = Alignment.Bottom,
+                        verticalAlignment = Alignment.Top,
                     ) {
                         for (i in start until end) {
-                            val label = dateFormat.format(java.util.Date(frameTimes[i] * 1000L))
-                            val isActive = i == currentFrameIndex
-                            Column(
-                                modifier = Modifier.padding(horizontal = 4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(if (isActive) 6.dp else 3.dp)
-                                        .width(16.dp)
-                                        .background(
-                                            if (isActive) MaterialTheme.colorScheme.primary
-                                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                            RoundedCornerShape(1.dp),
-                                        ),
-                                )
-                                Text(
-                                    text = label,
-                                    fontSize = 9.sp,
-                                    lineHeight = 10.sp,
-                                    textAlign = TextAlign.Center,
-                                    color = if (isActive) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                                    modifier = Modifier.width(34.dp),
-                                )
-                            }
+                            TimelineMarker(i)
                         }
                     }
                 }
-            }
-        } else {
-            for (i in 0 until frameCount) {
-                val label = dateFormat.format(java.util.Date(frameTimes[i] * 1000L))
-                val isActive = i == currentFrameIndex
+
                 Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 2.dp),
                 ) {
                     Text(
-                        text = label,
-                        fontSize = 9.sp,
-                        lineHeight = 10.sp,
-                        textAlign = TextAlign.End,
-                        color = if (isActive) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.width(34.dp),
+                        text = startLabel,
+                        fontSize = OverlayTypography.timelineLegendLabelFontSize,
+                        lineHeight = OverlayTypography.timelineLegendLabelLineHeight,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     )
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .height(if (isActive) 4.dp else 2.dp)
-                            .width(if (isActive) 14.dp else 8.dp)
-                            .background(
-                                if (isActive) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                RoundedCornerShape(1.dp),
-                            ),
+                    Text(
+                        text = endLabel,
+                        fontSize = OverlayTypography.timelineLegendLabelFontSize,
+                        lineHeight = OverlayTypography.timelineLegendLabelLineHeight,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     )
                 }
             }
+        } else {
+            Text(
+                text = startLabel,
+                fontSize = OverlayTypography.timelineLegendLabelFontSize,
+                lineHeight = OverlayTypography.timelineLegendLabelLineHeight,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier.padding(bottom = 4.dp),
+            )
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                for (i in 0 until frameCount) {
+                    TimelineMarker(i)
+                }
+            }
+
+            Text(
+                text = endLabel,
+                fontSize = OverlayTypography.timelineLegendLabelFontSize,
+                lineHeight = OverlayTypography.timelineLegendLabelLineHeight,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                modifier = Modifier.padding(top = 4.dp),
+            )
         }
     }
 }

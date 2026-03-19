@@ -37,6 +37,10 @@ class MapViewModel(
         private set
     var isWeatherPlaying by mutableStateOf(prefsRepo.isWeatherPlaying)
         private set
+    var showLegend by mutableStateOf(prefsRepo.showLegend)
+        private set
+    var showTimeline by mutableStateOf(prefsRepo.showTimeline)
+        private set
     var radarFramePaths by mutableStateOf(emptyList<String>())
         private set
     var radarFrameTimes by mutableStateOf(emptyList<Long>())
@@ -93,7 +97,9 @@ class MapViewModel(
     // POI
     var poiPosition by mutableStateOf(prefsRepo.poiPosition)
         private set
-    var poiName by mutableStateOf(prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null)
+    var poiName by mutableStateOf(
+        prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Target Location" else null
+    )
         private set
 
     // UI state
@@ -101,11 +107,15 @@ class MapViewModel(
     var isNorthUp by mutableStateOf(!prefsRepo.useGps)
     var showSettings by mutableStateOf(false)
         private set
+    var showActionsDrawer by mutableStateOf(false)
+        private set
     var showResetConfirm by mutableStateOf(false)
         private set
     var showPoiSearch by mutableStateOf(false)
         private set
     var showHelp by mutableStateOf(false)
+        private set
+    var showQuickHelp by mutableStateOf(false)
         private set
     var showLegendDetail by mutableStateOf(false)
         private set
@@ -137,6 +147,8 @@ class MapViewModel(
         if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
             showTerms = true
             termsNeedAcceptance = true
+        } else if (prefsRepo.showStartupHelp) {
+            showQuickHelp = true
         }
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
@@ -166,6 +178,16 @@ class MapViewModel(
             currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
         }
         startWeatherAnimationIfPlaying()
+    }
+
+    fun updateShowLegend(show: Boolean) {
+        showLegend = show
+        prefsRepo.showLegend = show
+    }
+
+    fun updateShowTimeline(show: Boolean) {
+        showTimeline = show
+        prefsRepo.showTimeline = show
     }
 
     fun updateRadarOpacity(opacity: Float) {
@@ -274,12 +296,19 @@ class MapViewModel(
 
     fun openSettings() { showSettings = true }
     fun closeSettings() { showSettings = false }
+    fun openActionsDrawer() { showActionsDrawer = true }
+    fun closeActionsDrawer() { showActionsDrawer = false }
     fun openResetConfirm() { showResetConfirm = true }
     fun closeResetConfirm() { showResetConfirm = false }
     fun openPoiSearch() { showPoiSearch = true }
     fun closePoiSearch() { showPoiSearch = false }
     fun openHelp() { showHelp = true }
     fun closeHelp() { showHelp = false }
+    fun closeQuickHelp() { showQuickHelp = false }
+    fun disableStartupQuickHelp() {
+        prefsRepo.showStartupHelp = false
+        showQuickHelp = false
+    }
 
     fun openLegendDetail() {
         showHelp = false
@@ -296,6 +325,7 @@ class MapViewModel(
         prefsRepo.acceptedTermsVersion = PrefsDefaults.TERMS_VERSION
         termsNeedAcceptance = false
         showTerms = false
+        showQuickHelp = prefsRepo.showStartupHelp
     }
 
     fun dismissTerms() {
@@ -306,7 +336,7 @@ class MapViewModel(
 
     fun setPoiFromLongPress(position: Position) {
         poiPosition = position
-        poiName = "Dropped Pin"
+        poiName = "Dropped Target Location"
         persistPoi()
     }
 
@@ -409,6 +439,8 @@ class MapViewModel(
         onStyleChange(systemDefault)
         weatherMode = WeatherMode.valueOf(PrefsDefaults.WEATHER_MODE)
         isWeatherPlaying = PrefsDefaults.WEATHER_PLAYING
+        showLegend = PrefsDefaults.SHOW_LEGEND
+        showTimeline = PrefsDefaults.SHOW_TIMELINE
         radarOpacity = PrefsDefaults.RADAR_OPACITY
         useMetric = PrefsDefaults.USE_METRIC
         speedSize = PrefsDefaults.SPEED_SIZE
@@ -425,6 +457,7 @@ class MapViewModel(
         prefsRepo.resetToDefaults(systemDefault)
         showResetConfirm = false
         showSettings = false
+        showActionsDrawer = false
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
     }
