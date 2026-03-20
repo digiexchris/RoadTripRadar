@@ -77,7 +77,7 @@ fun ActionsDrawer(
             onClick = { showQuitConfirm = true },
         ),
         DrawerAction(
-            label = if (vm.poiPosition != null) "Clear Target Location" else "Location Search",
+            label = if (vm.poiPosition != null) "Clear Target" else "Location Search",
             icon = if (vm.poiPosition != null) Icons.Default.Close else Icons.Default.Search,
             onClick = {
                 if (vm.poiPosition != null) vm.clearPoi() else vm.openPoiSearch()
