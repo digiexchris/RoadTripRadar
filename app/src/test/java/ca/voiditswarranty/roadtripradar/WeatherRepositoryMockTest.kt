@@ -57,7 +57,6 @@ class WeatherRepositoryMockTest {
         val result = repo.fetchFrames(0)
 
         assertNull("Expected null when server returns 429, but got $result", result)
-        println("Test D PASSED: 429 response silently returns null (rate limit invisible to caller)")
     }
 
     /**
@@ -66,7 +65,6 @@ class WeatherRepositoryMockTest {
      */
     @Test
     fun `fetchFrames does not retry after 429`() = runTest {
-        // First request: 429. Second request: valid 200 (should never be reached).
         server.enqueue(MockResponse().setResponseCode(429).setBody("Too Many Requests"))
         server.enqueue(MockResponse().setResponseCode(200).setBody(validMetadataJson))
 
@@ -78,7 +76,6 @@ class WeatherRepositoryMockTest {
             1,
             server.requestCount,
         )
-        println("Test E PASSED: No retry after 429 — only 1 request made, next attempt is 60s later")
     }
 
     /**
@@ -87,25 +84,18 @@ class WeatherRepositoryMockTest {
      */
     @Test
     fun `fetchFrames cannot distinguish 429 from server error`() = runTest {
-        // Test with 429
         server.enqueue(MockResponse().setResponseCode(429).setBody("Too Many Requests"))
         val result429 = repo.fetchFrames(0)
 
-        // Test with 500
         server.enqueue(MockResponse().setResponseCode(500).setBody("Internal Server Error"))
         val result500 = repo.fetchFrames(0)
 
-        // Test with network-level error (connection reset)
-        // Not easily done with MockWebServer, so we test 503 instead
         server.enqueue(MockResponse().setResponseCode(503).setBody("Service Unavailable"))
         val result503 = repo.fetchFrames(0)
 
         assertNull("429 should return null", result429)
         assertNull("500 should return null", result500)
         assertNull("503 should return null", result503)
-
-        println("Test F PASSED: All error types (429, 500, 503) return identical null — no differentiation")
-        println("  This means the app cannot detect rate limiting or implement targeted retry/backoff")
     }
 
     /**
@@ -121,7 +111,6 @@ class WeatherRepositoryMockTest {
         assertEquals(1700000000L, result!!.generated)
         assertEquals(3, result.paths.size)
         assertEquals("/v2/radar/1699999200", result.paths[0])
-        println("Sanity check PASSED: Valid response parsed correctly")
     }
 
     /**
@@ -134,6 +123,5 @@ class WeatherRepositoryMockTest {
         val result = repo.fetchFrames(1700000000L)
 
         assertNull("Expected null when generated matches lastGenerated", result)
-        println("Dedup check PASSED: Skips processing when generated timestamp unchanged")
     }
 }

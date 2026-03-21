@@ -36,6 +36,10 @@ enum class MapStyle {
 
 enum class WeatherMode { OFF, ON }
 
+enum class WindSpeedUnit { KMH, MPH, KNOTS }
+
+enum class TemperatureUnit { CELSIUS, FAHRENHEIT, KELVIN }
+
 enum class NetworkTransport { WIFI, CELLULAR }
 
 data class NetworkStatus(
@@ -98,13 +102,17 @@ object PrefsDefaults {
     const val SHOW_TIMELINE = true
     const val SHOW_STARTUP_HELP = true
     const val SPEED_SIZE = 64f
+    const val HUD_WIDGET_SIZE = 48f
     const val NAV_WIDGET_SIZE = 48f
     const val KEEP_SCREEN_ON = true
     const val USE_GPS = true
     const val GPS_ICON_OPACITY = 0.5f
     const val LAST_KNOWN_LAT = 45.4215
     const val LAST_KNOWN_LON = -75.6972
-    const val PREFS_VERSION = 1
+    const val WIND_ENABLED = true
+    val WIND_SPEED_UNIT = WindSpeedUnit.KMH.name
+    val TEMPERATURE_UNIT = TemperatureUnit.CELSIUS.name
+    const val PREFS_VERSION = 2
     const val TERMS_VERSION = 1
 }
 

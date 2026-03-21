@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.navigationBars
@@ -48,8 +47,9 @@ fun BoxScope.MapOverlay(
     var topRowHeightPx by remember { mutableIntStateOf(0) }
     val navBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val bottomRowContentHeight = 96.dp * config.fabScale
+    val compassSize = vm.hudWidgetSize.dp * config.widgetScale
     val measuredTopBandHeight = with(density) { topRowHeightPx.toDp() }
-    val estimatedTopBandHeight = config.compassSize + (config.edgePadding * 2)
+    val estimatedTopBandHeight = compassSize + (config.edgePadding * 2)
     val topBandHeight = (if (topRowHeightPx > 0) measuredTopBandHeight else estimatedTopBandHeight) +
         config.controlSpacing
     val bottomBandHeight = bottomRowContentHeight + navBottomInset + (config.edgePadding * 2)
@@ -71,38 +71,23 @@ fun BoxScope.MapOverlay(
                 )
             }
         },
-        leftMiddleContent = {
-            NetworkStatusIcon(
-                status = vm.networkStatus,
-                opacity = vm.gpsIconOpacity,
-            )
-        },
         centerContent = {
-            if (vm.poiPosition != null && poiInfo != null) {
-                val (poiDist, poiBearingDeg) = poiInfo
-                NavWidget(
-                    poiDistance = poiDist,
-                    poiBearingDeg = poiBearingDeg,
-                    cameraBearing = bearing,
-                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
-                    poiName = vm.poiName,
-                    useMetric = vm.useMetric,
-                )
-            }
-        },
-        rightMiddleContent = {
-            if (vm.useGps) {
-                GpsStatusIcon(
-                    hasGpsFix = hasGpsFix,
-                    opacity = vm.gpsIconOpacity,
-                )
-            }
+            StatusAndRecenterPanel(
+                networkStatus = vm.networkStatus,
+                hasGpsFix = hasGpsFix,
+                useGps = vm.useGps,
+                gpsIconOpacity = vm.gpsIconOpacity,
+                hasLocation = hasLocation,
+                isTrackingCamera = vm.isTrackingCamera,
+                onRecenter = { vm.isTrackingCamera = true },
+                recenterScale = config.fabScale * 1.3f,
+            )
         },
         rightContent = {
             CompassButton(
                 cameraState = cameraState,
                 colors = ButtonDefaults.elevatedButtonColors(),
-                size = config.compassSize,
+                size = compassSize,
                 contentPadding = PaddingValues(8.dp),
                 shape = CircleShape,
                 getHomePosition = { current ->
@@ -154,6 +139,15 @@ fun BoxScope.MapOverlay(
                 bottom = bottomBandHeight,
             ),
     ) {
+        if (vm.windEnabled) {
+            WeatherWidget(
+                snapshot = vm.openMeteoSnapshot,
+                temperatureUnit = vm.temperatureUnit,
+                windSpeedUnit = vm.windSpeedUnit,
+                widgetSize = vm.hudWidgetSize * config.widgetScale,
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         if (vm.weatherActive && vm.showLegend && vm.radarFramePaths.isNotEmpty()) {
@@ -180,12 +174,17 @@ fun BoxScope.MapOverlay(
             }
         },
         navContent = {
-            RecenterTextButton(
-                hasLocation = hasLocation,
-                isTrackingCamera = vm.isTrackingCamera,
-                onRecenter = { vm.isTrackingCamera = true },
-                scale = config.fabScale * 1.3f,
-            )
+            if (vm.poiPosition != null && poiInfo != null) {
+                val (poiDist, poiBearingDeg) = poiInfo
+                NavWidget(
+                    poiDistance = poiDist,
+                    poiBearingDeg = poiBearingDeg,
+                    cameraBearing = bearing,
+                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
+                    poiName = vm.poiName,
+                    useMetric = vm.useMetric,
+                )
+            }
         },
         scale = config.fabScale,
         modifier = Modifier

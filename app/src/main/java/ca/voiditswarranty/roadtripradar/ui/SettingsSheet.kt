@@ -31,8 +31,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.model.MapStyle
+import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
+import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
+
+private enum class ActiveSlider {
+    GpsIconOpacity,
+    MapCenterPortrait,
+    MapCenterLandscape,
+    RadarOpacity,
+    HudWidgetSize,
+    NavWidgetSize,
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,17 +53,41 @@ fun SettingsSheet(
     onStyleChange: (MapStyle) -> Unit,
 ) {
     val systemIsDark = isSystemInDarkTheme()
+
+    val gpsIconOpacityInteraction = remember { MutableInteractionSource() }
+    val isDraggingGpsIconOpacity by gpsIconOpacityInteraction.collectIsDraggedAsState()
     val portraitCenterOffsetInteraction = remember { MutableInteractionSource() }
-    val isAdjustingPortraitCenterOffset by portraitCenterOffsetInteraction.collectIsDraggedAsState()
+    val isDraggingPortraitOffset by portraitCenterOffsetInteraction.collectIsDraggedAsState()
     val landscapeCenterOffsetInteraction = remember { MutableInteractionSource() }
-    val isAdjustingLandscapeCenterOffset by landscapeCenterOffsetInteraction.collectIsDraggedAsState()
-    val isAdjustingCenterOffset = isAdjustingPortraitCenterOffset || isAdjustingLandscapeCenterOffset
+    val isDraggingLandscapeOffset by landscapeCenterOffsetInteraction.collectIsDraggedAsState()
+    val radarOpacityInteraction = remember { MutableInteractionSource() }
+    val isDraggingRadarOpacity by radarOpacityInteraction.collectIsDraggedAsState()
+    val hudWidgetSizeInteraction = remember { MutableInteractionSource() }
+    val isDraggingHudSize by hudWidgetSizeInteraction.collectIsDraggedAsState()
+    val navWidgetSizeInteraction = remember { MutableInteractionSource() }
+    val isDraggingNavSize by navWidgetSizeInteraction.collectIsDraggedAsState()
+
+    val dragging = isDraggingGpsIconOpacity || isDraggingPortraitOffset ||
+        isDraggingLandscapeOffset || isDraggingRadarOpacity ||
+        isDraggingHudSize || isDraggingNavSize
+
+    val active: ActiveSlider? = when {
+        isDraggingGpsIconOpacity -> ActiveSlider.GpsIconOpacity
+        isDraggingPortraitOffset -> ActiveSlider.MapCenterPortrait
+        isDraggingLandscapeOffset -> ActiveSlider.MapCenterLandscape
+        isDraggingRadarOpacity -> ActiveSlider.RadarOpacity
+        isDraggingHudSize -> ActiveSlider.HudWidgetSize
+        isDraggingNavSize -> ActiveSlider.NavWidgetSize
+        else -> null
+    }
+
+    fun showSection(section: ActiveSlider) = !dragging || active == section
 
     if (vm.showSettings) {
         ModalBottomSheet(
             onDismissRequest = { vm.closeSettings() },
-            containerColor = if (isAdjustingCenterOffset) {
-                MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+            containerColor = if (dragging) {
+                MaterialTheme.colorScheme.surface.copy(alpha = 0f)
             } else {
                 MaterialTheme.colorScheme.surface
             },
@@ -64,21 +99,21 @@ fun SettingsSheet(
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Use GPS Location
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("Use GPS Location", style = MaterialTheme.typography.titleSmall)
-                    Switch(
-                        checked = vm.useGps,
-                        onCheckedChange = { vm.updateUseGps(it) },
-                    )
+                if (!dragging) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Use GPS Location", style = MaterialTheme.typography.titleSmall)
+                        Switch(
+                            checked = vm.useGps,
+                            onCheckedChange = { vm.updateUseGps(it) },
+                        )
+                    }
                 }
 
-                // Status Icon Opacity (visible when GPS is on)
-                if (vm.useGps) {
+                if (vm.useGps && showSection(ActiveSlider.GpsIconOpacity)) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -95,92 +130,91 @@ fun SettingsSheet(
                             onValueChange = { vm.updateGpsIconOpacity(it) },
                             onValueChangeFinished = { vm.saveGpsIconOpacity() },
                             valueRange = 0f..1f,
+                            interactionSource = gpsIconOpacityInteraction,
                         )
                     }
                 }
 
-                // Map Center Offset (Portrait)
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text("Map Center Offset (Portrait)", style = MaterialTheme.typography.titleSmall)
-                        Text(
-                            "${(vm.mapCenterOffsetPortraitFraction * 100).toInt()}%",
-                            style = MaterialTheme.typography.bodyMedium,
+                if (showSection(ActiveSlider.MapCenterPortrait)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text("Map Center Offset (Portrait)", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                "${(vm.mapCenterOffsetPortraitFraction * 100).toInt()}%",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Slider(
+                            value = vm.mapCenterOffsetPortraitFraction,
+                            onValueChange = { vm.updateMapCenterOffsetPortraitFraction(it) },
+                            onValueChangeFinished = { vm.saveMapCenterOffsetPortraitFraction() },
+                            valueRange = 0f..1f,
+                            interactionSource = portraitCenterOffsetInteraction,
                         )
                     }
-                    Slider(
-                        value = vm.mapCenterOffsetPortraitFraction,
-                        onValueChange = { vm.updateMapCenterOffsetPortraitFraction(it) },
-                        onValueChangeFinished = {
-                            vm.saveMapCenterOffsetPortraitFraction()
-                        },
-                        valueRange = 0f..1f,
-                        interactionSource = portraitCenterOffsetInteraction,
-                    )
                 }
 
-                // Map Center Offset (Landscape)
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text("Map Center Offset (Landscape)", style = MaterialTheme.typography.titleSmall)
-                        Text(
-                            "${(vm.mapCenterOffsetLandscapeFraction * 100).toInt()}%",
-                            style = MaterialTheme.typography.bodyMedium,
+                if (showSection(ActiveSlider.MapCenterLandscape)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text("Map Center Offset (Landscape)", style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                "${(vm.mapCenterOffsetLandscapeFraction * 100).toInt()}%",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Slider(
+                            value = vm.mapCenterOffsetLandscapeFraction,
+                            onValueChange = { vm.updateMapCenterOffsetLandscapeFraction(it) },
+                            onValueChangeFinished = { vm.saveMapCenterOffsetLandscapeFraction() },
+                            valueRange = 0f..1f,
+                            interactionSource = landscapeCenterOffsetInteraction,
                         )
                     }
-                    Slider(
-                        value = vm.mapCenterOffsetLandscapeFraction,
-                        onValueChange = { vm.updateMapCenterOffsetLandscapeFraction(it) },
-                        onValueChangeFinished = {
-                            vm.saveMapCenterOffsetLandscapeFraction()
-                        },
-                        valueRange = 0f..1f,
-                        interactionSource = landscapeCenterOffsetInteraction,
-                    )
                 }
 
-                // Map Style
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Map Style", style = MaterialTheme.typography.titleSmall)
-                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        MapStyle.entries.forEachIndexed { index, style ->
-                            SegmentedButton(
-                                selected = mapStyle == style,
-                                onClick = { onStyleChange(style) },
-                                shape = SegmentedButtonDefaults.itemShape(index, MapStyle.entries.size),
-                            ) {
-                                Text(style.displayName)
+                if (!dragging) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Map Style", style = MaterialTheme.typography.titleSmall)
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            MapStyle.entries.forEachIndexed { index, style ->
+                                SegmentedButton(
+                                    selected = mapStyle == style,
+                                    onClick = { onStyleChange(style) },
+                                    shape = SegmentedButtonDefaults.itemShape(index, MapStyle.entries.size),
+                                ) {
+                                    Text(style.displayName)
+                                }
                             }
                         }
                     }
                 }
 
-                // Weather Radar
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("Weather Radar", style = MaterialTheme.typography.titleSmall)
-                    Switch(
-                        checked = vm.weatherActive,
-                        onCheckedChange = { on ->
-                            vm.updateWeatherMode(
-                                if (on) WeatherMode.ON
-                                else WeatherMode.OFF
-                            )
-                        },
-                    )
+                if (!dragging) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Weather Radar", style = MaterialTheme.typography.titleSmall)
+                        Switch(
+                            checked = vm.weatherActive,
+                            onCheckedChange = { on ->
+                                vm.updateWeatherMode(
+                                    if (on) WeatherMode.ON else WeatherMode.OFF
+                                )
+                            },
+                        )
+                    }
                 }
 
-                // Radar Opacity (visible when weather is on)
-                if (vm.weatherActive) {
+                if (vm.weatherActive && showSection(ActiveSlider.RadarOpacity)) {
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -197,73 +231,147 @@ fun SettingsSheet(
                             onValueChange = { vm.updateRadarOpacity(it) },
                             onValueChangeFinished = { vm.saveRadarOpacity() },
                             valueRange = 0.1f..1.0f,
+                            interactionSource = radarOpacityInteraction,
                         )
                     }
                 }
 
-                // Units
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Units", style = MaterialTheme.typography.titleSmall)
-                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        SegmentedButton(
-                            selected = vm.useMetric,
-                            onClick = { vm.updateUseMetric(true) },
-                            shape = SegmentedButtonDefaults.itemShape(0, 2),
-                        ) {
-                            Text("Metric")
-                        }
-                        SegmentedButton(
-                            selected = !vm.useMetric,
-                            onClick = { vm.updateUseMetric(false) },
-                            shape = SegmentedButtonDefaults.itemShape(1, 2),
-                        ) {
-                            Text("Imperial")
+                if (!dragging) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Units", style = MaterialTheme.typography.titleSmall)
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            SegmentedButton(
+                                selected = vm.useMetric,
+                                onClick = { vm.updateUseMetric(true) },
+                                shape = SegmentedButtonDefaults.itemShape(0, 2),
+                            ) {
+                                Text("Metric")
+                            }
+                            SegmentedButton(
+                                selected = !vm.useMetric,
+                                onClick = { vm.updateUseMetric(false) },
+                                shape = SegmentedButtonDefaults.itemShape(1, 2),
+                            ) {
+                                Text("Imperial")
+                            }
                         }
                     }
                 }
 
-                // Keep Screen On
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("Keep Screen On", style = MaterialTheme.typography.titleSmall)
-                    Switch(
-                        checked = vm.keepScreenOn,
-                        onCheckedChange = { vm.updateKeepScreenOn(it) },
-                    )
+                if (!dragging) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Keep Screen On", style = MaterialTheme.typography.titleSmall)
+                        Switch(
+                            checked = vm.keepScreenOn,
+                            onCheckedChange = { vm.updateKeepScreenOn(it) },
+                        )
+                    }
                 }
 
-                // Speed Size
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Speed Size", style = MaterialTheme.typography.titleSmall)
-                    Slider(
-                        value = vm.speedSize,
-                        onValueChange = { vm.updateSpeedSize(it) },
-                        onValueChangeFinished = { vm.saveSpeedSize() },
-                        valueRange = 24f..96f,
-                    )
+                if (!dragging) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text("Local weather", style = MaterialTheme.typography.titleSmall)
+                        Switch(
+                            checked = vm.windEnabled,
+                            onCheckedChange = { vm.updateWindEnabled(it) },
+                        )
+                    }
                 }
 
-                // Nav Widget Size
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Nav Widget Size", style = MaterialTheme.typography.titleSmall)
-                    Slider(
-                        value = vm.navWidgetSize,
-                        onValueChange = { vm.updateNavWidgetSize(it) },
-                        onValueChangeFinished = { vm.saveNavWidgetSize() },
-                        valueRange = 24f..96f,
-                    )
+                if (vm.windEnabled && !dragging) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Wind speed units", style = MaterialTheme.typography.titleSmall)
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            WindSpeedUnit.entries.forEachIndexed { index, unit ->
+                                SegmentedButton(
+                                    selected = vm.windSpeedUnit == unit,
+                                    onClick = { vm.updateWindSpeedUnit(unit) },
+                                    shape = SegmentedButtonDefaults.itemShape(
+                                        index,
+                                        WindSpeedUnit.entries.size,
+                                    ),
+                                ) {
+                                    Text(
+                                        when (unit) {
+                                            WindSpeedUnit.KMH -> "km/h"
+                                            WindSpeedUnit.MPH -> "mph"
+                                            WindSpeedUnit.KNOTS -> "kn"
+                                        },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Temperature units", style = MaterialTheme.typography.titleSmall)
+                        SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                            TemperatureUnit.entries.forEachIndexed { index, unit ->
+                                SegmentedButton(
+                                    selected = vm.temperatureUnit == unit,
+                                    onClick = { vm.updateTemperatureUnit(unit) },
+                                    shape = SegmentedButtonDefaults.itemShape(
+                                        index,
+                                        TemperatureUnit.entries.size,
+                                    ),
+                                ) {
+                                    Text(
+                                        when (unit) {
+                                            TemperatureUnit.CELSIUS -> "°C"
+                                            TemperatureUnit.FAHRENHEIT -> "°F"
+                                            TemperatureUnit.KELVIN -> "K"
+                                        },
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
 
-                // Reset to Defaults
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = { vm.openResetConfirm() },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text("Reset to Defaults")
+                if (showSection(ActiveSlider.HudWidgetSize)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(
+                            "HUD size (speed, weather, compass)",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                        Slider(
+                            value = vm.hudWidgetSize,
+                            onValueChange = { vm.updateHudWidgetSize(it) },
+                            onValueChangeFinished = { vm.saveHudWidgetSize() },
+                            valueRange = 24f..96f,
+                            interactionSource = hudWidgetSizeInteraction,
+                        )
+                    }
+                }
+
+                if (showSection(ActiveSlider.NavWidgetSize)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Nav widget size", style = MaterialTheme.typography.titleSmall)
+                        Slider(
+                            value = vm.navWidgetSize,
+                            onValueChange = { vm.updateNavWidgetSize(it) },
+                            onValueChangeFinished = { vm.saveNavWidgetSize() },
+                            valueRange = 24f..96f,
+                            interactionSource = navWidgetSizeInteraction,
+                        )
+                    }
+                }
+
+                if (!dragging) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = { vm.openResetConfirm() },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text("Reset to Defaults")
+                    }
                 }
             }
         }
