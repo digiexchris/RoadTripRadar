@@ -198,6 +198,9 @@ fun MapScreen(
     }
 
     val userPosition = locationState.location?.position
+    LaunchedEffect(userPosition) {
+        vm.setLocalWeatherAnchor(userPosition)
+    }
     val bearing = cameraState.position.bearing
     val ringsCenter = if (hasLocation && userPosition != null) userPosition else cameraState.position.target
     val radarData = remember(ringsCenter.latitude, ringsCenter.longitude, zoomTier, bearing, vm.useMetric) {

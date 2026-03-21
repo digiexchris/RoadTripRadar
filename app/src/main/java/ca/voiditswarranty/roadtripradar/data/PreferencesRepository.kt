@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
+import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
+import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import org.maplibre.spatialk.geojson.Position
 
 class PreferencesRepository(context: Context) {
@@ -27,6 +29,19 @@ class PreferencesRepository(context: Context) {
                 "PLAY" -> prefs.edit()
                     .putString("weather_mode", "ON")
                     .putBoolean("weather_playing", true)
+                    .apply()
+            }
+            prefs.edit().putInt("prefs_version", 1).apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 2) {
+            if (!prefs.contains("nav_widget_size") && prefs.contains("speed_size")) {
+                prefs.edit()
+                    .putFloat("nav_widget_size", prefs.getFloat("speed_size", PrefsDefaults.NAV_WIDGET_SIZE))
+                    .apply()
+            }
+            if (!prefs.contains("hud_widget_size") && prefs.contains("speed_size")) {
+                prefs.edit()
+                    .putFloat("hud_widget_size", prefs.getFloat("speed_size", PrefsDefaults.HUD_WIDGET_SIZE))
                     .apply()
             }
             prefs.edit().putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
@@ -112,9 +127,39 @@ class PreferencesRepository(context: Context) {
         get() = prefs.getFloat("speed_size", PrefsDefaults.SPEED_SIZE)
         set(value) = prefs.edit().putFloat("speed_size", value).apply()
 
+    var hudWidgetSize: Float
+        get() = prefs.getFloat("hud_widget_size", PrefsDefaults.HUD_WIDGET_SIZE)
+        set(value) = prefs.edit().putFloat("hud_widget_size", value).apply()
+
     var navWidgetSize: Float
         get() = prefs.getFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE)
         set(value) = prefs.edit().putFloat("nav_widget_size", value).apply()
+
+    var windEnabled: Boolean
+        get() = prefs.getBoolean("wind_enabled", PrefsDefaults.WIND_ENABLED)
+        set(value) = prefs.edit().putBoolean("wind_enabled", value).apply()
+
+    var windSpeedUnit: WindSpeedUnit
+        get() {
+            val saved = prefs.getString("wind_speed_unit", null)
+            return try {
+                saved?.let { WindSpeedUnit.valueOf(it) } ?: WindSpeedUnit.valueOf(PrefsDefaults.WIND_SPEED_UNIT)
+            } catch (_: IllegalArgumentException) {
+                WindSpeedUnit.valueOf(PrefsDefaults.WIND_SPEED_UNIT)
+            }
+        }
+        set(value) = prefs.edit().putString("wind_speed_unit", value.name).apply()
+
+    var temperatureUnit: TemperatureUnit
+        get() {
+            val saved = prefs.getString("temperature_unit", null)
+            return try {
+                saved?.let { TemperatureUnit.valueOf(it) } ?: TemperatureUnit.valueOf(PrefsDefaults.TEMPERATURE_UNIT)
+            } catch (_: IllegalArgumentException) {
+                TemperatureUnit.valueOf(PrefsDefaults.TEMPERATURE_UNIT)
+            }
+        }
+        set(value) = prefs.edit().putString("temperature_unit", value.name).apply()
 
     var keepScreenOn: Boolean
         get() = prefs.getBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
@@ -183,7 +228,11 @@ class PreferencesRepository(context: Context) {
             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
             .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
             .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)
+            .putFloat("hud_widget_size", PrefsDefaults.HUD_WIDGET_SIZE)
             .putFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE)
+            .putBoolean("wind_enabled", PrefsDefaults.WIND_ENABLED)
+            .putString("wind_speed_unit", PrefsDefaults.WIND_SPEED_UNIT)
+            .putString("temperature_unit", PrefsDefaults.TEMPERATURE_UNIT)
             .putBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
             .putBoolean("use_gps", PrefsDefaults.USE_GPS)
             .putFloat("gps_icon_opacity", PrefsDefaults.GPS_ICON_OPACITY)

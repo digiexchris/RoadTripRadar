@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.voiditswarranty.roadtripradar.data.GeocodingRepository
+import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
+import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.data.ViewBox
 import ca.voiditswarranty.roadtripradar.data.WeatherRepository
@@ -19,7 +21,9 @@ import ca.voiditswarranty.roadtripradar.model.NetworkTransport
 import ca.voiditswarranty.roadtripradar.model.PoiCategory
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.model.SearchResult
+import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
+import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,6 +33,7 @@ class MapViewModel(
     appContext: Context,
     val prefsRepo: PreferencesRepository,
     private val weatherRepo: WeatherRepository = WeatherRepository(),
+    private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
     private val geocodingRepo: GeocodingRepository = GeocodingRepository(),
 ) : ViewModel() {
 
@@ -50,12 +55,24 @@ class MapViewModel(
     var radarOpacity by mutableStateOf(prefsRepo.radarOpacity)
         private set
 
+    /** Open-Meteo (temperature, WMO code, wind); updated by [setLocalWeatherAnchor] polling. */
+    var openMeteoSnapshot by mutableStateOf<OpenMeteoSnapshot?>(null)
+        private set
+
     // Settings
     var useMetric by mutableStateOf(prefsRepo.useMetric)
         private set
     var speedSize by mutableStateOf(prefsRepo.speedSize)
         private set
+    var hudWidgetSize by mutableStateOf(prefsRepo.hudWidgetSize)
+        private set
     var navWidgetSize by mutableStateOf(prefsRepo.navWidgetSize)
+        private set
+    var windEnabled by mutableStateOf(prefsRepo.windEnabled)
+        private set
+    var windSpeedUnit by mutableStateOf(prefsRepo.windSpeedUnit)
+        private set
+    var temperatureUnit by mutableStateOf(prefsRepo.temperatureUnit)
         private set
     var keepScreenOn by mutableStateOf(prefsRepo.keepScreenOn)
         private set
@@ -98,7 +115,7 @@ class MapViewModel(
     var poiPosition by mutableStateOf(prefsRepo.poiPosition)
         private set
     var poiName by mutableStateOf(
-        prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Target Location" else null
+        prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null
     )
         private set
 
@@ -138,8 +155,16 @@ class MapViewModel(
 
     val weatherActive get() = weatherMode == WeatherMode.ON
 
+    private companion object {
+        private const val RADAR_POLL_MS = 60_000L
+        private const val LOCAL_WEATHER_SUCCESS_MS = 600_000L
+        private const val LOCAL_WEATHER_RETRY_MS = 60_000L
+    }
+
     private var lastGenerated = 0L
+    private var localWeatherAnchor: Position? = null
     private var weatherPollingJob: Job? = null
+    private var localWeatherPollJob: Job? = null
     private var weatherAnimationJob: Job? = null
     private var searchJob: Job? = null
 
@@ -152,7 +177,12 @@ class MapViewModel(
         }
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()
+        startLocalWeatherPolling()
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
+    }
+
+    fun setLocalWeatherAnchor(position: Position?) {
+        localWeatherAnchor = position
     }
 
     override fun onCleared() {
@@ -210,7 +240,28 @@ class MapViewModel(
                     radarFrameTimes = data.times
                     currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
                 }
-                delay(60_000)
+                delay(RADAR_POLL_MS)
+            }
+        }
+    }
+
+    private fun startLocalWeatherPolling() {
+        localWeatherPollJob?.cancel()
+        localWeatherPollJob = viewModelScope.launch {
+            while (true) {
+                val pos = localWeatherAnchor
+                if (pos == null) {
+                    delay(2_000L)
+                    continue
+                }
+                openMeteoRepo.fetchCurrent(pos.latitude, pos.longitude)
+                    .onSuccess { snap ->
+                        openMeteoSnapshot = snap
+                        delay(LOCAL_WEATHER_SUCCESS_MS)
+                    }
+                    .onFailure {
+                        delay(LOCAL_WEATHER_RETRY_MS)
+                    }
             }
         }
     }
@@ -249,6 +300,29 @@ class MapViewModel(
 
     fun saveNavWidgetSize() {
         prefsRepo.navWidgetSize = navWidgetSize
+    }
+
+    fun updateHudWidgetSize(size: Float) {
+        hudWidgetSize = size
+    }
+
+    fun saveHudWidgetSize() {
+        prefsRepo.hudWidgetSize = hudWidgetSize
+    }
+
+    fun updateWindEnabled(on: Boolean) {
+        windEnabled = on
+        prefsRepo.windEnabled = on
+    }
+
+    fun updateWindSpeedUnit(unit: WindSpeedUnit) {
+        windSpeedUnit = unit
+        prefsRepo.windSpeedUnit = unit
+    }
+
+    fun updateTemperatureUnit(unit: TemperatureUnit) {
+        temperatureUnit = unit
+        prefsRepo.temperatureUnit = unit
     }
 
     fun updateKeepScreenOn(on: Boolean) {
@@ -336,7 +410,7 @@ class MapViewModel(
 
     fun setPoiFromLongPress(position: Position) {
         poiPosition = position
-        poiName = "Dropped Target Location"
+        poiName = "Dropped Pin"
         persistPoi()
     }
 
@@ -444,7 +518,11 @@ class MapViewModel(
         radarOpacity = PrefsDefaults.RADAR_OPACITY
         useMetric = PrefsDefaults.USE_METRIC
         speedSize = PrefsDefaults.SPEED_SIZE
+        hudWidgetSize = PrefsDefaults.HUD_WIDGET_SIZE
         navWidgetSize = PrefsDefaults.NAV_WIDGET_SIZE
+        windEnabled = PrefsDefaults.WIND_ENABLED
+        windSpeedUnit = WindSpeedUnit.valueOf(PrefsDefaults.WIND_SPEED_UNIT)
+        temperatureUnit = TemperatureUnit.valueOf(PrefsDefaults.TEMPERATURE_UNIT)
         keepScreenOn = PrefsDefaults.KEEP_SCREEN_ON
         useGps = PrefsDefaults.USE_GPS
         gpsIconOpacity = PrefsDefaults.GPS_ICON_OPACITY

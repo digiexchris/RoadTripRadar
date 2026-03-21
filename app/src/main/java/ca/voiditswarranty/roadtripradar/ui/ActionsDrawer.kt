@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -93,7 +94,7 @@ fun ActionsDrawer(
             },
         ),
         DrawerAction(
-            label = if (vm.isWeatherPlaying) "Pause Weather" else "Play Weather",
+            label = if (vm.isWeatherPlaying) "Pause Weather Radar" else "Play Weather Radar",
             icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
             enabled = weatherDependentEnabled,
             onClick = {
@@ -102,7 +103,7 @@ fun ActionsDrawer(
             },
         ),
         DrawerAction(
-            label = if (vm.weatherActive) "Weather On" else "Weather Off",
+            label = if (vm.weatherActive) "Weather Radar On" else "Weather Radar Off",
             icon = Icons.Default.SatelliteAlt,
             onClick = {
                 vm.updateWeatherMode(if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON)
@@ -237,7 +238,11 @@ private fun DrawerActionFab(
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
         ) {
             Icon(imageVector = icon, contentDescription = null)
-            Text(text = label, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+            )
         }
     }
 }
