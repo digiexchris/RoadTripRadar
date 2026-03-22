@@ -264,6 +264,12 @@ fun StatusAndRecenterPanel(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
+        RecenterTextButton(
+            hasLocation = hasLocation,
+            isTrackingCamera = isTrackingCamera,
+            onRecenter = onRecenter,
+            scale = recenterScale,
+        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -279,12 +285,6 @@ fun StatusAndRecenterPanel(
                 )
             }
         }
-        RecenterTextButton(
-            hasLocation = hasLocation,
-            isTrackingCamera = isTrackingCamera,
-            onRecenter = onRecenter,
-            scale = recenterScale,
-        )
     }
 }
 

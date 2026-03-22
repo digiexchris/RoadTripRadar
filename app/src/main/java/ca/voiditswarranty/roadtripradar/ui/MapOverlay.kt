@@ -47,7 +47,7 @@ fun BoxScope.MapOverlay(
     var topRowHeightPx by remember { mutableIntStateOf(0) }
     val navBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val bottomRowContentHeight = 96.dp * config.fabScale
-    val compassSize = vm.hudWidgetSize.dp * config.widgetScale
+    val compassSize = vm.hudWidgetSize.dp * config.widgetScale * 1.2f
     val measuredTopBandHeight = with(density) { topRowHeightPx.toDp() }
     val estimatedTopBandHeight = compassSize + (config.edgePadding * 2)
     val topBandHeight = (if (topRowHeightPx > 0) measuredTopBandHeight else estimatedTopBandHeight) +
@@ -72,16 +72,17 @@ fun BoxScope.MapOverlay(
             }
         },
         centerContent = {
-            StatusAndRecenterPanel(
-                networkStatus = vm.networkStatus,
-                hasGpsFix = hasGpsFix,
-                useGps = vm.useGps,
-                gpsIconOpacity = vm.gpsIconOpacity,
-                hasLocation = hasLocation,
-                isTrackingCamera = vm.isTrackingCamera,
-                onRecenter = { vm.isTrackingCamera = true },
-                recenterScale = config.fabScale * 1.3f,
-            )
+            if (vm.poiPosition != null && poiInfo != null) {
+                val (poiDist, poiBearingDeg) = poiInfo
+                NavWidget(
+                    poiDistance = poiDist,
+                    poiBearingDeg = poiBearingDeg,
+                    cameraBearing = bearing,
+                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
+                    poiName = vm.poiName,
+                    useMetric = vm.useMetric,
+                )
+            }
         },
         rightContent = {
             CompassButton(
@@ -174,17 +175,16 @@ fun BoxScope.MapOverlay(
             }
         },
         navContent = {
-            if (vm.poiPosition != null && poiInfo != null) {
-                val (poiDist, poiBearingDeg) = poiInfo
-                NavWidget(
-                    poiDistance = poiDist,
-                    poiBearingDeg = poiBearingDeg,
-                    cameraBearing = bearing,
-                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
-                    poiName = vm.poiName,
-                    useMetric = vm.useMetric,
-                )
-            }
+            StatusAndRecenterPanel(
+                networkStatus = vm.networkStatus,
+                hasGpsFix = hasGpsFix,
+                useGps = vm.useGps,
+                gpsIconOpacity = vm.gpsIconOpacity,
+                hasLocation = hasLocation,
+                isTrackingCamera = vm.isTrackingCamera,
+                onRecenter = { vm.isTrackingCamera = true },
+                recenterScale = config.fabScale * 1.3f,
+            )
         },
         scale = config.fabScale,
         modifier = Modifier

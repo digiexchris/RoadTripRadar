@@ -142,7 +142,7 @@ fun WeatherWidget(
                     contentDescription = "Wind direction",
                     modifier = Modifier
                         .size(arrowSize)
-                        .rotate(snapshot.windDirectionDeg.toFloat()),
+                        .rotate(snapshot.windDirectionDeg.toFloat() + 180f),
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
@@ -154,16 +154,18 @@ fun WeatherWidget(
             }
             Text(
                 text = formatWind(snapshot.windSpeedKmh, windSpeedUnit),
-                fontSize = conditionsSize.sp,
-                lineHeight = conditionsSize.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                fontSize = labelSize.sp,
+                lineHeight = labelSize.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
             )
             Text(
                 text = "↑${formatWind(snapshot.windGustsKmh, windSpeedUnit)}",
-                fontSize = conditionsSize.sp,
-                lineHeight = conditionsSize.sp,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                fontSize = labelSize.sp,
+                lineHeight = labelSize.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
             )
         } else {
