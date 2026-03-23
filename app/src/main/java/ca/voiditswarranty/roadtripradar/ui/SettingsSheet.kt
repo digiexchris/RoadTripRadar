@@ -55,6 +55,8 @@ fun SettingsSheet(
     mapStyle: MapStyle,
     onStyleChange: (MapStyle) -> Unit,
 ) {
+    if (!vm.showSettings && !vm.showResetConfirm) return
+
     val systemIsDark = isSystemInDarkTheme()
 
     val gpsIconOpacityInteraction = remember { MutableInteractionSource() }

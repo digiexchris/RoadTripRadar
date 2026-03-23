@@ -1,11 +1,22 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import android.app.Activity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -26,13 +37,12 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,116 +65,147 @@ private data class DrawerAction(
 )
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun ActionsDrawer(
     vm: MapViewModel,
 ) {
-    if (!vm.showActionsDrawer) return
-
     val context = LocalContext.current
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val weatherDependentEnabled = vm.weatherActive
     var showQuitConfirm by remember { mutableStateOf(false) }
 
-    val actions = listOf(
-        DrawerAction(
-            label = "Close",
-            icon = Icons.Default.KeyboardArrowDown,
-            onClick = { vm.closeActionsDrawer() },
-        ),
-        DrawerAction(
-            label = "Quit",
-            icon = Icons.Default.PowerSettingsNew,
-            onClick = { showQuitConfirm = true },
-        ),
-        DrawerAction(
-            label = if (vm.poiPosition != null) "Clear Target" else "Location Search",
-            icon = if (vm.poiPosition != null) Icons.Default.Close else Icons.Default.Search,
-            onClick = {
-                if (vm.poiPosition != null) vm.clearPoi() else vm.openPoiSearch()
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = if (vm.isNorthUp) "Track Bearing" else "Track North",
-            icon = Icons.Default.Navigation,
-            onClick = {
-                vm.isNorthUp = !vm.isNorthUp
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = if (vm.isWeatherPlaying) "Pause Weather Radar" else "Play Weather Radar",
-            icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-            enabled = weatherDependentEnabled,
-            onClick = {
-                vm.toggleWeatherPlaying()
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = if (vm.weatherActive) "Weather Radar On" else "Weather Radar Off",
-            icon = Icons.Default.SatelliteAlt,
-            onClick = {
-                vm.updateWeatherMode(if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON)
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = if (vm.showLegend) "Hide Legend" else "Show Legend",
-            icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-            enabled = weatherDependentEnabled,
-            onClick = {
-                vm.updateShowLegend(!vm.showLegend)
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
-            icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-            enabled = weatherDependentEnabled,
-            onClick = {
-                vm.updateShowTimeline(!vm.showTimeline)
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = "Settings",
-            icon = Icons.Default.Settings,
-            onClick = {
-                vm.openSettings()
-                vm.closeActionsDrawer()
-            },
-        ),
-        DrawerAction(
-            label = "Help",
-            icon = Icons.AutoMirrored.Filled.Help,
-            onClick = {
-                vm.openHelp()
-                vm.closeActionsDrawer()
-            },
-        ),
-    )
+    LaunchedEffect(vm.showActionsDrawer) {
+        if (!vm.showActionsDrawer) showQuitConfirm = false
+    }
 
-    ModalBottomSheet(
-        onDismissRequest = { vm.closeActionsDrawer() },
-        sheetState = sheetState,
-    ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(
+            visible = vm.showActionsDrawer,
+            enter = fadeIn(),
+            exit = fadeOut(),
         ) {
-            items(actions) { action ->
-                DrawerActionFab(
-                    label = action.label,
-                    icon = action.icon,
-                    enabled = action.enabled,
-                    onClick = action.onClick,
-                )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) { vm.closeActionsDrawer() }
+            )
+        }
+
+        AnimatedVisibility(
+            visible = vm.showActionsDrawer,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOutVertically(targetOffsetY = { it }),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        ) {
+            val weatherDependentEnabled = vm.weatherActive
+
+            val actions = listOf(
+                DrawerAction(
+                    label = "Close",
+                    icon = Icons.Default.KeyboardArrowDown,
+                    onClick = { vm.closeActionsDrawer() },
+                ),
+                DrawerAction(
+                    label = "Quit",
+                    icon = Icons.Default.PowerSettingsNew,
+                    onClick = { showQuitConfirm = true },
+                ),
+                DrawerAction(
+                    label = if (vm.poiPosition != null) "Clear Target" else "Location Search",
+                    icon = if (vm.poiPosition != null) Icons.Default.Close else Icons.Default.Search,
+                    onClick = {
+                        if (vm.poiPosition != null) vm.clearPoi() else vm.openPoiSearch()
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                    icon = Icons.Default.Navigation,
+                    onClick = {
+                        vm.isNorthUp = !vm.isNorthUp
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = if (vm.isWeatherPlaying) "Pause Weather Radar" else "Play Weather Radar",
+                    icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    enabled = weatherDependentEnabled,
+                    onClick = {
+                        vm.toggleWeatherPlaying()
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = if (vm.weatherActive) "Weather Radar On" else "Weather Radar Off",
+                    icon = Icons.Default.SatelliteAlt,
+                    onClick = {
+                        vm.updateWeatherMode(if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON)
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = if (vm.showLegend) "Hide Legend" else "Show Legend",
+                    icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    enabled = weatherDependentEnabled,
+                    onClick = {
+                        vm.updateShowLegend(!vm.showLegend)
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
+                    icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    enabled = weatherDependentEnabled,
+                    onClick = {
+                        vm.updateShowTimeline(!vm.showTimeline)
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = "Settings",
+                    icon = Icons.Default.Settings,
+                    onClick = {
+                        vm.openSettings()
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = "Help",
+                    icon = Icons.AutoMirrored.Filled.Help,
+                    onClick = {
+                        vm.openHelp()
+                        vm.closeActionsDrawer()
+                    },
+                ),
+            )
+
+            Surface(
+                shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.75f)
+                    .navigationBarsPadding(),
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(actions) { action ->
+                        DrawerActionFab(
+                            label = action.label,
+                            icon = action.icon,
+                            enabled = action.enabled,
+                            onClick = action.onClick,
+                        )
+                    }
+                }
             }
         }
     }

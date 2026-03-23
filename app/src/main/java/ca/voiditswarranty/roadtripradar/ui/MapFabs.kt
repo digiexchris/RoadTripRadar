@@ -248,47 +248,6 @@ fun BottomContent(
 }
 
 @Composable
-fun StatusAndRecenterPanel(
-    networkStatus: ca.voiditswarranty.roadtripradar.model.NetworkStatus,
-    hasGpsFix: Boolean,
-    useGps: Boolean,
-    gpsIconOpacity: Float,
-    hasLocation: Boolean,
-    isTrackingCamera: Boolean,
-    onRecenter: () -> Unit,
-    recenterScale: Float,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        RecenterTextButton(
-            hasLocation = hasLocation,
-            isTrackingCamera = isTrackingCamera,
-            onRecenter = onRecenter,
-            scale = recenterScale,
-        )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            NetworkStatusIcon(
-                status = networkStatus,
-                opacity = gpsIconOpacity,
-            )
-            if (useGps) {
-                GpsStatusIcon(
-                    hasGpsFix = hasGpsFix,
-                    opacity = gpsIconOpacity,
-                )
-            }
-        }
-    }
-}
-
-@Composable
 fun TopContent(
     leftContent: @Composable () -> Unit,
     centerContent: @Composable () -> Unit,

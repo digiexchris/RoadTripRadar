@@ -2,6 +2,8 @@ package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,15 +13,23 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,16 +82,31 @@ fun BoxScope.MapOverlay(
             }
         },
         centerContent = {
-            if (vm.poiPosition != null && poiInfo != null) {
-                val (poiDist, poiBearingDeg) = poiInfo
-                NavWidget(
-                    poiDistance = poiDist,
-                    poiBearingDeg = poiBearingDeg,
-                    cameraBearing = bearing,
-                    navWidgetSize = vm.navWidgetSize * config.widgetScale,
-                    poiName = vm.poiName,
-                    useMetric = vm.useMetric,
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                NetworkStatusIcon(
+                    status = vm.networkStatus,
+                    opacity = vm.gpsIconOpacity,
                 )
+                if (vm.poiPosition != null && poiInfo != null) {
+                    val (poiDist, poiBearingDeg) = poiInfo
+                    NavWidget(
+                        poiDistance = poiDist,
+                        poiBearingDeg = poiBearingDeg,
+                        cameraBearing = bearing,
+                        navWidgetSize = vm.navWidgetSize * config.widgetScale,
+                        poiName = vm.poiName,
+                        useMetric = vm.useMetric,
+                    )
+                }
+                if (vm.useGps) {
+                    GpsStatusIcon(
+                        hasGpsFix = hasGpsFix,
+                        opacity = vm.gpsIconOpacity,
+                    )
+                }
             }
         },
         rightContent = {
@@ -175,16 +200,38 @@ fun BoxScope.MapOverlay(
             }
         },
         navContent = {
-            StatusAndRecenterPanel(
-                networkStatus = vm.networkStatus,
-                hasGpsFix = hasGpsFix,
-                useGps = vm.useGps,
-                gpsIconOpacity = vm.gpsIconOpacity,
-                hasLocation = hasLocation,
-                isTrackingCamera = vm.isTrackingCamera,
-                onRecenter = { vm.isTrackingCamera = true },
-                recenterScale = config.fabScale * 1.3f,
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                RecenterTextButton(
+                    hasLocation = hasLocation,
+                    isTrackingCamera = vm.isTrackingCamera,
+                    onRecenter = { vm.isTrackingCamera = true },
+                    scale = config.fabScale * 1.3f,
+                )
+                Button(
+                    onClick = { vm.openActionsDrawer() },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                    contentPadding = PaddingValues(0.dp),
+                    modifier = Modifier
+                        .size(width = 125.dp, height = 96.dp)
+                        .graphicsLayer {
+                            scaleX = config.fabScale
+                            scaleY = config.fabScale
+                        },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Quick Actions",
+                        modifier = Modifier.size(36.dp),
+                    )
+                }
+            }
         },
         scale = config.fabScale,
         modifier = Modifier
