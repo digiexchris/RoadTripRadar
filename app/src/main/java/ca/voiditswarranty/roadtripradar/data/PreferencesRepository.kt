@@ -41,10 +41,44 @@ class PreferencesRepository(context: Context) {
             }
             if (!prefs.contains("hud_widget_size") && prefs.contains("speed_size")) {
                 prefs.edit()
-                    .putFloat("hud_widget_size", prefs.getFloat("speed_size", PrefsDefaults.HUD_WIDGET_SIZE))
+                    .putFloat("hud_widget_size", prefs.getFloat("speed_size", PrefsDefaults.SPEED_SIZE))
                     .apply()
             }
-            prefs.edit().putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
+            prefs.edit().putInt("prefs_version", 2).apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 3) {
+            if (!prefs.contains("weather_widget_size")) {
+                prefs.edit()
+                    .putFloat(
+                        "weather_widget_size",
+                        prefs.getFloat("nav_widget_size", PrefsDefaults.WEATHER_WIDGET_SIZE),
+                    )
+                    .apply()
+            }
+            prefs.edit().putInt("prefs_version", 3).apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 4) {
+            if (!prefs.contains("compass_widget_size")) {
+                val base = prefs.getFloat(
+                    "hud_widget_size",
+                    prefs.getFloat("speed_size", PrefsDefaults.SPEED_SIZE),
+                )
+                prefs.edit()
+                    .putFloat("compass_widget_size", base * 1.5f)
+                    .apply()
+            }
+            prefs.edit().putInt("prefs_version", 4).apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 5) {
+            val mergedSpeed = prefs.getFloat(
+                "hud_widget_size",
+                prefs.getFloat("speed_size", PrefsDefaults.SPEED_SIZE),
+            )
+            prefs.edit()
+                .putFloat("speed_size", mergedSpeed)
+                .remove("hud_widget_size")
+                .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                .apply()
         }
     }
 
@@ -127,13 +161,17 @@ class PreferencesRepository(context: Context) {
         get() = prefs.getFloat("speed_size", PrefsDefaults.SPEED_SIZE)
         set(value) = prefs.edit().putFloat("speed_size", value).apply()
 
-    var hudWidgetSize: Float
-        get() = prefs.getFloat("hud_widget_size", PrefsDefaults.HUD_WIDGET_SIZE)
-        set(value) = prefs.edit().putFloat("hud_widget_size", value).apply()
-
     var navWidgetSize: Float
         get() = prefs.getFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE)
         set(value) = prefs.edit().putFloat("nav_widget_size", value).apply()
+
+    var weatherWidgetSize: Float
+        get() = prefs.getFloat("weather_widget_size", PrefsDefaults.WEATHER_WIDGET_SIZE)
+        set(value) = prefs.edit().putFloat("weather_widget_size", value).apply()
+
+    var compassWidgetSize: Float
+        get() = prefs.getFloat("compass_widget_size", PrefsDefaults.COMPASS_WIDGET_SIZE)
+        set(value) = prefs.edit().putFloat("compass_widget_size", value).apply()
 
     var windEnabled: Boolean
         get() = prefs.getBoolean("wind_enabled", PrefsDefaults.WIND_ENABLED)
@@ -228,8 +266,9 @@ class PreferencesRepository(context: Context) {
             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
             .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
             .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)
-            .putFloat("hud_widget_size", PrefsDefaults.HUD_WIDGET_SIZE)
             .putFloat("nav_widget_size", PrefsDefaults.NAV_WIDGET_SIZE)
+            .putFloat("weather_widget_size", PrefsDefaults.WEATHER_WIDGET_SIZE)
+            .putFloat("compass_widget_size", PrefsDefaults.COMPASS_WIDGET_SIZE)
             .putBoolean("wind_enabled", PrefsDefaults.WIND_ENABLED)
             .putString("wind_speed_unit", PrefsDefaults.WIND_SPEED_UNIT)
             .putString("temperature_unit", PrefsDefaults.TEMPERATURE_UNIT)

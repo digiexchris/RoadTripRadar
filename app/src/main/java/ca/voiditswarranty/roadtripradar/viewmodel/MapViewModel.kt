@@ -64,9 +64,11 @@ class MapViewModel(
         private set
     var speedSize by mutableStateOf(prefsRepo.speedSize)
         private set
-    var hudWidgetSize by mutableStateOf(prefsRepo.hudWidgetSize)
-        private set
     var navWidgetSize by mutableStateOf(prefsRepo.navWidgetSize)
+        private set
+    var weatherWidgetSize by mutableStateOf(prefsRepo.weatherWidgetSize)
+        private set
+    var compassWidgetSize by mutableStateOf(prefsRepo.compassWidgetSize)
         private set
     var windEnabled by mutableStateOf(prefsRepo.windEnabled)
         private set
@@ -302,12 +304,20 @@ class MapViewModel(
         prefsRepo.navWidgetSize = navWidgetSize
     }
 
-    fun updateHudWidgetSize(size: Float) {
-        hudWidgetSize = size
+    fun updateWeatherWidgetSize(size: Float) {
+        weatherWidgetSize = size
     }
 
-    fun saveHudWidgetSize() {
-        prefsRepo.hudWidgetSize = hudWidgetSize
+    fun saveWeatherWidgetSize() {
+        prefsRepo.weatherWidgetSize = weatherWidgetSize
+    }
+
+    fun updateCompassWidgetSize(size: Float) {
+        compassWidgetSize = size
+    }
+
+    fun saveCompassWidgetSize() {
+        prefsRepo.compassWidgetSize = compassWidgetSize
     }
 
     fun updateWindEnabled(on: Boolean) {
@@ -518,8 +528,9 @@ class MapViewModel(
         radarOpacity = PrefsDefaults.RADAR_OPACITY
         useMetric = PrefsDefaults.USE_METRIC
         speedSize = PrefsDefaults.SPEED_SIZE
-        hudWidgetSize = PrefsDefaults.HUD_WIDGET_SIZE
         navWidgetSize = PrefsDefaults.NAV_WIDGET_SIZE
+        weatherWidgetSize = PrefsDefaults.WEATHER_WIDGET_SIZE
+        compassWidgetSize = PrefsDefaults.COMPASS_WIDGET_SIZE
         windEnabled = PrefsDefaults.WIND_ENABLED
         windSpeedUnit = WindSpeedUnit.valueOf(PrefsDefaults.WIND_SPEED_UNIT)
         temperatureUnit = TemperatureUnit.valueOf(PrefsDefaults.TEMPERATURE_UNIT)

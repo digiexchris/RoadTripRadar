@@ -42,7 +42,9 @@ private enum class ActiveSlider {
     MapCenterPortrait,
     MapCenterLandscape,
     RadarOpacity,
-    HudWidgetSize,
+    WeatherWidgetSize,
+    SpeedSize,
+    CompassWidgetSize,
     NavWidgetSize,
 }
 
@@ -63,21 +65,28 @@ fun SettingsSheet(
     val isDraggingLandscapeOffset by landscapeCenterOffsetInteraction.collectIsDraggedAsState()
     val radarOpacityInteraction = remember { MutableInteractionSource() }
     val isDraggingRadarOpacity by radarOpacityInteraction.collectIsDraggedAsState()
-    val hudWidgetSizeInteraction = remember { MutableInteractionSource() }
-    val isDraggingHudSize by hudWidgetSizeInteraction.collectIsDraggedAsState()
+    val weatherWidgetSizeInteraction = remember { MutableInteractionSource() }
+    val isDraggingWeatherWidgetSize by weatherWidgetSizeInteraction.collectIsDraggedAsState()
+    val speedSizeInteraction = remember { MutableInteractionSource() }
+    val isDraggingSpeedSize by speedSizeInteraction.collectIsDraggedAsState()
+    val compassWidgetSizeInteraction = remember { MutableInteractionSource() }
+    val isDraggingCompassSize by compassWidgetSizeInteraction.collectIsDraggedAsState()
     val navWidgetSizeInteraction = remember { MutableInteractionSource() }
     val isDraggingNavSize by navWidgetSizeInteraction.collectIsDraggedAsState()
 
     val dragging = isDraggingGpsIconOpacity || isDraggingPortraitOffset ||
         isDraggingLandscapeOffset || isDraggingRadarOpacity ||
-        isDraggingHudSize || isDraggingNavSize
+        isDraggingWeatherWidgetSize || isDraggingSpeedSize ||
+        isDraggingCompassSize || isDraggingNavSize
 
     val active: ActiveSlider? = when {
         isDraggingGpsIconOpacity -> ActiveSlider.GpsIconOpacity
         isDraggingPortraitOffset -> ActiveSlider.MapCenterPortrait
         isDraggingLandscapeOffset -> ActiveSlider.MapCenterLandscape
         isDraggingRadarOpacity -> ActiveSlider.RadarOpacity
-        isDraggingHudSize -> ActiveSlider.HudWidgetSize
+        isDraggingWeatherWidgetSize -> ActiveSlider.WeatherWidgetSize
+        isDraggingSpeedSize -> ActiveSlider.SpeedSize
+        isDraggingCompassSize -> ActiveSlider.CompassWidgetSize
         isDraggingNavSize -> ActiveSlider.NavWidgetSize
         else -> null
     }
@@ -87,10 +96,13 @@ fun SettingsSheet(
     val showMapGroup = !dragging ||
         active == ActiveSlider.MapCenterPortrait ||
         active == ActiveSlider.MapCenterLandscape
-    val showWeatherGroup = !dragging || active == ActiveSlider.RadarOpacity
+    val showWeatherGroup = !dragging ||
+        active == ActiveSlider.RadarOpacity ||
+        active == ActiveSlider.WeatherWidgetSize
     val showDisplayGroup = !dragging ||
         active == ActiveSlider.GpsIconOpacity ||
-        active == ActiveSlider.HudWidgetSize ||
+        active == ActiveSlider.SpeedSize ||
+        active == ActiveSlider.CompassWidgetSize ||
         active == ActiveSlider.NavWidgetSize
 
     if (vm.showSettings) {
@@ -311,6 +323,22 @@ fun SettingsSheet(
                                     }
                                 }
                             }
+
+                            if (showSection(ActiveSlider.WeatherWidgetSize)) {
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(
+                                        "Weather widget size",
+                                        style = MaterialTheme.typography.titleSmall,
+                                    )
+                                    Slider(
+                                        value = vm.weatherWidgetSize,
+                                        onValueChange = { vm.updateWeatherWidgetSize(it) },
+                                        onValueChangeFinished = { vm.saveWeatherWidgetSize() },
+                                        valueRange = 24f..96f,
+                                        interactionSource = weatherWidgetSizeInteraction,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -370,18 +398,34 @@ fun SettingsSheet(
                                 }
                             }
 
-                            if (showSection(ActiveSlider.HudWidgetSize)) {
+                            if (showSection(ActiveSlider.SpeedSize)) {
                                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                     Text(
-                                        "HUD size (speed, weather, compass)",
+                                        "Speedometer size",
                                         style = MaterialTheme.typography.titleSmall,
                                     )
                                     Slider(
-                                        value = vm.hudWidgetSize,
-                                        onValueChange = { vm.updateHudWidgetSize(it) },
-                                        onValueChangeFinished = { vm.saveHudWidgetSize() },
+                                        value = vm.speedSize,
+                                        onValueChange = { vm.updateSpeedSize(it) },
+                                        onValueChangeFinished = { vm.saveSpeedSize() },
                                         valueRange = 24f..96f,
-                                        interactionSource = hudWidgetSizeInteraction,
+                                        interactionSource = speedSizeInteraction,
+                                    )
+                                }
+                            }
+
+                            if (showSection(ActiveSlider.CompassWidgetSize)) {
+                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(
+                                        "Compass size",
+                                        style = MaterialTheme.typography.titleSmall,
+                                    )
+                                    Slider(
+                                        value = vm.compassWidgetSize,
+                                        onValueChange = { vm.updateCompassWidgetSize(it) },
+                                        onValueChangeFinished = { vm.saveCompassWidgetSize() },
+                                        valueRange = 24f..96f,
+                                        interactionSource = compassWidgetSizeInteraction,
                                     )
                                 }
                             }

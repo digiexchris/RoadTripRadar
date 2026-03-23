@@ -47,7 +47,7 @@ fun BoxScope.MapOverlay(
     var topRowHeightPx by remember { mutableIntStateOf(0) }
     val navBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val bottomRowContentHeight = 96.dp * config.fabScale
-    val compassSize = vm.hudWidgetSize.dp * config.widgetScale * 1.2f
+    val compassSize = vm.compassWidgetSize.dp * config.widgetScale
     val measuredTopBandHeight = with(density) { topRowHeightPx.toDp() }
     val estimatedTopBandHeight = compassSize + (config.edgePadding * 2)
     val topBandHeight = (if (topRowHeightPx > 0) measuredTopBandHeight else estimatedTopBandHeight) +
@@ -145,7 +145,7 @@ fun BoxScope.MapOverlay(
                 snapshot = vm.openMeteoSnapshot,
                 temperatureUnit = vm.temperatureUnit,
                 windSpeedUnit = vm.windSpeedUnit,
-                widgetSize = vm.hudWidgetSize * config.widgetScale,
+                weatherWidgetSize = vm.weatherWidgetSize * config.widgetScale,
             )
         }
 
