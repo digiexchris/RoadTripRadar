@@ -3,18 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-fun gitVersionName(): String {
-    val tag = providers.exec {
-        commandLine("git", "describe", "--tags", "--exact-match")
-        isIgnoreExitValue = true
-    }.standardOutput.asText.get().trim()
-    if (tag.isNotEmpty()) return tag.removePrefix("v")
-
-    return providers.exec {
-        commandLine("git", "rev-parse", "--abbrev-ref", "HEAD")
-    }.standardOutput.asText.get().trim()
-}
-
 android {
     namespace = "ca.voiditswarranty.roadtripradar"
     compileSdk {
@@ -28,13 +16,18 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 22
-        versionName = gitVersionName()
+        versionName = "1.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "RoadTripRadar Dev")
+        }
         release {
+            resValue("string", "app_name", "RoadTripRadar")
             isMinifyEnabled = false
             vcsInfo.include = false
             proguardFiles(
@@ -50,9 +43,42 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        resValues = true
     }
 
 }
+
+val syncMakiIcons by tasks.registering(Sync::class) {
+    from("${rootProject.projectDir}/libs/maki/icons")
+    into("${projectDir}/src/main/assets/maki")
+    include("*.svg")
+}
+
+abstract class CheckMakiIconsTask : DefaultTask() {
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val makiDir: DirectoryProperty
+
+    @TaskAction
+    fun check() {
+        val dir = makiDir.get().asFile
+        val svgs = dir.listFiles()?.filter { it.extension == "svg" } ?: emptyList()
+        if (svgs.isEmpty()) {
+            throw GradleException(
+                "Maki icon SVGs not found in ${dir.absolutePath}. " +
+                "Run 'git submodule update --init' to fetch the maki icons."
+            )
+        }
+        logger.lifecycle("checkMakiIcons: found ${svgs.size} SVG icons")
+    }
+}
+
+val checkMakiIcons by tasks.registering(CheckMakiIconsTask::class) {
+    dependsOn(syncMakiIcons)
+    makiDir.set(layout.projectDirectory.dir("src/main/assets/maki"))
+}
+
+tasks.named("preBuild") { dependsOn(checkMakiIcons) }
 
 // Ensure reproducible APK builds (deterministic ZIP ordering and no timestamps)
 tasks.withType<Zip>().configureEach {
@@ -82,6 +108,7 @@ dependencies {
     implementation(libs.maplibre.compose)
     implementation(libs.maplibre.compose.material3)
     implementation(libs.spatialk.turf)
+    implementation(libs.androidsvg)
     testImplementation(libs.junit)
     testImplementation(libs.okhttp)
     testImplementation(libs.okhttp.mockwebserver)

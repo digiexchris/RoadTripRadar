@@ -17,3 +17,4 @@ keystore.jks
 *.keystore
 .devcontainer/signing.env
 .devcontainer/adb.env
+app/src/main/assets/maki/

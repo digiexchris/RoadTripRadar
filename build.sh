@@ -6,11 +6,16 @@ NC='\033[0m'
 
 SIGNING_ENV=".devcontainer/signing.env"
 INSTALL=false
+RUN=false
 SIGN=true
 
 for arg in "$@"; do
     case "$arg" in
         --install) INSTALL=true ;;
+        --run)
+            RUN=true
+            INSTALL=true
+            ;;
         *) echo "Unknown option: $arg"; exit 1 ;;
     esac
 done
@@ -44,11 +49,13 @@ fi
 # Pinned to 34 — apksigner in 35+ breaks F-Droid reproducible builds
 APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
 
-# Derive version the same way as gitVersionName() in build.gradle.kts
+# Artifact filename: git tag when on a tag, else branch (app versionName is static in build.gradle.kts)
 VERSION=$(git describe --tags --exact-match 2>/dev/null | sed 's/^v//' || true)
 if [ -z "$VERSION" ]; then
     VERSION=$(git rev-parse --abbrev-ref HEAD)
 fi
+
+git submodule update --init
 
 echo "=== Building release APK ==="
 ./gradlew assembleRelease --no-configuration-cache
@@ -101,5 +108,7 @@ fi
 
 if [ "$INSTALL" = true ]; then
     echo ""
-    bash install.sh "$APK_PATH"
+    INSTALL_ARGS=("$APK_PATH")
+    [ "$RUN" = true ] && INSTALL_ARGS+=("--run")
+    bash install.sh "${INSTALL_ARGS[@]}"
 fi

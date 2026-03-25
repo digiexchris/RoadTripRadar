@@ -55,38 +55,47 @@ data class SearchResult(
     val distance: Length? = null,
 )
 
-data class PoiCategory(val label: String, val query: String)
+data class PoiCategory(val label: String, val query: String, val iconName: String)
 
 val POI_CATEGORIES = listOf(
-    PoiCategory("Gas Station", "fuel"),
-    PoiCategory("EV Charging", "charging_station"),
-    PoiCategory("Restaurant", "restaurant"),
-    PoiCategory("Fast Food", "fast_food"),
-    PoiCategory("Cafe / Coffee", "cafe"),
-    PoiCategory("Bar / Pub", "pub"),
-    PoiCategory("Supermarket", "supermarket"),
-    PoiCategory("Convenience Store", "convenience"),
-    PoiCategory("Pharmacy", "pharmacy"),
-    PoiCategory("Hospital", "hospital"),
-    PoiCategory("Hotel", "hotel"),
-    PoiCategory("Motel", "motel"),
-    PoiCategory("Campsite", "camp_site"),
-    PoiCategory("Parking", "parking"),
-    PoiCategory("Rest Area", "rest_area"),
-    PoiCategory("ATM", "atm"),
-    PoiCategory("Bank", "bank"),
-    PoiCategory("Post Office", "post_office"),
-    PoiCategory("Car Repair", "car_repair"),
-    PoiCategory("Car Wash", "car_wash"),
-    PoiCategory("Laundry", "laundry"),
-    PoiCategory("Toilets", "toilets"),
-    PoiCategory("Police", "police"),
-    PoiCategory("Fire Station", "fire_station"),
-    PoiCategory("Library", "library"),
-    PoiCategory("Park", "park"),
-    PoiCategory("Viewpoint", "viewpoint"),
-    PoiCategory("Museum", "museum"),
-    PoiCategory("Tourist Info", "information"),
+    PoiCategory("Gas Station", "fuel", "fuel"),
+    PoiCategory("EV Charging", "charging_station", "charging-station"),
+    PoiCategory("Restaurant", "restaurant", "restaurant"),
+    PoiCategory("Fast Food", "fast_food", "fast-food"),
+    PoiCategory("Cafe / Coffee", "cafe", "cafe"),
+    PoiCategory("Bar / Pub", "pub", "beer"),
+    PoiCategory("Supermarket", "supermarket", "grocery"),
+    PoiCategory("Convenience Store", "convenience", "convenience"),
+    PoiCategory("Pharmacy", "pharmacy", "pharmacy"),
+    PoiCategory("Hospital", "hospital", "hospital"),
+    PoiCategory("Hotel", "hotel", "lodging"),
+    PoiCategory("Motel", "motel", "lodging"),
+    PoiCategory("Campsite", "camp_site", "campsite"),
+    PoiCategory("Parking", "parking", "parking"),
+    PoiCategory("Rest Area", "rest_area", "highway-rest-area"),
+    PoiCategory("ATM", "atm", "bank"),
+    PoiCategory("Bank", "bank", "bank"),
+    PoiCategory("Post Office", "post_office", "post"),
+    PoiCategory("Car Repair", "car_repair", "car-repair"),
+    PoiCategory("Car Wash", "car_wash", "car"),
+    PoiCategory("Laundry", "laundry", "laundry"),
+    PoiCategory("Toilets", "toilets", "toilet"),
+    PoiCategory("Police", "police", "police"),
+    PoiCategory("Fire Station", "fire_station", "fire-station"),
+    PoiCategory("Library", "library", "library"),
+    PoiCategory("Park", "park", "park"),
+    PoiCategory("Viewpoint", "viewpoint", "viewpoint"),
+    PoiCategory("Museum", "museum", "museum"),
+    PoiCategory("Tourist Info", "information", "information"),
+)
+
+const val MAX_POI_CATEGORIES = 5
+
+data class NearbyPoi(
+    val name: String,
+    val subtitle: String,
+    val position: Position,
+    val categoryQuery: String,
 )
 
 object PrefsDefaults {
@@ -113,7 +122,7 @@ object PrefsDefaults {
     const val WIND_ENABLED = true
     val WIND_SPEED_UNIT = WindSpeedUnit.KMH.name
     val TEMPERATURE_UNIT = TemperatureUnit.CELSIUS.name
-    const val PREFS_VERSION = 5
+    const val PREFS_VERSION = 7
     const val TERMS_VERSION = 1
 }
 

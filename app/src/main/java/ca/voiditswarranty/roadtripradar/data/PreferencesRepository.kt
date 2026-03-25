@@ -77,6 +77,19 @@ class PreferencesRepository(context: Context) {
             prefs.edit()
                 .putFloat("speed_size", mergedSpeed)
                 .remove("hud_widget_size")
+                .putInt("prefs_version", 5)
+                .apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 6) {
+            prefs.edit()
+                .remove("enabled_poi_categories")
+                .remove("show_pois_on_map")
+                .putInt("prefs_version", 6)
+                .apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 7) {
+            prefs.edit()
+                .remove("poi_display_mode")
                 .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
                 .apply()
         }
@@ -255,6 +268,16 @@ class PreferencesRepository(context: Context) {
             }
         }
 
+
+    var enabledPoiCategories: Set<String>
+        get() {
+            val csv = prefs.getString("enabled_poi_categories", null)
+            return csv?.split(",")?.filter { it.isNotEmpty() }?.toSet() ?: emptySet()
+        }
+        set(value) {
+            prefs.edit().putString("enabled_poi_categories", value.joinToString(",")).apply()
+        }
+
     fun resetToDefaults(systemDefault: MapStyle) {
         prefs.edit()
             .putString("map_style", systemDefault.name)
@@ -278,6 +301,9 @@ class PreferencesRepository(context: Context) {
             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
             .putFloat("map_center_offset_portrait_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
             .putFloat("map_center_offset_landscape_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
+            .remove("enabled_poi_categories")
+            .remove("show_pois_on_map")
+            .remove("poi_display_mode")
             .remove("poi_lat").remove("poi_lon").remove("poi_name")
             .remove("last_known_lat").remove("last_known_lon")
             .apply()

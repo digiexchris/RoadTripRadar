@@ -12,7 +12,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -21,8 +26,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
@@ -218,11 +225,17 @@ fun MapScreen(
 
     // Feed camera info to ViewModel for search
     vm.userPositionForSearch = userPosition
-    vm.pendingCameraInfo = MapViewModel.CameraInfo(
-        lat = cameraState.position.target.latitude,
-        lon = cameraState.position.target.longitude,
-        zoom = cameraState.position.zoom,
-    )
+    vm.screenWidthDp = configuration.screenWidthDp.toDouble()
+    vm.screenHeightDp = configuration.screenHeightDp.toDouble()
+
+    // Periodic POI cell coverage check (works for both panning and driving)
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000)
+            val pos = cameraState.position
+            vm.onCameraSettled(pos.target.latitude, pos.target.longitude, pos.zoom)
+        }
+    }
 
     // UI
     Box(modifier = Modifier.fillMaxSize()) {
@@ -241,8 +254,7 @@ fun MapScreen(
                 ClickResult.Consume
             },
             onMapClick = { _, _ ->
-                vm.openActionsDrawer()
-                ClickResult.Consume
+                ClickResult.Pass
             },
         ) {
             Anchor.Top {
@@ -259,6 +271,12 @@ fun MapScreen(
                     isDarkStyle = mapStyle.isDark,
                 )
 
+                PoiLoadBoundsLayer(
+                    bounds = vm.poiLoadBounds?.takeIf { vm.hasNearbyPoiFeatures },
+                    isDarkStyle = mapStyle.isDark,
+                    visible = vm.poiLoadBounds != null,
+                )
+
                 if (hasLocation) {
                     UserLocationPuck(
                         locationState = locationState,
@@ -272,6 +290,53 @@ fun MapScreen(
                         userPosition = userPosition,
                     )
                 }
+
+                NearbyPoiLayers(
+                    vm = vm,
+                    enabledCategories = vm.enabledPoiCategories,
+                    visible = vm.poiLoadBounds != null,
+                    categoriesVersion = vm.poiCategoriesVersion,
+                    onClusterClick = { pos ->
+                        vm.isTrackingCamera = false
+                        scope.launch {
+                            cameraState.animateTo(
+                                cameraState.position.copy(
+                                    target = pos,
+                                    zoom = cameraState.position.zoom + 2,
+                                )
+                            )
+                        }
+                    },
+                )
+            }
+        }
+
+        SideEffect {
+            vm.pendingCameraInfo = MapViewModel.CameraInfo(
+                lat = cameraState.position.target.latitude,
+                lon = cameraState.position.target.longitude,
+                zoom = cameraState.position.zoom,
+            )
+            vm.updatePoiMapVisibleBounds(cameraState.projection?.queryVisibleBoundingBox())
+        }
+
+        if (vm.isLoadingPois) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize(0.33f),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                androidx.compose.material3.SuggestionChip(
+                    onClick = {},
+                    label = { Text("Loading areas (${vm.cellsLoadingComplete}/${vm.cellsLoadingTotal})") },
+                    icon = {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                        )
+                    },
+                )
             }
         }
 
@@ -312,6 +377,12 @@ fun MapScreen(
 
         // POI search dialog
         PoiSearchDialog(vm = vm)
+
+        // POI category picker
+        PoiCategoryPicker(vm = vm)
+
+        // Tapped POI info popup
+        TappedPoiPopup(vm = vm)
     }
 }
 

@@ -31,6 +31,8 @@ import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.Help
@@ -110,6 +112,23 @@ fun ActionsDrawer(
                     label = "Quit",
                     icon = Icons.Default.PowerSettingsNew,
                     onClick = { showQuitConfirm = true },
+                ),
+                DrawerAction(
+                    label = "Nearby POIs",
+                    icon = Icons.Default.Place,
+                    onClick = {
+                        vm.openPoiCategoryPicker()
+                        vm.closeActionsDrawer()
+                    },
+                ),
+                DrawerAction(
+                    label = "Clear POIs",
+                    icon = Icons.Default.Delete,
+                    enabled = vm.poiLoadBounds != null,
+                    onClick = {
+                        vm.clearNearbyPois()
+                        vm.closeActionsDrawer()
+                    },
                 ),
                 DrawerAction(
                     label = if (vm.poiPosition != null) "Clear Target" else "Location Search",

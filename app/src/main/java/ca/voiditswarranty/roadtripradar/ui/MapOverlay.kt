@@ -24,6 +24,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -82,30 +83,35 @@ fun BoxScope.MapOverlay(
             }
         },
         centerContent = {
-            Row(
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                NetworkStatusIcon(
-                    status = vm.networkStatus,
-                    opacity = vm.gpsIconOpacity,
-                )
-                if (vm.poiPosition != null && poiInfo != null) {
-                    val (poiDist, poiBearingDeg) = poiInfo
-                    NavWidget(
-                        poiDistance = poiDist,
-                        poiBearingDeg = poiBearingDeg,
-                        cameraBearing = bearing,
-                        navWidgetSize = vm.navWidgetSize * config.widgetScale,
-                        poiName = vm.poiName,
-                        useMetric = vm.useMetric,
-                    )
-                }
-                if (vm.useGps) {
-                    GpsStatusIcon(
-                        hasGpsFix = hasGpsFix,
+                Row(
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    NetworkStatusIcon(
+                        status = vm.networkStatus,
                         opacity = vm.gpsIconOpacity,
                     )
+                    if (vm.poiPosition != null && poiInfo != null) {
+                        val (poiDist, poiBearingDeg) = poiInfo
+                        NavWidget(
+                            poiDistance = poiDist,
+                            poiBearingDeg = poiBearingDeg,
+                            cameraBearing = bearing,
+                            navWidgetSize = vm.navWidgetSize * config.widgetScale,
+                            poiName = vm.poiName,
+                            useMetric = vm.useMetric,
+                        )
+                    }
+                    if (vm.useGps) {
+                        GpsStatusIcon(
+                            hasGpsFix = hasGpsFix,
+                            opacity = vm.gpsIconOpacity,
+                        )
+                    }
                 }
             }
         },

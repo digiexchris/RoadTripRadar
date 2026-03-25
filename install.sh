@@ -7,13 +7,23 @@ NC='\033[0m'
 
 ADB_ENV=".devcontainer/adb.env"
 
+RUN=false
+ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --run) RUN=true ;;
+        *) ARGS+=("$arg") ;;
+    esac
+done
+set -- "${ARGS[@]}"
+
 APK="${1:-}"
 if [ -z "$APK" ]; then
     APK=$(find app/build/outputs/apk/release -name '*.apk' -printf '%T@ %p\n' 2>/dev/null \
         | sort -rn | head -1 | cut -d' ' -f2-)
 fi
 if [ -z "$APK" ] || [ ! -f "$APK" ]; then
-    echo "Usage: install.sh [path-to-apk]"
+    echo "Usage: install.sh [path-to-apk] [--run]"
     echo "No APK specified and none found in app/build/outputs/apk/release/."
     exit 1
 fi
@@ -32,6 +42,11 @@ if [ ${#ADB_DEVICES[@]} -eq 0 ]; then
     adb install -r "$APK"
     echo -e "${GREEN}=== Installed ===${NC}"
     adb devices -l
+    if [ "$RUN" = true ]; then
+        echo ""
+        echo "=== Launching app ==="
+        adb shell am start -n ca.voiditswarranty.roadtripradar/.MainActivity
+    fi
     exit 0
 fi
 
@@ -76,3 +91,9 @@ echo ""
 echo "=== Installing $APK on $TARGET ==="
 adb -s "$TARGET" install -r "$APK"
 echo -e "${GREEN}=== Installed on $TARGET ===${NC}"
+
+if [ "$RUN" = true ]; then
+    echo ""
+    echo "=== Launching app on $TARGET ==="
+    adb -s "$TARGET" shell am start -n ca.voiditswarranty.roadtripradar/.MainActivity
+fi

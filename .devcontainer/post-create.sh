@@ -27,3 +27,7 @@ else
 fi
 
 chmod +x gradlew 2>/dev/null || true
+
+echo ""
+echo "=== Git Submodules ==="
+git submodule update --init

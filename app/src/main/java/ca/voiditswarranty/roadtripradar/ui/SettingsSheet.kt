@@ -208,6 +208,9 @@ fun SettingsSheet(
                                     }
                                 }
                             }
+
+                            // TODO: POI display mode toggle disabled while clustered mode is paused
+                            // if (!dragging) { ... }
                         }
                     }
                 }

@@ -11,7 +11,6 @@ import kotlinx.serialization.json.jsonPrimitive
 import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
 import org.maplibre.spatialk.turf.measurement.distance
-import org.maplibre.spatialk.units.extensions.inMeters
 import java.net.URL
 import java.net.URLEncoder
 
@@ -22,7 +21,9 @@ data class ViewBox(
     val north: Double,
 )
 
-class GeocodingRepository {
+class GeocodingRepository(
+    private val overpassRepo: OverpassRepository = OverpassRepository(),
+) {
 
     suspend fun searchByName(
         query: String,
@@ -75,39 +76,7 @@ class GeocodingRepository {
         viewbox: ViewBox,
         userPosition: Position?,
     ): List<SearchResult> {
-        return try {
-            val url = buildString {
-                append("https://nominatim.openstreetmap.org/search?format=jsonv2")
-                append("&amenity=")
-                append(URLEncoder.encode(category.query, "UTF-8"))
-                append("&limit=20&addressdetails=1")
-                append("&viewbox=${viewbox.west},${viewbox.north},${viewbox.east},${viewbox.south}")
-                append("&bounded=1")
-            }
-            val jsonStr = withContext(Dispatchers.IO) {
-                val conn = URL(url).openConnection()
-                conn.setRequestProperty("User-Agent", "RoadTripRadar/1.0")
-                conn.getInputStream().bufferedReader().readText()
-            }
-            val results = Json.parseToJsonElement(jsonStr).jsonArray
-            results.mapNotNull { element ->
-                val obj = element.jsonObject
-                val lat = obj["lat"]?.jsonPrimitive?.content?.toDoubleOrNull() ?: return@mapNotNull null
-                val lon = obj["lon"]?.jsonPrimitive?.content?.toDoubleOrNull() ?: return@mapNotNull null
-                val displayName = obj["display_name"]?.jsonPrimitive?.content ?: return@mapNotNull null
-                val name = obj["name"]?.jsonPrimitive?.content?.ifEmpty { null }
-                    ?: displayName.substringBefore(",")
-                val subtitle = displayName.substringAfter(",").trim()
-                val pos = Position(longitude = lon, latitude = lat)
-                val dist = userPosition?.let { distance(Point(it), Point(pos)) }
-                SearchResult(name = name, subtitle = subtitle, position = pos, distance = dist)
-            }.let { list ->
-                if (userPosition != null) list.sortedBy { it.distance?.inMeters ?: Double.MAX_VALUE }
-                else list
-            }
-        } catch (_: Exception) {
-            emptyList()
-        }
+        return overpassRepo.searchByCategory(category.query, viewbox, userPosition)
     }
 
 }
