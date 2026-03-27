@@ -1,6 +1,8 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -39,10 +42,16 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -50,6 +59,7 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,6 +73,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.BuildConfig
+import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
@@ -74,7 +86,7 @@ private data class DrawerAction(
     val onClick: () -> Unit,
 )
 
-private enum class ActionsDrawerPage { Main, Map, Places, Weather }
+private enum class ActionsDrawerPage { Main, Map, Places, Weather, System, Help }
 
 @Composable
 fun ActionsDrawer(
@@ -118,8 +130,6 @@ fun ActionsDrawer(
             exit = slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier.align(Alignment.BottomCenter),
         ) {
-            val weatherDependentEnabled = vm.weatherActive
-
             val closeToMap = DrawerAction(
                 label = "Close",
                 icon = Icons.Default.KeyboardArrowDown,
@@ -150,20 +160,14 @@ fun ActionsDrawer(
                         onClick = { drawerPage = ActionsDrawerPage.Weather },
                     ),
                     DrawerAction(
-                        label = "Settings",
+                        label = "System",
                         icon = Icons.Default.Settings,
-                        onClick = {
-                            vm.openSettings()
-                            vm.closeActionsDrawer()
-                        },
+                        onClick = { drawerPage = ActionsDrawerPage.System },
                     ),
                     DrawerAction(
                         label = "Help",
                         icon = Icons.AutoMirrored.Filled.Help,
-                        onClick = {
-                            vm.openHelp()
-                            vm.closeActionsDrawer()
-                        },
+                        onClick = { drawerPage = ActionsDrawerPage.Help },
                     ),
                 )
                 ActionsDrawerPage.Places -> listOf(
@@ -204,44 +208,9 @@ fun ActionsDrawer(
                     ),
                 )
                 ActionsDrawerPage.Map -> emptyList()
-                ActionsDrawerPage.Weather -> listOf(
-                    closeToMap,
-                    DrawerAction(
-                        label = if (vm.isWeatherPlaying) "Pause Weather Radar" else "Play Weather Radar",
-                        icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        enabled = weatherDependentEnabled,
-                        onClick = {
-                            vm.toggleWeatherPlaying()
-                            vm.closeActionsDrawer()
-                        },
-                    ),
-                    DrawerAction(
-                        label = if (vm.weatherActive) "Weather Radar On" else "Weather Radar Off",
-                        icon = Icons.Default.SatelliteAlt,
-                        onClick = {
-                            vm.updateWeatherMode(if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON)
-                            vm.closeActionsDrawer()
-                        },
-                    ),
-                    DrawerAction(
-                        label = if (vm.showLegend) "Hide Legend" else "Show Legend",
-                        icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        enabled = weatherDependentEnabled,
-                        onClick = {
-                            vm.updateShowLegend(!vm.showLegend)
-                            vm.closeActionsDrawer()
-                        },
-                    ),
-                    DrawerAction(
-                        label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
-                        icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                        enabled = weatherDependentEnabled,
-                        onClick = {
-                            vm.updateShowTimeline(!vm.showTimeline)
-                            vm.closeActionsDrawer()
-                        },
-                    ),
-                )
+                ActionsDrawerPage.System -> emptyList()
+                ActionsDrawerPage.Weather -> emptyList()
+                ActionsDrawerPage.Help -> emptyList()
             }
 
             Surface(
@@ -264,6 +233,8 @@ fun ActionsDrawer(
                                 ActionsDrawerPage.Map -> "Map"
                                 ActionsDrawerPage.Places -> "Places"
                                 ActionsDrawerPage.Weather -> "Weather"
+                                ActionsDrawerPage.System -> "System"
+                                ActionsDrawerPage.Help -> "Help & Info"
                                 ActionsDrawerPage.Main -> ""
                             },
                             style = MaterialTheme.typography.titleLarge,
@@ -271,57 +242,219 @@ fun ActionsDrawer(
                             modifier = Modifier.padding(bottom = 12.dp),
                         )
                     }
-                    if (drawerPage == ActionsDrawerPage.Map) {
-                        val mapScroll = rememberScrollState()
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            DrawerActionFab(
-                                label = closeToMap.label,
-                                icon = closeToMap.icon,
-                                enabled = true,
-                                onClick = closeToMap.onClick,
-                                modifier = Modifier.weight(1f),
+                    when (drawerPage) {
+                        ActionsDrawerPage.Map -> {
+                            val mapScroll = rememberScrollState()
+                            val mapTopActions = listOf(
+                                closeToMap,
+                                DrawerAction(
+                                    label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                                    icon = Icons.Default.Navigation,
+                                    onClick = { vm.isNorthUp = !vm.isNorthUp },
+                                ),
                             )
-                            DrawerActionFab(
-                                label = if (vm.isNorthUp) "Track Bearing" else "Track North",
-                                icon = Icons.Default.Navigation,
-                                enabled = true,
-                                onClick = { vm.isNorthUp = !vm.isNorthUp },
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                        MapDrawerSettingsContent(
-                            vm = vm,
-                            mapStyle = mapStyle,
-                            onStyleChange = onStyleChange,
-                            modifier = Modifier
-                                .weight(1f)
-                                .verticalScroll(mapScroll)
-                                .padding(bottom = 8.dp),
-                        )
-                    } else {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.weight(1f),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp),
-                        ) {
-                            items(actions) { action ->
-                                DrawerActionFab(
-                                    label = action.label,
-                                    icon = action.icon,
-                                    enabled = action.enabled,
-                                    onClick = action.onClick,
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(mapScroll),
+                            ) {
+                                DrawerTopActionsGrid(actions = mapTopActions)
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                                MapDrawerSettingsContent(
+                                    vm = vm,
+                                    mapStyle = mapStyle,
+                                    onStyleChange = onStyleChange,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 8.dp),
                                 )
+                            }
+                        }
+                        ActionsDrawerPage.Weather -> {
+                            val weatherScroll = rememberScrollState()
+                            val weatherTopActions = listOf(
+                                closeToMap,
+                                DrawerAction(
+                                    label = if (vm.isWeatherPlaying) "Pause Radar" else "Play Radar",
+                                    icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    enabled = vm.weatherActive,
+                                    onClick = { vm.toggleWeatherPlaying() },
+                                ),
+                                DrawerAction(
+                                    label = if (vm.windEnabled) "Wind & Temp Off" else "Wind & Temp On",
+                                    icon = Icons.Default.Air,
+                                    onClick = { vm.updateWindEnabled(!vm.windEnabled) },
+                                ),
+                                DrawerAction(
+                                    label = if (vm.weatherActive) "Weather Radar Off" else "Weather Radar On",
+                                    icon = Icons.Default.SatelliteAlt,
+                                    onClick = {
+                                        vm.updateWeatherMode(
+                                            if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON,
+                                        )
+                                    },
+                                ),
+                                DrawerAction(
+                                    label = if (vm.showLegend) "Hide Legend" else "Show Legend",
+                                    icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    enabled = vm.weatherActive,
+                                    onClick = { vm.updateShowLegend(!vm.showLegend) },
+                                ),
+                                DrawerAction(
+                                    label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
+                                    icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    enabled = vm.weatherActive,
+                                    onClick = { vm.updateShowTimeline(!vm.showTimeline) },
+                                ),
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(weatherScroll),
+                            ) {
+                                DrawerTopActionsGrid(actions = weatherTopActions)
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                                WeatherDrawerSettingsContent(
+                                    vm = vm,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 8.dp),
+                                )
+                            }
+                        }
+                        ActionsDrawerPage.System -> {
+                            val settingsScroll = rememberScrollState()
+                            val settingsTopActions = listOf(
+                                closeToMap,
+                                DrawerAction(
+                                    label = "Reset",
+                                    icon = Icons.Default.Restore,
+                                    onClick = { vm.openResetConfirm() },
+                                ),
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(settingsScroll),
+                            ) {
+                                DrawerTopActionsGrid(actions = settingsTopActions)
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                                SettingsDrawerContent(
+                                    vm = vm,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 8.dp),
+                                )
+                            }
+                        }
+                        ActionsDrawerPage.Help -> {
+                            val helpScroll = rememberScrollState()
+                            val wikiUri = Uri.parse("https://github.com/digiexchris/RoadTripRadar/wiki")
+                            val privacyUri =
+                                Uri.parse("https://github.com/digiexchris/RoadTripRadar/wiki/Privacy-Policy")
+                            val helpTopActions = listOf(closeToMap)
+                            val helpLinkActions = listOf(
+                                DrawerAction(
+                                    label = "Terms & Conditions",
+                                    icon = Icons.Default.Article,
+                                    onClick = { vm.viewTerms() },
+                                ),
+                                DrawerAction(
+                                    label = "Radar Legend",
+                                    icon = Icons.Default.Layers,
+                                    onClick = { vm.openLegendDetail() },
+                                ),
+                                DrawerAction(
+                                    label = "Documentation",
+                                    icon = Icons.Default.MenuBook,
+                                    onClick = {
+                                        context.startActivity(
+                                            Intent(Intent.ACTION_VIEW, wikiUri),
+                                        )
+                                    },
+                                ),
+                                DrawerAction(
+                                    label = "Privacy Policy",
+                                    icon = Icons.Default.Policy,
+                                    onClick = {
+                                        context.startActivity(
+                                            Intent(Intent.ACTION_VIEW, privacyUri),
+                                        )
+                                    },
+                                ),
+                            )
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(helpScroll),
+                            ) {
+                                DrawerTopActionsGrid(actions = helpTopActions)
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                                Text(
+                                    text = "Full documentation and legal information are available from the buttons below.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp),
+                                )
+                                DrawerTopActionsGrid(actions = helpLinkActions)
+                                Text(
+                                    text = "Version ${BuildConfig.VERSION_NAME}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .padding(top = 20.dp, bottom = 8.dp)
+                                        .align(Alignment.CenterHorizontally),
+                                )
+                            }
+                        }
+                        else -> {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(2),
+                                modifier = Modifier.weight(1f),
+                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                            ) {
+                                items(actions) { action ->
+                                    DrawerActionFab(
+                                        label = action.label,
+                                        icon = action.icon,
+                                        enabled = action.enabled,
+                                        onClick = action.onClick,
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    if (vm.showResetConfirm) {
+        AlertDialog(
+            onDismissRequest = { vm.closeResetConfirm() },
+            title = { Text("Reset to Defaults") },
+            text = { Text("All settings will be reset to their default values.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    val systemDefault = PreferencesRepository.defaultMapStyleFor(context)
+                    vm.resetToDefaults(systemDefault, onStyleChange)
+                }) {
+                    Text("Reset")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { vm.closeResetConfirm() }) {
+                    Text("Cancel")
+                }
+            },
+        )
     }
 
     if (showQuitConfirm) {
@@ -356,6 +489,37 @@ fun ActionsDrawer(
                 }
             },
         )
+    }
+}
+
+@Composable
+private fun DrawerTopActionsGrid(
+    actions: List<DrawerAction>,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        actions.chunked(2).forEach { rowActions ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                rowActions.forEach { action ->
+                    DrawerActionFab(
+                        label = action.label,
+                        icon = action.icon,
+                        enabled = action.enabled,
+                        onClick = action.onClick,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                if (rowActions.size == 1) {
+                    Spacer(Modifier.weight(1f))
+                }
+            }
+        }
     }
 }
 

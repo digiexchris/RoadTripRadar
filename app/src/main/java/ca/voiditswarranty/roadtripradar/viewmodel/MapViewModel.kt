@@ -206,15 +206,11 @@ class MapViewModel(
     // UI state
     var isTrackingCamera by mutableStateOf(true)
     var isNorthUp by mutableStateOf(!prefsRepo.useGps)
-    var showSettings by mutableStateOf(false)
-        private set
     var showActionsDrawer by mutableStateOf(false)
         private set
     var showResetConfirm by mutableStateOf(false)
         private set
     var showPoiSearch by mutableStateOf(false)
-        private set
-    var showHelp by mutableStateOf(false)
         private set
     var showLegendDetail by mutableStateOf(false)
         private set
@@ -447,24 +443,20 @@ class MapViewModel(
         prefsRepo.lastKnownPosition = pos
     }
 
-    fun openSettings() { showSettings = true }
-    fun closeSettings() { showSettings = false }
     fun openActionsDrawer() { showActionsDrawer = true }
     fun closeActionsDrawer() { showActionsDrawer = false }
     fun openResetConfirm() { showResetConfirm = true }
     fun closeResetConfirm() { showResetConfirm = false }
     fun openPoiSearch() { showPoiSearch = true }
     fun closePoiSearch() { showPoiSearch = false }
-    fun openHelp() { showHelp = true }
-    fun closeHelp() { showHelp = false }
     fun openLegendDetail() {
-        showHelp = false
+        closeActionsDrawer()
         showLegendDetail = true
     }
     fun closeLegendDetail() { showLegendDetail = false }
 
     fun viewTerms() {
-        showHelp = false
+        closeActionsDrawer()
         showTerms = true
     }
 
@@ -858,7 +850,6 @@ class MapViewModel(
         poiCategoriesVersion++
         prefsRepo.resetToDefaults(systemDefault)
         showResetConfirm = false
-        showSettings = false
         showActionsDrawer = false
         startWeatherPollingIfActive()
         startWeatherAnimationIfPlaying()

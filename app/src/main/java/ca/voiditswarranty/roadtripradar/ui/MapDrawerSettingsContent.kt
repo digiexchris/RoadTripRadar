@@ -4,11 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,6 +27,28 @@ fun MapDrawerSettingsContent(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Speed/Distance Units", style = MaterialTheme.typography.titleSmall)
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                SegmentedButton(
+                    selected = vm.useMetric,
+                    onClick = { vm.updateUseMetric(true) },
+                    shape = SegmentedButtonDefaults.itemShape(0, 2),
+                    modifier = Modifier.height(DrawerControlSizing.segmentedButtonHeight),
+                ) {
+                    Text("Metric", style = selectionLabelTextStyle())
+                }
+                SegmentedButton(
+                    selected = !vm.useMetric,
+                    onClick = { vm.updateUseMetric(false) },
+                    shape = SegmentedButtonDefaults.itemShape(1, 2),
+                    modifier = Modifier.height(DrawerControlSizing.segmentedButtonHeight),
+                ) {
+                    Text("Imperial", style = selectionLabelTextStyle())
+                }
+            }
+        }
+
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -38,7 +60,7 @@ fun MapDrawerSettingsContent(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            Slider(
+            GloveFriendlySlider(
                 value = vm.mapCenterOffsetPortraitFraction,
                 onValueChange = { vm.updateMapCenterOffsetPortraitFraction(it) },
                 onValueChangeFinished = { vm.saveMapCenterOffsetPortraitFraction() },
@@ -57,7 +79,7 @@ fun MapDrawerSettingsContent(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            Slider(
+            GloveFriendlySlider(
                 value = vm.mapCenterOffsetLandscapeFraction,
                 onValueChange = { vm.updateMapCenterOffsetLandscapeFraction(it) },
                 onValueChangeFinished = { vm.saveMapCenterOffsetLandscapeFraction() },
@@ -73,8 +95,9 @@ fun MapDrawerSettingsContent(
                         selected = mapStyle == style,
                         onClick = { onStyleChange(style) },
                         shape = SegmentedButtonDefaults.itemShape(index, MapStyle.entries.size),
+                        modifier = Modifier.height(DrawerControlSizing.segmentedButtonHeight),
                     ) {
-                        Text(style.displayName)
+                        Text(style.displayName, style = selectionLabelTextStyle())
                     }
                 }
             }

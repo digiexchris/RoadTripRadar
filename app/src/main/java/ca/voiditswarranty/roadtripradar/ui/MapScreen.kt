@@ -337,20 +337,11 @@ fun MapScreen(
             scope = scope,
         )
 
-        // Settings + Reset dialogs
         ActionsDrawer(
             vm = vm,
             mapStyle = mapStyle,
             onStyleChange = onStyleChange,
         )
-
-        SettingsSheet(
-            vm = vm,
-            onStyleChange = onStyleChange,
-        )
-
-        // Help sheet
-        HelpSheet(vm = vm)
 
         // Legend detail sheet
         LegendDetailSheet(vm = vm)
