@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -109,6 +110,7 @@ dependencies {
     implementation(libs.maplibre.compose.material3)
     implementation(libs.spatialk.turf)
     implementation(libs.androidsvg)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     testImplementation(libs.okhttp)
     testImplementation(libs.okhttp.mockwebserver)

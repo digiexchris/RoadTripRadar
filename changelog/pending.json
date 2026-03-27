@@ -1,0 +1,4 @@
+{
+  "_readme": "User-facing strings for the next release. The release pipeline stamps versionName/versionCode, merges entries into app/src/main/assets/changelog.json, then resets entries to [].\nIf you don't see your entry, it means that it's been already released.",
+  "entries": []
+}

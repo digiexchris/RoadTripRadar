@@ -9,6 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.voiditswarranty.roadtripradar.BuildConfig
+import ca.voiditswarranty.roadtripradar.data.ChangelogRepository
 import ca.voiditswarranty.roadtripradar.data.GeocodingRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
@@ -17,6 +19,7 @@ import ca.voiditswarranty.roadtripradar.data.PostpassServerException
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.data.ViewBox
 import ca.voiditswarranty.roadtripradar.data.WeatherRepository
+import ca.voiditswarranty.roadtripradar.model.ChangelogRelease
 import ca.voiditswarranty.roadtripradar.model.MAX_POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.NetworkStatus
@@ -46,7 +49,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 class MapViewModel(
-    appContext: Context,
+    private val appContext: Context,
     val prefsRepo: PreferencesRepository,
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
@@ -213,6 +216,14 @@ class MapViewModel(
     var showPoiSearch by mutableStateOf(false)
         private set
     var showLegendDetail by mutableStateOf(false)
+        private set
+    var showWhatsNewChangelog by mutableStateOf(false)
+        private set
+    var whatsNewChangelogReleases by mutableStateOf<List<ChangelogRelease>>(emptyList())
+        private set
+    var showFullChangelog by mutableStateOf(false)
+        private set
+    var fullChangelogReleases by mutableStateOf<List<ChangelogRelease>>(emptyList())
         private set
     var showTerms by mutableStateOf(false)
         private set
@@ -454,6 +465,56 @@ class MapViewModel(
         showLegendDetail = true
     }
     fun closeLegendDetail() { showLegendDetail = false }
+
+    fun evaluateWhatsNewChangelog() {
+        val bundle = ChangelogRepository.loadBundled(appContext) ?: return
+        val last = prefsRepo.getLastSeenChangelogVersionCode()
+        val current = BuildConfig.VERSION_CODE
+        if (last == null) {
+            prefsRepo.setLastSeenChangelogVersionCode(current)
+            return
+        }
+        if (current <= last) return
+        val newReleases = ChangelogRepository.releasesNewSince(bundle, last, current)
+        if (newReleases.isEmpty()) {
+            prefsRepo.setLastSeenChangelogVersionCode(current)
+            return
+        }
+        whatsNewChangelogReleases = newReleases
+        showWhatsNewChangelog = true
+    }
+
+    fun dismissWhatsNewChangelog() {
+        prefsRepo.setLastSeenChangelogVersionCode(BuildConfig.VERSION_CODE)
+        showWhatsNewChangelog = false
+        whatsNewChangelogReleases = emptyList()
+    }
+
+    /**
+     * Debug only: sets last-seen changelog code to [versionCode] - 1 and runs [evaluateWhatsNewChangelog]
+     * so the What's New sheet appears without a new release tag. Requires a bundled release entry
+     * with versionCode in (lastSeen, current].
+     */
+    fun debugPreviewWhatsNewChangelog() {
+        if (!BuildConfig.DEBUG) return
+        closeActionsDrawer()
+        val current = BuildConfig.VERSION_CODE
+        prefsRepo.setLastSeenChangelogVersionCode((current - 1).coerceAtLeast(0))
+        evaluateWhatsNewChangelog()
+    }
+
+    fun openFullChangelog() {
+        val bundle = ChangelogRepository.loadBundled(appContext)
+        fullChangelogReleases =
+            bundle?.let { ChangelogRepository.allReleasesSortedNewestFirst(it) } ?: emptyList()
+        closeActionsDrawer()
+        showFullChangelog = true
+    }
+
+    fun closeFullChangelog() {
+        showFullChangelog = false
+        fullChangelogReleases = emptyList()
+    }
 
     fun viewTerms() {
         closeActionsDrawer()

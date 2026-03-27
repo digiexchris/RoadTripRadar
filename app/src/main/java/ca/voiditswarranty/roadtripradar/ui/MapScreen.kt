@@ -343,6 +343,13 @@ fun MapScreen(
             onStyleChange = onStyleChange,
         )
 
+        LaunchedEffect(Unit) {
+            vm.evaluateWhatsNewChangelog()
+        }
+
+        WhatsNewChangelogSheet(vm = vm)
+        FullChangelogSheet(vm = vm)
+
         // Legend detail sheet
         LegendDetailSheet(vm = vm)
 

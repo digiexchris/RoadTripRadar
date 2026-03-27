@@ -46,6 +46,7 @@ import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Policy
@@ -385,6 +386,11 @@ fun ActionsDrawer(
                                         )
                                     },
                                 ),
+                                DrawerAction(
+                                    label = "Changelog",
+                                    icon = Icons.Default.History,
+                                    onClick = { vm.openFullChangelog() },
+                                ),
                             )
                             Column(
                                 modifier = Modifier
@@ -411,6 +417,16 @@ fun ActionsDrawer(
                                         .padding(top = 20.dp, bottom = 8.dp)
                                         .align(Alignment.CenterHorizontally),
                                 )
+                                if (BuildConfig.DEBUG) {
+                                    TextButton(
+                                        onClick = { vm.debugPreviewWhatsNewChangelog() },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 4.dp),
+                                    ) {
+                                        Text("Preview What's New (debug)")
+                                    }
+                                }
                             }
                         }
                         else -> {

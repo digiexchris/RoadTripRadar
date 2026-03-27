@@ -17,6 +17,17 @@ class PreferencesRepository(context: Context) {
     val prefs: SharedPreferences =
         context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE)
 
+    fun getLastSeenChangelogVersionCode(): Int? =
+        if (prefs.contains("last_seen_changelog_version_code")) {
+            prefs.getInt("last_seen_changelog_version_code", 0)
+        } else {
+            null
+        }
+
+    fun setLastSeenChangelogVersionCode(code: Int) {
+        prefs.edit().putInt("last_seen_changelog_version_code", code).apply()
+    }
+
     companion object {
         /** Liberty when not in night mode, [MapStyle.COLOR_DARK] when UI night mode is on. */
         fun defaultMapStyleFor(context: Context): MapStyle {
