@@ -17,11 +17,17 @@
 Run the build script from the project root inside the devcontainer:
 
 ```bash
-# Build (unsigned if signing is not configured)
+# Release APK + AAB (unsigned if signing is not configured)
 ./build.sh
+
+# Debug APK only (faster local iteration; uses applicationId .debug)
+./build.sh --dev
 
 # Build and install on a connected device
 ./build.sh --install
+
+# Debug build, install, and launch
+./build.sh --dev --install --run
 ```
 
 This produces:
@@ -100,6 +106,16 @@ A device connection is required for `./build.sh --install`. Once connected, the 
    adb devices
    ```
 
+## Testing the in-app What's New changelog
+
+The first time the app stores `last_seen_changelog_version_code`, it matches the current `versionCode` and **does not** show the sheet (avoids dumping history on fresh installs).
+
+**Debug build (simplest):** install the **debug** variant, open **Actions → Help & Info**, scroll below the version line, tap **Preview What's New (debug)**. That sets last-seen to `versionCode - 1` and runs the same logic as an upgrade, so the sheet appears if `changelog.json` contains at least one release with `versionCode` strictly greater than that value and less than or equal to your current `versionCode`.
+
+**Without the button:** clear app data (or uninstall) then install again — that only tests the “first launch, no sheet” path. To mimic an upgrade manually, you’d need to edit `SharedPreferences` `map_prefs` / key `last_seen_changelog_version_code` to an integer **below** your `BuildConfig.VERSION_CODE` while `changelog.json` still lists a release for your current code.
+
+**Local “real” upgrade simulation:** temporarily bump `versionCode` in `app/build.gradle.kts` and add a matching `{ "versionName", "versionCode", "items" }` block in `app/src/main/assets/changelog.json`, install, then use **Preview What's New** after setting last-seen lower (or install once, then lower last-seen via debug button which uses `versionCode - 1`).
+
 ## Version Behavior
 
 The version displayed in the app is resolved from git at build time:
@@ -110,6 +126,8 @@ The version displayed in the app is resolved from git at build time:
 | Local dev build | Branch name, e.g. `1.4.0-rc` |
 
 `versionCode` is only incremented by the CI release workflow. Local builds reuse the last released value.
+
+The **Release** workflow uses a single source for user-facing bullets: fill `changelog/pending.json` → `entries` before dispatch. That drives the GitHub Release body (markdown list), Play Store changelog text, and the merge into `app/src/main/assets/changelog.json`.
 
 ## Testing CI Workflows Locally
 

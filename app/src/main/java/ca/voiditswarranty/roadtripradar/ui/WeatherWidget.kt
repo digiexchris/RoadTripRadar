@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
+import java.util.Locale
 
 private fun formatTemp(celsius: Double, unit: TemperatureUnit): String {
     val value = when (unit) {
@@ -44,14 +45,20 @@ private fun formatTrend(deltaCelsius: Double, unit: TemperatureUnit): String {
         TemperatureUnit.FAHRENHEIT -> deltaCelsius * 9.0 / 5.0
         TemperatureUnit.KELVIN -> deltaCelsius
     }
-    val rounded = converted.toInt()
-    val sign = if (rounded > 0) "+" else ""
+    val rounded = kotlin.math.round(converted * 10.0) / 10.0
+    val sign = when {
+        rounded > 0 -> "+"
+        rounded < 0 -> "-"
+        else -> ""
+    }
+    val mag = kotlin.math.abs(rounded)
+    val num = String.format(Locale.US, "%.1f", mag)
     val suffix = when (unit) {
         TemperatureUnit.CELSIUS -> "°"
         TemperatureUnit.FAHRENHEIT -> "°"
         TemperatureUnit.KELVIN -> ""
     }
-    return "$sign$rounded$suffix/h"
+    return "$sign$num$suffix/h"
 }
 
 private fun windValue(kmh: Double, unit: WindSpeedUnit): Int = when (unit) {
@@ -99,15 +106,13 @@ fun WeatherWidget(
                     color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                 )
-                if (snapshot.tempTrendCelsius != null && snapshot.tempTrendCelsius.toInt() != 0) {
-                    Text(
-                        text = formatTrend(snapshot.tempTrendCelsius, temperatureUnit),
-                        fontSize = nameFontSize,
-                        lineHeight = nameFontSize,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                }
+                Text(
+                    text = snapshot.tempTrendCelsius?.let { formatTrend(it, temperatureUnit) } ?: "—/h",
+                    fontSize = nameFontSize,
+                    lineHeight = nameFontSize,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
             }
             Box(
                 contentAlignment = Alignment.Center,

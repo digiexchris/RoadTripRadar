@@ -1,1 +1,2 @@
 - Accept location from another app and load target position from it, as a navigation app
+- A changelog type system that remembers the last installed version and tells the user about new features since then when they start up after an update

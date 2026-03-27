@@ -18,6 +18,8 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          submodules: true
 
       - name: Build and sign
         uses: ./.github/actions/build-sign

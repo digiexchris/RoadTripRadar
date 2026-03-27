@@ -7,14 +7,40 @@ NC='\033[0m'
 
 ADB_ENV=".devcontainer/adb.env"
 
+RUN=false
+DEBUG_LAUNCH=false
+ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --run) RUN=true ;;
+        --debug) DEBUG_LAUNCH=true ;;
+        *) ARGS+=("$arg") ;;
+    esac
+done
+set -- "${ARGS[@]}"
+
+LAUNCH_COMPONENT="ca.voiditswarranty.roadtripradar/.MainActivity"
+if [ "$DEBUG_LAUNCH" = true ]; then
+    LAUNCH_COMPONENT="ca.voiditswarranty.roadtripradar.debug/ca.voiditswarranty.roadtripradar.MainActivity"
+fi
+
 APK="${1:-}"
 if [ -z "$APK" ]; then
-    APK=$(find app/build/outputs/apk/release -name '*.apk' -printf '%T@ %p\n' 2>/dev/null \
-        | sort -rn | head -1 | cut -d' ' -f2-)
+    if [ "$DEBUG_LAUNCH" = true ]; then
+        APK=$(find app/build/outputs/apk/debug -name '*.apk' -printf '%T@ %p\n' 2>/dev/null \
+            | sort -rn | head -1 | cut -d' ' -f2-)
+    else
+        APK=$(find app/build/outputs/apk/release -name '*.apk' -printf '%T@ %p\n' 2>/dev/null \
+            | sort -rn | head -1 | cut -d' ' -f2-)
+    fi
 fi
 if [ -z "$APK" ] || [ ! -f "$APK" ]; then
-    echo "Usage: install.sh [path-to-apk]"
-    echo "No APK specified and none found in app/build/outputs/apk/release/."
+    echo "Usage: install.sh [--debug] [path-to-apk] [--run]"
+    if [ "$DEBUG_LAUNCH" = true ]; then
+        echo "No APK specified and none found in app/build/outputs/apk/debug/."
+    else
+        echo "No APK specified and none found in app/build/outputs/apk/release/."
+    fi
     exit 1
 fi
 
@@ -32,6 +58,11 @@ if [ ${#ADB_DEVICES[@]} -eq 0 ]; then
     adb install -r "$APK"
     echo -e "${GREEN}=== Installed ===${NC}"
     adb devices -l
+    if [ "$RUN" = true ]; then
+        echo ""
+        echo "=== Launching app ==="
+        adb shell am start -n "$LAUNCH_COMPONENT"
+    fi
     exit 0
 fi
 
@@ -76,3 +107,9 @@ echo ""
 echo "=== Installing $APK on $TARGET ==="
 adb -s "$TARGET" install -r "$APK"
 echo -e "${GREEN}=== Installed on $TARGET ===${NC}"
+
+if [ "$RUN" = true ]; then
+    echo ""
+    echo "=== Launching app on $TARGET ==="
+    adb -s "$TARGET" shell am start -n "$LAUNCH_COMPONENT"
+fi

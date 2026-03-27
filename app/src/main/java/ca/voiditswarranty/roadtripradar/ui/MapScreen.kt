@@ -1,33 +1,37 @@
 package ca.voiditswarranty.roadtripradar.ui
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Configuration
-import android.content.pm.PackageManager
 import android.view.WindowManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
+import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
+import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.buildRadarRingsData
 import ca.voiditswarranty.roadtripradar.model.ringDistancesForZoom
@@ -60,36 +64,13 @@ fun MapScreen(
     vm: MapViewModel,
     mapStyle: MapStyle,
     onStyleChange: (MapStyle) -> Unit,
+    locationPermissionGranted: Boolean,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // Permissions
-    var hasLocationPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED
-        )
-    }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        hasLocationPermission = granted
-        if (!granted) {
-            vm.updateUseGps(false)
-        }
-    }
-    LaunchedEffect(vm.useGps) {
-        if (vm.useGps && !hasLocationPermission) {
-            permissionLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-            )
-        }
-    }
-
     // Location
-    val locationProvider = if (hasLocationPermission && vm.useGps) {
+    val locationProvider = if (locationPermissionGranted && vm.useGps) {
         rememberDefaultLocationProvider()
     } else {
         rememberNullLocationProvider()
@@ -100,6 +81,8 @@ fun MapScreen(
 
     // Camera
     val configuration = LocalConfiguration.current
+    val mapStyleUri = mapStyle.resolvedStyleUri(context)
+    val mapOverlaysDark = mapStyle.isDarkForAppTheme(context)
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val screenHeight = configuration.screenHeightDp.dp
     val density = LocalDensity.current
@@ -218,34 +201,40 @@ fun MapScreen(
 
     // Feed camera info to ViewModel for search
     vm.userPositionForSearch = userPosition
-    vm.pendingCameraInfo = MapViewModel.CameraInfo(
-        lat = cameraState.position.target.latitude,
-        lon = cameraState.position.target.longitude,
-        zoom = cameraState.position.zoom,
-    )
+    vm.screenWidthDp = configuration.screenWidthDp.toDouble()
+    vm.screenHeightDp = configuration.screenHeightDp.toDouble()
+
+    // Periodic POI cell coverage check (works for both panning and driving)
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(3000)
+            val pos = cameraState.position
+            vm.onCameraSettled(pos.target.latitude, pos.target.longitude, pos.zoom)
+        }
+    }
 
     // UI
     Box(modifier = Modifier.fillMaxSize()) {
-        MaplibreMap(
-            baseStyle = BaseStyle.Uri(mapStyle.styleUri),
-            cameraState = cameraState,
-            modifier = Modifier.fillMaxSize(),
-            options = MapOptions(
-                ornamentOptions = OrnamentOptions(
-                    isScaleBarEnabled = false,
-                    isCompassEnabled = false,
+        key(mapStyleUri) {
+            MaplibreMap(
+                baseStyle = BaseStyle.Uri(mapStyleUri),
+                cameraState = cameraState,
+                modifier = Modifier.fillMaxSize(),
+                options = MapOptions(
+                    ornamentOptions = OrnamentOptions(
+                        isScaleBarEnabled = false,
+                        isCompassEnabled = false,
+                    ),
                 ),
-            ),
-            onMapLongClick = { position, _ ->
-                vm.setPoiFromLongPress(position)
-                ClickResult.Consume
-            },
-            onMapClick = { _, _ ->
-                vm.openActionsDrawer()
-                ClickResult.Consume
-            },
-        ) {
-            Anchor.Top {
+                onMapLongClick = { position, _ ->
+                    vm.setPoiFromLongPress(position)
+                    ClickResult.Consume
+                },
+                onMapClick = { _, _ ->
+                    ClickResult.Pass
+                },
+            ) {
+                Anchor.Top {
                 if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
                     WeatherRadarLayers(
                         radarFramePaths = vm.radarFramePaths,
@@ -256,7 +245,13 @@ fun MapScreen(
 
                 RadarRingsLayers(
                     radarData = radarData,
-                    isDarkStyle = mapStyle.isDark,
+                    isDarkStyle = mapOverlaysDark,
+                )
+
+                PoiLoadBoundsLayer(
+                    bounds = vm.poiLoadBounds?.takeIf { vm.hasNearbyPoiFeatures },
+                    isDarkStyle = mapOverlaysDark,
+                    visible = vm.poiLoadBounds != null,
                 )
 
                 if (hasLocation) {
@@ -272,6 +267,54 @@ fun MapScreen(
                         userPosition = userPosition,
                     )
                 }
+
+                NearbyPoiLayers(
+                    vm = vm,
+                    enabledCategories = vm.enabledPoiCategories,
+                    visible = vm.poiLoadBounds != null,
+                    categoriesVersion = vm.poiCategoriesVersion,
+                    onClusterClick = { pos ->
+                        vm.isTrackingCamera = false
+                        scope.launch {
+                            cameraState.animateTo(
+                                cameraState.position.copy(
+                                    target = pos,
+                                    zoom = cameraState.position.zoom + 2,
+                                )
+                            )
+                        }
+                    },
+                )
+            }
+            }
+        }
+
+        SideEffect {
+            vm.pendingCameraInfo = MapViewModel.CameraInfo(
+                lat = cameraState.position.target.latitude,
+                lon = cameraState.position.target.longitude,
+                zoom = cameraState.position.zoom,
+            )
+            vm.updatePoiMapVisibleBounds(cameraState.projection?.queryVisibleBoundingBox())
+        }
+
+        if (vm.isLoadingPois) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize(0.33f),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                androidx.compose.material3.SuggestionChip(
+                    onClick = {},
+                    label = { Text("Loading areas (${vm.cellsLoadingComplete}/${vm.cellsLoadingTotal})") },
+                    icon = {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                        )
+                    },
+                )
             }
         }
 
@@ -294,24 +337,30 @@ fun MapScreen(
             scope = scope,
         )
 
-        // Settings + Reset dialogs
-        ActionsDrawer(vm = vm)
-
-        SettingsSheet(
+        ActionsDrawer(
             vm = vm,
             mapStyle = mapStyle,
             onStyleChange = onStyleChange,
         )
 
-        // Help sheet
-        HelpSheet(vm = vm)
-        QuickHelpDialog(vm = vm)
+        LaunchedEffect(Unit) {
+            vm.evaluateWhatsNewChangelog()
+        }
+
+        WhatsNewChangelogSheet(vm = vm)
+        FullChangelogSheet(vm = vm)
 
         // Legend detail sheet
         LegendDetailSheet(vm = vm)
 
         // POI search dialog
         PoiSearchDialog(vm = vm)
+
+        // POI category picker
+        PoiCategoryPicker(vm = vm)
+
+        // Tapped POI info popup
+        TappedPoiPopup(vm = vm)
     }
 }
 

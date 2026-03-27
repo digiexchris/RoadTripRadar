@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
@@ -11,8 +12,35 @@ import org.maplibre.spatialk.geojson.Position
 
 class PreferencesRepository(context: Context) {
 
+    private val appContext: Context = context.applicationContext
+
     val prefs: SharedPreferences =
         context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE)
+
+    fun getLastSeenChangelogVersionCode(): Int? =
+        if (prefs.contains("last_seen_changelog_version_code")) {
+            prefs.getInt("last_seen_changelog_version_code", 0)
+        } else {
+            null
+        }
+
+    fun setLastSeenChangelogVersionCode(code: Int) {
+        prefs.edit().putInt("last_seen_changelog_version_code", code).apply()
+    }
+
+    companion object {
+        /** Liberty when not in night mode, [MapStyle.COLOR_DARK] when UI night mode is on. */
+        fun defaultMapStyleFor(context: Context): MapStyle {
+            val app = context.applicationContext
+            val night =
+                app.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            return if (night == Configuration.UI_MODE_NIGHT_YES) {
+                MapStyle.COLOR_DARK
+            } else {
+                MapStyle.LIBERTY
+            }
+        }
+    }
 
     init {
         migrate()
@@ -77,18 +105,43 @@ class PreferencesRepository(context: Context) {
             prefs.edit()
                 .putFloat("speed_size", mergedSpeed)
                 .remove("hud_widget_size")
-                .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                .putInt("prefs_version", 5)
                 .apply()
         }
+        if (prefs.getInt("prefs_version", 0) < 6) {
+            prefs.edit()
+                .remove("enabled_poi_categories")
+                .remove("show_pois_on_map")
+                .putInt("prefs_version", 6)
+                .apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 7) {
+            prefs.edit()
+                .remove("poi_display_mode")
+                .putInt("prefs_version", 7)
+                .apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 8) {
+            val ed = prefs.edit()
+            if (prefs.getString("map_style", null) == "LIBERTY_DARK") {
+                ed.putString("map_style", MapStyle.COLOR_DARK.name)
+            }
+            ed.putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
+        }
+    }
+
+    private fun parseMapStyle(name: String): MapStyle = when (name) {
+        "LIBERTY_DARK" -> MapStyle.COLOR_DARK
+        else -> MapStyle.valueOf(name)
     }
 
     var mapStyle: MapStyle
         get() {
             val saved = prefs.getString("map_style", null)
             return try {
-                saved?.let { MapStyle.valueOf(it) } ?: MapStyle.LIBERTY_DARK
+                if (saved == null) defaultMapStyleFor(appContext) else parseMapStyle(saved)
             } catch (_: IllegalArgumentException) {
-                MapStyle.LIBERTY_DARK
+                defaultMapStyleFor(appContext)
             }
         }
         set(value) = prefs.edit().putString("map_style", value.name).apply()
@@ -144,10 +197,6 @@ class PreferencesRepository(context: Context) {
     var showTimeline: Boolean
         get() = prefs.getBoolean("show_timeline", PrefsDefaults.SHOW_TIMELINE)
         set(value) = prefs.edit().putBoolean("show_timeline", value).apply()
-
-    var showStartupHelp: Boolean
-        get() = prefs.getBoolean("show_startup_help", PrefsDefaults.SHOW_STARTUP_HELP)
-        set(value) = prefs.edit().putBoolean("show_startup_help", value).apply()
 
     var radarOpacity: Float
         get() = prefs.getFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
@@ -255,6 +304,16 @@ class PreferencesRepository(context: Context) {
             }
         }
 
+
+    var enabledPoiCategories: Set<String>
+        get() {
+            val csv = prefs.getString("enabled_poi_categories", null)
+            return csv?.split(",")?.filter { it.isNotEmpty() }?.toSet() ?: emptySet()
+        }
+        set(value) {
+            prefs.edit().putString("enabled_poi_categories", value.joinToString(",")).apply()
+        }
+
     fun resetToDefaults(systemDefault: MapStyle) {
         prefs.edit()
             .putString("map_style", systemDefault.name)
@@ -262,7 +321,6 @@ class PreferencesRepository(context: Context) {
             .putBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING)
             .putBoolean("show_legend", PrefsDefaults.SHOW_LEGEND)
             .putBoolean("show_timeline", PrefsDefaults.SHOW_TIMELINE)
-            .putBoolean("show_startup_help", PrefsDefaults.SHOW_STARTUP_HELP)
             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
             .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
             .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)
@@ -278,6 +336,9 @@ class PreferencesRepository(context: Context) {
             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
             .putFloat("map_center_offset_portrait_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
             .putFloat("map_center_offset_landscape_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
+            .remove("enabled_poi_categories")
+            .remove("show_pois_on_map")
+            .remove("poi_display_mode")
             .remove("poi_lat").remove("poi_lon").remove("poi_name")
             .remove("last_known_lat").remove("last_known_lon")
             .apply()

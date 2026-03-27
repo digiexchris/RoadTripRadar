@@ -6,12 +6,32 @@ NC='\033[0m'
 
 SIGNING_ENV=".devcontainer/signing.env"
 INSTALL=false
+RUN=false
 SIGN=true
+DEV=false
+
+usage() {
+    echo "Usage: $0 [--dev] [--install] [--run]"
+    echo "  (default)  Release APK + AAB, optional signing"
+    echo "  --dev      Debug APK only (no AAB, no release signing)"
+    echo "  --install  adb install the built APK (see install.sh)"
+    echo "  --run      With --install, launch the app after install"
+}
 
 for arg in "$@"; do
     case "$arg" in
+        --dev) DEV=true ;;
         --install) INSTALL=true ;;
-        *) echo "Unknown option: $arg"; exit 1 ;;
+        --run)
+            RUN=true
+            INSTALL=true
+            ;;
+        -h|--help) usage; exit 0 ;;
+        *)
+            echo "Unknown option: $arg"
+            usage
+            exit 1
+            ;;
     esac
 done
 
@@ -44,10 +64,40 @@ fi
 # Pinned to 34 — apksigner in 35+ breaks F-Droid reproducible builds
 APKSIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
 
-# Derive version the same way as gitVersionName() in build.gradle.kts
+# Artifact filename: git tag when on a tag, else branch (app versionName is static in build.gradle.kts)
 VERSION=$(git describe --tags --exact-match 2>/dev/null | sed 's/^v//' || true)
 if [ -z "$VERSION" ]; then
     VERSION=$(git rev-parse --abbrev-ref HEAD)
+fi
+
+git submodule update --init
+
+if [ "$DEV" = true ]; then
+    echo "=== Building debug APK ==="
+    ./gradlew assembleDebug --no-configuration-cache
+
+    APK=$(find app/build/outputs/apk/debug -name '*.apk' | head -1)
+    if [ -z "$APK" ] || [ ! -f "$APK" ]; then
+        echo "Error: No debug APK found under app/build/outputs/apk/debug/"
+        exit 1
+    fi
+
+    echo "=== Renaming artifact ==="
+    APK_DIR=$(dirname "$APK")
+    APK_PATH="$APK_DIR/RoadTripRadar-dev-${VERSION}.apk"
+    mv -f "$APK" "$APK_PATH"
+
+    echo ""
+    echo "=== Build complete (debug) ==="
+    echo "APK: $APK_PATH"
+
+    if [ "$INSTALL" = true ]; then
+        echo ""
+        INSTALL_ARGS=(--debug "$APK_PATH")
+        [ "$RUN" = true ] && INSTALL_ARGS+=(--run)
+        bash install.sh "${INSTALL_ARGS[@]}"
+    fi
+    exit 0
 fi
 
 echo "=== Building release APK ==="
@@ -101,5 +151,7 @@ fi
 
 if [ "$INSTALL" = true ]; then
     echo ""
-    bash install.sh "$APK_PATH"
+    INSTALL_ARGS=("$APK_PATH")
+    [ "$RUN" = true ] && INSTALL_ARGS+=(--run)
+    bash install.sh "${INSTALL_ARGS[@]}"
 fi
