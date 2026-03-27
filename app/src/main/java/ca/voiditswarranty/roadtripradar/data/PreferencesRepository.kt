@@ -158,10 +158,6 @@ class PreferencesRepository(context: Context) {
         get() = prefs.getBoolean("show_timeline", PrefsDefaults.SHOW_TIMELINE)
         set(value) = prefs.edit().putBoolean("show_timeline", value).apply()
 
-    var showStartupHelp: Boolean
-        get() = prefs.getBoolean("show_startup_help", PrefsDefaults.SHOW_STARTUP_HELP)
-        set(value) = prefs.edit().putBoolean("show_startup_help", value).apply()
-
     var radarOpacity: Float
         get() = prefs.getFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
         set(value) = prefs.edit().putFloat("radar_opacity", value).apply()
@@ -285,7 +281,6 @@ class PreferencesRepository(context: Context) {
             .putBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING)
             .putBoolean("show_legend", PrefsDefaults.SHOW_LEGEND)
             .putBoolean("show_timeline", PrefsDefaults.SHOW_TIMELINE)
-            .putBoolean("show_startup_help", PrefsDefaults.SHOW_STARTUP_HELP)
             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)
             .putBoolean("use_metric", PrefsDefaults.USE_METRIC)
             .putFloat("speed_size", PrefsDefaults.SPEED_SIZE)

@@ -370,7 +370,6 @@ fun MapScreen(
 
         // Help sheet
         HelpSheet(vm = vm)
-        QuickHelpDialog(vm = vm)
 
         // Legend detail sheet
         LegendDetailSheet(vm = vm)

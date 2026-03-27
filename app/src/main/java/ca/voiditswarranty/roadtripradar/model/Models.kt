@@ -109,7 +109,6 @@ object PrefsDefaults {
     const val WEATHER_MODE = "ON"
     const val SHOW_LEGEND = true
     const val SHOW_TIMELINE = true
-    const val SHOW_STARTUP_HELP = true
     const val SPEED_SIZE = 64f
     const val NAV_WIDGET_SIZE = 60f
     const val WEATHER_WIDGET_SIZE = 60f
