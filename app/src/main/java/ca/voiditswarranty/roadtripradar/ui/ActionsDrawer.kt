@@ -36,6 +36,8 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.Help
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -66,15 +68,23 @@ private data class DrawerAction(
     val onClick: () -> Unit,
 )
 
+private enum class ActionsDrawerPage { Main, Places, Weather }
+
 @Composable
 fun ActionsDrawer(
     vm: MapViewModel,
 ) {
     val context = LocalContext.current
     var showQuitConfirm by remember { mutableStateOf(false) }
+    var drawerPage by remember { mutableStateOf(ActionsDrawerPage.Main) }
 
     LaunchedEffect(vm.showActionsDrawer) {
-        if (!vm.showActionsDrawer) showQuitConfirm = false
+        if (vm.showActionsDrawer) {
+            drawerPage = ActionsDrawerPage.Main
+        } else {
+            drawerPage = ActionsDrawerPage.Main
+            showQuitConfirm = false
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -102,102 +112,131 @@ fun ActionsDrawer(
         ) {
             val weatherDependentEnabled = vm.weatherActive
 
-            val actions = listOf(
-                DrawerAction(
-                    label = "Close",
-                    icon = Icons.Default.KeyboardArrowDown,
-                    onClick = { vm.closeActionsDrawer() },
-                ),
-                DrawerAction(
-                    label = "Quit",
-                    icon = Icons.Default.PowerSettingsNew,
-                    onClick = { showQuitConfirm = true },
-                ),
-                DrawerAction(
-                    label = "Nearby POIs",
-                    icon = Icons.Default.Place,
-                    onClick = {
-                        vm.openPoiCategoryPicker()
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = "Clear POIs",
-                    icon = Icons.Default.Delete,
-                    enabled = vm.poiLoadBounds != null,
-                    onClick = {
-                        vm.clearNearbyPois()
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = if (vm.poiPosition != null) "Clear Target" else "Location Search",
-                    icon = if (vm.poiPosition != null) Icons.Default.Close else Icons.Default.Search,
-                    onClick = {
-                        if (vm.poiPosition != null) vm.clearPoi() else vm.openPoiSearch()
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = if (vm.isNorthUp) "Track Bearing" else "Track North",
-                    icon = Icons.Default.Navigation,
-                    onClick = {
-                        vm.isNorthUp = !vm.isNorthUp
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = if (vm.isWeatherPlaying) "Pause Weather Radar" else "Play Weather Radar",
-                    icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    enabled = weatherDependentEnabled,
-                    onClick = {
-                        vm.toggleWeatherPlaying()
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = if (vm.weatherActive) "Weather Radar On" else "Weather Radar Off",
-                    icon = Icons.Default.SatelliteAlt,
-                    onClick = {
-                        vm.updateWeatherMode(if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON)
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = if (vm.showLegend) "Hide Legend" else "Show Legend",
-                    icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                    enabled = weatherDependentEnabled,
-                    onClick = {
-                        vm.updateShowLegend(!vm.showLegend)
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
-                    icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                    enabled = weatherDependentEnabled,
-                    onClick = {
-                        vm.updateShowTimeline(!vm.showTimeline)
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = "Settings",
-                    icon = Icons.Default.Settings,
-                    onClick = {
-                        vm.openSettings()
-                        vm.closeActionsDrawer()
-                    },
-                ),
-                DrawerAction(
-                    label = "Help",
-                    icon = Icons.AutoMirrored.Filled.Help,
-                    onClick = {
-                        vm.openHelp()
-                        vm.closeActionsDrawer()
-                    },
-                ),
+            val closeToMap = DrawerAction(
+                label = "Close",
+                icon = Icons.Default.KeyboardArrowDown,
+                onClick = { vm.closeActionsDrawer() },
             )
+
+            val actions = when (drawerPage) {
+                ActionsDrawerPage.Main -> listOf(
+                    closeToMap,
+                    DrawerAction(
+                        label = "Quit",
+                        icon = Icons.Default.PowerSettingsNew,
+                        onClick = { showQuitConfirm = true },
+                    ),
+                    DrawerAction(
+                        label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                        icon = Icons.Default.Navigation,
+                        onClick = {
+                            vm.isNorthUp = !vm.isNorthUp
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = "Places",
+                        icon = Icons.Default.Explore,
+                        onClick = { drawerPage = ActionsDrawerPage.Places },
+                    ),
+                    DrawerAction(
+                        label = "Weather",
+                        icon = Icons.Default.Cloud,
+                        onClick = { drawerPage = ActionsDrawerPage.Weather },
+                    ),
+                    DrawerAction(
+                        label = "Settings",
+                        icon = Icons.Default.Settings,
+                        onClick = {
+                            vm.openSettings()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = "Help",
+                        icon = Icons.AutoMirrored.Filled.Help,
+                        onClick = {
+                            vm.openHelp()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                )
+                ActionsDrawerPage.Places -> listOf(
+                    closeToMap,
+                    DrawerAction(
+                        label = "Nearby Places",
+                        icon = Icons.Default.Place,
+                        onClick = {
+                            vm.openPoiCategoryPicker()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = "Clear Places",
+                        icon = Icons.Default.Delete,
+                        enabled = vm.poiLoadBounds != null,
+                        onClick = {
+                            vm.clearNearbyPois()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = "Location Search",
+                        icon = Icons.Default.Search,
+                        onClick = {
+                            vm.openPoiSearch()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = "Clear Target",
+                        icon = Icons.Default.Close,
+                        enabled = vm.poiPosition != null,
+                        onClick = {
+                            vm.clearPoi()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                )
+                ActionsDrawerPage.Weather -> listOf(
+                    closeToMap,
+                    DrawerAction(
+                        label = if (vm.isWeatherPlaying) "Pause Weather Radar" else "Play Weather Radar",
+                        icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                        enabled = weatherDependentEnabled,
+                        onClick = {
+                            vm.toggleWeatherPlaying()
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = if (vm.weatherActive) "Weather Radar On" else "Weather Radar Off",
+                        icon = Icons.Default.SatelliteAlt,
+                        onClick = {
+                            vm.updateWeatherMode(if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON)
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = if (vm.showLegend) "Hide Legend" else "Show Legend",
+                        icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        enabled = weatherDependentEnabled,
+                        onClick = {
+                            vm.updateShowLegend(!vm.showLegend)
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                    DrawerAction(
+                        label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
+                        icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        enabled = weatherDependentEnabled,
+                        onClick = {
+                            vm.updateShowTimeline(!vm.showTimeline)
+                            vm.closeActionsDrawer()
+                        },
+                    ),
+                )
+            }
 
             Surface(
                 shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
@@ -208,21 +247,37 @@ fun ActionsDrawer(
                     .fillMaxHeight(0.75f)
                     .navigationBarsPadding(),
             ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 20.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    items(actions) { action ->
-                        DrawerActionFab(
-                            label = action.label,
-                            icon = action.icon,
-                            enabled = action.enabled,
-                            onClick = action.onClick,
+                    if (drawerPage != ActionsDrawerPage.Main) {
+                        Text(
+                            text = when (drawerPage) {
+                                ActionsDrawerPage.Places -> "Places"
+                                ActionsDrawerPage.Weather -> "Weather"
+                                ActionsDrawerPage.Main -> ""
+                            },
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(bottom = 12.dp),
                         )
+                    }
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        items(actions) { action ->
+                            DrawerActionFab(
+                                label = action.label,
+                                icon = action.icon,
+                                enabled = action.enabled,
+                                onClick = action.onClick,
+                            )
+                        }
                     }
                 }
             }
