@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -35,6 +36,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
+import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.buildRadarRingsData
 import ca.voiditswarranty.roadtripradar.model.ringDistancesForZoom
@@ -107,6 +110,8 @@ fun MapScreen(
 
     // Camera
     val configuration = LocalConfiguration.current
+    val mapStyleUri = mapStyle.resolvedStyleUri(context)
+    val mapOverlaysDark = mapStyle.isDarkForAppTheme(context)
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val screenHeight = configuration.screenHeightDp.dp
     val density = LocalDensity.current
@@ -239,25 +244,26 @@ fun MapScreen(
 
     // UI
     Box(modifier = Modifier.fillMaxSize()) {
-        MaplibreMap(
-            baseStyle = BaseStyle.Uri(mapStyle.styleUri),
-            cameraState = cameraState,
-            modifier = Modifier.fillMaxSize(),
-            options = MapOptions(
-                ornamentOptions = OrnamentOptions(
-                    isScaleBarEnabled = false,
-                    isCompassEnabled = false,
+        key(mapStyleUri) {
+            MaplibreMap(
+                baseStyle = BaseStyle.Uri(mapStyleUri),
+                cameraState = cameraState,
+                modifier = Modifier.fillMaxSize(),
+                options = MapOptions(
+                    ornamentOptions = OrnamentOptions(
+                        isScaleBarEnabled = false,
+                        isCompassEnabled = false,
+                    ),
                 ),
-            ),
-            onMapLongClick = { position, _ ->
-                vm.setPoiFromLongPress(position)
-                ClickResult.Consume
-            },
-            onMapClick = { _, _ ->
-                ClickResult.Pass
-            },
-        ) {
-            Anchor.Top {
+                onMapLongClick = { position, _ ->
+                    vm.setPoiFromLongPress(position)
+                    ClickResult.Consume
+                },
+                onMapClick = { _, _ ->
+                    ClickResult.Pass
+                },
+            ) {
+                Anchor.Top {
                 if (vm.weatherActive && vm.radarFramePaths.isNotEmpty()) {
                     WeatherRadarLayers(
                         radarFramePaths = vm.radarFramePaths,
@@ -268,12 +274,12 @@ fun MapScreen(
 
                 RadarRingsLayers(
                     radarData = radarData,
-                    isDarkStyle = mapStyle.isDark,
+                    isDarkStyle = mapOverlaysDark,
                 )
 
                 PoiLoadBoundsLayer(
                     bounds = vm.poiLoadBounds?.takeIf { vm.hasNearbyPoiFeatures },
-                    isDarkStyle = mapStyle.isDark,
+                    isDarkStyle = mapOverlaysDark,
                     visible = vm.poiLoadBounds != null,
                 )
 
@@ -308,6 +314,7 @@ fun MapScreen(
                         }
                     },
                 )
+            }
             }
         }
 
@@ -360,11 +367,14 @@ fun MapScreen(
         )
 
         // Settings + Reset dialogs
-        ActionsDrawer(vm = vm)
+        ActionsDrawer(
+            vm = vm,
+            mapStyle = mapStyle,
+            onStyleChange = onStyleChange,
+        )
 
         SettingsSheet(
             vm = vm,
-            mapStyle = mapStyle,
             onStyleChange = onStyleChange,
         )
 

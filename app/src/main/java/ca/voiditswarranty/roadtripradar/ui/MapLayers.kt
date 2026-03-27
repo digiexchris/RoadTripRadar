@@ -22,6 +22,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.maplibre.compose.expressions.dsl.asString
+import org.maplibre.compose.expressions.dsl.convertToString
 import org.maplibre.compose.expressions.dsl.case
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.dp
@@ -307,19 +308,6 @@ fun NearbyPoiLayers(
             },
         )
 
-        // Cluster count labels
-        SymbolLayer(
-            id = "nearby-poi-cluster-count",
-            source = source,
-            filter = feature.has("cluster"),
-            textField = format(span(feature["point_count"].asString())),
-            textFont = const(listOf("Noto Sans Regular")),
-            textSize = const(1.0f.em),
-            textColor = const(Color.White),
-            iconAllowOverlap = const(true),
-            textAllowOverlap = const(true),
-        )
-
         // Individual (unclustered) POI icons
         SymbolLayer(
             id = "nearby-poi-unclustered",
@@ -351,6 +339,21 @@ fun NearbyPoiLayers(
                 ))
                 ClickResult.Consume
             },
+        )
+
+        SymbolLayer(
+            id = "nearby-poi-cluster-count",
+            source = source,
+            filter = feature.has("cluster"),
+            textField = format(span(feature["point_count"].convertToString())),
+            textFont = const(listOf("Noto Sans Regular")),
+            textSize = const(1.0f.em),
+            textColor = const(Color.White),
+            textHaloColor = const(Color.Black),
+            textHaloWidth = const(1.5f.dp),
+            iconAllowOverlap = const(true),
+            textAllowOverlap = const(true),
+            textIgnorePlacement = const(true),
         )
     }
 }

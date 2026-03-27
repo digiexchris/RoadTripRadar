@@ -17,20 +17,20 @@ import org.maplibre.spatialk.units.extensions.kilometers
 import org.maplibre.spatialk.units.extensions.meters
 
 enum class MapStyle {
-    LIBERTY, DARK, LIBERTY_DARK;
-
-    val isDark get() = this != LIBERTY
+    LIBERTY, DARK, COLOR_DARK, AUTO;
 
     val styleUri get() = when (this) {
         LIBERTY -> "https://tiles.openfreemap.org/styles/liberty"
         DARK -> "https://tiles.openfreemap.org/styles/dark"
-        LIBERTY_DARK -> "asset://liberty_dark.json"
+        COLOR_DARK -> "asset://liberty_dark.json"
+        AUTO -> error("AUTO requires Context — use resolvedStyleUri(context)")
     }
 
     val displayName get() = when (this) {
         LIBERTY -> "Liberty"
         DARK -> "Dark"
-        LIBERTY_DARK -> "Color Dark"
+        COLOR_DARK -> "Color Dark"
+        AUTO -> "Auto"
     }
 }
 
@@ -121,7 +121,7 @@ object PrefsDefaults {
     const val WIND_ENABLED = true
     val WIND_SPEED_UNIT = WindSpeedUnit.KMH.name
     val TEMPERATURE_UNIT = TemperatureUnit.CELSIUS.name
-    const val PREFS_VERSION = 7
+    const val PREFS_VERSION = 8
     const val TERMS_VERSION = 1
 }
 

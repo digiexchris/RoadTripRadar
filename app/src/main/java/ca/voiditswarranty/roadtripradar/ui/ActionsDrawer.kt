@@ -13,11 +13,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -38,8 +41,10 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
@@ -58,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
@@ -68,11 +74,13 @@ private data class DrawerAction(
     val onClick: () -> Unit,
 )
 
-private enum class ActionsDrawerPage { Main, Places, Weather }
+private enum class ActionsDrawerPage { Main, Map, Places, Weather }
 
 @Composable
 fun ActionsDrawer(
     vm: MapViewModel,
+    mapStyle: MapStyle,
+    onStyleChange: (MapStyle) -> Unit,
 ) {
     val context = LocalContext.current
     var showQuitConfirm by remember { mutableStateOf(false) }
@@ -127,12 +135,9 @@ fun ActionsDrawer(
                         onClick = { showQuitConfirm = true },
                     ),
                     DrawerAction(
-                        label = if (vm.isNorthUp) "Track Bearing" else "Track North",
-                        icon = Icons.Default.Navigation,
-                        onClick = {
-                            vm.isNorthUp = !vm.isNorthUp
-                            vm.closeActionsDrawer()
-                        },
+                        label = "Map",
+                        icon = Icons.Default.Map,
+                        onClick = { drawerPage = ActionsDrawerPage.Map },
                     ),
                     DrawerAction(
                         label = "Places",
@@ -198,6 +203,7 @@ fun ActionsDrawer(
                         },
                     ),
                 )
+                ActionsDrawerPage.Map -> emptyList()
                 ActionsDrawerPage.Weather -> listOf(
                     closeToMap,
                     DrawerAction(
@@ -255,6 +261,7 @@ fun ActionsDrawer(
                     if (drawerPage != ActionsDrawerPage.Main) {
                         Text(
                             text = when (drawerPage) {
+                                ActionsDrawerPage.Map -> "Map"
                                 ActionsDrawerPage.Places -> "Places"
                                 ActionsDrawerPage.Weather -> "Weather"
                                 ActionsDrawerPage.Main -> ""
@@ -264,19 +271,52 @@ fun ActionsDrawer(
                             modifier = Modifier.padding(bottom = 12.dp),
                         )
                     }
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        items(actions) { action ->
+                    if (drawerPage == ActionsDrawerPage.Map) {
+                        val mapScroll = rememberScrollState()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
                             DrawerActionFab(
-                                label = action.label,
-                                icon = action.icon,
-                                enabled = action.enabled,
-                                onClick = action.onClick,
+                                label = closeToMap.label,
+                                icon = closeToMap.icon,
+                                enabled = true,
+                                onClick = closeToMap.onClick,
+                                modifier = Modifier.weight(1f),
                             )
+                            DrawerActionFab(
+                                label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                                icon = Icons.Default.Navigation,
+                                enabled = true,
+                                onClick = { vm.isNorthUp = !vm.isNorthUp },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                        MapDrawerSettingsContent(
+                            vm = vm,
+                            mapStyle = mapStyle,
+                            onStyleChange = onStyleChange,
+                            modifier = Modifier
+                                .weight(1f)
+                                .verticalScroll(mapScroll)
+                                .padding(bottom = 8.dp),
+                        )
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier.weight(1f),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            items(actions) { action ->
+                                DrawerActionFab(
+                                    label = action.label,
+                                    icon = action.icon,
+                                    enabled = action.enabled,
+                                    onClick = action.onClick,
+                                )
+                            }
                         }
                     }
                 }
@@ -325,6 +365,7 @@ private fun DrawerActionFab(
     icon: ImageVector,
     enabled: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(20.dp)
     val containerColor = if (enabled) {
@@ -341,7 +382,7 @@ private fun DrawerActionFab(
     LargeFloatingActionButton(
         onClick = { if (enabled) onClick() },
         shape = shape,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, shape),
         containerColor = containerColor,

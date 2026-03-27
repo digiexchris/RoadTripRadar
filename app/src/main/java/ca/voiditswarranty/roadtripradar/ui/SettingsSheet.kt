@@ -29,8 +29,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
@@ -39,8 +40,6 @@ import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private enum class ActiveSlider {
     GpsIconOpacity,
-    MapCenterPortrait,
-    MapCenterLandscape,
     RadarOpacity,
     WeatherWidgetSize,
     SpeedSize,
@@ -52,19 +51,14 @@ private enum class ActiveSlider {
 @Composable
 fun SettingsSheet(
     vm: MapViewModel,
-    mapStyle: MapStyle,
     onStyleChange: (MapStyle) -> Unit,
 ) {
     if (!vm.showSettings && !vm.showResetConfirm) return
 
-    val systemIsDark = isSystemInDarkTheme()
+    val context = LocalContext.current
 
     val gpsIconOpacityInteraction = remember { MutableInteractionSource() }
     val isDraggingGpsIconOpacity by gpsIconOpacityInteraction.collectIsDraggedAsState()
-    val portraitCenterOffsetInteraction = remember { MutableInteractionSource() }
-    val isDraggingPortraitOffset by portraitCenterOffsetInteraction.collectIsDraggedAsState()
-    val landscapeCenterOffsetInteraction = remember { MutableInteractionSource() }
-    val isDraggingLandscapeOffset by landscapeCenterOffsetInteraction.collectIsDraggedAsState()
     val radarOpacityInteraction = remember { MutableInteractionSource() }
     val isDraggingRadarOpacity by radarOpacityInteraction.collectIsDraggedAsState()
     val weatherWidgetSizeInteraction = remember { MutableInteractionSource() }
@@ -76,15 +70,12 @@ fun SettingsSheet(
     val navWidgetSizeInteraction = remember { MutableInteractionSource() }
     val isDraggingNavSize by navWidgetSizeInteraction.collectIsDraggedAsState()
 
-    val dragging = isDraggingGpsIconOpacity || isDraggingPortraitOffset ||
-        isDraggingLandscapeOffset || isDraggingRadarOpacity ||
+    val dragging = isDraggingGpsIconOpacity || isDraggingRadarOpacity ||
         isDraggingWeatherWidgetSize || isDraggingSpeedSize ||
         isDraggingCompassSize || isDraggingNavSize
 
     val active: ActiveSlider? = when {
         isDraggingGpsIconOpacity -> ActiveSlider.GpsIconOpacity
-        isDraggingPortraitOffset -> ActiveSlider.MapCenterPortrait
-        isDraggingLandscapeOffset -> ActiveSlider.MapCenterLandscape
         isDraggingRadarOpacity -> ActiveSlider.RadarOpacity
         isDraggingWeatherWidgetSize -> ActiveSlider.WeatherWidgetSize
         isDraggingSpeedSize -> ActiveSlider.SpeedSize
@@ -95,9 +86,6 @@ fun SettingsSheet(
 
     fun showSection(section: ActiveSlider) = !dragging || active == section
 
-    val showMapGroup = !dragging ||
-        active == ActiveSlider.MapCenterPortrait ||
-        active == ActiveSlider.MapCenterLandscape
     val showWeatherGroup = !dragging ||
         active == ActiveSlider.RadarOpacity ||
         active == ActiveSlider.WeatherWidgetSize
@@ -123,98 +111,6 @@ fun SettingsSheet(
                     .padding(start = 24.dp, end = 24.dp, bottom = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // ── Map ──
-                if (showMapGroup) {
-                    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            if (!dragging) {
-                                Text("Map", style = MaterialTheme.typography.titleMedium)
-                            }
-
-                            if (!dragging) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text("Use GPS Location", style = MaterialTheme.typography.titleSmall)
-                                    Switch(
-                                        checked = vm.useGps,
-                                        onCheckedChange = { vm.updateUseGps(it) },
-                                    )
-                                }
-                            }
-
-                            if (showSection(ActiveSlider.MapCenterPortrait)) {
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                    ) {
-                                        Text("Map Center Offset (Portrait)", style = MaterialTheme.typography.titleSmall)
-                                        Text(
-                                            "${(vm.mapCenterOffsetPortraitFraction * 100).toInt()}%",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                        )
-                                    }
-                                    Slider(
-                                        value = vm.mapCenterOffsetPortraitFraction,
-                                        onValueChange = { vm.updateMapCenterOffsetPortraitFraction(it) },
-                                        onValueChangeFinished = { vm.saveMapCenterOffsetPortraitFraction() },
-                                        valueRange = 0f..1f,
-                                        interactionSource = portraitCenterOffsetInteraction,
-                                    )
-                                }
-                            }
-
-                            if (showSection(ActiveSlider.MapCenterLandscape)) {
-                                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                    ) {
-                                        Text("Map Center Offset (Landscape)", style = MaterialTheme.typography.titleSmall)
-                                        Text(
-                                            "${(vm.mapCenterOffsetLandscapeFraction * 100).toInt()}%",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                        )
-                                    }
-                                    Slider(
-                                        value = vm.mapCenterOffsetLandscapeFraction,
-                                        onValueChange = { vm.updateMapCenterOffsetLandscapeFraction(it) },
-                                        onValueChangeFinished = { vm.saveMapCenterOffsetLandscapeFraction() },
-                                        valueRange = 0f..1f,
-                                        interactionSource = landscapeCenterOffsetInteraction,
-                                    )
-                                }
-                            }
-
-                            if (!dragging) {
-                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Text("Map Style", style = MaterialTheme.typography.titleSmall)
-                                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                                        MapStyle.entries.forEachIndexed { index, style ->
-                                            SegmentedButton(
-                                                selected = mapStyle == style,
-                                                onClick = { onStyleChange(style) },
-                                                shape = SegmentedButtonDefaults.itemShape(index, MapStyle.entries.size),
-                                            ) {
-                                                Text(style.displayName)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // TODO: POI display mode toggle disabled while clustered mode is paused
-                            // if (!dragging) { ... }
-                        }
-                    }
-                }
-
                 // ── Weather ──
                 if (showWeatherGroup) {
                     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
@@ -493,7 +389,7 @@ fun SettingsSheet(
             text = { Text("All settings will be reset to their default values.") },
             confirmButton = {
                 TextButton(onClick = {
-                    val systemDefault = if (systemIsDark) MapStyle.LIBERTY_DARK else MapStyle.LIBERTY
+                    val systemDefault = PreferencesRepository.defaultMapStyleFor(context)
                     vm.resetToDefaults(systemDefault, onStyleChange)
                 }) {
                     Text("Reset")

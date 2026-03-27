@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
@@ -11,8 +12,24 @@ import org.maplibre.spatialk.geojson.Position
 
 class PreferencesRepository(context: Context) {
 
+    private val appContext: Context = context.applicationContext
+
     val prefs: SharedPreferences =
         context.getSharedPreferences("map_prefs", Context.MODE_PRIVATE)
+
+    companion object {
+        /** Liberty when not in night mode, [MapStyle.COLOR_DARK] when UI night mode is on. */
+        fun defaultMapStyleFor(context: Context): MapStyle {
+            val app = context.applicationContext
+            val night =
+                app.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            return if (night == Configuration.UI_MODE_NIGHT_YES) {
+                MapStyle.COLOR_DARK
+            } else {
+                MapStyle.LIBERTY
+            }
+        }
+    }
 
     init {
         migrate()
@@ -90,18 +107,30 @@ class PreferencesRepository(context: Context) {
         if (prefs.getInt("prefs_version", 0) < 7) {
             prefs.edit()
                 .remove("poi_display_mode")
-                .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                .putInt("prefs_version", 7)
                 .apply()
         }
+        if (prefs.getInt("prefs_version", 0) < 8) {
+            val ed = prefs.edit()
+            if (prefs.getString("map_style", null) == "LIBERTY_DARK") {
+                ed.putString("map_style", MapStyle.COLOR_DARK.name)
+            }
+            ed.putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
+        }
+    }
+
+    private fun parseMapStyle(name: String): MapStyle = when (name) {
+        "LIBERTY_DARK" -> MapStyle.COLOR_DARK
+        else -> MapStyle.valueOf(name)
     }
 
     var mapStyle: MapStyle
         get() {
             val saved = prefs.getString("map_style", null)
             return try {
-                saved?.let { MapStyle.valueOf(it) } ?: MapStyle.LIBERTY_DARK
+                if (saved == null) defaultMapStyleFor(appContext) else parseMapStyle(saved)
             } catch (_: IllegalArgumentException) {
-                MapStyle.LIBERTY_DARK
+                defaultMapStyleFor(appContext)
             }
         }
         set(value) = prefs.edit().putString("map_style", value.name).apply()
