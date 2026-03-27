@@ -190,7 +190,6 @@ class MapViewModel(
     private var interCellDelayMs: Long = 150L
     private companion object {
         const val FAILED_CELL_COOLDOWN_MS = 30_000L
-        const val EVICTION_AGE_MS = 60_000L
         const val MAX_INTER_CELL_DELAY_MS = 2_000L
         const val RADAR_POLL_MS = 60_000L
         const val LOCAL_WEATHER_SUCCESS_MS = 600_000L
@@ -678,6 +677,23 @@ class MapViewModel(
         }
     }
 
+    /** Drops cached cells that do not intersect the current POI load plate (padded viewport, max 350 km side). */
+    private fun evictCachedCellsOutsideLoadPlate(loadPlate: BoundingBox) {
+        val toRemove = synchronized(cellCache) {
+            cellCache.entries
+                .filter { (_, cached) -> !PoiViewportChunks.boundingBoxesIntersect(cached.bounds, loadPlate) }
+                .map { it.key }
+        }
+        if (toRemove.isEmpty()) return
+        synchronized(cellCache) {
+            for (key in toRemove) {
+                cellCache.remove(key)
+                failedCells.remove(key)
+            }
+        }
+        rebuildMergedFeatures()
+    }
+
     private suspend fun fetchCellPipeline(cells: List<PoiGridCell>, cameraCenter: Position) {
         if (cells.isEmpty()) return
         // Sort by distance from camera center (nearest first)
@@ -739,48 +755,20 @@ class MapViewModel(
 
     /**
      * Called from camera-settle watcher to extend coverage as user pans.
-     * Evicts stale cells, then fetches new ones.
+     * Evicts cells outside the current load plate, then fetches any missing grid cells for that plate.
      */
     fun onCameraSettled(lat: Double, lon: Double, zoom: Double) {
         if (!poiPipelineActive) return
         if (zoom < 9.0) return
         if (!networkStatus.connected) return
 
-        // Check if viewport has reached the edge of existing coverage
         val viewBounds = viewportBoundsForPoi(lat, lon, zoom)
-        val currentLoadBounds = poiLoadBounds
-        if (currentLoadBounds != null) {
-            val fullyContained =
-                viewBounds.southwest.latitude >= currentLoadBounds.southwest.latitude &&
-                viewBounds.northeast.latitude <= currentLoadBounds.northeast.latitude &&
-                viewBounds.southwest.longitude >= currentLoadBounds.southwest.longitude &&
-                viewBounds.northeast.longitude <= currentLoadBounds.northeast.longitude
-            if (fullyContained) {
-                android.util.Log.d("POI_DEBUG", "onCameraSettled: viewport fully contained, skipping")
-                return
-            }
-        }
+        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(viewBounds)
+        android.util.Log.d("POI_DEBUG", "onCameraSettled: load plate=$loadPlate")
 
-        val (loadBounds, _) = PoiViewportChunks.gridCellsForManualLoad(viewBounds)
-        android.util.Log.d("POI_DEBUG", "onCameraSettled: viewport outside coverage, computing cells")
+        evictCachedCellsOutsideLoadPlate(loadPlate)
 
-        // Evict cells outside 1.5× loadBounds that are older than 60s
-        val evictionBounds = PoiViewportChunks.padBounds(loadBounds, 1.5)
-        val now = System.currentTimeMillis()
-        val toEvict = cellCache.entries.filter { entry ->
-            val cached = entry.value
-            val outside = cached.bounds.northeast.latitude < evictionBounds.southwest.latitude ||
-                cached.bounds.southwest.latitude > evictionBounds.northeast.latitude ||
-                cached.bounds.northeast.longitude < evictionBounds.southwest.longitude ||
-                cached.bounds.southwest.longitude > evictionBounds.northeast.longitude
-            outside && (now - cached.fetchedAtMs) > EVICTION_AGE_MS
-        }
-        if (toEvict.isNotEmpty()) {
-            for (entry in toEvict) cellCache.remove(entry.key)
-            rebuildMergedFeatures()
-        }
-
-        val missingCells = cellsNeedingFetch(loadBounds)
+        val missingCells = cellsNeedingFetch(loadPlate)
         if (missingCells.isEmpty()) return
 
         android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells needed")
@@ -795,8 +783,9 @@ class MapViewModel(
     private fun triggerPipelineForCurrentViewport() {
         val cam = pendingCameraInfo ?: return
         val viewBounds = viewportBoundsForPoi(cam.lat, cam.lon, cam.zoom)
-        val (loadBounds, _) = PoiViewportChunks.gridCellsForManualLoad(viewBounds)
-        val missingCells = cellsNeedingFetch(loadBounds)
+        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(viewBounds)
+        evictCachedCellsOutsideLoadPlate(loadPlate)
+        val missingCells = cellsNeedingFetch(loadPlate)
         if (missingCells.isEmpty()) return
         interCellDelayMs = 150L
         val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)

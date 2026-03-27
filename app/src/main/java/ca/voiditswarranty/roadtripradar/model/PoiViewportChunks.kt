@@ -62,6 +62,23 @@ object PoiViewportChunks {
         )
     }
 
+    /** Axis-aligned intersection; uses min/max of corners so SW/NE need not be ordered. */
+    fun boundingBoxesIntersect(a: BoundingBox, b: BoundingBox): Boolean {
+        val aSw = a.southwest
+        val aNe = a.northeast
+        val bSw = b.southwest
+        val bNe = b.northeast
+        val aMinLat = min(aSw.latitude, aNe.latitude)
+        val aMaxLat = max(aSw.latitude, aNe.latitude)
+        val aMinLon = min(aSw.longitude, aNe.longitude)
+        val aMaxLon = max(aSw.longitude, aNe.longitude)
+        val bMinLat = min(bSw.latitude, bNe.latitude)
+        val bMaxLat = max(bSw.latitude, bNe.latitude)
+        val bMinLon = min(bSw.longitude, bNe.longitude)
+        val bMaxLon = max(bSw.longitude, bNe.longitude)
+        return aMinLat <= bMaxLat && aMaxLat >= bMinLat && aMinLon <= bMaxLon && aMaxLon >= bMinLon
+    }
+
     fun padBounds(bounds: BoundingBox, factor: Double): BoundingBox {
         val latSpan = bounds.northeast.latitude - bounds.southwest.latitude
         val lonSpan = bounds.northeast.longitude - bounds.southwest.longitude
@@ -161,12 +178,21 @@ object PoiViewportChunks {
     }
 
     /**
+     * Geographic “load plate” for POI fetch and sliding-window eviction: visible bounds padded by
+     * [POI_MANUAL_LOAD_PAD] (viewport max dimension × that factor in each direction), then replaced with a
+     * square whose side is the larger of the two km spans, capped at [MAX_POI_LOAD_EXTENT_KM].
+     */
+    fun poiLoadPlateForVisibleBounds(visibleBounds: BoundingBox): BoundingBox {
+        val padded = padBounds(visibleBounds, POI_MANUAL_LOAD_PAD)
+        return clampBoundsToMaxCenterExtentKm(padded, MAX_POI_LOAD_EXTENT_KM)
+    }
+
+    /**
      * Visible map bounds (e.g. [org.maplibre.compose.camera.CameraProjection.queryVisibleBoundingBox]),
      * then × [POI_MANUAL_LOAD_PAD], square clamp in km, then grid intersection.
      */
     fun gridCellsForManualLoad(visibleBounds: BoundingBox): Pair<BoundingBox, List<PoiGridCell>> {
-        val padded = padBounds(visibleBounds, POI_MANUAL_LOAD_PAD)
-        val loadBounds = clampBoundsToMaxCenterExtentKm(padded, MAX_POI_LOAD_EXTENT_KM)
+        val loadBounds = poiLoadPlateForVisibleBounds(visibleBounds)
         return loadBounds to worldGridCellsIntersecting(loadBounds)
     }
 

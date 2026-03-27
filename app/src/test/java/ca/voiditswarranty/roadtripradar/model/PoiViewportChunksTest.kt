@@ -1,6 +1,7 @@
 package ca.voiditswarranty.roadtripradar.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.maplibre.spatialk.geojson.BoundingBox
@@ -15,18 +16,58 @@ class PoiViewportChunksTest {
     private val gridStepDeg = 25.0 / kmPerDegLat
 
     @Test
+    fun boundingBoxesIntersect_trueWhenOverlapping() {
+        val a = BoundingBox(
+            southwest = Position(latitude = 0.0, longitude = 0.0),
+            northeast = Position(latitude = 1.0, longitude = 1.0),
+        )
+        val b = BoundingBox(
+            southwest = Position(latitude = 0.5, longitude = 0.5),
+            northeast = Position(latitude = 2.0, longitude = 2.0),
+        )
+        assertTrue(PoiViewportChunks.boundingBoxesIntersect(a, b))
+    }
+
+    @Test
+    fun boundingBoxesIntersect_falseWhenSeparated() {
+        val a = BoundingBox(
+            southwest = Position(latitude = 0.0, longitude = 0.0),
+            northeast = Position(latitude = 1.0, longitude = 1.0),
+        )
+        val b = BoundingBox(
+            southwest = Position(latitude = 5.0, longitude = 5.0),
+            northeast = Position(latitude = 6.0, longitude = 6.0),
+        )
+        assertFalse(PoiViewportChunks.boundingBoxesIntersect(a, b))
+    }
+
+    @Test
+    fun poiLoadPlateForVisibleBounds_matchesGridCellsForManualLoadPlate() {
+        val sw = Position(latitude = 45.0, longitude = -75.0)
+        val ne = Position(latitude = 45.1, longitude = -74.9)
+        val visible = BoundingBox(southwest = sw, northeast = ne)
+        val plate = PoiViewportChunks.poiLoadPlateForVisibleBounds(visible)
+        val (loadBounds, _) = PoiViewportChunks.gridCellsForManualLoad(visible)
+        assertEquals(loadBounds.southwest.latitude, plate.southwest.latitude, 1e-9)
+        assertEquals(loadBounds.northeast.latitude, plate.northeast.latitude, 1e-9)
+        assertEquals(loadBounds.southwest.longitude, plate.southwest.longitude, 1e-9)
+        assertEquals(loadBounds.northeast.longitude, plate.northeast.longitude, 1e-9)
+    }
+
+    @Test
     fun padBounds_scalesSpanAboutCenter() {
         val sw = Position(latitude = 1.0, longitude = 2.0)
         val ne = Position(latitude = 3.0, longitude = 6.0)
         val input = BoundingBox(southwest = sw, northeast = ne)
         val out = PoiViewportChunks.padBounds(input, 1.5)
-        assertEquals(2.0, out.southwest.latitude, 1e-9)
+        // lat span 2 → pad 0.5 each side; lon span 4 → pad 1 each side
+        assertEquals(0.5, out.southwest.latitude, 1e-9)
         assertEquals(1.0, out.southwest.longitude, 1e-9)
-        assertEquals(4.0, out.northeast.latitude, 1e-9)
+        assertEquals(3.5, out.northeast.latitude, 1e-9)
         assertEquals(7.0, out.northeast.longitude, 1e-9)
         val centerLat = (out.southwest.latitude + out.northeast.latitude) / 2.0
         val centerLon = (out.southwest.longitude + out.northeast.longitude) / 2.0
-        assertEquals(3.0, centerLat, 1e-9)
+        assertEquals(2.0, centerLat, 1e-9)
         assertEquals(4.0, centerLon, 1e-9)
     }
 
