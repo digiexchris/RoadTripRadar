@@ -11,9 +11,7 @@
       "versionName": "1.8.0",
       "versionCode": 22,
       "items": [
-        "In-app changelog: view What's New after updates and full history from Help & Info.",
-        "You can now see points of interest near your location! Check it out in the Menu->Places.",
-        "We've done a big menu refactor to make things easier to find, and easier to manage with gloves on."
+        "Menu reorganization for easier use with gloves on."
       ]
     }
   ]

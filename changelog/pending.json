@@ -1,4 +1,8 @@
 {
   "_readme": "User-facing strings for the next release. The release pipeline stamps versionName/versionCode, merges entries into app/src/main/assets/changelog.json, then resets entries to [].\nIf you don't see your entry, it means that it's been already released.",
-  "entries": []
+  "entries": [
+    "In-app changelog: view What's New after updates and full history from Help & Info.",
+    "You can now see points of interest near your location! Check it out in the Menu->Places.",
+    "We've done a big menu refactor to make things easier to find, and easier to manage with gloves on."
+  ]
 }
