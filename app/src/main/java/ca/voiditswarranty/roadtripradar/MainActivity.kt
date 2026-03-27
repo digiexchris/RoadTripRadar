@@ -21,6 +21,7 @@ import ca.voiditswarranty.roadtripradar.model.MapStyle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
+import ca.voiditswarranty.roadtripradar.ui.LocationPermissionGate
 import ca.voiditswarranty.roadtripradar.ui.MapScreen
 import ca.voiditswarranty.roadtripradar.ui.TermsOverlay
 import ca.voiditswarranty.roadtripradar.ui.theme.RoadTripRadarTheme
@@ -60,16 +61,19 @@ fun RoadTripRadarApp() {
     }
 
     RoadTripRadarTheme(darkTheme = appInDarkTheme) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            MapScreen(
-                vm = vm,
-                mapStyle = mapStyle,
-                onStyleChange = { newStyle ->
-                    mapStyle = newStyle
-                    vm.prefsRepo.mapStyle = newStyle
-                },
-            )
-            TermsOverlay(vm = vm)
+        LocationPermissionGate(vm = vm) { locationGranted ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                MapScreen(
+                    vm = vm,
+                    mapStyle = mapStyle,
+                    onStyleChange = { newStyle ->
+                        mapStyle = newStyle
+                        vm.prefsRepo.mapStyle = newStyle
+                    },
+                    locationPermissionGranted = locationGranted,
+                )
+                TermsOverlay(vm = vm)
+            }
         }
     }
 }

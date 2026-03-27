@@ -1,13 +1,9 @@
 package ca.voiditswarranty.roadtripradar.ui
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Configuration
-import android.content.pm.PackageManager
 import android.view.WindowManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,7 +19,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -35,7 +30,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
 import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.MapStyle
@@ -70,36 +64,13 @@ fun MapScreen(
     vm: MapViewModel,
     mapStyle: MapStyle,
     onStyleChange: (MapStyle) -> Unit,
+    locationPermissionGranted: Boolean,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // Permissions
-    var hasLocationPermission by remember {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED
-        )
-    }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        hasLocationPermission = granted
-        if (!granted) {
-            vm.updateUseGps(false)
-        }
-    }
-    LaunchedEffect(vm.useGps) {
-        if (vm.useGps && !hasLocationPermission) {
-            permissionLauncher.launch(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-            )
-        }
-    }
-
     // Location
-    val locationProvider = if (hasLocationPermission && vm.useGps) {
+    val locationProvider = if (locationPermissionGranted && vm.useGps) {
         rememberDefaultLocationProvider()
     } else {
         rememberNullLocationProvider()
