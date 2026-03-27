@@ -1,6 +1,5 @@
 package ca.voiditswarranty.roadtripradar.data
 
-import ca.voiditswarranty.roadtripradar.model.PoiCategory
 import ca.voiditswarranty.roadtripradar.model.SearchResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,9 +20,7 @@ data class ViewBox(
     val north: Double,
 )
 
-class GeocodingRepository(
-    private val overpassRepo: OverpassRepository = OverpassRepository(),
-) {
+class GeocodingRepository {
 
     suspend fun searchByName(
         query: String,
@@ -70,13 +67,4 @@ class GeocodingRepository(
             emptyList()
         }
     }
-
-    suspend fun searchByCategory(
-        category: PoiCategory,
-        viewbox: ViewBox,
-        userPosition: Position?,
-    ): List<SearchResult> {
-        return overpassRepo.searchByCategory(category.query, viewbox, userPosition)
-    }
-
 }

@@ -25,7 +25,7 @@ private const val GRID_STEP_LON_DEG = CHUNK_MAX_KM / KM_PER_DEG_LAT
 const val MAX_POI_CHUNK_GRID_CELLS_PER_SIDE = 14
 
 /**
- * One world-aligned POI load cell: integer grid indices and the geographic bbox for Overpass.
+ * One world-aligned POI load cell: integer grid indices and the geographic bbox for Postpass queries.
  * IDs are stable when the viewport jitters within the same cells.
  */
 data class PoiGridCell(
@@ -36,7 +36,7 @@ data class PoiGridCell(
     val id: String get() = "g_${iLat}_${iLon}"
 }
 
-/** Padded viewport (1.25×) is split into ~25 km × 25 km Overpass requests on a fixed global grid. */
+/** Padded viewport (1.25×) is split into ~25 km × 25 km Postpass requests on a fixed global grid. */
 object PoiViewportChunks {
 
     const val VIEWPORT_PAD_FACTOR = 1.25

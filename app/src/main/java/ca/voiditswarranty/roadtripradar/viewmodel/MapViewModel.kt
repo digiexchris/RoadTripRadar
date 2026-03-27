@@ -12,7 +12,7 @@ import androidx.lifecycle.viewModelScope
 import ca.voiditswarranty.roadtripradar.data.GeocodingRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
-import ca.voiditswarranty.roadtripradar.data.OverpassRepository
+import ca.voiditswarranty.roadtripradar.data.PostpassRepository
 import ca.voiditswarranty.roadtripradar.data.PostpassServerException
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.data.ViewBox
@@ -50,9 +50,9 @@ class MapViewModel(
     val prefsRepo: PreferencesRepository,
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
-    val overpassRepo: OverpassRepository = OverpassRepository(),
+    val postpassRepo: PostpassRepository = PostpassRepository(),
 ) : ViewModel() {
-    private val geocodingRepo: GeocodingRepository = GeocodingRepository(overpassRepo)
+    private val geocodingRepo: GeocodingRepository = GeocodingRepository()
 
     // Weather
     var weatherMode by mutableStateOf(prefsRepo.weatherMode)
@@ -228,11 +228,7 @@ class MapViewModel(
         private set
     var searchResults by mutableStateOf(emptyList<SearchResult>())
         private set
-    var searchByCategory by mutableStateOf(false)
-        private set
     var isSearching by mutableStateOf(false)
-        private set
-    var selectedCategory by mutableStateOf<PoiCategory?>(null)
         private set
 
     val weatherActive get() = weatherMode == WeatherMode.ON
@@ -654,7 +650,7 @@ class MapViewModel(
                 batch.map { cell ->
                     async {
                         try {
-                            val result = overpassRepo.fetchPoisForTile(cell.bounds, enabledPoiCategories)
+                            val result = postpassRepo.fetchPoisForTile(cell.bounds, enabledPoiCategories)
                             android.util.Log.d("POI_DEBUG", "Cell ${cell.id}: ${result.features.size} features")
                             synchronized(cellCache) {
                                 cellCache[cell.id] = CachedCell(
@@ -761,24 +757,7 @@ class MapViewModel(
 
     fun updateSearchQuery(query: String) {
         searchQuery = query
-        if (searchByCategory) {
-            selectedCategory = null
-            searchResults = emptyList()
-        } else {
-            triggerNameSearch()
-        }
-    }
-
-    fun updateSearchByCategory(byCategory: Boolean) {
-        searchByCategory = byCategory
-        searchResults = emptyList()
-        selectedCategory = null
-        searchQuery = ""
-    }
-
-    fun clearSelectedCategory() {
-        selectedCategory = null
-        searchResults = emptyList()
+        triggerNameSearch()
     }
 
     // Stored externally since ViewModel doesn't own location
@@ -828,18 +807,6 @@ class MapViewModel(
     private fun viewportBoundsForPoi(lat: Double, lon: Double, zoom: Double): BoundingBox =
         poiMapVisibleBounds
             ?: PoiViewportChunks.approximateViewportBounds(lat, lon, zoom, screenWidthDp, screenHeightDp)
-
-    fun selectCategoryWithCamera(category: PoiCategory) {
-        selectedCategory = category
-        val cam = pendingCameraInfo ?: return
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            isSearching = true
-            val viewbox = computeViewBox(cam.lat, cam.lon, cam.zoom)
-            searchResults = geocodingRepo.searchByCategory(category, viewbox, userPositionForSearch)
-            isSearching = false
-        }
-    }
 
     private fun computeViewBox(lat: Double, lon: Double, zoom: Double): ViewBox {
         val latDelta = 360.0 / Math.pow(2.0, zoom) * 0.5

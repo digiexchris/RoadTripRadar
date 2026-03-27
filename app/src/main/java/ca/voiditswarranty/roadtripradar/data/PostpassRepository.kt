@@ -1,7 +1,6 @@
 package ca.voiditswarranty.roadtripradar.data
 
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
-import ca.voiditswarranty.roadtripradar.model.SearchResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
@@ -18,14 +17,13 @@ import org.maplibre.spatialk.geojson.Feature
 import org.maplibre.spatialk.geojson.FeatureCollection
 import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
-import org.maplibre.spatialk.turf.measurement.distance
-import org.maplibre.spatialk.units.extensions.inMeters
 import java.net.URL
 
 /** Thrown when Postpass fails with a server-side error (429 or 5xx) after retries. */
 class PostpassServerException(message: String, cause: Throwable? = null) : java.io.IOException(message, cause)
 
-class OverpassRepository {
+/** Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API. */
+class PostpassRepository {
 
     private val semaphore = Semaphore(2)
 
@@ -54,42 +52,6 @@ class OverpassRepository {
             parsePostpassFeature(it.jsonObject, categories)
         } ?: emptyList()
         FeatureCollection(features)
-    }
-
-    suspend fun searchByCategory(
-        category: String,
-        viewbox: ViewBox,
-        userPosition: Position?,
-    ): List<SearchResult> = semaphore.withPermit {
-        try {
-            val bounds = BoundingBox(
-                southwest = Position(latitude = viewbox.south, longitude = viewbox.west),
-                northeast = Position(latitude = viewbox.north, longitude = viewbox.east),
-            )
-            val jsonStr = executeQuery(buildPostpassQuery(bounds, setOf(category)))
-            val json = Json.parseToJsonElement(jsonStr).jsonObject
-            val features = json["features"]?.jsonArray ?: emptyList()
-            features.mapNotNull { el ->
-                val geom = el.jsonObject["geometry"]?.jsonObject ?: return@mapNotNull null
-                val coords = geom["coordinates"]?.jsonArray ?: return@mapNotNull null
-                val lon = coords[0].jsonPrimitive.content.toDoubleOrNull() ?: return@mapNotNull null
-                val lat = coords[1].jsonPrimitive.content.toDoubleOrNull() ?: return@mapNotNull null
-                val props = el.jsonObject["properties"]?.jsonObject ?: return@mapNotNull null
-                val tags = props["tags"]?.jsonObject ?: return@mapNotNull null
-                val name = tags["name"]?.jsonPrimitive?.content?.ifEmpty { null }
-                    ?: tags["brand"]?.jsonPrimitive?.content
-                    ?: tags["operator"]?.jsonPrimitive?.content
-                    ?: return@mapNotNull null
-                val pos = Position(latitude = lat, longitude = lon)
-                val dist = userPosition?.let { distance(Point(it), Point(pos)) }
-                SearchResult(name = name, subtitle = buildSubtitle(tags), position = pos, distance = dist)
-            }.let { list ->
-                if (userPosition != null) list.sortedBy { it.distance?.inMeters ?: Double.MAX_VALUE }
-                else list
-            }
-        } catch (_: Exception) {
-            emptyList()
-        }
     }
 
     private fun buildPostpassQuery(bounds: BoundingBox, categories: Set<String>): String {

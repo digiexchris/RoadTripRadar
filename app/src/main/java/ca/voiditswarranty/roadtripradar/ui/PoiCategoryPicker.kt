@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -121,17 +120,23 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                                     MaterialTheme.colorScheme.onSurface,
                             )
 
+                            val buttonShape = RoundedCornerShape(20.dp)
                             Row(
+                                modifier = Modifier.weight(1f),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                TextButton(
+                                LargeFloatingActionButton(
                                     onClick = { vm.closePoiCategoryPicker() },
+                                    shape = buttonShape,
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
                                 ) {
                                     Text("Cancel", style = MaterialTheme.typography.titleMedium)
                                 }
-
-                                val buttonShape = RoundedCornerShape(20.dp)
                                 LargeFloatingActionButton(
                                     onClick = {
                                         vm.searchVisibleArea()
@@ -146,7 +151,9 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                                         MaterialTheme.colorScheme.onPrimaryContainer
                                     else
                                         MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.fillMaxWidth(0.65f),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxWidth(),
                                 ) {
                                     Text("Search Visible Area", style = MaterialTheme.typography.titleMedium)
                                 }
