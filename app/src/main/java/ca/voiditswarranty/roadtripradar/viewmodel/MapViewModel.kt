@@ -15,8 +15,8 @@ import ca.voiditswarranty.roadtripradar.data.GeocodingRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.data.PostpassRepository
-import ca.voiditswarranty.roadtripradar.data.PostpassServerException
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
+import ca.voiditswarranty.roadtripradar.data.TileFetchResult
 import ca.voiditswarranty.roadtripradar.data.ViewBox
 import ca.voiditswarranty.roadtripradar.data.WeatherRepository
 import ca.voiditswarranty.roadtripradar.model.ChangelogRelease
@@ -188,6 +188,7 @@ class MapViewModel(
         get() = nearbyPoiFeatures.features.isNotEmpty()
 
     private var interCellDelayMs: Long = 150L
+    private var lastLoadPlate: BoundingBox? = null
     private companion object {
         const val FAILED_CELL_COOLDOWN_MS = 30_000L
         const val MAX_INTER_CELL_DELAY_MS = 2_000L
@@ -576,6 +577,7 @@ class MapViewModel(
             } else {
                 cellCache.clear()
                 failedCells.clear()
+                lastLoadPlate = null
                 nearbyPoiFeatures = FeatureCollection(emptyList())
                 triggerPipelineForCurrentViewport()
             }
@@ -598,6 +600,7 @@ class MapViewModel(
         // Fresh start: clear all caches
         cellCache.clear()
         failedCells.clear()
+        lastLoadPlate = null
         nearbyPoiFeatures = FeatureCollection(emptyList())
         poiFetchRegion = null
         poiLoadBounds = null
@@ -616,6 +619,7 @@ class MapViewModel(
         poiFetchJob?.cancel()
         cellCache.clear()
         failedCells.clear()
+        lastLoadPlate = null
         nearbyPoiFeatures = FeatureCollection(emptyList())
         poiFetchRegion = null
         poiLoadBounds = null
@@ -718,26 +722,28 @@ class MapViewModel(
             coroutineScope {
                 batch.map { cell ->
                     async {
-                        try {
-                            val result = postpassRepo.fetchPoisForTile(cell.bounds, enabledPoiCategories)
-                            android.util.Log.d("POI_DEBUG", "Cell ${cell.id}: ${result.features.size} features")
-                            synchronized(cellCache) {
-                                cellCache[cell.id] = CachedCell(
-                                    cellId = cell.id,
-                                    features = result.features,
-                                    fetchedAtMs = System.currentTimeMillis(),
-                                    bounds = cell.bounds,
-                                )
-                                failedCells.remove(cell.id)
+                        when (val result = postpassRepo.fetchPoisForTile(cell.bounds, enabledPoiCategories)) {
+                            is TileFetchResult.Success -> {
+                                android.util.Log.d("POI_DEBUG", "Cell ${cell.id}: ${result.features.size} features")
+                                synchronized(cellCache) {
+                                    cellCache[cell.id] = CachedCell(
+                                        cellId = cell.id,
+                                        features = result.features,
+                                        fetchedAtMs = System.currentTimeMillis(),
+                                        bounds = cell.bounds,
+                                    )
+                                    failedCells.remove(cell.id)
+                                }
                             }
-                        } catch (e: PostpassServerException) {
-                            android.util.Log.e("POI_DEBUG", "Cell ${cell.id} server error: ${e.message}")
-                            failedCells[cell.id] = System.currentTimeMillis()
-                            interCellDelayMs = min(interCellDelayMs * 2, MAX_INTER_CELL_DELAY_MS)
-                            android.util.Log.d("POI_DEBUG", "Backoff: interCellDelayMs=$interCellDelayMs")
-                        } catch (e: Exception) {
-                            android.util.Log.e("POI_DEBUG", "Cell ${cell.id} fetch failed: ${e.message}")
-                            failedCells[cell.id] = System.currentTimeMillis()
+                            is TileFetchResult.ServerError -> {
+                                android.util.Log.e("POI_DEBUG", "Cell ${cell.id} server error: ${result.message}")
+                                failedCells[cell.id] = System.currentTimeMillis()
+                                interCellDelayMs = min(interCellDelayMs * 2, MAX_INTER_CELL_DELAY_MS)
+                            }
+                            is TileFetchResult.Failed -> {
+                                android.util.Log.e("POI_DEBUG", "Cell ${cell.id} fetch failed: ${result.message}")
+                                failedCells[cell.id] = System.currentTimeMillis()
+                            }
                         }
                     }
                 }.forEach { it.await() }
@@ -756,6 +762,7 @@ class MapViewModel(
     /**
      * Called from camera-settle watcher to extend coverage as user pans.
      * Evicts cells outside the current load plate, then fetches any missing grid cells for that plate.
+     * If the load plate hasn't changed and a fetch is already in progress, lets it finish undisturbed.
      */
     fun onCameraSettled(lat: Double, lon: Double, zoom: Double) {
         if (!poiPipelineActive) return
@@ -771,8 +778,14 @@ class MapViewModel(
         val missingCells = cellsNeedingFetch(loadPlate)
         if (missingCells.isEmpty()) return
 
+        if (poiFetchJob?.isActive == true && loadPlate == lastLoadPlate) {
+            android.util.Log.d("POI_DEBUG", "onCameraSettled: job active for same plate, skipping restart")
+            return
+        }
+
         android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells needed")
         interCellDelayMs = 150L
+        lastLoadPlate = loadPlate
         val cameraCenter = Position(latitude = lat, longitude = lon)
         poiFetchJob?.cancel()
         poiFetchJob = viewModelScope.launch {
@@ -891,6 +904,7 @@ class MapViewModel(
         poiFetchJob?.cancel()
         cellCache.clear()
         failedCells.clear()
+        lastLoadPlate = null
         poiPipelineActive = false
         cellsLoadingTotal = 0
         cellsLoadingComplete = 0
