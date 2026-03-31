@@ -31,7 +31,7 @@ sealed interface TileFetchResult {
 /** Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API. */
 class PostpassRepository {
 
-    private val semaphore = Semaphore(2)
+    private val semaphore = Semaphore(4)
 
     private val categoryTagMap: Map<String, String> by lazy {
         val map = mutableMapOf<String, String>()

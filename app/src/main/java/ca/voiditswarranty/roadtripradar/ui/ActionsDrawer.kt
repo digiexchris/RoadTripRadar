@@ -43,12 +43,12 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Air
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Layers
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -360,7 +360,7 @@ fun ActionsDrawer(
                             val helpLinkActions = listOf(
                                 DrawerAction(
                                     label = "Terms & Conditions",
-                                    icon = Icons.Default.Article,
+                                    icon = Icons.Default.Gavel,
                                     onClick = { vm.viewTerms() },
                                 ),
                                 DrawerAction(
@@ -370,7 +370,7 @@ fun ActionsDrawer(
                                 ),
                                 DrawerAction(
                                     label = "Documentation",
-                                    icon = Icons.Default.MenuBook,
+                                    icon = Icons.AutoMirrored.Filled.LibraryBooks,
                                     onClick = {
                                         context.startActivity(
                                             Intent(Intent.ACTION_VIEW, wikiUri),

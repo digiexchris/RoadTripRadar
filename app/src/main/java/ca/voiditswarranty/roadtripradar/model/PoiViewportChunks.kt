@@ -20,7 +20,7 @@ private const val GRID_STEP_LON_DEG = CHUNK_MAX_KM / KM_PER_DEG_LAT
 
 /**
  * Maximum number of chunk cells along latitude and along longitude expected when
- * [MAX_POI_LOAD_EXTENT_KM] is applied (~200 km / ~25 km ≈ 8).
+ * [MAX_POI_LOAD_EXTENT_KM] is applied (~150 km / ~25 km ≈ 6).
  */
 const val MAX_POI_CHUNK_GRID_CELLS_PER_SIDE = 14
 
@@ -45,7 +45,7 @@ object PoiViewportChunks {
     const val POI_MANUAL_LOAD_PAD = 1.5
 
     /** Max north–south and east–west extent (km) for POI loading, centered on the viewport. */
-    const val MAX_POI_LOAD_EXTENT_KM = 350.0
+    const val MAX_POI_LOAD_EXTENT_KM = 150.0
 
     fun approximateViewportBounds(
         lat: Double, lon: Double, zoom: Double,

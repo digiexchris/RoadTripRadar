@@ -4,8 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Configuration
 import android.view.WindowManager
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -207,7 +212,7 @@ fun MapScreen(
     // Periodic POI cell coverage check (works for both panning and driving)
     LaunchedEffect(Unit) {
         while (true) {
-            delay(3000)
+            delay(1500)
             val pos = cameraState.position
             vm.onCameraSettled(pos.target.latitude, pos.target.longitude, pos.zoom)
         }
@@ -249,9 +254,14 @@ fun MapScreen(
                 )
 
                 PoiLoadBoundsLayer(
-                    bounds = vm.poiLoadBounds?.takeIf { vm.hasNearbyPoiFeatures },
+                    bounds = vm.poiLoadBounds,
                     isDarkStyle = mapOverlaysDark,
                     visible = vm.poiLoadBounds != null,
+                )
+
+                FailedCellsLayer(
+                    failedBounds = vm.failedCellBounds,
+                    visible = vm.hasFailedCells,
                 )
 
                 if (hasLocation) {
@@ -301,20 +311,28 @@ fun MapScreen(
         if (vm.isLoadingPois) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize(0.33f),
-                contentAlignment = Alignment.BottomCenter,
+                    .align(Alignment.TopCenter)
+                    .padding(top = 64.dp),
             ) {
-                androidx.compose.material3.SuggestionChip(
-                    onClick = {},
-                    label = { Text("Loading areas (${vm.cellsLoadingComplete}/${vm.cellsLoadingTotal})") },
-                    icon = {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp,
+                Row(
+                    modifier = Modifier
+                        .background(
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                            RoundedCornerShape(8.dp),
                         )
-                    },
-                )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                    )
+                    Text(
+                        "Loading areas (${vm.cellsRemaining} remaining)",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
         }
 

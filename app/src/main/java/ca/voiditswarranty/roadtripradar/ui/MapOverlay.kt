@@ -113,6 +113,11 @@ fun BoxScope.MapOverlay(
                         )
                     }
                 }
+                RetryFailedButton(
+                    hasFailedCells = vm.hasFailedCells,
+                    onRetry = { vm.retryFailedCells() },
+                    scale = config.fabScale * 1.3f,
+                )
             }
         },
         rightContent = {

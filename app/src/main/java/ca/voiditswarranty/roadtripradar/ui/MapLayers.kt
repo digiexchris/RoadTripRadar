@@ -153,6 +153,36 @@ fun PoiLoadBoundsLayer(
 }
 
 @Composable
+fun FailedCellsLayer(
+    failedBounds: List<BoundingBox>,
+    visible: Boolean,
+) {
+    if (!visible || failedBounds.isEmpty()) return
+
+    val features = remember(failedBounds) {
+        FeatureCollection(failedBounds.flatMap { bounds ->
+            val sw = bounds.southwest
+            val ne = bounds.northeast
+            val nw = Position(latitude = ne.latitude, longitude = sw.longitude)
+            val se = Position(latitude = sw.latitude, longitude = ne.longitude)
+            listOf(
+                Feature(geometry = LineString(listOf(sw, ne)), properties = buildJsonObject {}),
+                Feature(geometry = LineString(listOf(nw, se)), properties = buildJsonObject {}),
+            )
+        })
+    }
+    val source = rememberGeoJsonSource(data = GeoJsonData.Features(features))
+
+    LineLayer(
+        id = "poi-failed-cells",
+        source = source,
+        color = const(Color(0xFFE57373)),
+        width = const(1.5.dp),
+        opacity = const(0.6f),
+    )
+}
+
+@Composable
 fun UserLocationPuck(
     locationState: org.maplibre.compose.location.UserLocationState,
     cameraState: org.maplibre.compose.camera.CameraState,
