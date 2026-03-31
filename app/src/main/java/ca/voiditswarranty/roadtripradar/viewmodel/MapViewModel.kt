@@ -606,7 +606,10 @@ class MapViewModel(
         if (enabledPoiCategories.isEmpty()) return
         val cam = pendingCameraInfo ?: return
         val viewBounds = viewportBoundsForPoi(cam.lat, cam.lon, cam.zoom)
-        val (loadBounds, cells) = PoiViewportChunks.gridCellsForManualLoad(viewBounds)
+        val cameraTarget = Position(latitude = cam.lat, longitude = cam.lon)
+        val (loadBounds, cells) = PoiViewportChunks.gridCellsForManualLoad(
+            viewBounds, cameraTarget, poiBoxBottomFraction, cam.bearing,
+        )
         val centerLat = (viewBounds.southwest.latitude + viewBounds.northeast.latitude) / 2.0
         val viewHeightKm = (viewBounds.northeast.latitude - viewBounds.southwest.latitude) * 111.0
         val viewWidthKm = (viewBounds.northeast.longitude - viewBounds.southwest.longitude) * 111.0 * kotlin.math.cos(Math.toRadians(centerLat))
@@ -622,9 +625,8 @@ class MapViewModel(
         poiFetchRegion = null
         poiLoadBounds = loadBounds
         poiPipelineActive = true
-        val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)
         val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadBounds)
-        enqueueCells(missingCells, cameraCenter)
+        enqueueCells(missingCells, cameraTarget)
         startCellWorker()
         poiCategoriesVersion++
     }
@@ -830,17 +832,19 @@ class MapViewModel(
      * Called periodically to extend POI coverage as the user pans or drives.
      * Evicts stale data outside the current load plate, then enqueues any missing cells.
      */
-    fun onCameraSettled(lat: Double, lon: Double, zoom: Double) {
+    fun onCameraSettled(lat: Double, lon: Double, zoom: Double, bearing: Double = 0.0) {
         if (!poiPipelineActive) return
 
         val viewBounds = viewportBoundsForPoi(lat, lon, zoom)
-        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(viewBounds)
+        val cameraTarget = Position(latitude = lat, longitude = lon)
+        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(
+            viewBounds, cameraTarget, poiBoxBottomFraction, bearing,
+        )
 
         evictCachedCellsOutsideLoadPlate(loadPlate)
         poiLoadBounds = loadPlate
 
-        val cameraCenter = Position(latitude = lat, longitude = lon)
-        reprioritizePendingCells(cameraCenter)
+        reprioritizePendingCells(cameraTarget)
 
         if (!networkStatus.connected) return
 
@@ -852,7 +856,7 @@ class MapViewModel(
         }
         if (missingCells.isNotEmpty()) {
             android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells to enqueue")
-            enqueueCells(missingCells, cameraCenter)
+            enqueueCells(missingCells, cameraTarget)
             startCellWorker()
         }
     }
@@ -860,12 +864,14 @@ class MapViewModel(
     private fun enqueueCellsForCurrentViewport() {
         val cam = pendingCameraInfo ?: return
         val viewBounds = viewportBoundsForPoi(cam.lat, cam.lon, cam.zoom)
-        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(viewBounds)
+        val cameraTarget = Position(latitude = cam.lat, longitude = cam.lon)
+        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(
+            viewBounds, cameraTarget, poiBoxBottomFraction, cam.bearing,
+        )
         evictCachedCellsOutsideLoadPlate(loadPlate)
         poiLoadBounds = loadPlate
         val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate)
-        val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)
-        enqueueCells(missingCells, cameraCenter)
+        enqueueCells(missingCells, cameraTarget)
         startCellWorker()
     }
 
@@ -901,7 +907,7 @@ class MapViewModel(
         }
     }
 
-    data class CameraInfo(val lat: Double, val lon: Double, val zoom: Double)
+    data class CameraInfo(val lat: Double, val lon: Double, val zoom: Double, val bearing: Double = 0.0)
     var pendingCameraInfo: CameraInfo? = null
 
     /**
@@ -919,6 +925,10 @@ class MapViewModel(
     /** Screen dimensions in dp, set from composition. */
     var screenWidthDp: Double = 360.0
     var screenHeightDp: Double = 800.0
+
+    private val poiBoxBottomFraction: Double
+        get() = (if (screenWidthDp > screenHeightDp) mapCenterOffsetLandscapeFraction
+                 else mapCenterOffsetPortraitFraction).toDouble()
 
     private fun viewportBoundsForPoi(lat: Double, lon: Double, zoom: Double): BoundingBox =
         poiMapVisibleBounds

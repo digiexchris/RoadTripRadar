@@ -215,7 +215,7 @@ fun MapScreen(
         while (true) {
             delay(1500)
             val pos = cameraState.position
-            vm.onCameraSettled(pos.target.latitude, pos.target.longitude, pos.zoom)
+            vm.onCameraSettled(pos.target.latitude, pos.target.longitude, pos.zoom, pos.bearing)
         }
     }
 
@@ -305,6 +305,7 @@ fun MapScreen(
                 lat = cameraState.position.target.latitude,
                 lon = cameraState.position.target.longitude,
                 zoom = cameraState.position.zoom,
+                bearing = cameraState.position.bearing,
             )
             vm.updatePoiMapVisibleBounds(cameraState.projection?.queryVisibleBoundingBox())
         }
