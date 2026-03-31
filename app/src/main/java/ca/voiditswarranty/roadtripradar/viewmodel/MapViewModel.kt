@@ -38,7 +38,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
 import kotlinx.serialization.json.JsonObject
 import org.maplibre.spatialk.geojson.BoundingBox
 import org.maplibre.spatialk.geojson.Feature
@@ -161,7 +160,6 @@ class MapViewModel(
     private val inFlightCells = mutableSetOf<String>()
     private val permanentlyFailedCells = mutableListOf<PoiGridCell>()
     private val workSignal = Channel<Unit>(Channel.CONFLATED)
-    private val fetchSemaphore = Semaphore(4)
 
     var enabledPoiCategories by mutableStateOf(prefsRepo.enabledPoiCategories)
         private set
@@ -208,8 +206,8 @@ class MapViewModel(
     val hasNearbyPoiFeatures: Boolean
         get() = nearbyPoiFeatures.features.isNotEmpty()
 
-    private var interCellDelayMs: Long = 150L
     private companion object {
+        const val WORKER_COUNT = 4
         const val MAX_CELL_RETRIES = 3
         const val MAX_INTER_CELL_DELAY_MS = 2_000L
         const val RADAR_POLL_MS = 60_000L
@@ -624,7 +622,6 @@ class MapViewModel(
         poiFetchRegion = null
         poiLoadBounds = loadBounds
         poiPipelineActive = true
-        interCellDelayMs = 150L
         val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)
         val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadBounds)
         enqueueCells(missingCells, cameraCenter)
@@ -745,35 +742,36 @@ class MapViewModel(
 
     private suspend fun cellWorkerLoop() {
         coroutineScope {
-            while (true) {
-                if (!networkStatus.connected) {
-                    delay(1000)
-                    continue
-                }
-                val pending = synchronized(pendingCells) {
-                    pendingCells.removeFirstOrNull()
-                } ?: break
+            repeat(WORKER_COUNT) { launch { singleWorkerLoop() } }
+        }
+    }
 
-                if (cellCache.containsKey(pending.cell.id)) continue
+    private suspend fun singleWorkerLoop() {
+        while (true) {
+            if (!networkStatus.connected) {
+                delay(1000)
+                continue
+            }
+            val pending = synchronized(pendingCells) {
+                pendingCells.removeFirstOrNull()
+            } ?: break
 
-                fetchSemaphore.acquire()
-                launch {
-                    try {
-                        synchronized(inFlightCells) { inFlightCells.add(pending.cell.id) }
-                        fetchCell(pending)
-                    } catch (e: kotlinx.coroutines.CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} unexpected error: ${e.message}")
-                        reEnqueueIfRetriable(pending)
-                    } finally {
-                        synchronized(inFlightCells) { inFlightCells.remove(pending.cell.id) }
-                        fetchSemaphore.release()
-                        rebuildMergedFeatures()
-                        updateCellCounters()
-                    }
-                }
-                delay(interCellDelayMs)
+            if (cellCache.containsKey(pending.cell.id)) continue
+
+            try {
+                synchronized(inFlightCells) { inFlightCells.add(pending.cell.id) }
+                updateCellCounters()
+                fetchCell(pending)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} unexpected error: ${e.message}")
+                reEnqueueIfRetriable(pending)
+            } finally {
+                synchronized(inFlightCells) { inFlightCells.remove(pending.cell.id) }
+                rebuildMergedFeatures()
+                updateCellCounters()
+                delay(75)
             }
         }
     }
@@ -793,11 +791,12 @@ class MapViewModel(
             }
             is TileFetchResult.ServerError -> {
                 android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} server error: ${result.message}")
-                interCellDelayMs = min(interCellDelayMs * 2, MAX_INTER_CELL_DELAY_MS)
+                delay(min(1000L * (1 shl pending.retryCount), MAX_INTER_CELL_DELAY_MS))
                 reEnqueueIfRetriable(pending)
             }
             is TileFetchResult.Failed -> {
                 android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} fetch failed: ${result.message}")
+                delay(500L)
                 reEnqueueIfRetriable(pending)
             }
         }
@@ -867,6 +866,7 @@ class MapViewModel(
         val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate)
         val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)
         enqueueCells(missingCells, cameraCenter)
+        startCellWorker()
     }
 
     // --- Search ---

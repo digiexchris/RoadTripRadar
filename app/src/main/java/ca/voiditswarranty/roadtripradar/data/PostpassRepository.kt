@@ -2,8 +2,6 @@ package ca.voiditswarranty.roadtripradar.data
 
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -31,8 +29,6 @@ sealed interface TileFetchResult {
 /** Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API. */
 class PostpassRepository {
 
-    private val semaphore = Semaphore(4)
-
     private val categoryTagMap: Map<String, String> by lazy {
         val map = mutableMapOf<String, String>()
         for (cat in POI_CATEGORIES) {
@@ -50,9 +46,9 @@ class PostpassRepository {
     suspend fun fetchPoisForTile(
         bounds: BoundingBox,
         categories: Set<String>,
-    ): TileFetchResult = semaphore.withPermit {
-        if (categories.isEmpty()) return@withPermit TileFetchResult.Success(FeatureCollection(emptyList()))
-        try {
+    ): TileFetchResult {
+        if (categories.isEmpty()) return TileFetchResult.Success(FeatureCollection(emptyList()))
+        return try {
             val jsonStr = executeQuery(buildPostpassQuery(bounds, categories))
             val json = Json.parseToJsonElement(jsonStr).jsonObject
             val features = json["features"]?.jsonArray?.mapNotNull {
