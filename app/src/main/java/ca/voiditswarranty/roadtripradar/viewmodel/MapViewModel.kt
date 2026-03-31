@@ -843,7 +843,6 @@ class MapViewModel(
         val cameraCenter = Position(latitude = lat, longitude = lon)
         reprioritizePendingCells(cameraCenter)
 
-        if (zoom < 9.0) return
         if (!networkStatus.connected) return
 
         val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate).filter { cell ->

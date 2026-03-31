@@ -45,7 +45,7 @@ object PoiViewportChunks {
     const val POI_MANUAL_LOAD_PAD = 1.5
 
     /** Max north–south and east–west extent (km) for POI loading, centered on the viewport. */
-    const val MAX_POI_LOAD_EXTENT_KM = 150.0
+    const val MAX_POI_LOAD_EXTENT_KM = 200.0
 
     fun approximateViewportBounds(
         lat: Double, lon: Double, zoom: Double,
