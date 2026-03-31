@@ -28,6 +28,7 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -79,6 +80,30 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                     .navigationBarsPadding(),
             ) {
                 Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(modifier = Modifier.weight(1f, fill = false)) {
+                            Text(
+                                "Autoload Nearby Places",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            Text(
+                                "Start loading nearby places when the app starts",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Switch(
+                            checked = vm.autostartPoiLoadingOnLaunch,
+                            onCheckedChange = { vm.updateAutostartPoiLoadingOnLaunch(it) },
+                        )
+                    }
+
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         modifier = Modifier

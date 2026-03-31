@@ -97,7 +97,11 @@ class MapViewModel(
         private set
     var temperatureUnit by mutableStateOf(prefsRepo.temperatureUnit)
         private set
+    var poiIconOpacity by mutableStateOf(prefsRepo.poiIconOpacity)
+        private set
     var keepScreenOn by mutableStateOf(prefsRepo.keepScreenOn)
+        private set
+    var autostartPoiLoadingOnLaunch by mutableStateOf(prefsRepo.autostartPoiLoadingOnLaunch)
         private set
     var useGps by mutableStateOf(prefsRepo.useGps)
         private set
@@ -171,9 +175,11 @@ class MapViewModel(
     var tappedPoi by mutableStateOf<TappedPoiInfo?>(null)
         private set
 
-    /** True when the cell pipeline has been activated by the user (Search Visible Area / Refresh). */
+    /** True when the cell pipeline has been activated by the user (Search Visible Area / Refresh / autostart). */
     var poiPipelineActive by mutableStateOf(false)
         private set
+
+    private var autostartPoiLoadAppliedThisSession = false
 
     var cellsRemaining by mutableIntStateOf(0)
         private set
@@ -429,9 +435,35 @@ class MapViewModel(
         prefsRepo.temperatureUnit = unit
     }
 
+    fun updatePoiIconOpacity(opacity: Float) {
+        poiIconOpacity = opacity
+    }
+
+    fun savePoiIconOpacity() {
+        prefsRepo.poiIconOpacity = poiIconOpacity
+    }
+
     fun updateKeepScreenOn(on: Boolean) {
         keepScreenOn = on
         prefsRepo.keepScreenOn = on
+    }
+
+    fun updateAutostartPoiLoadingOnLaunch(on: Boolean) {
+        autostartPoiLoadingOnLaunch = on
+        prefsRepo.autostartPoiLoadingOnLaunch = on
+    }
+
+    /**
+     * Runs once per app process when the map has a camera position and the user has POI categories selected.
+     * Called from [MapScreen] after [pendingCameraInfo] is first available.
+     */
+    fun tryAutostartPoiPipelineIfNeeded() {
+        if (autostartPoiLoadAppliedThisSession) return
+        if (!autostartPoiLoadingOnLaunch) return
+        if (enabledPoiCategories.isEmpty()) return
+        if (pendingCameraInfo == null) return
+        autostartPoiLoadAppliedThisSession = true
+        searchVisibleArea()
     }
 
     fun updateUseGps(on: Boolean) {
@@ -962,7 +994,9 @@ class MapViewModel(
         windEnabled = PrefsDefaults.WIND_ENABLED
         windSpeedUnit = WindSpeedUnit.valueOf(PrefsDefaults.WIND_SPEED_UNIT)
         temperatureUnit = TemperatureUnit.valueOf(PrefsDefaults.TEMPERATURE_UNIT)
+        poiIconOpacity = PrefsDefaults.POI_ICON_OPACITY
         keepScreenOn = PrefsDefaults.KEEP_SCREEN_ON
+        autostartPoiLoadingOnLaunch = PrefsDefaults.AUTOSTART_POI_LOADING_ON_LAUNCH
         useGps = PrefsDefaults.USE_GPS
         gpsIconOpacity = PrefsDefaults.GPS_ICON_OPACITY
         mapCenterOffsetPortraitFraction = PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION

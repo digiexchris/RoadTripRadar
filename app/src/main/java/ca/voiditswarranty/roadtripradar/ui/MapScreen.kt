@@ -42,8 +42,12 @@ import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.buildRadarRingsData
 import ca.voiditswarranty.roadtripradar.model.ringDistancesForZoom
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
@@ -209,6 +213,17 @@ fun MapScreen(
     vm.userPositionForSearch = userPosition
     vm.screenWidthDp = configuration.screenWidthDp.toDouble()
     vm.screenHeightDp = configuration.screenHeightDp.toDouble()
+
+    LaunchedEffect(Unit) {
+        try {
+            withTimeout(30_000L) {
+                snapshotFlow { vm.pendingCameraInfo }.filterNotNull().first()
+                vm.tryAutostartPoiPipelineIfNeeded()
+            }
+        } catch (_: TimeoutCancellationException) {
+            // Map never reported camera; user can start POIs from the Places menu.
+        }
+    }
 
     // Periodic POI cell coverage check (works for both panning and driving)
     LaunchedEffect(Unit) {

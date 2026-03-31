@@ -26,7 +26,13 @@ sealed interface TileFetchResult {
     data class Failed(val message: String) : TileFetchResult
 }
 
-/** Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API. */
+/**
+ * Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API.
+ *
+ * Operational notes: [postpass-ops](https://github.com/woodpeck/postpass-ops) documents this
+ * public instance but does not publish fixed numeric rate limits. Use modest concurrency,
+ * backoff on errors, and avoid oversized queries to stay within fair use.
+ */
 class PostpassRepository {
 
     private val categoryTagMap: Map<String, String> by lazy {

@@ -329,7 +329,7 @@ fun NearbyPoiLayers(
             color = const(Color(0xFF5B8DEF)),
             strokeColor = const(Color.White),
             strokeWidth = const(2.dp),
-            opacity = const(0.85f),
+            opacity = const(vm.poiIconOpacity),
             onClick = clusterClick@{ clicked ->
                 val f = clicked.firstOrNull() ?: return@clusterClick ClickResult.Pass
                 val pos = (f.geometry as? Point)?.coordinates ?: return@clusterClick ClickResult.Pass
@@ -345,6 +345,7 @@ fun NearbyPoiLayers(
             filter = !feature.has("cluster"),
             iconImage = iconExpr,
             iconSize = const(1.5f),
+            iconOpacity = const(vm.poiIconOpacity),
             iconAllowOverlap = const(false),
             textField = format(span(feature["name"].asString())),
             textFont = const(listOf("Noto Sans Regular")),
@@ -353,6 +354,7 @@ fun NearbyPoiLayers(
             textHaloColor = const(Color.White),
             textHaloWidth = const(1.5f.dp),
             textOffset = offset(0f.em, 1.8f.em),
+            textOpacity = const(vm.poiIconOpacity),
             textAllowOverlap = const(false),
             textOptional = const(true),
             minZoom = 0f,
