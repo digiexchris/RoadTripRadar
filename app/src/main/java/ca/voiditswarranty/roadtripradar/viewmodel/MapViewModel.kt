@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -15,8 +16,8 @@ import ca.voiditswarranty.roadtripradar.data.GeocodingRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.data.PostpassRepository
-import ca.voiditswarranty.roadtripradar.data.PostpassServerException
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
+import ca.voiditswarranty.roadtripradar.data.TileFetchResult
 import ca.voiditswarranty.roadtripradar.data.ViewBox
 import ca.voiditswarranty.roadtripradar.data.WeatherRepository
 import ca.voiditswarranty.roadtripradar.model.ChangelogRelease
@@ -33,7 +34,7 @@ import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -96,7 +97,11 @@ class MapViewModel(
         private set
     var temperatureUnit by mutableStateOf(prefsRepo.temperatureUnit)
         private set
+    var poiIconOpacity by mutableStateOf(prefsRepo.poiIconOpacity)
+        private set
     var keepScreenOn by mutableStateOf(prefsRepo.keepScreenOn)
+        private set
+    var autostartPoiLoadingOnLaunch by mutableStateOf(prefsRepo.autostartPoiLoadingOnLaunch)
         private set
     var useGps by mutableStateOf(prefsRepo.useGps)
         private set
@@ -149,8 +154,16 @@ class MapViewModel(
         val bounds: BoundingBox,
     )
 
+    private data class PendingCell(
+        val cell: PoiGridCell,
+        val retryCount: Int = 0,
+    )
+
     private val cellCache = mutableMapOf<String, CachedCell>()
-    private val failedCells = mutableMapOf<String, Long>()
+    private val pendingCells = mutableListOf<PendingCell>()
+    private val inFlightCells = mutableSetOf<String>()
+    private val permanentlyFailedCells = mutableListOf<PoiGridCell>()
+    private val workSignal = Channel<Unit>(Channel.CONFLATED)
 
     var enabledPoiCategories by mutableStateOf(prefsRepo.enabledPoiCategories)
         private set
@@ -162,17 +175,29 @@ class MapViewModel(
     var tappedPoi by mutableStateOf<TappedPoiInfo?>(null)
         private set
 
-    /** True when the cell pipeline has been activated by the user (Search Visible Area / Refresh). */
+    /** True when the cell pipeline has been activated by the user (Search Visible Area / Refresh / autostart). */
     var poiPipelineActive by mutableStateOf(false)
         private set
 
-    var cellsLoadingTotal by mutableStateOf(0)
-        private set
-    var cellsLoadingComplete by mutableStateOf(0)
+    private var autostartPoiLoadAppliedThisSession = false
+
+    var cellsRemaining by mutableIntStateOf(0)
         private set
 
     val isLoadingPois: Boolean
-        get() = cellsLoadingTotal > 0 && cellsLoadingComplete < cellsLoadingTotal
+        get() = cellsRemaining > 0
+
+    var failedCellBounds by mutableStateOf<List<BoundingBox>>(emptyList())
+        private set
+
+    val hasFailedCells: Boolean
+        get() = failedCellBounds.isNotEmpty()
+
+    private fun updateCellCounters() {
+        cellsRemaining = synchronized(pendingCells) { pendingCells.size } +
+            synchronized(inFlightCells) { inFlightCells.size }
+        failedCellBounds = synchronized(permanentlyFailedCells) { permanentlyFailedCells.map { it.bounds } }
+    }
 
     /** Merged features from all cached cells. */
     var nearbyPoiFeatures by mutableStateOf<FeatureCollection<Point, JsonObject>>(FeatureCollection(emptyList()))
@@ -187,9 +212,9 @@ class MapViewModel(
     val hasNearbyPoiFeatures: Boolean
         get() = nearbyPoiFeatures.features.isNotEmpty()
 
-    private var interCellDelayMs: Long = 150L
     private companion object {
-        const val FAILED_CELL_COOLDOWN_MS = 30_000L
+        const val WORKER_COUNT = 4
+        const val MAX_CELL_RETRIES = 3
         const val MAX_INTER_CELL_DELAY_MS = 2_000L
         const val RADAR_POLL_MS = 60_000L
         const val LOCAL_WEATHER_SUCCESS_MS = 600_000L
@@ -245,7 +270,7 @@ class MapViewModel(
     private var localWeatherPollJob: Job? = null
     private var weatherAnimationJob: Job? = null
     private var searchJob: Job? = null
-    private var poiFetchJob: Job? = null
+    private var cellWorkerJob: Job? = null
 
     init {
         if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
@@ -410,9 +435,35 @@ class MapViewModel(
         prefsRepo.temperatureUnit = unit
     }
 
+    fun updatePoiIconOpacity(opacity: Float) {
+        poiIconOpacity = opacity
+    }
+
+    fun savePoiIconOpacity() {
+        prefsRepo.poiIconOpacity = poiIconOpacity
+    }
+
     fun updateKeepScreenOn(on: Boolean) {
         keepScreenOn = on
         prefsRepo.keepScreenOn = on
+    }
+
+    fun updateAutostartPoiLoadingOnLaunch(on: Boolean) {
+        autostartPoiLoadingOnLaunch = on
+        prefsRepo.autostartPoiLoadingOnLaunch = on
+    }
+
+    /**
+     * Runs once per app process when the map has a camera position and the user has POI categories selected.
+     * Called from [MapScreen] after [pendingCameraInfo] is first available.
+     */
+    fun tryAutostartPoiPipelineIfNeeded() {
+        if (autostartPoiLoadAppliedThisSession) return
+        if (!autostartPoiLoadingOnLaunch) return
+        if (enabledPoiCategories.isEmpty()) return
+        if (pendingCameraInfo == null) return
+        autostartPoiLoadAppliedThisSession = true
+        searchVisibleArea()
     }
 
     fun updateUseGps(on: Boolean) {
@@ -569,15 +620,16 @@ class MapViewModel(
         enabledPoiCategories = current
         prefsRepo.enabledPoiCategories = current
         poiCategoriesVersion++
-        // If pipeline is active, re-trigger with new categories
         if (poiPipelineActive) {
             if (enabledPoiCategories.isEmpty()) {
                 clearNearbyPois()
             } else {
                 cellCache.clear()
-                failedCells.clear()
+                synchronized(pendingCells) { pendingCells.clear() }
+                synchronized(permanentlyFailedCells) { permanentlyFailedCells.clear() }
                 nearbyPoiFeatures = FeatureCollection(emptyList())
-                triggerPipelineForCurrentViewport()
+                enqueueCellsForCurrentViewport()
+                updateCellCounters()
             }
         }
     }
@@ -586,7 +638,10 @@ class MapViewModel(
         if (enabledPoiCategories.isEmpty()) return
         val cam = pendingCameraInfo ?: return
         val viewBounds = viewportBoundsForPoi(cam.lat, cam.lon, cam.zoom)
-        val (loadBounds, cells) = PoiViewportChunks.gridCellsForManualLoad(viewBounds)
+        val cameraTarget = Position(latitude = cam.lat, longitude = cam.lon)
+        val (loadBounds, cells) = PoiViewportChunks.gridCellsForManualLoad(
+            viewBounds, cameraTarget, poiBoxBottomFraction, cam.bearing,
+        )
         val centerLat = (viewBounds.southwest.latitude + viewBounds.northeast.latitude) / 2.0
         val viewHeightKm = (viewBounds.northeast.latitude - viewBounds.southwest.latitude) * 111.0
         val viewWidthKm = (viewBounds.northeast.longitude - viewBounds.southwest.longitude) * 111.0 * kotlin.math.cos(Math.toRadians(centerLat))
@@ -595,34 +650,32 @@ class MapViewModel(
         android.util.Log.d("POI_DEBUG", "searchVisibleArea: zoom=${cam.zoom}, screen=${screenWidthDp.toInt()}x${screenHeightDp.toInt()}dp")
         android.util.Log.d("POI_DEBUG", "viewport: ${viewHeightKm.toInt()}km × ${viewWidthKm.toInt()}km, padded load: ${loadHeightKm.toInt()}km × ${loadWidthKm.toInt()}km, cells=${cells.size}")
         android.util.Log.d("POI_DEBUG", "loadBounds=$loadBounds")
-        // Fresh start: clear all caches
         cellCache.clear()
-        failedCells.clear()
+        synchronized(pendingCells) { pendingCells.clear() }
+        synchronized(permanentlyFailedCells) { permanentlyFailedCells.clear() }
         nearbyPoiFeatures = FeatureCollection(emptyList())
         poiFetchRegion = null
-        poiLoadBounds = null
+        poiLoadBounds = loadBounds
         poiPipelineActive = true
-        interCellDelayMs = 150L
-        poiFetchJob?.cancel()
-        val missingCells = cellsNeedingFetch(loadBounds)
-        val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)
-        poiFetchJob = viewModelScope.launch {
-            fetchCellPipeline(missingCells, cameraCenter)
-        }
+        val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadBounds)
+        enqueueCells(missingCells, cameraTarget)
+        startCellWorker()
         poiCategoriesVersion++
     }
 
     fun clearNearbyPois() {
-        poiFetchJob?.cancel()
+        cellWorkerJob?.cancel()
+        cellWorkerJob = null
         cellCache.clear()
-        failedCells.clear()
+        synchronized(pendingCells) { pendingCells.clear() }
+        synchronized(inFlightCells) { inFlightCells.clear() }
+        synchronized(permanentlyFailedCells) { permanentlyFailedCells.clear() }
         nearbyPoiFeatures = FeatureCollection(emptyList())
         poiFetchRegion = null
         poiLoadBounds = null
         poiPipelineActive = false
-        cellsLoadingTotal = 0
-        cellsLoadingComplete = 0
         poiCategoriesVersion++
+        updateCellCounters()
     }
 
     fun openPoiCategoryPicker() { showPoiCategoryPicker = true }
@@ -643,7 +696,6 @@ class MapViewModel(
         val allFeatures = cellCache.values.flatMap { it.features }
         nearbyPoiFeatures = FeatureCollection(allFeatures)
         if (cellCache.isEmpty()) {
-            poiLoadBounds = null
             poiFetchRegion = null
         } else {
             var minLat = Double.MAX_VALUE
@@ -658,22 +710,10 @@ class MapViewModel(
                 minLon = min(minLon, sw.longitude)
                 maxLon = max(maxLon, ne.longitude)
             }
-            val unionBounds = BoundingBox(
+            poiFetchRegion = BoundingBox(
                 southwest = Position(latitude = minLat, longitude = minLon),
                 northeast = Position(latitude = maxLat, longitude = maxLon),
             )
-            poiLoadBounds = unionBounds
-            poiFetchRegion = unionBounds
-        }
-    }
-
-    private fun cellsNeedingFetch(loadBounds: BoundingBox): List<PoiGridCell> {
-        val now = System.currentTimeMillis()
-        return PoiViewportChunks.worldGridCellsIntersecting(loadBounds).filter { cell ->
-            if (cellCache.containsKey(cell.id)) return@filter false
-            val failedAt = failedCells[cell.id]
-            if (failedAt != null && (now - failedAt) < FAILED_CELL_COOLDOWN_MS) return@filter false
-            true
         }
     }
 
@@ -684,115 +724,187 @@ class MapViewModel(
                 .filter { (_, cached) -> !PoiViewportChunks.boundingBoxesIntersect(cached.bounds, loadPlate) }
                 .map { it.key }
         }
-        if (toRemove.isEmpty()) return
-        synchronized(cellCache) {
-            for (key in toRemove) {
-                cellCache.remove(key)
-                failedCells.remove(key)
-            }
+        if (toRemove.isNotEmpty()) {
+            synchronized(cellCache) { for (key in toRemove) cellCache.remove(key) }
+            rebuildMergedFeatures()
         }
-        rebuildMergedFeatures()
+        synchronized(pendingCells) {
+            pendingCells.removeAll { !PoiViewportChunks.boundingBoxesIntersect(it.cell.bounds, loadPlate) }
+        }
+        synchronized(permanentlyFailedCells) {
+            permanentlyFailedCells.removeAll { !PoiViewportChunks.boundingBoxesIntersect(it.bounds, loadPlate) }
+        }
+        updateCellCounters()
     }
 
-    private suspend fun fetchCellPipeline(cells: List<PoiGridCell>, cameraCenter: Position) {
-        if (cells.isEmpty()) return
-        // Sort by distance from camera center (nearest first)
-        val sorted = cells.sortedBy { cell ->
-            val cellCenter = Position(
-                latitude = (cell.bounds.southwest.latitude + cell.bounds.northeast.latitude) / 2.0,
-                longitude = (cell.bounds.southwest.longitude + cell.bounds.northeast.longitude) / 2.0,
-            )
-            distance(cameraCenter, cellCenter).inMeters
+    private fun enqueueCells(cells: List<PoiGridCell>, cameraCenter: Position) {
+        synchronized(pendingCells) {
+            for (cell in cells) {
+                if (cellCache.containsKey(cell.id)) continue
+                if (synchronized(inFlightCells) { inFlightCells.contains(cell.id) }) continue
+                if (pendingCells.any { it.cell.id == cell.id }) continue
+                if (synchronized(permanentlyFailedCells) { permanentlyFailedCells.any { it.id == cell.id } }) continue
+                pendingCells.add(PendingCell(cell))
+            }
         }
-        cellsLoadingTotal = sorted.size
-        cellsLoadingComplete = 0
-        android.util.Log.d("POI_DEBUG", "fetchCellPipeline: ${sorted.size} cells to fetch")
-        // Fetch up to 2 cells concurrently per batch
-        val batches = sorted.chunked(2)
-        var completedSoFar = 0
-        for (batch in batches) {
+        reprioritizePendingCells(cameraCenter)
+        updateCellCounters()
+        workSignal.trySend(Unit)
+    }
+
+    private fun reprioritizePendingCells(cameraCenter: Position) {
+        synchronized(pendingCells) {
+            pendingCells.sortBy { pending ->
+                val c = pending.cell.bounds
+                val cellCenter = Position(
+                    latitude = (c.southwest.latitude + c.northeast.latitude) / 2.0,
+                    longitude = (c.southwest.longitude + c.northeast.longitude) / 2.0,
+                )
+                distance(cameraCenter, cellCenter).inMeters
+            }
+        }
+    }
+
+    private fun startCellWorker() {
+        if (cellWorkerJob?.isActive == true) return
+        cellWorkerJob = viewModelScope.launch {
+            for (signal in workSignal) {
+                cellWorkerLoop()
+            }
+        }
+    }
+
+    private suspend fun cellWorkerLoop() {
+        coroutineScope {
+            repeat(WORKER_COUNT) { launch { singleWorkerLoop() } }
+        }
+    }
+
+    private suspend fun singleWorkerLoop() {
+        while (true) {
             if (!networkStatus.connected) {
-                android.util.Log.d("POI_DEBUG", "fetchCellPipeline: offline, breaking")
-                break
+                delay(1000)
+                continue
             }
-            coroutineScope {
-                batch.map { cell ->
-                    async {
-                        try {
-                            val result = postpassRepo.fetchPoisForTile(cell.bounds, enabledPoiCategories)
-                            android.util.Log.d("POI_DEBUG", "Cell ${cell.id}: ${result.features.size} features")
-                            synchronized(cellCache) {
-                                cellCache[cell.id] = CachedCell(
-                                    cellId = cell.id,
-                                    features = result.features,
-                                    fetchedAtMs = System.currentTimeMillis(),
-                                    bounds = cell.bounds,
-                                )
-                                failedCells.remove(cell.id)
-                            }
-                        } catch (e: PostpassServerException) {
-                            android.util.Log.e("POI_DEBUG", "Cell ${cell.id} server error: ${e.message}")
-                            failedCells[cell.id] = System.currentTimeMillis()
-                            interCellDelayMs = min(interCellDelayMs * 2, MAX_INTER_CELL_DELAY_MS)
-                            android.util.Log.d("POI_DEBUG", "Backoff: interCellDelayMs=$interCellDelayMs")
-                        } catch (e: Exception) {
-                            android.util.Log.e("POI_DEBUG", "Cell ${cell.id} fetch failed: ${e.message}")
-                            failedCells[cell.id] = System.currentTimeMillis()
-                        }
-                    }
-                }.forEach { it.await() }
-            }
-            completedSoFar += batch.size
-            cellsLoadingComplete = completedSoFar
-            rebuildMergedFeatures()
-            if (completedSoFar < sorted.size) {
-                delay(interCellDelayMs)
+            val pending = synchronized(pendingCells) {
+                pendingCells.removeFirstOrNull()
+            } ?: break
+
+            if (cellCache.containsKey(pending.cell.id)) continue
+
+            try {
+                synchronized(inFlightCells) { inFlightCells.add(pending.cell.id) }
+                updateCellCounters()
+                fetchCell(pending)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} unexpected error: ${e.message}")
+                reEnqueueIfRetriable(pending)
+            } finally {
+                synchronized(inFlightCells) { inFlightCells.remove(pending.cell.id) }
+                rebuildMergedFeatures()
+                updateCellCounters()
+                delay(75)
             }
         }
-        cellsLoadingTotal = 0
-        cellsLoadingComplete = 0
+    }
+
+    private suspend fun fetchCell(pending: PendingCell) {
+        when (val result = postpassRepo.fetchPoisForTile(pending.cell.bounds, enabledPoiCategories)) {
+            is TileFetchResult.Success -> {
+                android.util.Log.d("POI_DEBUG", "Cell ${pending.cell.id}: ${result.features.size} features")
+                synchronized(cellCache) {
+                    cellCache[pending.cell.id] = CachedCell(
+                        cellId = pending.cell.id,
+                        features = result.features.features,
+                        fetchedAtMs = System.currentTimeMillis(),
+                        bounds = pending.cell.bounds,
+                    )
+                }
+            }
+            is TileFetchResult.ServerError -> {
+                android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} server error: ${result.message}")
+                delay(min(1000L * (1 shl pending.retryCount), MAX_INTER_CELL_DELAY_MS))
+                reEnqueueIfRetriable(pending)
+            }
+            is TileFetchResult.Failed -> {
+                android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} fetch failed: ${result.message}")
+                delay(500L)
+                reEnqueueIfRetriable(pending)
+            }
+        }
+    }
+
+    private fun reEnqueueIfRetriable(pending: PendingCell) {
+        if (pending.retryCount >= MAX_CELL_RETRIES) {
+            synchronized(permanentlyFailedCells) { permanentlyFailedCells.add(pending.cell) }
+            updateCellCounters()
+            return
+        }
+        synchronized(pendingCells) {
+            pendingCells.add(pending.copy(retryCount = pending.retryCount + 1))
+        }
+        updateCellCounters()
+        workSignal.trySend(Unit)
+    }
+
+    fun retryFailedCells() {
+        val cells = synchronized(permanentlyFailedCells) {
+            val copy = permanentlyFailedCells.toList()
+            permanentlyFailedCells.clear()
+            copy
+        }
+        if (cells.isEmpty()) return
+        val cam = pendingCameraInfo ?: return
+        enqueueCells(cells, Position(latitude = cam.lat, longitude = cam.lon))
     }
 
     /**
-     * Called from camera-settle watcher to extend coverage as user pans.
-     * Evicts cells outside the current load plate, then fetches any missing grid cells for that plate.
+     * Called periodically to extend POI coverage as the user pans or drives.
+     * Evicts stale data outside the current load plate, then enqueues any missing cells.
      */
-    fun onCameraSettled(lat: Double, lon: Double, zoom: Double) {
+    fun onCameraSettled(lat: Double, lon: Double, zoom: Double, bearing: Double = 0.0) {
         if (!poiPipelineActive) return
-        if (zoom < 9.0) return
-        if (!networkStatus.connected) return
 
         val viewBounds = viewportBoundsForPoi(lat, lon, zoom)
-        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(viewBounds)
-        android.util.Log.d("POI_DEBUG", "onCameraSettled: load plate=$loadPlate")
+        val cameraTarget = Position(latitude = lat, longitude = lon)
+        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(
+            viewBounds, cameraTarget, poiBoxBottomFraction, bearing,
+        )
 
         evictCachedCellsOutsideLoadPlate(loadPlate)
+        poiLoadBounds = loadPlate
 
-        val missingCells = cellsNeedingFetch(loadPlate)
-        if (missingCells.isEmpty()) return
+        reprioritizePendingCells(cameraTarget)
 
-        android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells needed")
-        interCellDelayMs = 150L
-        val cameraCenter = Position(latitude = lat, longitude = lon)
-        poiFetchJob?.cancel()
-        poiFetchJob = viewModelScope.launch {
-            fetchCellPipeline(missingCells, cameraCenter)
+        if (!networkStatus.connected) return
+
+        val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate).filter { cell ->
+            !cellCache.containsKey(cell.id)
+                && synchronized(inFlightCells) { !inFlightCells.contains(cell.id) }
+                && synchronized(pendingCells) { pendingCells.none { it.cell.id == cell.id } }
+                && synchronized(permanentlyFailedCells) { permanentlyFailedCells.none { it.id == cell.id } }
+        }
+        if (missingCells.isNotEmpty()) {
+            android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells to enqueue")
+            enqueueCells(missingCells, cameraTarget)
+            startCellWorker()
         }
     }
 
-    private fun triggerPipelineForCurrentViewport() {
+    private fun enqueueCellsForCurrentViewport() {
         val cam = pendingCameraInfo ?: return
         val viewBounds = viewportBoundsForPoi(cam.lat, cam.lon, cam.zoom)
-        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(viewBounds)
+        val cameraTarget = Position(latitude = cam.lat, longitude = cam.lon)
+        val loadPlate = PoiViewportChunks.poiLoadPlateForVisibleBounds(
+            viewBounds, cameraTarget, poiBoxBottomFraction, cam.bearing,
+        )
         evictCachedCellsOutsideLoadPlate(loadPlate)
-        val missingCells = cellsNeedingFetch(loadPlate)
-        if (missingCells.isEmpty()) return
-        interCellDelayMs = 150L
-        val cameraCenter = Position(latitude = cam.lat, longitude = cam.lon)
-        poiFetchJob?.cancel()
-        poiFetchJob = viewModelScope.launch {
-            fetchCellPipeline(missingCells, cameraCenter)
-        }
+        poiLoadBounds = loadPlate
+        val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate)
+        enqueueCells(missingCells, cameraTarget)
+        startCellWorker()
     }
 
     // --- Search ---
@@ -827,7 +939,7 @@ class MapViewModel(
         }
     }
 
-    data class CameraInfo(val lat: Double, val lon: Double, val zoom: Double)
+    data class CameraInfo(val lat: Double, val lon: Double, val zoom: Double, val bearing: Double = 0.0)
     var pendingCameraInfo: CameraInfo? = null
 
     /**
@@ -845,6 +957,10 @@ class MapViewModel(
     /** Screen dimensions in dp, set from composition. */
     var screenWidthDp: Double = 360.0
     var screenHeightDp: Double = 800.0
+
+    private val poiBoxBottomFraction: Double
+        get() = (if (screenWidthDp > screenHeightDp) mapCenterOffsetLandscapeFraction
+                 else mapCenterOffsetPortraitFraction).toDouble()
 
     private fun viewportBoundsForPoi(lat: Double, lon: Double, zoom: Double): BoundingBox =
         poiMapVisibleBounds
@@ -878,7 +994,9 @@ class MapViewModel(
         windEnabled = PrefsDefaults.WIND_ENABLED
         windSpeedUnit = WindSpeedUnit.valueOf(PrefsDefaults.WIND_SPEED_UNIT)
         temperatureUnit = TemperatureUnit.valueOf(PrefsDefaults.TEMPERATURE_UNIT)
+        poiIconOpacity = PrefsDefaults.POI_ICON_OPACITY
         keepScreenOn = PrefsDefaults.KEEP_SCREEN_ON
+        autostartPoiLoadingOnLaunch = PrefsDefaults.AUTOSTART_POI_LOADING_ON_LAUNCH
         useGps = PrefsDefaults.USE_GPS
         gpsIconOpacity = PrefsDefaults.GPS_ICON_OPACITY
         mapCenterOffsetPortraitFraction = PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION
@@ -888,12 +1006,14 @@ class MapViewModel(
         poiPosition = null
         poiName = null
         enabledPoiCategories = emptySet()
-        poiFetchJob?.cancel()
+        cellWorkerJob?.cancel()
+        cellWorkerJob = null
         cellCache.clear()
-        failedCells.clear()
+        synchronized(pendingCells) { pendingCells.clear() }
+        synchronized(inFlightCells) { inFlightCells.clear() }
+        synchronized(permanentlyFailedCells) { permanentlyFailedCells.clear() }
+        updateCellCounters()
         poiPipelineActive = false
-        cellsLoadingTotal = 0
-        cellsLoadingComplete = 0
         nearbyPoiFeatures = FeatureCollection(emptyList())
         poiFetchRegion = null
         poiLoadBounds = null

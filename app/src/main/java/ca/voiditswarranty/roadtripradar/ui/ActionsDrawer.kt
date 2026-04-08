@@ -43,12 +43,12 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Air
-import androidx.compose.material.icons.filled.Article
+import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Layers
-import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -61,7 +61,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +71,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -108,6 +111,17 @@ fun ActionsDrawer(
         }
     }
 
+    var isSliderDragging by remember { mutableStateOf(false) }
+    var sliderDisplayLabel by remember { mutableStateOf("") }
+    val drawerContentAlpha by animateFloatAsState(
+        targetValue = if (isSliderDragging) 0.12f else 1f,
+        label = "drawerFade",
+    )
+    val scrimAlpha by animateFloatAsState(
+        targetValue = if (isSliderDragging) 0f else 0.5f,
+        label = "scrimFade",
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(
             visible = vm.showActionsDrawer,
@@ -117,7 +131,7 @@ fun ActionsDrawer(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(Color.Black.copy(alpha = scrimAlpha))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -221,8 +235,15 @@ fun ActionsDrawer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.75f)
-                    .navigationBarsPadding(),
+                    .navigationBarsPadding()
+                    .alpha(drawerContentAlpha),
             ) {
+                CompositionLocalProvider(
+                    LocalSliderDragCallback provides { dragging, label ->
+                        isSliderDragging = dragging
+                        sliderDisplayLabel = label
+                    },
+                ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -360,7 +381,7 @@ fun ActionsDrawer(
                             val helpLinkActions = listOf(
                                 DrawerAction(
                                     label = "Terms & Conditions",
-                                    icon = Icons.Default.Article,
+                                    icon = Icons.Default.Gavel,
                                     onClick = { vm.viewTerms() },
                                 ),
                                 DrawerAction(
@@ -370,7 +391,7 @@ fun ActionsDrawer(
                                 ),
                                 DrawerAction(
                                     label = "Documentation",
-                                    icon = Icons.Default.MenuBook,
+                                    icon = Icons.AutoMirrored.Filled.LibraryBooks,
                                     onClick = {
                                         context.startActivity(
                                             Intent(Intent.ACTION_VIEW, wikiUri),
@@ -448,6 +469,27 @@ fun ActionsDrawer(
                         }
                     }
                 }
+                }
+            }
+        }
+
+        AnimatedVisibility(
+            visible = isSliderDragging && sliderDisplayLabel.isNotEmpty(),
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier.align(Alignment.Center),
+        ) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                tonalElevation = 4.dp,
+            ) {
+                Text(
+                    text = sliderDisplayLabel,
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
+                )
             }
         }
     }

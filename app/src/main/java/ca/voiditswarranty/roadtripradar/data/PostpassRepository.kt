@@ -2,8 +2,6 @@ package ca.voiditswarranty.roadtripradar.data
 
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -19,13 +17,23 @@ import org.maplibre.spatialk.geojson.Point
 import org.maplibre.spatialk.geojson.Position
 import java.net.URL
 
-/** Thrown when Postpass fails with a server-side error (429 or 5xx) after retries. */
-class PostpassServerException(message: String, cause: Throwable? = null) : java.io.IOException(message, cause)
+/** Thrown internally when Postpass fails with a server-side error (429 or 5xx) after retries. */
+private class PostpassServerException(message: String, cause: Throwable? = null) : java.io.IOException(message, cause)
 
-/** Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API. */
+sealed interface TileFetchResult {
+    data class Success(val features: FeatureCollection<Point, JsonObject>) : TileFetchResult
+    data class ServerError(val message: String) : TileFetchResult
+    data class Failed(val message: String) : TileFetchResult
+}
+
+/**
+ * Geofabrik Postpass SQL API for OSM-derived POIs; not the public Overpass API.
+ *
+ * Operational notes: [postpass-ops](https://github.com/woodpeck/postpass-ops) documents this
+ * public instance but does not publish fixed numeric rate limits. Use modest concurrency,
+ * backoff on errors, and avoid oversized queries to stay within fair use.
+ */
 class PostpassRepository {
-
-    private val semaphore = Semaphore(2)
 
     private val categoryTagMap: Map<String, String> by lazy {
         val map = mutableMapOf<String, String>()
@@ -44,14 +52,20 @@ class PostpassRepository {
     suspend fun fetchPoisForTile(
         bounds: BoundingBox,
         categories: Set<String>,
-    ): FeatureCollection<Point, JsonObject> = semaphore.withPermit {
-        if (categories.isEmpty()) return@withPermit FeatureCollection(emptyList())
-        val jsonStr = executeQuery(buildPostpassQuery(bounds, categories))
-        val json = Json.parseToJsonElement(jsonStr).jsonObject
-        val features = json["features"]?.jsonArray?.mapNotNull {
-            parsePostpassFeature(it.jsonObject, categories)
-        } ?: emptyList()
-        FeatureCollection(features)
+    ): TileFetchResult {
+        if (categories.isEmpty()) return TileFetchResult.Success(FeatureCollection(emptyList()))
+        return try {
+            val jsonStr = executeQuery(buildPostpassQuery(bounds, categories))
+            val json = Json.parseToJsonElement(jsonStr).jsonObject
+            val features = json["features"]?.jsonArray?.mapNotNull {
+                parsePostpassFeature(it.jsonObject, categories)
+            } ?: emptyList()
+            TileFetchResult.Success(FeatureCollection(features))
+        } catch (e: PostpassServerException) {
+            TileFetchResult.ServerError(e.message ?: "Server error")
+        } catch (e: java.io.IOException) {
+            TileFetchResult.Failed(e.message ?: "Network error")
+        }
     }
 
     private fun buildPostpassQuery(bounds: BoundingBox, categories: Set<String>): String {

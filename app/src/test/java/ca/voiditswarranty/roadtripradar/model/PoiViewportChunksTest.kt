@@ -9,6 +9,7 @@ import org.maplibre.spatialk.geojson.Position
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
+import kotlin.math.pow
 
 class PoiViewportChunksTest {
 
@@ -109,6 +110,107 @@ class PoiViewportChunksTest {
         val lonSpanKm =
             abs(out.northeast.longitude - out.southwest.longitude) * kmPerDegLat * cos(Math.toRadians(targetLat))
         assertEquals(latSpanKm, lonSpanKm, 0.08)
+    }
+
+    @Test
+    fun clampBoundsToMaxCenterExtentKm_bottomFractionShiftsBoxVertically() {
+        val sw = Position(latitude = 0.0, longitude = 0.0)
+        val ne = Position(latitude = 2.0, longitude = 2.0)
+        val input = BoundingBox(southwest = sw, northeast = ne)
+        val targetLat = 1.0
+        val targetLon = 1.0
+        val fraction = 0.3
+        val out = PoiViewportChunks.clampBoundsToMaxCenterExtentKm(
+            input,
+            maxExtentKm = 500.0,
+            centerLatitude = targetLat,
+            centerLongitude = targetLon,
+            bottomFraction = fraction,
+        )
+        val latSpan = out.northeast.latitude - out.southwest.latitude
+        assertEquals(targetLat, out.southwest.latitude + fraction * latSpan, 1e-6)
+        assertEquals(targetLon, (out.southwest.longitude + out.northeast.longitude) / 2.0, 1e-6)
+    }
+
+    @Test
+    fun clampBoundsToMaxCenterExtentKm_bearingShiftsOffsetDirection() {
+        val sw = Position(latitude = -1.0, longitude = -1.0)
+        val ne = Position(latitude = 1.0, longitude = 1.0)
+        val input = BoundingBox(southwest = sw, northeast = ne)
+        val fraction = 0.3
+        // Bearing 90° (east-up): offset shifts eastward, target at 30% from west edge, centered vertically
+        val out = PoiViewportChunks.clampBoundsToMaxCenterExtentKm(
+            input,
+            maxExtentKm = 500.0,
+            centerLatitude = 0.0,
+            centerLongitude = 0.0,
+            bottomFraction = fraction,
+            bearingDegrees = 90.0,
+        )
+        val boxCenterLat = (out.southwest.latitude + out.northeast.latitude) / 2.0
+        val boxCenterLon = (out.southwest.longitude + out.northeast.longitude) / 2.0
+        // Target should be vertically centered (bearing rotated offset away from latitude axis)
+        assertEquals(0.0, boxCenterLat, 1e-6)
+        // Target should be at 30% from the west edge
+        val lonSpan = out.northeast.longitude - out.southwest.longitude
+        assertEquals(0.0, out.southwest.longitude + fraction * lonSpan, 1e-4)
+    }
+
+    @Test
+    fun clampBoundsToMaxCenterExtentKm_bearing180_shiftsOffsetSouth() {
+        val sw = Position(latitude = -1.0, longitude = -1.0)
+        val ne = Position(latitude = 1.0, longitude = 1.0)
+        val input = BoundingBox(southwest = sw, northeast = ne)
+        val fraction = 0.3
+        // Bearing 180° (south-up): offset shifts southward, so box center is south of target
+        val out = PoiViewportChunks.clampBoundsToMaxCenterExtentKm(
+            input,
+            maxExtentKm = 500.0,
+            centerLatitude = 0.0,
+            centerLongitude = 0.0,
+            bottomFraction = fraction,
+            bearingDegrees = 180.0,
+        )
+        val boxCenterLat = (out.southwest.latitude + out.northeast.latitude) / 2.0
+        // Box center should be south of the target (shift reversed from bearing=0)
+        assertTrue(boxCenterLat < 0.0)
+        // Target should be at 30% from the north edge = 70% from south
+        val latSpan = out.northeast.latitude - out.southwest.latitude
+        assertEquals(0.0, out.southwest.latitude + (1.0 - fraction) * latSpan, 1e-4)
+    }
+
+    @Test
+    fun clampBoundsToMaxCenterExtentKm_nonAxisBearing72_shiftsCorrectly() {
+        val sw = Position(latitude = -1.0, longitude = -1.0)
+        val ne = Position(latitude = 1.0, longitude = 1.0)
+        val input = BoundingBox(southwest = sw, northeast = ne)
+        val fraction = 0.3
+        val bearing = 72.0
+        val out = PoiViewportChunks.clampBoundsToMaxCenterExtentKm(
+            input,
+            maxExtentKm = 500.0,
+            centerLatitude = 0.0,
+            centerLongitude = 0.0,
+            bottomFraction = fraction,
+            bearingDegrees = bearing,
+        )
+        val boxCenterLat = (out.southwest.latitude + out.northeast.latitude) / 2.0
+        val boxCenterLon = (out.southwest.longitude + out.northeast.longitude) / 2.0
+        // At equator, lat and lon degrees are equal in km — verify shift direction matches bearing
+        val shiftAngle = Math.toDegrees(kotlin.math.atan2(boxCenterLon, boxCenterLat))
+        assertEquals(bearing, shiftAngle, 0.1)
+        // Both components should be non-zero (not axis-aligned)
+        assertTrue(boxCenterLat > 0.0)
+        assertTrue(boxCenterLon > 0.0)
+        // Shift magnitude should be (0.5 - fraction) * sideKm
+        val latSpanKm = abs(ne.latitude - sw.latitude) * kmPerDegLat
+        val lonSpanKm = abs(ne.longitude - sw.longitude) * kmPerDegLat * cos(0.0)
+        val sideKm = max(latSpanKm, lonSpanKm)
+        val expectedShiftKm = (0.5 - fraction) * sideKm
+        val actualShiftKm = kotlin.math.sqrt(
+            (boxCenterLat * kmPerDegLat).pow(2.0) + (boxCenterLon * kmPerDegLat).pow(2.0),
+        )
+        assertEquals(expectedShiftKm, actualShiftKm, 0.1)
     }
 
     @Test

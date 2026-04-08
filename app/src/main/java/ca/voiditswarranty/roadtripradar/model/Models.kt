@@ -113,7 +113,9 @@ object PrefsDefaults {
     const val NAV_WIDGET_SIZE = 60f
     const val WEATHER_WIDGET_SIZE = 60f
     const val COMPASS_WIDGET_SIZE = 72f
+    const val POI_ICON_OPACITY = 0.66f
     const val KEEP_SCREEN_ON = true
+    const val AUTOSTART_POI_LOADING_ON_LAUNCH = true
     const val USE_GPS = true
     const val GPS_ICON_OPACITY = 0.5f
     const val LAST_KNOWN_LAT = 45.4215

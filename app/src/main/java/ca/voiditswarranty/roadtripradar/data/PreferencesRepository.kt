@@ -248,9 +248,17 @@ class PreferencesRepository(context: Context) {
         }
         set(value) = prefs.edit().putString("temperature_unit", value.name).apply()
 
+    var poiIconOpacity: Float
+        get() = prefs.getFloat("poi_icon_opacity", PrefsDefaults.POI_ICON_OPACITY)
+        set(value) = prefs.edit().putFloat("poi_icon_opacity", value).apply()
+
     var keepScreenOn: Boolean
         get() = prefs.getBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
         set(value) = prefs.edit().putBoolean("keep_screen_on", value).apply()
+
+    var autostartPoiLoadingOnLaunch: Boolean
+        get() = prefs.getBoolean("autostart_poi_loading_on_launch", PrefsDefaults.AUTOSTART_POI_LOADING_ON_LAUNCH)
+        set(value) = prefs.edit().putBoolean("autostart_poi_loading_on_launch", value).apply()
 
     var useGps: Boolean
         get() = prefs.getBoolean("use_gps", PrefsDefaults.USE_GPS)
@@ -330,7 +338,9 @@ class PreferencesRepository(context: Context) {
             .putBoolean("wind_enabled", PrefsDefaults.WIND_ENABLED)
             .putString("wind_speed_unit", PrefsDefaults.WIND_SPEED_UNIT)
             .putString("temperature_unit", PrefsDefaults.TEMPERATURE_UNIT)
+            .putFloat("poi_icon_opacity", PrefsDefaults.POI_ICON_OPACITY)
             .putBoolean("keep_screen_on", PrefsDefaults.KEEP_SCREEN_ON)
+            .putBoolean("autostart_poi_loading_on_launch", PrefsDefaults.AUTOSTART_POI_LOADING_ON_LAUNCH)
             .putBoolean("use_gps", PrefsDefaults.USE_GPS)
             .putFloat("gps_icon_opacity", PrefsDefaults.GPS_ICON_OPACITY)
             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)

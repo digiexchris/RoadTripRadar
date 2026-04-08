@@ -10,6 +10,7 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.sin
 
 private const val KM_PER_DEG_LAT = 111.0
 private const val CHUNK_MAX_KM = 25.0
@@ -20,7 +21,7 @@ private const val GRID_STEP_LON_DEG = CHUNK_MAX_KM / KM_PER_DEG_LAT
 
 /**
  * Maximum number of chunk cells along latitude and along longitude expected when
- * [MAX_POI_LOAD_EXTENT_KM] is applied (~200 km / ~25 km ≈ 8).
+ * [MAX_POI_LOAD_EXTENT_KM] is applied (~150 km / ~25 km ≈ 6).
  */
 const val MAX_POI_CHUNK_GRID_CELLS_PER_SIDE = 14
 
@@ -45,7 +46,7 @@ object PoiViewportChunks {
     const val POI_MANUAL_LOAD_PAD = 1.5
 
     /** Max north–south and east–west extent (km) for POI loading, centered on the viewport. */
-    const val MAX_POI_LOAD_EXTENT_KM = 350.0
+    const val MAX_POI_LOAD_EXTENT_KM = 200.0
 
     fun approximateViewportBounds(
         lat: Double, lon: Double, zoom: Double,
@@ -101,12 +102,19 @@ object PoiViewportChunks {
      * Side length is max of the padded box’s two km spans (longitude span uses cos of the box’s mid-latitude), capped at [maxExtentKm].
      * Default center is the padded box midpoint (works with [queryVisibleBoundingBox] and asymmetric camera padding).
      * Optional [centerLatitude] / [centerLongitude] override placement (e.g. for tests).
+     * [bottomFraction] controls how far from the screen-bottom edge the reference point sits
+     * (0.5 = centered, 0.3 = 30% from bottom).
+     * [bearingDegrees] rotates the offset direction so the shift follows the map's heading
+     * (0 = north-up, 90 = east-up, etc.). The offset magnitude is constant (circular) regardless
+     * of bearing, so the camera target stays inside the grid-aligned box at all rotations.
      */
     fun clampBoundsToMaxCenterExtentKm(
         bounds: BoundingBox,
         maxExtentKm: Double,
         centerLatitude: Double? = null,
         centerLongitude: Double? = null,
+        bottomFraction: Double = 0.5,
+        bearingDegrees: Double = 0.0,
     ): BoundingBox {
         val sw = bounds.southwest
         val ne = bounds.northeast
@@ -118,17 +126,25 @@ object PoiViewportChunks {
         val sideKm = min(max(latSpanKm, lonSpanKm), maxExtentKm)
         val cLat = if (centerLatitude != null && centerLongitude != null) centerLatitude else midLat
         val cLon = if (centerLatitude != null && centerLongitude != null) centerLongitude else midLon
+
+        // Shift box center from camera target along the bearing direction.
+        // At bearing 0 (north-up) the shift is purely northward; at 90 (east-up), purely eastward.
+        val shiftKm = (0.5 - bottomFraction) * sideKm
+        val bearingRad = Math.toRadians(bearingDegrees)
+        val boxCenterLat = cLat + shiftKm * cos(bearingRad) / KM_PER_DEG_LAT
+        val boxCenterLon = cLon + shiftKm * sin(bearingRad) / (KM_PER_DEG_LAT * cos(Math.toRadians(cLat)))
+
         val latDeg = sideKm / KM_PER_DEG_LAT
-        val lonDeg = sideKm / (KM_PER_DEG_LAT * cos(Math.toRadians(cLat)))
+        val lonDeg = sideKm / (KM_PER_DEG_LAT * cos(Math.toRadians(boxCenterLat)))
 
         return BoundingBox(
             southwest = Position(
-                latitude = cLat - latDeg / 2.0,
-                longitude = cLon - lonDeg / 2.0,
+                latitude = boxCenterLat - latDeg / 2.0,
+                longitude = boxCenterLon - lonDeg / 2.0,
             ),
             northeast = Position(
-                latitude = cLat + latDeg / 2.0,
-                longitude = cLon + lonDeg / 2.0,
+                latitude = boxCenterLat + latDeg / 2.0,
+                longitude = boxCenterLon + lonDeg / 2.0,
             ),
         )
     }
@@ -182,17 +198,33 @@ object PoiViewportChunks {
      * [POI_MANUAL_LOAD_PAD] (viewport max dimension × that factor in each direction), then replaced with a
      * square whose side is the larger of the two km spans, capped at [MAX_POI_LOAD_EXTENT_KM].
      */
-    fun poiLoadPlateForVisibleBounds(visibleBounds: BoundingBox): BoundingBox {
+    fun poiLoadPlateForVisibleBounds(
+        visibleBounds: BoundingBox,
+        cameraTarget: Position? = null,
+        bottomFraction: Double = 0.5,
+        bearingDegrees: Double = 0.0,
+    ): BoundingBox {
         val padded = padBounds(visibleBounds, POI_MANUAL_LOAD_PAD)
-        return clampBoundsToMaxCenterExtentKm(padded, MAX_POI_LOAD_EXTENT_KM)
+        return clampBoundsToMaxCenterExtentKm(
+            padded, MAX_POI_LOAD_EXTENT_KM,
+            centerLatitude = cameraTarget?.latitude,
+            centerLongitude = cameraTarget?.longitude,
+            bottomFraction = bottomFraction,
+            bearingDegrees = bearingDegrees,
+        )
     }
 
     /**
      * Visible map bounds (e.g. [org.maplibre.compose.camera.CameraProjection.queryVisibleBoundingBox]),
      * then × [POI_MANUAL_LOAD_PAD], square clamp in km, then grid intersection.
      */
-    fun gridCellsForManualLoad(visibleBounds: BoundingBox): Pair<BoundingBox, List<PoiGridCell>> {
-        val loadBounds = poiLoadPlateForVisibleBounds(visibleBounds)
+    fun gridCellsForManualLoad(
+        visibleBounds: BoundingBox,
+        cameraTarget: Position? = null,
+        bottomFraction: Double = 0.5,
+        bearingDegrees: Double = 0.0,
+    ): Pair<BoundingBox, List<PoiGridCell>> {
+        val loadBounds = poiLoadPlateForVisibleBounds(visibleBounds, cameraTarget, bottomFraction, bearingDegrees)
         return loadBounds to worldGridCellsIntersecting(loadBounds)
     }
 
@@ -200,9 +232,12 @@ object PoiViewportChunks {
     fun gridCellsForManualLoad(
         lat: Double, lon: Double, zoom: Double,
         screenWidthDp: Double = 360.0, screenHeightDp: Double = 800.0,
+        bottomFraction: Double = 0.5,
+        bearingDegrees: Double = 0.0,
     ): Pair<BoundingBox, List<PoiGridCell>> {
         val viewBounds = approximateViewportBounds(lat, lon, zoom, screenWidthDp, screenHeightDp)
-        return gridCellsForManualLoad(viewBounds)
+        val cameraTarget = Position(latitude = lat, longitude = lon)
+        return gridCellsForManualLoad(viewBounds, cameraTarget, bottomFraction, bearingDegrees)
     }
 
     /** Closed ring for the clamped POI load rectangle (for map overlay). */

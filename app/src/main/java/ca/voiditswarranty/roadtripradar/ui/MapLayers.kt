@@ -153,6 +153,36 @@ fun PoiLoadBoundsLayer(
 }
 
 @Composable
+fun FailedCellsLayer(
+    failedBounds: List<BoundingBox>,
+    visible: Boolean,
+) {
+    if (!visible || failedBounds.isEmpty()) return
+
+    val features = remember(failedBounds) {
+        FeatureCollection(failedBounds.flatMap { bounds ->
+            val sw = bounds.southwest
+            val ne = bounds.northeast
+            val nw = Position(latitude = ne.latitude, longitude = sw.longitude)
+            val se = Position(latitude = sw.latitude, longitude = ne.longitude)
+            listOf(
+                Feature(geometry = LineString(listOf(sw, ne)), properties = buildJsonObject {}),
+                Feature(geometry = LineString(listOf(nw, se)), properties = buildJsonObject {}),
+            )
+        })
+    }
+    val source = rememberGeoJsonSource(data = GeoJsonData.Features(features))
+
+    LineLayer(
+        id = "poi-failed-cells",
+        source = source,
+        color = const(Color(0xFFE57373)),
+        width = const(1.5.dp),
+        opacity = const(0.6f),
+    )
+}
+
+@Composable
 fun UserLocationPuck(
     locationState: org.maplibre.compose.location.UserLocationState,
     cameraState: org.maplibre.compose.camera.CameraState,
@@ -299,7 +329,7 @@ fun NearbyPoiLayers(
             color = const(Color(0xFF5B8DEF)),
             strokeColor = const(Color.White),
             strokeWidth = const(2.dp),
-            opacity = const(0.85f),
+            opacity = const(vm.poiIconOpacity),
             onClick = clusterClick@{ clicked ->
                 val f = clicked.firstOrNull() ?: return@clusterClick ClickResult.Pass
                 val pos = (f.geometry as? Point)?.coordinates ?: return@clusterClick ClickResult.Pass
@@ -315,6 +345,7 @@ fun NearbyPoiLayers(
             filter = !feature.has("cluster"),
             iconImage = iconExpr,
             iconSize = const(1.5f),
+            iconOpacity = const(vm.poiIconOpacity),
             iconAllowOverlap = const(false),
             textField = format(span(feature["name"].asString())),
             textFont = const(listOf("Noto Sans Regular")),
@@ -323,6 +354,7 @@ fun NearbyPoiLayers(
             textHaloColor = const(Color.White),
             textHaloWidth = const(1.5f.dp),
             textOffset = offset(0f.em, 1.8f.em),
+            textOpacity = const(vm.poiIconOpacity),
             textAllowOverlap = const(false),
             textOptional = const(true),
             minZoom = 0f,

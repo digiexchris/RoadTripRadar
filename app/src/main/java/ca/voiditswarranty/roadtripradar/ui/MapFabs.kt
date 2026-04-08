@@ -95,6 +95,30 @@ fun RecenterTextButton(
 }
 
 @Composable
+fun RetryFailedButton(
+    hasFailedCells: Boolean,
+    onRetry: () -> Unit,
+    scale: Float = 1f,
+    modifier: Modifier = Modifier,
+) {
+    if (!hasFailedCells) return
+    Button(
+        onClick = onRetry,
+        modifier = modifier.graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        },
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Text("Retry Failed")
+    }
+}
+
+@Composable
 fun LeftContent(
     verticalArrangement: Arrangement.Vertical = Arrangement.Center,
     modifier: Modifier = Modifier,

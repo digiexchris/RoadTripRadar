@@ -87,6 +87,25 @@ fun MapDrawerSettingsContent(
             )
         }
 
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text("Places Icon Opacity", style = MaterialTheme.typography.titleSmall)
+                Text(
+                    "${(vm.poiIconOpacity * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            GloveFriendlySlider(
+                value = vm.poiIconOpacity,
+                onValueChange = { vm.updatePoiIconOpacity(it) },
+                onValueChangeFinished = { vm.savePoiIconOpacity() },
+                valueRange = 0f..1f,
+            )
+        }
+
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Map Style", style = MaterialTheme.typography.titleSmall)
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
