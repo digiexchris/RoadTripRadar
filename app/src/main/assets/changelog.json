@@ -1,6 +1,13 @@
 {
   "releases": [
     {
+      "versionName": "1.10.0",
+      "versionCode": 24,
+      "items": [
+        "If you have any categories in Nearby Places selected, they will start showing automatically when the app starts up. If you want to disable that behaviour, there is a switch on the Nearby Places menu to turn it off."
+      ]
+    },
+    {
       "versionName": "1.9.0",
       "versionCode": 23,
       "items": [
