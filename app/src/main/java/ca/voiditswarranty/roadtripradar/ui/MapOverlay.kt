@@ -182,6 +182,7 @@ fun BoxScope.MapOverlay(
                 temperatureUnit = vm.temperatureUnit,
                 windSpeedUnit = vm.windSpeedUnit,
                 weatherWidgetSize = vm.weatherWidgetSize * config.widgetScale,
+                cameraBearing = bearing,
             )
         }
 

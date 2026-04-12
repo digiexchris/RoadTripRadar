@@ -79,6 +79,7 @@ fun WeatherWidget(
     temperatureUnit: TemperatureUnit,
     windSpeedUnit: WindSpeedUnit,
     weatherWidgetSize: Float,
+    cameraBearing: Double,
     modifier: Modifier = Modifier,
 ) {
     val iconSize = weatherWidgetSize.dp
@@ -114,6 +115,8 @@ fun WeatherWidget(
                     textAlign = TextAlign.Center,
                 )
             }
+            val windArrowRotationDeg =
+                (snapshot.windDirectionDeg + 180.0 - cameraBearing).toFloat()
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(iconSize),
@@ -123,7 +126,7 @@ fun WeatherWidget(
                     contentDescription = "Wind direction",
                     modifier = Modifier
                         .size(iconSize)
-                        .rotate(snapshot.windDirectionDeg.toFloat() + 180f),
+                        .rotate(windArrowRotationDeg),
                     tint = MaterialTheme.colorScheme.primary,
                 )
                 Icon(
