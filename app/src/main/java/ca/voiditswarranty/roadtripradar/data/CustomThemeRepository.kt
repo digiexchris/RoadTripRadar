@@ -10,11 +10,24 @@ import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 
 private val styleJson = Json { ignoreUnknownKeys = true }
+private val prettyJson = Json { prettyPrint = true }
+private const val OFM_PLANET = "https://tiles.openfreemap.org/planet"
+
+// Matches quoted font names like "Nunito Bold" but not "Noto Sans Bold".
+// Captures the weight/style suffix for mapping.
+private val nonNotoFontRegex =
+    Regex(""""(?!Noto Sans )[A-Za-z ]+?(Extra Bold|ExtraBold|Semi Bold|SemiBold|Bold Italic|Bold|Italic|Medium|Light|Regular)"""")
+private const val OFM_GLYPHS = "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf"
+private const val OFM_SPRITE = "https://tiles.openfreemap.org/sprites/ofm_f384/ofm"
 
 class CustomThemeRepository(context: Context) {
 
@@ -68,7 +81,9 @@ class CustomThemeRepository(context: Context) {
                 }
             }
             val json = tempFile.readText()
-            validateMapLibreStyle(json)  // throws InvalidStyleJsonException on bad content
+            validateMapLibreStyle(json)
+            val rewritten = rewriteTileSources(json)
+            tempFile.writeText(rewritten)
             tempFile.renameTo(fileFor(target))
         } catch (e: InvalidStyleJsonException) {
             tempFile.delete()
@@ -103,6 +118,70 @@ class CustomThemeRepository(context: Context) {
             throw InvalidStyleJsonException("Style is missing the required 'sources' field.")
         }
     }
+
+    /**
+     * Rewrites tile source, glyph, sprite URLs and font names in the style JSON to use
+     * OpenFreeMap. Maputnik templates commonly default to MapTiler sources (which require a
+     * paid API key) and fonts not hosted by OpenFreeMap.
+     */
+    fun rewriteTileSources(json: String): String {
+        val root = styleJson.parseToJsonElement(json).jsonObject
+        val mutable = root.toMutableMap()
+
+        // Rewrite glyphs
+        val glyphs = root["glyphs"]?.jsonPrimitive?.content
+        if (glyphs != null && !glyphs.contains("openfreemap.org")) {
+            mutable["glyphs"] = JsonPrimitive(OFM_GLYPHS)
+        }
+
+        // Rewrite sprite
+        val sprite = root["sprite"]?.jsonPrimitive?.content
+        if (sprite != null && !sprite.contains("openfreemap.org")) {
+            mutable["sprite"] = JsonPrimitive(OFM_SPRITE)
+        }
+
+        // Rewrite sources: any vector source with a "url" not pointing at OpenFreeMap
+        val sources = root["sources"]?.jsonObject
+        if (sources != null) {
+            val rewrittenSources = buildJsonObject {
+                for ((name, sourceElement) in sources) {
+                    val sourceObj = sourceElement.jsonObject
+                    val type = sourceObj["type"]?.jsonPrimitive?.content
+                    val url = sourceObj["url"]?.jsonPrimitive?.content
+                    if (type == "vector" && url != null && !url.contains("openfreemap.org")) {
+                        val patched = buildJsonObject {
+                            for ((k, v) in sourceObj) {
+                                if (k == "url") put(k, JsonPrimitive(OFM_PLANET))
+                                else put(k, v)
+                            }
+                        }
+                        put(name, patched)
+                    } else {
+                        put(name, sourceElement)
+                    }
+                }
+            }
+            mutable["sources"] = rewrittenSources
+        }
+
+        val serialized = prettyJson.encodeToString(JsonObject.serializer(), JsonObject(mutable))
+        return rewriteFonts(serialized)
+    }
+
+    /**
+     * Replaces non-Noto-Sans font names with the closest Noto Sans equivalent.
+     * OpenFreeMap only hosts Noto Sans Regular/Bold/Italic glyphs.
+     */
+    private fun rewriteFonts(json: String): String =
+        nonNotoFontRegex.replace(json) { match ->
+            val weight = match.groupValues[1]
+            val noto = when (weight) {
+                "Italic" -> "Noto Sans Italic"
+                "Bold", "Semi Bold", "SemiBold", "Extra Bold", "ExtraBold", "Medium" -> "Noto Sans Bold"
+                else -> "Noto Sans Regular"
+            }
+            "\"$noto\""
+        }
 
     /** Returns a sharable FileProvider URI for the custom theme file, or null if it doesn't exist. */
     fun exportThemeUri(style: MapStyle): Uri? {
