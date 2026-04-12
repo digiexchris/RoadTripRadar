@@ -3,18 +3,52 @@ package ca.voiditswarranty.roadtripradar.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
+
+@Composable
+fun ThemeChooserRow(
+    mapStyle: MapStyle,
+    vm: MapViewModel,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text(
+            "Theme: ${mapStyle.displayName}",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Button(onClick = { vm.openThemeSelector() }) {
+            Icon(Icons.Default.Palette, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text("Choose Theme")
+        }
+    }
+}
 
 @Composable
 fun MapDrawerSettingsContent(
@@ -106,20 +140,5 @@ fun MapDrawerSettingsContent(
             )
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Map Style", style = MaterialTheme.typography.titleSmall)
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                MapStyle.entries.forEachIndexed { index, style ->
-                    SegmentedButton(
-                        selected = mapStyle == style,
-                        onClick = { onStyleChange(style) },
-                        shape = SegmentedButtonDefaults.itemShape(index, MapStyle.entries.size),
-                        modifier = Modifier.height(DrawerControlSizing.segmentedButtonHeight),
-                    ) {
-                        Text(style.displayName, style = selectionLabelTextStyle())
-                    }
-                }
-            }
-        }
     }
 }

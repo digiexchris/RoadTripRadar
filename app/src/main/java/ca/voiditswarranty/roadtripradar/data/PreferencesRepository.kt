@@ -29,7 +29,7 @@ class PreferencesRepository(context: Context) {
     }
 
     companion object {
-        /** Liberty when not in night mode, [MapStyle.COLOR_DARK] when UI night mode is on. */
+        /** Liberty when not in night mode, [MapStyle.COLOR_DARK] (Dark Small Roads) when UI night mode is on. */
         fun defaultMapStyleFor(context: Context): MapStyle {
             val app = context.applicationContext
             val night =
@@ -126,7 +126,11 @@ class PreferencesRepository(context: Context) {
             if (prefs.getString("map_style", null) == "LIBERTY_DARK") {
                 ed.putString("map_style", MapStyle.COLOR_DARK.name)
             }
-            ed.putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
+            ed.putInt("prefs_version", 8).apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 9) {
+            // No data migration needed; just bump version.
+            prefs.edit().putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
         }
     }
 
@@ -134,6 +138,14 @@ class PreferencesRepository(context: Context) {
         "LIBERTY_DARK" -> MapStyle.COLOR_DARK
         else -> MapStyle.valueOf(name)
     }
+
+    var customLightAutoEnabled: Boolean
+        get() = prefs.getBoolean("custom_light_auto_enabled", PrefsDefaults.CUSTOM_LIGHT_AUTO_ENABLED)
+        set(value) = prefs.edit().putBoolean("custom_light_auto_enabled", value).apply()
+
+    var customDarkAutoEnabled: Boolean
+        get() = prefs.getBoolean("custom_dark_auto_enabled", PrefsDefaults.CUSTOM_DARK_AUTO_ENABLED)
+        set(value) = prefs.edit().putBoolean("custom_dark_auto_enabled", value).apply()
 
     var mapStyle: MapStyle
         get() {
@@ -351,6 +363,8 @@ class PreferencesRepository(context: Context) {
             .remove("poi_display_mode")
             .remove("poi_lat").remove("poi_lon").remove("poi_name")
             .remove("last_known_lat").remove("last_known_lon")
+            .putBoolean("custom_light_auto_enabled", PrefsDefaults.CUSTOM_LIGHT_AUTO_ENABLED)
+            .putBoolean("custom_dark_auto_enabled", PrefsDefaults.CUSTOM_DARK_AUTO_ENABLED)
             .apply()
     }
 }

@@ -17,20 +17,36 @@ import org.maplibre.spatialk.units.extensions.kilometers
 import org.maplibre.spatialk.units.extensions.meters
 
 enum class MapStyle {
-    LIBERTY, DARK, COLOR_DARK, AUTO;
+    LIBERTY, DARK, COLOR_DARK, CUSTOM_LIGHT, CUSTOM_DARK, AUTO;
 
     val styleUri get() = when (this) {
         LIBERTY -> "https://tiles.openfreemap.org/styles/liberty"
-        DARK -> "https://tiles.openfreemap.org/styles/dark"
-        COLOR_DARK -> "asset://liberty_dark.json"
+        DARK -> "asset://dark.json"
+        COLOR_DARK -> "asset://dark_small_roads.json"
+        CUSTOM_LIGHT, CUSTOM_DARK -> error("$name requires Context — use resolvedStyleUri(context)")
         AUTO -> error("AUTO requires Context — use resolvedStyleUri(context)")
     }
 
     val displayName get() = when (this) {
         LIBERTY -> "Liberty"
         DARK -> "Dark"
-        COLOR_DARK -> "Color Dark"
+        COLOR_DARK -> "Dark (Small Roads)"
+        CUSTOM_LIGHT -> "Custom Light"
+        CUSTOM_DARK -> "Custom Dark"
         AUTO -> "Auto"
+    }
+
+    val isCustom get() = this == CUSTOM_LIGHT || this == CUSTOM_DARK
+
+    /** True if this style is inherently a dark-map variant (ignoring AUTO). */
+    val intrinsicallyDark get() = this == DARK || this == COLOR_DARK || this == CUSTOM_DARK
+
+    /** Maputnik editor URL for built-in themes, null for custom/auto. */
+    val maputnikUrl: String? get() = when (this) {
+        LIBERTY -> "https://maplibre.org/maputnik/?style=https://tiles.openfreemap.org/styles/liberty"
+        DARK -> "https://maplibre.org/maputnik/?style=https://raw.githubusercontent.com/digiexchris/RoadTripRadar/main/app/src/main/assets/dark.json"
+        COLOR_DARK -> "https://maplibre.org/maputnik/?style=https://raw.githubusercontent.com/digiexchris/RoadTripRadar/main/app/src/main/assets/dark_small_roads.json"
+        else -> null
     }
 }
 
@@ -123,7 +139,9 @@ object PrefsDefaults {
     const val WIND_ENABLED = true
     val WIND_SPEED_UNIT = WindSpeedUnit.KMH.name
     val TEMPERATURE_UNIT = TemperatureUnit.CELSIUS.name
-    const val PREFS_VERSION = 8
+    const val PREFS_VERSION = 9
+    const val CUSTOM_LIGHT_AUTO_ENABLED = false
+    const val CUSTOM_DARK_AUTO_ENABLED = false
     const val TERMS_VERSION = 1
 }
 

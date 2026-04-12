@@ -3,6 +3,7 @@ package ca.voiditswarranty.roadtripradar.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import ca.voiditswarranty.roadtripradar.data.CustomThemeRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 
@@ -12,6 +13,7 @@ class MapViewModelFactory(private val context: Context) : ViewModelProvider.Fact
         return MapViewModel(
             context.applicationContext,
             PreferencesRepository(context),
+            CustomThemeRepository(context),
             openMeteoRepo = OpenMeteoRepository(),
         ) as T
     }
