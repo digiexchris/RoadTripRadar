@@ -112,6 +112,8 @@ dependencies {
     implementation(libs.spatialk.turf)
     implementation(libs.androidsvg)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.car.app)
+    implementation(libs.maplibre.android)
     testImplementation(libs.junit)
     testImplementation(libs.okhttp)
     testImplementation(libs.okhttp.mockwebserver)

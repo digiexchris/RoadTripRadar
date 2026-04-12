@@ -162,6 +162,10 @@ class PreferencesRepository(context: Context) {
         }
         set(value) = prefs.edit().putFloat("map_center_offset_portrait_fraction", value).apply()
 
+    var carMapCenterOffsetFraction: Float
+        get() = prefs.getFloat("car_map_center_offset_fraction", PrefsDefaults.CAR_MAP_CENTER_OFFSET_FRACTION)
+        set(value) = prefs.edit().putFloat("car_map_center_offset_fraction", value).apply()
+
     var mapCenterOffsetLandscapeFraction: Float
         get() = if (prefs.contains("map_center_offset_landscape_fraction")) {
             prefs.getFloat(

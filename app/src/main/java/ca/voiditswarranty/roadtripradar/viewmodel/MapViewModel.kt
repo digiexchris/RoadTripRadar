@@ -145,6 +145,17 @@ class MapViewModel(
         prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null
     )
         private set
+    private var selfWritingPoi = false
+    private val poiPrefsListener =
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (selfWritingPoi) return@OnSharedPreferenceChangeListener
+            when (key) {
+                "poi_lat", "poi_lon", "poi_name" -> {
+                    poiPosition = prefsRepo.poiPosition
+                    poiName = prefsRepo.poiName
+                }
+            }
+        }
 
     // Nearby POIs — cell-based pipeline
     data class CachedCell(
@@ -281,6 +292,7 @@ class MapViewModel(
         startWeatherAnimationIfPlaying()
         startLocalWeatherPolling()
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        prefsRepo.prefs.registerOnSharedPreferenceChangeListener(poiPrefsListener)
     }
 
     fun setLocalWeatherAnchor(position: Position?) {
@@ -290,6 +302,7 @@ class MapViewModel(
     override fun onCleared() {
         super.onCleared()
         connectivityManager.unregisterNetworkCallback(networkCallback)
+        prefsRepo.prefs.unregisterOnSharedPreferenceChangeListener(poiPrefsListener)
     }
 
     // --- Weather ---
@@ -603,8 +616,10 @@ class MapViewModel(
     }
 
     private fun persistPoi() {
+        selfWritingPoi = true
         prefsRepo.poiPosition = poiPosition
         prefsRepo.poiName = poiName
+        selfWritingPoi = false
     }
 
     // --- Nearby POIs (cell-based pipeline) ---

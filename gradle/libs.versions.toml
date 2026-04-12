@@ -14,6 +14,8 @@ coroutinesTest = "1.9.0"
 spatialKTurf = "0.6.1"
 androidsvg = "1.4"
 kotlinxSerializationJson = "1.7.3"
+carApp = "1.7.0"
+maplibreAndroid = "12.0.1"
 
 [libraries]
 maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
@@ -42,6 +44,8 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material3-adaptive-navigation-suite = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+androidx-car-app = { group = "androidx.car.app", name = "app", version.ref = "carApp" }
+maplibre-android = { module = "org.maplibre.gl:android-sdk", version.ref = "maplibreAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

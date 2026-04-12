@@ -103,9 +103,10 @@ object PrefsDefaults {
     const val MAP_CENTER_OFFSET_FRACTION = 0.30f
     const val MAP_CENTER_OFFSET_PORTRAIT_FRACTION = 0.30f
     const val MAP_CENTER_OFFSET_LANDSCAPE_FRACTION = 0.30f
+    const val CAR_MAP_CENTER_OFFSET_FRACTION = 0.30f
     const val RADAR_OPACITY = 0.6f
     const val USE_METRIC = true
-    const val WEATHER_PLAYING = true
+    const val WEATHER_PLAYING = false
     const val WEATHER_MODE = "ON"
     const val SHOW_LEGEND = true
     const val SHOW_TIMELINE = true
