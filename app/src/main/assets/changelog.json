@@ -1,6 +1,13 @@
 {
   "releases": [
     {
+      "versionName": "1.10.1",
+      "versionCode": 25,
+      "items": [
+        "Fix the wind direction arrow not rotating with the map."
+      ]
+    },
+    {
       "versionName": "1.10.0",
       "versionCode": 24,
       "items": [

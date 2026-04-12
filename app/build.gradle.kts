@@ -16,8 +16,8 @@ android {
         applicationId = "ca.voiditswarranty.roadtripradar"
         minSdk = 26
         targetSdk = 36
-        versionCode = 24
-        versionName = "1.10.0"
+        versionCode = 25
+        versionName = "1.10.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
