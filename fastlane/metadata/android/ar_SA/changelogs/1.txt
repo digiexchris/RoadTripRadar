@@ -1,13 +1,13 @@
-Initial release of RoadTripRadar.
+الإصدار الأولي لرادار الطرق.
 
-- Live animated weather radar overlay from RainViewer
-- Bearing-based navigation to points of interest
-- POI search by name or category
-- Drop POI by long-pressing the map
-- Distance rings around your location
-- Speed readout in metric or imperial
-- Three map styles: Liberty, Dark, Color Dark
-- Compass button with heading toggle
-- Adjustable radar opacity
-- Configurable UI sizing
-- Keep-screen-on mode
+- تراكب رادار متحرك للطقس من RainViewer
+- الملاحة القائمة على التجول إلى نقاط الاهتمام
+- البحث عن POI حسب الاسم أو الفئة
+- إسقاط POI بالضغط المطول على الخريطة
+- حلقات المسافة حول موقعك
+- سرعة القراءة في القياس أو الإمبراطورية
+- ثلاثة أنماط للخرائط: الحرية، الظلام, لون داكن
+- زر البوصلة مع تبديل الرأس
+- شفافية الرادار القابلة للتعديل
+- حجم واجهة المستخدم القابل للتكوين
+- وضع الشاشة
