@@ -1,1 +1,1 @@
-Add a quick actions button as an easier way to discover the quick actions menu
+Добавить кнопку быстрых действий как простой способ открыть меню быстрых действий
