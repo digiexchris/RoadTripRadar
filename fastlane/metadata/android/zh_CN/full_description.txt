@@ -1,11 +1,11 @@
-RoadTripRadar is a map app prioritizing situational awareness and weather. Live weather radar imagery on an interactive map, helping you see precipitation along your direction of travel at a glance.
+道路TripRadar是一个地图应用，优先考虑情景意识和天气问题。 在交互式地图上实时天气雷达图像，帮助您看到沿着您的行程方向降雨。
 
-Features:
-- Distance rings centered on your location that adapt to zoom level.
-- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!
-- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists that want notice to reroute around a storm or gear up.
-- Wind speed and direction
-- Temperature and 1 hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colours for either.
-- Speed readout with metric and imperial units, adjustable font size.
-- Open source, no tracking, no accounts, no ads.
+功能：
+- 距离圆环以您的位置为中心，以适应缩放水平。
+- 使用携带到您的目的地，而不是硬性的逐转指示。 完美适用于想要行走的探索者和人！
+- 来自RainViewer的动态天气雷达，带有可调节的透明度和回放控件。 适合那些想要通知的摩托车手来改变风暴或装备的路线。
+- 风速和方向
+- 温度和一小时趋势
+- 多个地图样式： Light、暗色、自动和自定义两种颜色。
+- 快速读取公式和帝国式，可调整字体大小。
+- 开源，无跟踪，无广告。
