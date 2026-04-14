@@ -1,2 +1,2 @@
-There is a new map theme chooser! Check it out in the menu -> Map -> Choose Theme. Also, the default dark map has been tweaked to show small roads and paths better. If you liked the old one better, it's still available.
-There is now a play/pause/off button for the weather radar on the main screen.
+Є нова тема карти! Перевірте це в меню -> Карта -> Вибрати тему. Також, темна карта за замовчуванням була налаштована, щоб показати кращі дороги та інші шляхи. Якщо вам більше подобається стара пісня, вона все ще доступна.
+Кнопка відтворення/пауза/off на головному екрані є радар.
