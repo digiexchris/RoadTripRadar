@@ -39,6 +39,8 @@ object ChangelogRepository {
     }
 
     fun allReleasesSortedNewestFirst(bundle: ChangelogBundle): List<ChangelogRelease> {
-        return bundle.releases.sortedByDescending { it.versionCode }
+        return bundle.releases
+            .filter { it.versionCode > 0 }
+            .sortedByDescending { it.versionCode }
     }
 }

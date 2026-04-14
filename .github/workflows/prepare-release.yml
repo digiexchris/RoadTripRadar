@@ -67,6 +67,17 @@ jobs:
           sed -i "s/versionName = \"[^\"]*\"/versionName = \"$VERSION_NAME\"/" app/build.gradle.kts
           grep -E '^\s+version(Code|Name)\s*=' app/build.gradle.kts
 
+      - name: Write GitHub release notes
+        if: ${{ github.event.inputs.rebuild_only != 'true' }}
+        run: |
+          python3 -c "
+          import json
+          data = json.loads(open('app/src/main/assets/changelog.json').read())
+          items = data['releases'][0]['items']
+          with open('release_notes.md', 'w') as f:
+              f.write('\n'.join(f'- {item}' for item in items) + '\n')
+          "
+
       - name: Stamp changelog and rename fastlane changelogs
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
         run: |
@@ -81,11 +92,6 @@ jobs:
           with open(cl_path, 'w') as f:
               json.dump(data, f, indent=2)
               f.write('\n')
-
-          # Write GitHub release notes
-          items = data['releases'][0]['items']
-          with open('release_notes.md', 'w') as f:
-              f.write('\n'.join(f'- {item}' for item in items) + '\n')
 
           # Rename next.txt -> {versionCode}.txt in all locale changelogs dirs
           code = str(${{ env.VERSION_CODE }})
