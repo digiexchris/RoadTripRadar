@@ -1,11 +1,11 @@
-RoadTripRadar is a map app prioritizing situational awareness and weather. Live weather radar imagery on an interactive map, helping you see precipitation along your direction of travel at a glance.
+RoadTripRadar este o aplicație de hartă care prioritizează conștientizarea situației și a vremii. Imaginea radarului meteo live pe o hartă interactivă, ajutându-te să vezi precipitațiile de-a lungul direcției de deplasare dintr-o privire.
 
-Features:
-- Distance rings centered on your location that adapt to zoom level.
-- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!
-- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists that want notice to reroute around a storm or gear up.
-- Wind speed and direction
-- Temperature and 1 hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colours for either.
-- Speed readout with metric and imperial units, adjustable font size.
-- Open source, no tracking, no accounts, no ads.
+Caracteristici:
+- Inelele de distanță centrate pe locația dvs. care se adaptează la nivelul de zoom.
+- Navigați folosind destinația dvs. în loc de instrucțiuni rigide de cu rotație. Perfect pentru exploratori şi oameni cărora le place să călătorească!
+- Radarul meteo viu animat din RainViewer cu opacitate reglabilă și controale de redare. Perfect pentru motocicliști care doresc să anunțe redirecționarea în jurul unei furtuni sau să se instaleze.
+- Viteza şi direcţia vântului
+- Temperatură şi tendinţă de 1 oră
+- Stiluri multiple de hărți: Lumine, Întunecat, Auto și culori personalizate pentru fie.
+- Viteza de citire cu unități metrice și imperiale, mărimea caracterelor reglabile.
+- Sursă deschisă, fără urmărire, fără conturi, fără reclame.
