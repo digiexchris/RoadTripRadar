@@ -1,1 +1,1 @@
-Add small weather widget for wind speed, direction, and ambient temp
+風速、方向、周囲の温度用の小さな天気ウィジェットを追加
