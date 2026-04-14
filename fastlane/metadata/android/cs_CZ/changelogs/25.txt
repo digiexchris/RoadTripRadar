@@ -1,0 +1,1 @@
+Opravte šipku směru větru, která se neotáčí mapou.
