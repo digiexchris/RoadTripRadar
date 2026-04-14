@@ -1,5 +1,5 @@
-- Improved weather radar tile loading performance (preload all frames)
-- Compass button now toggles between north-up and previous heading
-- Default map style changed to Color Dark for new installs
-- Added Fastlane metadata for F-Droid
-- Removed foojay-resolver plugin for F-Droid compatibility
+- Förbättrad prestanda vid lastning av väderradar (förspänning av alla ramar)
+- Kompass-knappen växlar nu mellan norr-upp och föregående rubrik
+- Standard kartstil ändrad till Color Dark för nya installationer
+- Lade till Fastlane metadata för F-Droid
+- Borttagen foojay-resolver plugin för F-Droid kompatibilitet
