@@ -15,7 +15,7 @@ files:
         android_code: "b+zh+Hant"
 
   - source: /fastlane/metadata/android/en-US/*.txt
-    translation: /fastlane/metadata/android/%locale_with_underscore%/*.txt
+    translation: /fastlane/metadata/android/%locale_with_underscore%/%original_file_name%
 
   - source: /fastlane/metadata/android/en-US/changelogs/*.txt
-    translation: /fastlane/metadata/android/%locale_with_underscore%/changelogs/*.txt
+    translation: /fastlane/metadata/android/%locale_with_underscore%/changelogs/%original_file_name%
