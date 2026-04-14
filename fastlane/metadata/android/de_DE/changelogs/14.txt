@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+Beheben Sie den CompassButton beim Wechseln der Karte nach Norden nicht sperren
