@@ -1,0 +1,3 @@
+Endringslogg i app: Se hva som er nye etter oppdateringer og full historie fra Hjelp & Info.
+Nå får du se interessepunkter nær din posisjon! Sjekk det ut i meny->Sted.
+Vi har gjort en stor meny refaktor for å gjøre ting enklere å finne, og enklere å håndtere med hansker på.
