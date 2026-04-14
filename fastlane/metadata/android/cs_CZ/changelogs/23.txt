@@ -1,0 +1,3 @@
+Seznam změn v aplikaci: zobrazte co je nového po aktualizacích a kompletní historii z nápovědy a informací.
+Nyní můžete vidět zajímavé body poblíž vaší polohy! Podívejte se na nabídku v místech.
+Dokončili jsme velké menu refaktoru pro snazší hledání a snazší zvládat rukavice.
