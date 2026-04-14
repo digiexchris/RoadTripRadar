@@ -1,1 +1,1 @@
-If you have any categories in Nearby Places selected, they will start showing automatically when the app starts up. If you want to disable that behaviour, there is a switch on the Nearby Places menu to turn it off.
+Dacă aveți orice categorii în locurile selectate din Nearby, acestea vor începe să apară automat când aplicația pornește. Dacă doriţi să dezactivaţi acest comportament, există un întrerupător în meniul Locuri Nearby pentru a-l dezactiva.
