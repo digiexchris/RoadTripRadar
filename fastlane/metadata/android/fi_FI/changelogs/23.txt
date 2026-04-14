@@ -1,0 +1,3 @@
+Sovelluksen sisäinen muutos: näytä mitä uutta päivitysten ja koko historian jälkeen ohje & Tieto.
+Voit nyt nähdä kiinnostavia pisteitä lähellä sijaintiasi! Tarkista se valikosta >paikoista.
+Olemme tehneet suuren valikon uudelleenkerron, jotta asiat olisi helpompi löytää ja helpommin hallita käsineitä.
