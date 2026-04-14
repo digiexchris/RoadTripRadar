@@ -26,9 +26,22 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Validate pending changelog
+      - name: Validate changelog has pending items
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
-        run: python3 scripts/check_pending_changelog.py
+        run: |
+          python3 -c "
+          import json, sys
+          data = json.loads(open('app/src/main/assets/changelog.json').read())
+          r = data['releases'][0]
+          if r.get('versionName') != 'next':
+              print('::error::Latest changelog entry versionName is not \"next\" — already released?', file=sys.stderr)
+              sys.exit(1)
+          items = r.get('items', [])
+          if not items:
+              print('::error::Latest changelog entry has no items', file=sys.stderr)
+              sys.exit(1)
+          print(f'OK: {len(items)} pending changelog item(s)')
+          "
 
       - name: Compute versionCode and release versionName
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
@@ -54,25 +67,53 @@ jobs:
           sed -i "s/versionName = \"[^\"]*\"/versionName = \"$VERSION_NAME\"/" app/build.gradle.kts
           grep -E '^\s+version(Code|Name)\s*=' app/build.gradle.kts
 
-      - name: Write GitHub release notes from pending
-        if: ${{ github.event.inputs.rebuild_only != 'true' }}
-        run: python3 scripts/pending_to_github_release_notes.py release_notes.md
-
-      - name: Merge in-app changelog and Fastlane file from pending
+      - name: Stamp changelog and rename fastlane changelogs
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
         run: |
-          python3 scripts/merge_release_changelog.py "$VERSION_NAME" "$VERSION_CODE" \
-            "fastlane/metadata/android/en-US/changelogs/${VERSION_CODE}.txt"
+          python3 -c "
+          import json, glob, os
+
+          # Stamp changelog.json with real version
+          cl_path = 'app/src/main/assets/changelog.json'
+          data = json.loads(open(cl_path).read())
+          data['releases'][0]['versionName'] = '${{ env.VERSION_NAME }}'
+          data['releases'][0]['versionCode'] = ${{ env.VERSION_CODE }}
+          with open(cl_path, 'w') as f:
+              json.dump(data, f, indent=2)
+              f.write('\n')
+
+          # Write GitHub release notes
+          items = data['releases'][0]['items']
+          with open('release_notes.md', 'w') as f:
+              f.write('\n'.join(f'- {item}' for item in items) + '\n')
+
+          # Rename next.txt -> {versionCode}.txt in all locale changelogs dirs
+          code = str(${{ env.VERSION_CODE }})
+          for next_file in glob.glob('fastlane/metadata/android/*/changelogs/next.txt'):
+              target = os.path.join(os.path.dirname(next_file), code + '.txt')
+              os.rename(next_file, target)
+              print(f'Renamed {next_file} -> {target}')
+          "
 
       - name: Commit and tag
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add app/build.gradle.kts fastlane/ app/src/main/assets/changelog.json changelog/pending.json
-          git commit -m "Release v${VERSION_NAME}"
+          git add app/build.gradle.kts app/src/main/assets/changelog.json fastlane/
+          git diff --cached --quiet && echo "No changes to commit" || {
+            git commit -m "Release v${VERSION_NAME}"
+          }
           git tag "v${VERSION_NAME}"
           git push origin ${{ github.ref_name }} --tags
+
+      - name: Upload fastlane changelog
+        if: ${{ github.event.inputs.rebuild_only != 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fastlane-changelog
+          path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
+          retention-days: 90
 
       - name: Checkout tag for rebuild
         if: ${{ github.event.inputs.rebuild_only == 'true' }}

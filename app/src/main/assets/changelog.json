@@ -1,6 +1,13 @@
 {
   "releases": [
     {
+      "versionName": "next",
+      "versionCode": -1,
+      "items": [
+        "Internationalization support. If you see any issues with any of these translations, please let me know!"
+      ]
+    },
+    {
       "versionName": "1.11.0",
       "versionCode": 26,
       "items": [

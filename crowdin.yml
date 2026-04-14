@@ -9,3 +9,6 @@ files:
 
   - source: /fastlane/metadata/android/en-US/*.txt
     translation: /fastlane/metadata/android/%locale_with_underscore%/*.txt
+
+  - source: /fastlane/metadata/android/en-US/changelogs/*.txt
+    translation: /fastlane/metadata/android/%locale_with_underscore%/changelogs/*.txt
