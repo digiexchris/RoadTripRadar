@@ -1,0 +1,1 @@
+Pokud máte vybrané kategorie v blízkosti míst, budou se automaticky zobrazovat po spuštění aplikace. Pokud chcete toto chování zakázat, je zde přepínač v menu Místa blízko k jeho vypnutí.
