@@ -1,0 +1,1 @@
+Tillad de fleste widget-størrelser at være individuelt justerbare
