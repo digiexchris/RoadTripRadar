@@ -1,11 +1,11 @@
-RoadTripRadar is a map app prioritizing situational awareness and weather. Live weather radar imagery on an interactive map, helping you see precipitation along your direction of travel at a glance.
+RoadTripRadarは状況認識と天気を優先する地図アプリです。 ライブ気象レーダー画像をインタラクティブマップに表示することで、旅行の方向に沿った降水量を一目で確認できます。
 
-Features:
-- Distance rings centered on your location that adapt to zoom level.
-- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!
-- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists that want notice to reroute around a storm or gear up.
-- Wind speed and direction
-- Temperature and 1 hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colours for either.
-- Speed readout with metric and imperial units, adjustable font size.
-- Open source, no tracking, no accounts, no ads.
+機能:
+- ズームレベルに適応した位置を中心とした距離リング。
+- ターンごとの手順ではなく、目的地に軸受を使用して移動します。 探検家やさまようことが好きな人に最適です!
+- RainViewerのライブアニメーション気象レーダーは、調整可能な不透明度と再生コントロールを備えています。 嵐やギアアップの周りに通知するバイクサイクリストに最適です。
+- 風速と方向
+- 気温と1時間のトレンド
+- 複数のマップスタイル：ライト、ダーク、オート、カスタムカラーのいずれか。
+- メトリックとインペリアルユニット、調整可能なフォントサイズによるスピード読み出し。
+- オープンソース、トラッキング、アカウント、広告なし。
