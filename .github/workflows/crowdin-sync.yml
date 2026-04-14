@@ -12,6 +12,11 @@ on:
           - download-translations
           - both
         default: both
+      branch:
+        description: "Branch to sync from / create PR against"
+        required: false
+        type: string
+        default: main
 
 concurrency:
   group: crowdin-sync
@@ -25,6 +30,8 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.branch }}
 
       - name: Upload sources to Crowdin
         if: inputs.action == 'upload-sources' || inputs.action == 'both'
@@ -47,7 +54,7 @@ jobs:
           create_pull_request: true
           pull_request_title: "i18n: new Crowdin translations"
           pull_request_body: "Automated pull request with updated translations from Crowdin."
-          pull_request_base_branch_name: main
+          pull_request_base_branch_name: ${{ inputs.branch }}
           localization_branch_name: l10n_crowdin
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
