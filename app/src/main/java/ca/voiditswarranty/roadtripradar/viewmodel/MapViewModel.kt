@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.voiditswarranty.roadtripradar.BuildConfig
 import ca.voiditswarranty.roadtripradar.data.ChangelogRepository
+import ca.voiditswarranty.roadtripradar.data.CustomThemeRepository
+import ca.voiditswarranty.roadtripradar.data.InvalidStyleJsonException
 import ca.voiditswarranty.roadtripradar.data.GeocodingRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoRepository
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
@@ -33,11 +35,13 @@ import ca.voiditswarranty.roadtripradar.model.SearchResult
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
 import org.maplibre.spatialk.geojson.BoundingBox
 import org.maplibre.spatialk.geojson.Feature
@@ -52,6 +56,7 @@ import kotlin.math.min
 class MapViewModel(
     private val appContext: Context,
     val prefsRepo: PreferencesRepository,
+    val customThemeRepo: CustomThemeRepository = CustomThemeRepository(appContext),
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
     val postpassRepo: PostpassRepository = PostpassRepository(),
@@ -252,6 +257,29 @@ class MapViewModel(
     var showTerms by mutableStateOf(false)
         private set
     var termsNeedAcceptance by mutableStateOf(false)
+        private set
+
+    // Theme selector
+    var showThemeSelector by mutableStateOf(false)
+        private set
+
+    /** Increments whenever a custom theme is written/deleted, forcing a map style reload. */
+    var customThemeVersion by mutableIntStateOf(0)
+        private set
+
+    var customLightAutoEnabled by mutableStateOf(prefsRepo.customLightAutoEnabled)
+        private set
+    var customDarkAutoEnabled by mutableStateOf(prefsRepo.customDarkAutoEnabled)
+        private set
+
+    /** Tracks whether custom theme files exist; re-read after import/delete. */
+    var hasCustomLight by mutableStateOf(customThemeRepo.hasCustomLight())
+        private set
+    var hasCustomDark by mutableStateOf(customThemeRepo.hasCustomDark())
+        private set
+
+    /** Non-null when a theme import failed; cleared by [dismissCustomThemeImportError]. */
+    var customThemeImportError: String? by mutableStateOf(null)
         private set
 
     // Search state
@@ -579,6 +607,100 @@ class MapViewModel(
 
     fun dismissTerms() {
         showTerms = false
+    }
+
+    // --- Theme selector ---
+
+    fun openThemeSelector() {
+        closeActionsDrawer()
+        showThemeSelector = true
+    }
+
+    fun closeThemeSelector() {
+        showThemeSelector = false
+    }
+
+    fun updateCustomLightAutoEnabled(enabled: Boolean) {
+        customLightAutoEnabled = enabled
+        prefsRepo.customLightAutoEnabled = enabled
+    }
+
+    fun updateCustomDarkAutoEnabled(enabled: Boolean) {
+        customDarkAutoEnabled = enabled
+        prefsRepo.customDarkAutoEnabled = enabled
+    }
+
+    fun deleteCustomTheme(style: MapStyle, currentStyle: MapStyle, onStyleChange: (MapStyle) -> Unit) {
+        customThemeRepo.deleteTheme(style)
+        refreshCustomThemeState()
+        // If the deleted theme was active, fall back to built-in equivalent
+        if (currentStyle == style) {
+            val fallback = if (style == MapStyle.CUSTOM_LIGHT) MapStyle.LIBERTY else MapStyle.COLOR_DARK
+            onStyleChange(fallback)
+        }
+    }
+
+    fun importCustomTheme(uri: android.net.Uri, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                customThemeRepo.importTheme(uri, target)
+                withContext(Dispatchers.Main) {
+                    refreshCustomThemeState()
+                    customThemeVersion++
+                    onStyleChange(target)
+                }
+            } catch (e: InvalidStyleJsonException) {
+                withContext(Dispatchers.Main) {
+                    customThemeImportError = e.message
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    customThemeImportError = "Import failed: ${e.message}"
+                }
+            }
+        }
+    }
+
+    fun dismissCustomThemeImportError() {
+        customThemeImportError = null
+    }
+
+    /** Creates a custom theme by copying a bundled [source] asset into the [target] custom slot. */
+    fun initCustomThemeFromAsset(source: MapStyle, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            customThemeRepo.initFromAsset(source, target, appContext.assets)
+            withContext(Dispatchers.Main) {
+                refreshCustomThemeState()
+                customThemeVersion++
+                onStyleChange(target)
+            }
+        }
+    }
+
+    /** Downloads a built-in remote style JSON and saves it to a custom slot. */
+    fun initCustomThemeFromUrl(url: String, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val body = java.net.URL(url).readText()
+                customThemeRepo.writeThemeJson(target, body)
+                withContext(Dispatchers.Main) {
+                    refreshCustomThemeState()
+                    customThemeVersion++
+                    onStyleChange(target)
+                }
+            } catch (_: Exception) {
+                // Silently fail — theme stays as-is
+            }
+        }
+    }
+
+    fun notifyCustomThemeUpdated() {
+        customThemeVersion++
+    }
+
+    private fun refreshCustomThemeState() {
+        hasCustomLight = customThemeRepo.hasCustomLight()
+        hasCustomDark = customThemeRepo.hasCustomDark()
     }
 
     // --- POI ---
@@ -1018,6 +1140,8 @@ class MapViewModel(
         poiFetchRegion = null
         poiLoadBounds = null
         poiCategoriesVersion++
+        customLightAutoEnabled = PrefsDefaults.CUSTOM_LIGHT_AUTO_ENABLED
+        customDarkAutoEnabled = PrefsDefaults.CUSTOM_DARK_AUTO_ENABLED
         prefsRepo.resetToDefaults(systemDefault)
         showResetConfirm = false
         showActionsDrawer = false

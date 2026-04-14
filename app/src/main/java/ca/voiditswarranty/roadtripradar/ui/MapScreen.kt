@@ -25,6 +25,7 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -236,7 +237,7 @@ fun MapScreen(
 
     // UI
     Box(modifier = Modifier.fillMaxSize()) {
-        key(mapStyleUri) {
+        key(mapStyleUri, vm.customThemeVersion) {
             MaplibreMap(
                 baseStyle = BaseStyle.Uri(mapStyleUri),
                 cameraState = cameraState,
@@ -386,6 +387,26 @@ fun MapScreen(
             mapStyle = mapStyle,
             onStyleChange = onStyleChange,
         )
+
+        if (vm.showThemeSelector) {
+            var colorEditorStyle by remember { mutableStateOf<MapStyle?>(null) }
+            ThemeSelectorPanel(
+                vm = vm,
+                currentStyle = mapStyle,
+                onStyleChange = onStyleChange,
+                onEditColors = { style -> colorEditorStyle = style },
+                modifier = androidx.compose.ui.Modifier.align(Alignment.TopCenter),
+            )
+            colorEditorStyle?.let { style ->
+                ColorEditorSheet(
+                    style = style,
+                    vm = vm,
+                    currentStyle = mapStyle,
+                    onStyleChange = onStyleChange,
+                    onDismiss = { colorEditorStyle = null },
+                )
+            }
+        }
 
         LaunchedEffect(Unit) {
             vm.evaluateWhatsNewChangelog()

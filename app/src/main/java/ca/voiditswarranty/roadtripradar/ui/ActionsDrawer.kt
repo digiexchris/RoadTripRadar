@@ -282,6 +282,10 @@ fun ActionsDrawer(
                                     .verticalScroll(mapScroll),
                             ) {
                                 DrawerTopActionsGrid(actions = mapTopActions)
+                                ThemeChooserRow(
+                                    mapStyle = mapStyle,
+                                    vm = vm,
+                                )
                                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                                 MapDrawerSettingsContent(
                                     vm = vm,
