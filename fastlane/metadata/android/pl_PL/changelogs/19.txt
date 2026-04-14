@@ -1,0 +1,1 @@
+* Rearrange layout * Remove extra buttons from UI, move to a separate  overlay for common actions * Add quick help on start * Reduce clutter and actions on the map view * Align horizontal mode with portrait mode * Add quick actions drawer on tap for common actions instead of map buttons
