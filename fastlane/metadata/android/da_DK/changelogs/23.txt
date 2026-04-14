@@ -1,0 +1,3 @@
+I app changelog: se Hvad er nyt efter opdateringer og fuld historik fra Hjælp & Info.
+Du kan nu se interessepunkter i nærheden af din placering! Tjek det ud i menu->Steder.
+Vi har gjort en stor menu refactor for at gøre tingene lettere at finde, og lettere at håndtere med handsker på.
