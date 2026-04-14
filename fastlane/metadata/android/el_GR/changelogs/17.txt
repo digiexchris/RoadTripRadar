@@ -1,1 +1,1 @@
-Horizontal Layout, radar legend, and general UI improvements
+Οριζόντια διάταξη, θρύλος ραντάρ και γενικές βελτιώσεις UI
