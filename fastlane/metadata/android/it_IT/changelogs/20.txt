@@ -1,1 +1,1 @@
-Add small weather widget for wind speed, direction, and ambient temp
+Aggiungi piccolo widget meteo per velocità, direzione e temperatura del vento
