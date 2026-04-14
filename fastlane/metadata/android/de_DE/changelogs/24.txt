@@ -1,0 +1,1 @@
+Wenn Sie irgendwelche Kategorien in Orten in der Nähe ausgewählt haben, werden diese automatisch angezeigt, wenn die App gestartet wird. Wenn Sie dieses Verhalten deaktivieren möchten, gibt es einen Schalter im Menü Orte in der Nähe, um es auszuschalten.
