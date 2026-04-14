@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "versionName": "1.11.0",
+      "versionCode": 26,
+      "items": [
+        "There is a new map theme chooser! Check it out in the menu -> Map -> Choose Theme. Also, the default dark map has been tweaked to show small roads and paths better. If you liked the old one better, it's still available.",
+        "There is now a play/pause/off button for the weather radar on the main screen."
+      ]
+    },
+    {
       "versionName": "1.10.1",
       "versionCode": 25,
       "items": [
