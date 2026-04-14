@@ -1,1 +1,1 @@
-Several UI fixes GPS and Network status icons
+Kilka ikon UI naprawia GPS i stan sieci
