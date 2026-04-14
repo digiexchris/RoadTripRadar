@@ -1,0 +1,1 @@
+* Omarranger layout * Fjern ekstra knapper fra UI, flyt til en separat overlejring for almindelige handlinger * Tilføj hurtig hjælp ved start * Reducer rod og handlinger i kortvisningen * Juster vandret tilstand med portrættilstand * Tilføj hurtig handling skuffe ved tryk for almindelige handlinger i stedet for kortknapper
