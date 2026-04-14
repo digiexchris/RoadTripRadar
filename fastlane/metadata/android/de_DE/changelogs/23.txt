@@ -1,0 +1,3 @@
+In-App-Changelog: Sehen Sie was nach Updates neu ist und den vollständigen Verlauf von Hilfe & Info.
+Sie können jetzt interessante Orte in der Nähe Ihres Standortes sehen! Sehen Sie es im Menü->Orte aus.
+Wir haben einen großen Menü-Refaktor, um Dinge leichter zu finden und einfacher mit Handschuhen zu verwalten.
