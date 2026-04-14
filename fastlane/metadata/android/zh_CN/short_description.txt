@@ -1,1 +1,1 @@
-A map app prioritizing situational awareness and weather.
+一个地图应用，确定情景意识和天气的优先次序。
