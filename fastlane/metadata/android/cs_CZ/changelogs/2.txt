@@ -1,0 +1,5 @@
+- Vylepšené načítání dlaždic meteorologickým radarem (před načtením všech snímků)
+- Tlačítko kompasu nyní přepíná mezi severním a předchozím záhlavím
+- Výchozí styl mapy byl změněn na tmavé barvy pro nové instalace
+- Přidána Fastlane metadata pro F-Droid
+- Odstraněný plugin foojay-resolver pro kompatibilitu s F-Droid
