@@ -1,1 +1,1 @@
-A map app prioritizing situational awareness and weather.
+Μια εφαρμογή χάρτη που δίνει προτεραιότητα στην επίγνωση της κατάστασης και τον καιρό.
