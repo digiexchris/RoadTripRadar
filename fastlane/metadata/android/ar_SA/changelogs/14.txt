@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+إصلاح زر المرور لا يقفل الخريطة إلى النصف الأعلى عندما يتحرك المستخدم
