@@ -1,1 +1,1 @@
-Fix the wind direction arrow not rotating with the map.
+Исправлена стрелка направления ветра, которая не вращалась картой.
