@@ -50,7 +50,7 @@ enum class MapStyle {
     }
 }
 
-enum class WeatherMode { OFF, ON }
+enum class WeatherMode { OFF, ON, PLAYING }
 
 enum class WindSpeedUnit { KMH, MPH, KNOTS }
 
@@ -121,8 +121,7 @@ object PrefsDefaults {
     const val MAP_CENTER_OFFSET_LANDSCAPE_FRACTION = 0.30f
     const val RADAR_OPACITY = 0.6f
     const val USE_METRIC = true
-    const val WEATHER_PLAYING = true
-    const val WEATHER_MODE = "ON"
+    const val WEATHER_MODE = "PLAYING"
     const val SHOW_LEGEND = true
     const val SHOW_TIMELINE = true
     const val SPEED_SIZE = 64f
@@ -139,7 +138,7 @@ object PrefsDefaults {
     const val WIND_ENABLED = true
     val WIND_SPEED_UNIT = WindSpeedUnit.KMH.name
     val TEMPERATURE_UNIT = TemperatureUnit.CELSIUS.name
-    const val PREFS_VERSION = 9
+    const val PREFS_VERSION = 10
     const val CUSTOM_LIGHT_AUTO_ENABLED = false
     const val CUSTOM_DARK_AUTO_ENABLED = false
     const val TERMS_VERSION = 1

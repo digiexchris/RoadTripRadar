@@ -7,14 +7,23 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PublicOff
 import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.SignalCellular4Bar
@@ -36,6 +45,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import ca.voiditswarranty.roadtripradar.model.NetworkStatus
 import ca.voiditswarranty.roadtripradar.model.NetworkTransport
 
@@ -228,45 +238,128 @@ fun NetworkStatusIcon(
 fun BottomContent(
     onZoomIn: () -> Unit,
     onZoomOut: () -> Unit,
-    navContent: @Composable () -> Unit,
+    isWeatherPlaying: Boolean,
+    weatherActive: Boolean,
+    onCycleWeather: () -> Unit,
+    onOpenMenu: () -> Unit,
+    aboveContent: @Composable () -> Unit,
+    isLandscape: Boolean = false,
     scale: Float = 1f,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        LargeFloatingActionButton(
-            onClick = onZoomOut,
-            modifier = fabBorderModifier.graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            },
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        aboveContent()
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Icon(
-                imageVector = Icons.Default.Remove,
-                contentDescription = "Zoom out",
-            )
+            val buttonCount = 4
+            val minGap = 8.dp
+            val preferredSize = 96.dp
+            val totalGapSpace = minGap * (buttonCount + 1)
+            val availableForButtons = maxWidth - totalGapSpace
+            val buttonSize = min(preferredSize, availableForButtons / buttonCount)
+            val iconSize = 48.dp * (buttonSize / preferredSize)
+            Row(
+                modifier = Modifier.fillMaxWidth().let {
+                    if (isLandscape) it.padding(horizontal = minGap) else it
+                },
+                horizontalArrangement = if (isLandscape) Arrangement.spacedBy(minGap) else Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+            val weatherIcon = when {
+                !weatherActive -> Icons.Default.Block
+                isWeatherPlaying -> Icons.Default.Pause
+                else -> Icons.Default.PlayArrow
+            }
+            val weatherDescription = when {
+                !weatherActive -> "Weather Radar Off"
+                isWeatherPlaying -> "Pause Radar"
+                else -> "Play Radar"
+            }
+            val weatherColor = when {
+                !weatherActive -> MaterialTheme.colorScheme.surfaceVariant
+                isWeatherPlaying -> MaterialTheme.colorScheme.primaryContainer
+                else -> MaterialTheme.colorScheme.primaryContainer
+            }
+            LargeFloatingActionButton(
+                onClick = onCycleWeather,
+                modifier = fabBorderModifier
+                    .size(buttonSize)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                shape = CircleShape,
+                containerColor = weatherColor,
+            ) {
+                Icon(
+                    imageVector = weatherIcon,
+                    contentDescription = weatherDescription,
+                    modifier = Modifier.size(iconSize),
+                )
+            }
+
+            LargeFloatingActionButton(
+                onClick = onZoomOut,
+                modifier = fabBorderModifier
+                    .size(buttonSize)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Remove,
+                    contentDescription = "Zoom out",
+                    modifier = Modifier.size(iconSize),
+                )
+            }
+
+            if (isLandscape) {
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            LargeFloatingActionButton(
+                onClick = onZoomIn,
+                modifier = fabBorderModifier
+                    .size(buttonSize)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Zoom in",
+                    modifier = Modifier.size(iconSize),
+                )
+            }
+
+            LargeFloatingActionButton(
+                onClick = onOpenMenu,
+                modifier = fabBorderModifier
+                    .size(buttonSize)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Quick Actions",
+                    modifier = Modifier.size(iconSize),
+                )
+            }
         }
-
-        navContent()
-
-        LargeFloatingActionButton(
-            onClick = onZoomIn,
-            modifier = fabBorderModifier.graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            },
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Zoom in",
-            )
         }
     }
 }

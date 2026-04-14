@@ -66,8 +66,6 @@ class MapViewModel(
     // Weather
     var weatherMode by mutableStateOf(prefsRepo.weatherMode)
         private set
-    var isWeatherPlaying by mutableStateOf(prefsRepo.isWeatherPlaying)
-        private set
     var showLegend by mutableStateOf(prefsRepo.showLegend)
         private set
     var showTimeline by mutableStateOf(prefsRepo.showTimeline)
@@ -290,7 +288,8 @@ class MapViewModel(
     var isSearching by mutableStateOf(false)
         private set
 
-    val weatherActive get() = weatherMode == WeatherMode.ON
+    val weatherActive get() = weatherMode != WeatherMode.OFF
+    val isWeatherPlaying get() = weatherMode == WeatherMode.PLAYING
 
     private var lastGenerated = 0L
     private var localWeatherAnchor: Position? = null
@@ -325,19 +324,20 @@ class MapViewModel(
     fun updateWeatherMode(mode: WeatherMode) {
         weatherMode = mode
         prefsRepo.weatherMode = mode
-        if (mode == WeatherMode.ON) {
+        if (mode != WeatherMode.PLAYING) {
             currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
         }
         startWeatherPollingIfActive()
+        startWeatherAnimationIfPlaying()
     }
 
-    fun toggleWeatherPlaying() {
-        isWeatherPlaying = !isWeatherPlaying
-        prefsRepo.isWeatherPlaying = isWeatherPlaying
-        if (!isWeatherPlaying) {
-            currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
+    fun cycleWeatherMode() {
+        val next = when (weatherMode) {
+            WeatherMode.OFF -> WeatherMode.PLAYING
+            WeatherMode.PLAYING -> WeatherMode.ON
+            WeatherMode.ON -> WeatherMode.OFF
         }
-        startWeatherAnimationIfPlaying()
+        updateWeatherMode(next)
     }
 
     fun updateShowLegend(show: Boolean) {
@@ -398,7 +398,7 @@ class MapViewModel(
 
     private fun startWeatherAnimationIfPlaying() {
         weatherAnimationJob?.cancel()
-        if (!weatherActive || !isWeatherPlaying) return
+        if (weatherMode != WeatherMode.PLAYING) return
         weatherAnimationJob = viewModelScope.launch {
             while (true) {
                 delay(500)
@@ -1104,7 +1104,6 @@ class MapViewModel(
     fun resetToDefaults(systemDefault: MapStyle, onStyleChange: (MapStyle) -> Unit) {
         onStyleChange(systemDefault)
         weatherMode = WeatherMode.valueOf(PrefsDefaults.WEATHER_MODE)
-        isWeatherPlaying = PrefsDefaults.WEATHER_PLAYING
         showLegend = PrefsDefaults.SHOW_LEGEND
         showTimeline = PrefsDefaults.SHOW_TIMELINE
         radarOpacity = PrefsDefaults.RADAR_OPACITY
