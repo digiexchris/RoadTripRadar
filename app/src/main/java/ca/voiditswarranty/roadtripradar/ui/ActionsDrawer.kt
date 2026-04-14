@@ -30,12 +30,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.PowerSettingsNew
-import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Place
@@ -80,7 +77,6 @@ import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.BuildConfig
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.model.MapStyle
-import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private data class DrawerAction(
@@ -90,7 +86,7 @@ private data class DrawerAction(
     val onClick: () -> Unit,
 )
 
-private enum class ActionsDrawerPage { Main, Map, Places, Weather, System, Help }
+private enum class ActionsDrawerPage { Main, Map, Weather, System, Help }
 
 @Composable
 fun ActionsDrawer(
@@ -160,33 +156,10 @@ fun ActionsDrawer(
                         onClick = { showQuitConfirm = true },
                     ),
                     DrawerAction(
-                        label = "Map",
-                        icon = Icons.Default.Map,
-                        onClick = { drawerPage = ActionsDrawerPage.Map },
+                        label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                        icon = Icons.Default.Navigation,
+                        onClick = { vm.isNorthUp = !vm.isNorthUp },
                     ),
-                    DrawerAction(
-                        label = "Places",
-                        icon = Icons.Default.Explore,
-                        onClick = { drawerPage = ActionsDrawerPage.Places },
-                    ),
-                    DrawerAction(
-                        label = "Weather",
-                        icon = Icons.Default.Cloud,
-                        onClick = { drawerPage = ActionsDrawerPage.Weather },
-                    ),
-                    DrawerAction(
-                        label = "System",
-                        icon = Icons.Default.Settings,
-                        onClick = { drawerPage = ActionsDrawerPage.System },
-                    ),
-                    DrawerAction(
-                        label = "Help",
-                        icon = Icons.AutoMirrored.Filled.Help,
-                        onClick = { drawerPage = ActionsDrawerPage.Help },
-                    ),
-                )
-                ActionsDrawerPage.Places -> listOf(
-                    closeToMap,
                     DrawerAction(
                         label = "Nearby Places",
                         icon = Icons.Default.Place,
@@ -221,6 +194,26 @@ fun ActionsDrawer(
                             vm.closeActionsDrawer()
                         },
                     ),
+                    DrawerAction(
+                        label = "Map",
+                        icon = Icons.Default.Map,
+                        onClick = { drawerPage = ActionsDrawerPage.Map },
+                    ),
+                    DrawerAction(
+                        label = "Weather",
+                        icon = Icons.Default.Cloud,
+                        onClick = { drawerPage = ActionsDrawerPage.Weather },
+                    ),
+                    DrawerAction(
+                        label = "System",
+                        icon = Icons.Default.Settings,
+                        onClick = { drawerPage = ActionsDrawerPage.System },
+                    ),
+                    DrawerAction(
+                        label = "Help",
+                        icon = Icons.AutoMirrored.Filled.Help,
+                        onClick = { drawerPage = ActionsDrawerPage.Help },
+                    ),
                 )
                 ActionsDrawerPage.Map -> emptyList()
                 ActionsDrawerPage.System -> emptyList()
@@ -253,7 +246,6 @@ fun ActionsDrawer(
                         Text(
                             text = when (drawerPage) {
                                 ActionsDrawerPage.Map -> "Map"
-                                ActionsDrawerPage.Places -> "Places"
                                 ActionsDrawerPage.Weather -> "Weather"
                                 ActionsDrawerPage.System -> "System"
                                 ActionsDrawerPage.Help -> "Help & Info"
@@ -269,11 +261,6 @@ fun ActionsDrawer(
                             val mapScroll = rememberScrollState()
                             val mapTopActions = listOf(
                                 closeToMap,
-                                DrawerAction(
-                                    label = if (vm.isNorthUp) "Track Bearing" else "Track North",
-                                    icon = Icons.Default.Navigation,
-                                    onClick = { vm.isNorthUp = !vm.isNorthUp },
-                                ),
                             )
                             Column(
                                 modifier = Modifier
@@ -302,24 +289,9 @@ fun ActionsDrawer(
                             val weatherTopActions = listOf(
                                 closeToMap,
                                 DrawerAction(
-                                    label = if (vm.isWeatherPlaying) "Pause Radar" else "Play Radar",
-                                    icon = if (vm.isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                    enabled = vm.weatherActive,
-                                    onClick = { vm.toggleWeatherPlaying() },
-                                ),
-                                DrawerAction(
                                     label = if (vm.windEnabled) "Wind & Temp Off" else "Wind & Temp On",
                                     icon = Icons.Default.Air,
                                     onClick = { vm.updateWindEnabled(!vm.windEnabled) },
-                                ),
-                                DrawerAction(
-                                    label = if (vm.weatherActive) "Weather Radar Off" else "Weather Radar On",
-                                    icon = Icons.Default.SatelliteAlt,
-                                    onClick = {
-                                        vm.updateWeatherMode(
-                                            if (vm.weatherActive) WeatherMode.OFF else WeatherMode.ON,
-                                        )
-                                    },
                                 ),
                                 DrawerAction(
                                     label = if (vm.showLegend) "Hide Legend" else "Show Legend",

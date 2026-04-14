@@ -7,11 +7,13 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,6 +45,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import ca.voiditswarranty.roadtripradar.model.NetworkStatus
 import ca.voiditswarranty.roadtripradar.model.NetworkTransport
 
@@ -249,11 +252,23 @@ fun BottomContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         aboveContent()
-        Row(
+        BoxWithConstraints(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = if (isLandscape) Arrangement.Start else Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
         ) {
+            val buttonCount = 4
+            val minGap = 8.dp
+            val preferredSize = 96.dp
+            val totalGapSpace = minGap * (buttonCount + 1)
+            val availableForButtons = maxWidth - totalGapSpace
+            val buttonSize = min(preferredSize, availableForButtons / buttonCount)
+            val iconSize = 48.dp * (buttonSize / preferredSize)
+            Row(
+                modifier = Modifier.fillMaxWidth().let {
+                    if (isLandscape) it.padding(horizontal = minGap) else it
+                },
+                horizontalArrangement = if (isLandscape) Arrangement.spacedBy(minGap) else Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
             val weatherIcon = when {
                 !weatherActive -> Icons.Default.Block
                 isWeatherPlaying -> Icons.Default.Pause
@@ -272,36 +287,36 @@ fun BottomContent(
             LargeFloatingActionButton(
                 onClick = onCycleWeather,
                 modifier = fabBorderModifier
-                    .size(80.dp)
+                    .size(buttonSize)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                     },
-                shape = RoundedCornerShape(12.dp),
+                shape = CircleShape,
                 containerColor = weatherColor,
             ) {
                 Icon(
                     imageVector = weatherIcon,
                     contentDescription = weatherDescription,
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(iconSize),
                 )
             }
 
             LargeFloatingActionButton(
                 onClick = onZoomOut,
                 modifier = fabBorderModifier
-                    .size(80.dp)
+                    .size(buttonSize)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                     },
-                shape = RoundedCornerShape(12.dp),
+                shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Icon(
                     imageVector = Icons.Default.Remove,
                     contentDescription = "Zoom out",
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(iconSize),
                 )
             }
 
@@ -312,38 +327,39 @@ fun BottomContent(
             LargeFloatingActionButton(
                 onClick = onZoomIn,
                 modifier = fabBorderModifier
-                    .size(80.dp)
+                    .size(buttonSize)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                     },
-                shape = RoundedCornerShape(12.dp),
+                shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Zoom in",
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(iconSize),
                 )
             }
 
             LargeFloatingActionButton(
                 onClick = onOpenMenu,
                 modifier = fabBorderModifier
-                    .size(80.dp)
+                    .size(buttonSize)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                     },
-                shape = RoundedCornerShape(12.dp),
+                shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Quick Actions",
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(iconSize),
                 )
             }
+        }
         }
     }
 }

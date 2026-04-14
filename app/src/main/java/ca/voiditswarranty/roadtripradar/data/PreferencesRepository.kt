@@ -130,7 +130,22 @@ class PreferencesRepository(context: Context) {
         }
         if (prefs.getInt("prefs_version", 0) < 9) {
             // No data migration needed; just bump version.
-            prefs.edit().putInt("prefs_version", PrefsDefaults.PREFS_VERSION).apply()
+            prefs.edit().putInt("prefs_version", 9).apply()
+        }
+        if (prefs.getInt("prefs_version", 0) < 10) {
+            // Collapse weather_mode + weather_playing into a single tri-state weather_mode.
+            val wasOn = prefs.getString("weather_mode", "OFF") == "ON"
+            val wasPlaying = prefs.getBoolean("weather_playing", true)
+            val newMode = when {
+                !wasOn -> "OFF"
+                wasPlaying -> "PLAYING"
+                else -> "ON"
+            }
+            prefs.edit()
+                .putString("weather_mode", newMode)
+                .remove("weather_playing")
+                .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                .apply()
         }
     }
 
@@ -197,10 +212,6 @@ class PreferencesRepository(context: Context) {
             }
         }
         set(value) = prefs.edit().putString("weather_mode", value.name).apply()
-
-    var isWeatherPlaying: Boolean
-        get() = prefs.getBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING)
-        set(value) = prefs.edit().putBoolean("weather_playing", value).apply()
 
     var showLegend: Boolean
         get() = prefs.getBoolean("show_legend", PrefsDefaults.SHOW_LEGEND)
@@ -338,7 +349,6 @@ class PreferencesRepository(context: Context) {
         prefs.edit()
             .putString("map_style", systemDefault.name)
             .putString("weather_mode", PrefsDefaults.WEATHER_MODE)
-            .putBoolean("weather_playing", PrefsDefaults.WEATHER_PLAYING)
             .putBoolean("show_legend", PrefsDefaults.SHOW_LEGEND)
             .putBoolean("show_timeline", PrefsDefaults.SHOW_TIMELINE)
             .putFloat("radar_opacity", PrefsDefaults.RADAR_OPACITY)

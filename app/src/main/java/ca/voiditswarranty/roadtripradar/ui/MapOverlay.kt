@@ -209,16 +209,7 @@ fun BoxScope.MapOverlay(
         },
         isWeatherPlaying = vm.isWeatherPlaying,
         weatherActive = vm.weatherActive,
-        onCycleWeather = {
-            when {
-                !vm.weatherActive -> {
-                    vm.updateWeatherMode(ca.voiditswarranty.roadtripradar.model.WeatherMode.ON)
-                    if (!vm.isWeatherPlaying) vm.toggleWeatherPlaying()
-                }
-                vm.isWeatherPlaying -> vm.toggleWeatherPlaying()
-                else -> vm.updateWeatherMode(ca.voiditswarranty.roadtripradar.model.WeatherMode.OFF)
-            }
-        },
+        onCycleWeather = { vm.cycleWeatherMode() },
         onOpenMenu = { vm.openActionsDrawer() },
         aboveContent = {
             RecenterTextButton(
@@ -234,6 +225,6 @@ fun BoxScope.MapOverlay(
             .align(Alignment.BottomCenter)
             .fillMaxWidth()
             .navigationBarsPadding()
-            .padding(config.edgePadding),
+            .padding(vertical = config.edgePadding),
     )
 }
