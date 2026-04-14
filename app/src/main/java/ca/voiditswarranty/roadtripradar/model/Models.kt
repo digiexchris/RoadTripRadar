@@ -1,5 +1,7 @@
 package ca.voiditswarranty.roadtripradar.model
 
+import androidx.annotation.StringRes
+import ca.voiditswarranty.roadtripradar.R
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -34,6 +36,16 @@ enum class MapStyle {
         CUSTOM_LIGHT -> "Custom Light"
         CUSTOM_DARK -> "Custom Dark"
         AUTO -> "Auto"
+    }
+
+    @get:StringRes
+    val displayNameRes get() = when (this) {
+        LIBERTY -> R.string.style_liberty
+        DARK -> R.string.style_dark
+        COLOR_DARK -> R.string.style_dark_small_roads
+        CUSTOM_LIGHT -> R.string.style_custom_light
+        CUSTOM_DARK -> R.string.style_custom_dark
+        AUTO -> R.string.style_auto
     }
 
     val isCustom get() = this == CUSTOM_LIGHT || this == CUSTOM_DARK
@@ -71,38 +83,38 @@ data class SearchResult(
     val distance: Length? = null,
 )
 
-data class PoiCategory(val label: String, val query: String, val iconName: String)
+data class PoiCategory(val label: String, @param:StringRes val labelRes: Int, val query: String, val iconName: String)
 
 val POI_CATEGORIES = listOf(
-    PoiCategory("Gas Station", "fuel", "fuel"),
-    PoiCategory("EV Charging", "charging_station", "charging-station"),
-    PoiCategory("Restaurant", "restaurant", "restaurant"),
-    PoiCategory("Fast Food", "fast_food", "fast-food"),
-    PoiCategory("Cafe / Coffee", "cafe", "cafe"),
-    PoiCategory("Bar / Pub", "pub", "beer"),
-    PoiCategory("Supermarket", "supermarket", "grocery"),
-    PoiCategory("Convenience Store", "convenience", "convenience"),
-    PoiCategory("Pharmacy", "pharmacy", "pharmacy"),
-    PoiCategory("Hospital", "hospital", "hospital"),
-    PoiCategory("Hotel", "hotel", "lodging"),
-    PoiCategory("Motel", "motel", "lodging"),
-    PoiCategory("Campsite", "camp_site", "campsite"),
-    PoiCategory("Parking", "parking", "parking"),
-    PoiCategory("Rest Area", "rest_area", "highway-rest-area"),
-    PoiCategory("ATM", "atm", "bank"),
-    PoiCategory("Bank", "bank", "bank"),
-    PoiCategory("Post Office", "post_office", "post"),
-    PoiCategory("Car Repair", "car_repair", "car-repair"),
-    PoiCategory("Car Wash", "car_wash", "car"),
-    PoiCategory("Laundry", "laundry", "laundry"),
-    PoiCategory("Toilets", "toilets", "toilet"),
-    PoiCategory("Police", "police", "police"),
-    PoiCategory("Fire Station", "fire_station", "fire-station"),
-    PoiCategory("Library", "library", "library"),
-    PoiCategory("Park", "park", "park"),
-    PoiCategory("Viewpoint", "viewpoint", "viewpoint"),
-    PoiCategory("Museum", "museum", "museum"),
-    PoiCategory("Tourist Info", "information", "information"),
+    PoiCategory("Gas Station", R.string.poi_gas_station, "fuel", "fuel"),
+    PoiCategory("EV Charging", R.string.poi_ev_charging, "charging_station", "charging-station"),
+    PoiCategory("Restaurant", R.string.poi_restaurant, "restaurant", "restaurant"),
+    PoiCategory("Fast Food", R.string.poi_fast_food, "fast_food", "fast-food"),
+    PoiCategory("Cafe / Coffee", R.string.poi_cafe, "cafe", "cafe"),
+    PoiCategory("Bar / Pub", R.string.poi_bar, "pub", "beer"),
+    PoiCategory("Supermarket", R.string.poi_supermarket, "supermarket", "grocery"),
+    PoiCategory("Convenience Store", R.string.poi_convenience, "convenience", "convenience"),
+    PoiCategory("Pharmacy", R.string.poi_pharmacy, "pharmacy", "pharmacy"),
+    PoiCategory("Hospital", R.string.poi_hospital, "hospital", "hospital"),
+    PoiCategory("Hotel", R.string.poi_hotel, "hotel", "lodging"),
+    PoiCategory("Motel", R.string.poi_motel, "motel", "lodging"),
+    PoiCategory("Campsite", R.string.poi_campsite, "camp_site", "campsite"),
+    PoiCategory("Parking", R.string.poi_parking, "parking", "parking"),
+    PoiCategory("Rest Area", R.string.poi_rest_area, "rest_area", "highway-rest-area"),
+    PoiCategory("ATM", R.string.poi_atm, "atm", "bank"),
+    PoiCategory("Bank", R.string.poi_bank, "bank", "bank"),
+    PoiCategory("Post Office", R.string.poi_post_office, "post_office", "post"),
+    PoiCategory("Car Repair", R.string.poi_car_repair, "car_repair", "car-repair"),
+    PoiCategory("Car Wash", R.string.poi_car_wash, "car_wash", "car"),
+    PoiCategory("Laundry", R.string.poi_laundry, "laundry", "laundry"),
+    PoiCategory("Toilets", R.string.poi_toilets, "toilets", "toilet"),
+    PoiCategory("Police", R.string.poi_police, "police", "police"),
+    PoiCategory("Fire Station", R.string.poi_fire_station, "fire_station", "fire-station"),
+    PoiCategory("Library", R.string.poi_library, "library", "library"),
+    PoiCategory("Park", R.string.poi_park, "park", "park"),
+    PoiCategory("Viewpoint", R.string.poi_viewpoint, "viewpoint", "viewpoint"),
+    PoiCategory("Museum", R.string.poi_museum, "museum", "museum"),
+    PoiCategory("Tourist Info", R.string.poi_tourist_info, "information", "information"),
 )
 
 const val MAX_POI_CATEGORIES = 5

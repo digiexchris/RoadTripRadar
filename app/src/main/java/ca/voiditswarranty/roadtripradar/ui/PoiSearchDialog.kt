@@ -18,8 +18,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
@@ -29,25 +31,25 @@ fun PoiSearchDialog(vm: MapViewModel) {
 
     AlertDialog(
         onDismissRequest = { vm.closePoiSearch() },
-        title = { Text("Search Location") },
+        title = { Text(stringResource(R.string.search_location_title)) },
         text = {
             Column {
                 Text(
-                    "Searching within the visible map area",
+                    stringResource(R.string.search_within_visible),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 OutlinedTextField(
                     value = vm.searchQuery,
                     onValueChange = { vm.updateSearchQuery(it) },
-                    label = { Text("Address or place name") },
+                    label = { Text(stringResource(R.string.search_address_placeholder)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 if (vm.isSearching) {
                     Text(
-                        "Searching...",
+                        stringResource(R.string.search_searching),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -97,7 +99,7 @@ fun PoiSearchDialog(vm: MapViewModel) {
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = { vm.closePoiSearch() }) {
-                Text("Cancel")
+                Text(stringResource(R.string.action_cancel))
             }
         },
     )

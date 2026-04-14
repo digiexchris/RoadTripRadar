@@ -19,32 +19,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 
 /**
  * Weather radar colour legend matching RainViewer colour scheme.
  * Displayed when the weather radar layer is active.
  */
 
-private data class LegendEntry(val color: Color, val label: String)
+private data class LegendEntry(val color: Color, val labelRes: Int)
 
 private val legendGroups = listOf(
     listOf(
-        LegendEntry(Color(0xFF2F7A2E), "Overcast"),
-        LegendEntry(Color(0xFF5BAA27), "Drizzle"),
-        LegendEntry(Color(0xFFF7F713), "Rain?"),
-        LegendEntry(Color(0xFFF9A414), "Rain."),
-        LegendEntry(Color(0xFFF73514), "Rain!!"),
+        LegendEntry(Color(0xFF2F7A2E), R.string.legend_overcast),
+        LegendEntry(Color(0xFF5BAA27), R.string.legend_drizzle),
+        LegendEntry(Color(0xFFF7F713), R.string.legend_rain_light),
+        LegendEntry(Color(0xFFF9A414), R.string.legend_rain_moderate),
+        LegendEntry(Color(0xFFF73514), R.string.legend_rain_heavy),
     ),
     listOf(
-        LegendEntry(Color(0xFFDD1E42), "Hail?"),
-        LegendEntry(Color(0xFFC01C6F), "Hail."),
-        LegendEntry(Color(0xFFD41E99), "Hail!!"),
+        LegendEntry(Color(0xFFDD1E42), R.string.legend_hail_light),
+        LegendEntry(Color(0xFFC01C6F), R.string.legend_hail_moderate),
+        LegendEntry(Color(0xFFD41E99), R.string.legend_hail_heavy),
     ),
     listOf(
-        LegendEntry(Color(0xFF91CDFD), "Snow?"),
-        LegendEntry(Color(0xFF508CFB), "Snow."),
-        LegendEntry(Color(0xFF195CFC), "Snow!!"),
+        LegendEntry(Color(0xFF91CDFD), R.string.legend_snow_light),
+        LegendEntry(Color(0xFF508CFB), R.string.legend_snow_moderate),
+        LegendEntry(Color(0xFF195CFC), R.string.legend_snow_heavy),
     ),
 )
 
@@ -71,7 +73,7 @@ private fun LegendCell(entry: LegendEntry, blockShape: Shape = RoundedCornerShap
                 .background(entry.color),
         )
         Text(
-            text = entry.label,
+            text = stringResource(entry.labelRes),
             fontSize = OverlayTypography.timelineLegendLabelFontSize,
             lineHeight = OverlayTypography.timelineLegendLabelLineHeight,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),

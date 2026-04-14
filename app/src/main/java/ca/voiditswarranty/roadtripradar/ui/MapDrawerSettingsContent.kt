@@ -20,7 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
@@ -38,14 +40,14 @@ fun ThemeChooserRow(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            "Theme: ${mapStyle.displayName}",
+            stringResource(R.string.theme_current, stringResource(mapStyle.displayNameRes)),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Button(onClick = { vm.openThemeSelector() }) {
             Icon(Icons.Default.Palette, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text("Choose Theme")
+            Text(stringResource(R.string.action_choose_theme))
         }
     }
 }
@@ -62,7 +64,7 @@ fun MapDrawerSettingsContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Speed/Distance Units", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.settings_speed_distance_units), style = MaterialTheme.typography.titleSmall)
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                 SegmentedButton(
                     selected = vm.useMetric,
@@ -70,7 +72,7 @@ fun MapDrawerSettingsContent(
                     shape = SegmentedButtonDefaults.itemShape(0, 2),
                     modifier = Modifier.height(DrawerControlSizing.segmentedButtonHeight),
                 ) {
-                    Text("Metric", style = selectionLabelTextStyle())
+                    Text(stringResource(R.string.settings_metric), style = selectionLabelTextStyle())
                 }
                 SegmentedButton(
                     selected = !vm.useMetric,
@@ -78,7 +80,7 @@ fun MapDrawerSettingsContent(
                     shape = SegmentedButtonDefaults.itemShape(1, 2),
                     modifier = Modifier.height(DrawerControlSizing.segmentedButtonHeight),
                 ) {
-                    Text("Imperial", style = selectionLabelTextStyle())
+                    Text(stringResource(R.string.settings_imperial), style = selectionLabelTextStyle())
                 }
             }
         }
@@ -88,7 +90,7 @@ fun MapDrawerSettingsContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text("Map Center Offset (Portrait)", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.settings_map_center_offset_portrait), style = MaterialTheme.typography.titleSmall)
                 Text(
                     "${(vm.mapCenterOffsetPortraitFraction * 100).toInt()}%",
                     style = MaterialTheme.typography.bodyMedium,
@@ -107,7 +109,7 @@ fun MapDrawerSettingsContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text("Map Center Offset (Landscape)", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.settings_map_center_offset_landscape), style = MaterialTheme.typography.titleSmall)
                 Text(
                     "${(vm.mapCenterOffsetLandscapeFraction * 100).toInt()}%",
                     style = MaterialTheme.typography.bodyMedium,
@@ -126,7 +128,7 @@ fun MapDrawerSettingsContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text("Places Icon Opacity", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.settings_places_icon_opacity), style = MaterialTheme.typography.titleSmall)
                 Text(
                     "${(vm.poiIconOpacity * 100).toInt()}%",
                     style = MaterialTheme.typography.bodyMedium,

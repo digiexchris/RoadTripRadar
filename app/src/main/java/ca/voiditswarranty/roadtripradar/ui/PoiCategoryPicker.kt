@@ -35,8 +35,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.MAX_POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.PoiCategory
@@ -89,11 +91,11 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                     ) {
                         Column(modifier = Modifier.weight(1f, fill = false)) {
                             Text(
-                                "Autoload Nearby Places",
+                                stringResource(R.string.poi_autoload_title),
                                 style = MaterialTheme.typography.titleSmall,
                             )
                             Text(
-                                "Start loading nearby places when the app starts",
+                                stringResource(R.string.poi_autoload_description),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -137,7 +139,7 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "$enabledCount of $MAX_POI_CATEGORIES",
+                                text = stringResource(R.string.poi_count, enabledCount, MAX_POI_CATEGORIES),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = if (atLimit)
                                     MaterialTheme.colorScheme.error
@@ -160,7 +162,7 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                                         .weight(1f)
                                         .fillMaxWidth(),
                                 ) {
-                                    Text("Cancel", style = MaterialTheme.typography.titleMedium)
+                                    Text(stringResource(R.string.action_cancel), style = MaterialTheme.typography.titleMedium)
                                 }
                                 LargeFloatingActionButton(
                                     onClick = {
@@ -180,7 +182,7 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                                         .weight(1f)
                                         .fillMaxWidth(),
                                 ) {
-                                    Text("Search Visible Area", style = MaterialTheme.typography.titleMedium)
+                                    Text(stringResource(R.string.action_search_visible_area), style = MaterialTheme.typography.titleMedium)
                                 }
                             }
                         }
@@ -232,7 +234,7 @@ private fun CategoryToggleButton(
                 Icon(imageVector = Icons.Default.Check, contentDescription = null)
             }
             Text(
-                text = category.label,
+                text = stringResource(category.labelRes),
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )

@@ -52,8 +52,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
@@ -163,11 +165,11 @@ fun ThemeSelectorPanel(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text("Map Theme", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.theme_map_theme), style = MaterialTheme.typography.titleMedium)
                 FilledTonalButton(onClick = { vm.closeThemeSelector() }) {
                     Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text("Close")
+                    Text(stringResource(R.string.action_close))
                 }
             }
 
@@ -279,11 +281,11 @@ fun ThemeSelectorPanel(
     if (importError != null) {
         AlertDialog(
             onDismissRequest = { vm.dismissCustomThemeImportError() },
-            title = { Text("Invalid Theme File") },
+            title = { Text(stringResource(R.string.theme_invalid_file)) },
             text = { Text(importError) },
             confirmButton = {
                 TextButton(onClick = { vm.dismissCustomThemeImportError() }) {
-                    Text("OK")
+                    Text(stringResource(R.string.action_ok))
                 }
             },
         )
@@ -326,7 +328,7 @@ private fun AutoThemeCard(
             )
         }
         Text(
-            "Auto",
+            stringResource(R.string.theme_auto),
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center,
         )
@@ -383,7 +385,7 @@ private fun BuiltInThemeCard(
             }
         }
         Text(
-            style.displayName,
+            stringResource(style.displayNameRes),
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center,
             maxLines = 2,
@@ -470,7 +472,7 @@ private fun BuiltInThemeActions(
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(4.dp))
-                Text("Customize in Maputnik")
+                Text(stringResource(R.string.theme_customize_maputnik))
             }
         }
         Spacer(Modifier.weight(1f))
@@ -478,13 +480,13 @@ private fun BuiltInThemeActions(
             TextButton(onClick = {
                 vm.initCustomThemeFromUrl(style.styleUri, customTarget, onStyleChange)
             }) {
-                Text(if (customExists) "Overwrite Custom Light" else "Use as Custom Light Base")
+                Text(if (customExists) stringResource(R.string.theme_overwrite_custom_light) else stringResource(R.string.theme_use_as_custom_light_base))
             }
         } else {
             TextButton(onClick = {
                 vm.initCustomThemeFromAsset(style, customTarget, onStyleChange)
             }) {
-                Text(if (customExists) "Overwrite Custom Dark" else "Use as Custom Dark Base")
+                Text(if (customExists) stringResource(R.string.theme_overwrite_custom_dark) else stringResource(R.string.theme_use_as_custom_dark_base))
             }
         }
     }
@@ -516,7 +518,7 @@ private fun CustomThemeActions(
             )
             Spacer(Modifier.width(8.dp))
             Text(
-                "Use in Auto mode",
+                stringResource(R.string.theme_use_in_auto_mode),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f),
             )
@@ -538,14 +540,14 @@ private fun CustomThemeActions(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             FilledTonalIconButton(onClick = { onEditColors(style) }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit Colors")
+                Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.cd_edit_colors))
             }
 
             FilledTonalIconButton(onClick = {
                 val name = vm.customThemeRepo.saveToDownloads(style)
-                savedToast = if (name != null) "Saved to Downloads/$name" else "Save failed"
+                savedToast = if (name != null) context.getString(R.string.theme_saved_to_downloads, name) else context.getString(R.string.theme_save_failed)
             }) {
-                Icon(Icons.Default.Save, contentDescription = "Save JSON to Downloads")
+                Icon(Icons.Default.Save, contentDescription = stringResource(R.string.cd_save_json_downloads))
             }
 
             FilledTonalIconButton(onClick = {
@@ -553,7 +555,7 @@ private fun CustomThemeActions(
                     Intent(Intent.ACTION_VIEW, Uri.parse("https://maplibre.org/maputnik/")),
                 )
             }) {
-                Icon(Icons.Default.OpenInBrowser, contentDescription = "Open Maputnik")
+                Icon(Icons.Default.OpenInBrowser, contentDescription = stringResource(R.string.cd_open_maputnik))
             }
 
             Spacer(Modifier.weight(1f))
@@ -563,7 +565,7 @@ private fun CustomThemeActions(
                 onClick = { exportUri?.let { onShare(it) } },
                 enabled = exportUri != null,
             ) {
-                Icon(Icons.Default.Share, contentDescription = "Share")
+                Icon(Icons.Default.Share, contentDescription = stringResource(R.string.action_share))
             }
 
             FilledTonalIconButton(onClick = {
@@ -571,7 +573,7 @@ private fun CustomThemeActions(
             }) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Delete custom theme",
+                    contentDescription = stringResource(R.string.cd_delete_custom_theme),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
@@ -582,12 +584,12 @@ private fun CustomThemeActions(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            ActionLabel("Edit", Modifier.width(48.dp))
-            ActionLabel("Save", Modifier.width(48.dp))
-            ActionLabel("Maputnik", Modifier.width(48.dp))
+            ActionLabel(stringResource(R.string.theme_action_edit), Modifier.width(48.dp))
+            ActionLabel(stringResource(R.string.theme_action_save), Modifier.width(48.dp))
+            ActionLabel(stringResource(R.string.theme_action_maputnik), Modifier.width(48.dp))
             Spacer(Modifier.weight(1f))
-            ActionLabel("Share", Modifier.width(48.dp))
-            ActionLabel("Delete", Modifier.width(48.dp))
+            ActionLabel(stringResource(R.string.theme_action_share), Modifier.width(48.dp))
+            ActionLabel(stringResource(R.string.theme_action_delete), Modifier.width(48.dp))
         }
     }
 

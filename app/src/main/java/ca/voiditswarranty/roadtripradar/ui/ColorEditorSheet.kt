@@ -43,9 +43,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.StyleJsonPatcher
 import ca.voiditswarranty.roadtripradar.data.THEME_COLOR_CATEGORIES
 import ca.voiditswarranty.roadtripradar.data.ThemeColorCategory
@@ -107,16 +109,15 @@ private fun CreateFromBuiltInDialog(
     onStyleChange: (MapStyle) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val slotLabel = if (targetSlot == MapStyle.CUSTOM_LIGHT) "Custom Light" else "Custom Dark"
-    val builtInSource = if (targetSlot == MapStyle.CUSTOM_DARK) "Dark (Small Roads)" else "Liberty"
+    val slotLabel = if (targetSlot == MapStyle.CUSTOM_LIGHT) stringResource(R.string.style_custom_light) else stringResource(R.string.style_custom_dark)
+    val builtInSource = if (targetSlot == MapStyle.CUSTOM_DARK) stringResource(R.string.style_dark_small_roads) else stringResource(R.string.style_liberty)
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Create $slotLabel Theme") },
+        title = { Text(stringResource(R.string.color_editor_create_title, slotLabel)) },
         text = {
             Text(
-                "No $slotLabel theme exists yet. Create one based on $builtInSource? " +
-                    "You can also import a JSON file from the theme selector.",
+                stringResource(R.string.color_editor_no_theme, slotLabel, builtInSource),
             )
         },
         confirmButton = {
@@ -128,11 +129,11 @@ private fun CreateFromBuiltInDialog(
                 }
                 onDismiss()
             }) {
-                Text("Create from $builtInSource")
+                Text(stringResource(R.string.color_editor_create_from, builtInSource))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
         },
     )
 }
@@ -166,7 +167,7 @@ private fun ColorEditorContent(
             .padding(bottom = 24.dp),
     ) {
         Text(
-            "Edit Colors: ${style.displayName}",
+            stringResource(R.string.color_editor_edit_colors, stringResource(style.displayNameRes)),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(bottom = 8.dp),
         )
@@ -208,26 +209,26 @@ private fun ColorEditorContent(
                     cat.id to (StyleJsonPatcher.extractColor(originalJson, cat) ?: Color.Gray)
                 }
             }) {
-                Text("Reset")
+                Text(stringResource(R.string.action_reset))
             }
 
             Spacer(Modifier.weight(1f))
 
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.action_cancel))
             }
 
             TextButton(onClick = {
                 applyAndPreview(vm, style, originalJson, editedColors.value, currentStyle, onStyleChange)
             }) {
-                Text("Preview")
+                Text(stringResource(R.string.color_editor_preview))
             }
 
             Button(onClick = {
                 applyAndPreview(vm, style, originalJson, editedColors.value, currentStyle, onStyleChange)
                 onDismiss()
             }) {
-                Text("Save")
+                Text(stringResource(R.string.action_save))
             }
         }
     }
@@ -275,7 +276,7 @@ private fun ColorCategoryRow(
             )
             Icon(
                 if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = if (expanded) "Collapse" else "Expand",
+                contentDescription = if (expanded) stringResource(R.string.cd_collapse) else stringResource(R.string.cd_expand),
             )
         }
 
@@ -357,7 +358,7 @@ private fun ColorPickerExpanded(
                         hexError = raw.isNotEmpty()
                     }
                 },
-                label = { Text("Hex") },
+                label = { Text(stringResource(R.string.color_editor_hex)) },
                 isError = hexError,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),

@@ -12,7 +12,9 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
@@ -32,7 +34,7 @@ fun WeatherDrawerSettingsContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    Text("Weather Radar Opacity", style = MaterialTheme.typography.titleSmall)
+                    Text(stringResource(R.string.settings_weather_radar_opacity), style = MaterialTheme.typography.titleSmall)
                     Text(
                         "${(vm.radarOpacity * 100).toInt()}%",
                         style = MaterialTheme.typography.bodyMedium,
@@ -49,7 +51,7 @@ fun WeatherDrawerSettingsContent(
 
         if (vm.windEnabled) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Wind Speed Units", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.settings_wind_speed_units), style = MaterialTheme.typography.titleSmall)
                 SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                     WindSpeedUnit.entries.forEachIndexed { index, unit ->
                         SegmentedButton(
@@ -63,9 +65,9 @@ fun WeatherDrawerSettingsContent(
                         ) {
                             Text(
                                 when (unit) {
-                                    WindSpeedUnit.KMH -> "km/h"
-                                    WindSpeedUnit.MPH -> "mph"
-                                    WindSpeedUnit.KNOTS -> "kn"
+                                    WindSpeedUnit.KMH -> stringResource(R.string.unit_kmh)
+                                    WindSpeedUnit.MPH -> stringResource(R.string.unit_mph)
+                                    WindSpeedUnit.KNOTS -> stringResource(R.string.unit_knots)
                                 },
                                 style = selectionLabelTextStyle(),
                             )
@@ -74,7 +76,7 @@ fun WeatherDrawerSettingsContent(
                 }
             }
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Temperature Units", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.settings_temperature_units), style = MaterialTheme.typography.titleSmall)
                 SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                     TemperatureUnit.entries.forEachIndexed { index, unit ->
                         SegmentedButton(
@@ -88,9 +90,9 @@ fun WeatherDrawerSettingsContent(
                         ) {
                             Text(
                                 when (unit) {
-                                    TemperatureUnit.CELSIUS -> "°C"
-                                    TemperatureUnit.FAHRENHEIT -> "°F"
-                                    TemperatureUnit.KELVIN -> "K"
+                                    TemperatureUnit.CELSIUS -> stringResource(R.string.unit_celsius)
+                                    TemperatureUnit.FAHRENHEIT -> stringResource(R.string.unit_fahrenheit)
+                                    TemperatureUnit.KELVIN -> stringResource(R.string.unit_kelvin)
                                 },
                                 style = selectionLabelTextStyle(),
                             )
@@ -102,7 +104,7 @@ fun WeatherDrawerSettingsContent(
 
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                "Weather widget size",
+                stringResource(R.string.settings_weather_widget_size),
                 style = MaterialTheme.typography.titleSmall,
             )
             GloveFriendlySlider(

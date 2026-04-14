@@ -44,8 +44,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.NetworkStatus
 import ca.voiditswarranty.roadtripradar.model.NetworkTransport
 
@@ -72,7 +74,7 @@ fun RecenterFab(
         ) {
             Icon(
                 imageVector = Icons.Default.MyLocation,
-                contentDescription = "Re-center on location",
+                contentDescription = stringResource(R.string.cd_recenter_location),
             )
         }
     }
@@ -99,7 +101,7 @@ fun RecenterTextButton(
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ),
         ) {
-            Text("Recenter")
+            Text(stringResource(R.string.fab_recenter))
         }
     }
 }
@@ -124,7 +126,7 @@ fun RetryFailedButton(
             contentColor = MaterialTheme.colorScheme.onErrorContainer,
         ),
     ) {
-        Text("Retry Failed")
+        Text(stringResource(R.string.fab_retry_failed))
     }
 }
 
@@ -177,7 +179,7 @@ fun GpsStatusIcon(
     val tint = if (hasGpsFix) Color.White else lerp(Color.White, Color.Red, blinkProgress)
     Icon(
         imageVector = Icons.Default.SatelliteAlt,
-        contentDescription = if (hasGpsFix) "GPS fix acquired" else "Waiting for GPS fix",
+        contentDescription = if (hasGpsFix) stringResource(R.string.cd_gps_fix_acquired) else stringResource(R.string.cd_waiting_gps_fix),
         tint = tint,
         modifier = modifier
             .size(32.dp)
@@ -208,7 +210,7 @@ fun NetworkStatusIcon(
 
     if (!status.connected) {
         icon = Icons.Default.PublicOff
-        description = "No network"
+        description = stringResource(R.string.cd_no_network)
         tint = lerp(Color.White, Color.Red, blinkProgress)
     } else {
         icon = when (status.transport) {
@@ -217,9 +219,9 @@ fun NetworkStatusIcon(
             else -> Icons.Default.PublicOff
         }
         description = when (status.transport) {
-            NetworkTransport.WIFI -> "WiFi"
-            NetworkTransport.CELLULAR -> "Cellular"
-            else -> "Unknown network"
+            NetworkTransport.WIFI -> stringResource(R.string.cd_wifi)
+            NetworkTransport.CELLULAR -> stringResource(R.string.cd_cellular)
+            else -> stringResource(R.string.cd_unknown_network)
         }
         tint = if (status.validated) Color.White else lerp(Color.White, Color.Red, blinkProgress)
     }
@@ -275,9 +277,9 @@ fun BottomContent(
                 else -> Icons.Default.PlayArrow
             }
             val weatherDescription = when {
-                !weatherActive -> "Weather Radar Off"
-                isWeatherPlaying -> "Pause Radar"
-                else -> "Play Radar"
+                !weatherActive -> stringResource(R.string.cd_weather_off)
+                isWeatherPlaying -> stringResource(R.string.cd_weather_pause)
+                else -> stringResource(R.string.cd_weather_play)
             }
             val weatherColor = when {
                 !weatherActive -> MaterialTheme.colorScheme.surfaceVariant

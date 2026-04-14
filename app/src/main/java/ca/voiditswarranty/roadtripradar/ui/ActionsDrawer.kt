@@ -74,8 +74,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.BuildConfig
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
@@ -143,7 +145,7 @@ fun ActionsDrawer(
             modifier = Modifier.align(Alignment.BottomCenter),
         ) {
             val closeToMap = DrawerAction(
-                label = "Close",
+                label = stringResource(R.string.action_close),
                 icon = Icons.Default.KeyboardArrowDown,
                 onClick = { vm.closeActionsDrawer() },
             )
@@ -152,12 +154,12 @@ fun ActionsDrawer(
                 ActionsDrawerPage.Main -> listOf(
                     closeToMap,
                     DrawerAction(
-                        label = "Quit",
+                        label = stringResource(R.string.action_quit),
                         icon = Icons.Default.PowerSettingsNew,
                         onClick = { showQuitConfirm = true },
                     ),
                     DrawerAction(
-                        label = "Nearby Places",
+                        label = stringResource(R.string.action_nearby_places),
                         icon = Icons.Default.Place,
                         onClick = {
                             vm.openPoiCategoryPicker()
@@ -165,7 +167,7 @@ fun ActionsDrawer(
                         },
                     ),
                     DrawerAction(
-                        label = "Clear Places",
+                        label = stringResource(R.string.action_clear_places),
                         icon = Icons.Default.Delete,
                         enabled = vm.poiLoadBounds != null,
                         onClick = {
@@ -174,7 +176,7 @@ fun ActionsDrawer(
                         },
                     ),
                     DrawerAction(
-                        label = "Location Search",
+                        label = stringResource(R.string.action_location_search),
                         icon = Icons.Default.Search,
                         onClick = {
                             vm.openPoiSearch()
@@ -182,7 +184,7 @@ fun ActionsDrawer(
                         },
                     ),
                     DrawerAction(
-                        label = "Clear Target",
+                        label = stringResource(R.string.action_clear_target),
                         icon = Icons.Default.Close,
                         enabled = vm.poiPosition != null,
                         onClick = {
@@ -197,27 +199,27 @@ fun ActionsDrawer(
             val subMenuActions = when (drawerPage) {
                 ActionsDrawerPage.Main -> listOf(
                     DrawerAction(
-                        label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                        label = if (vm.isNorthUp) stringResource(R.string.action_track_bearing) else stringResource(R.string.action_track_north),
                         icon = Icons.Default.Navigation,
                         onClick = { vm.isNorthUp = !vm.isNorthUp },
                     ),
                     DrawerAction(
-                        label = "Map",
+                        label = stringResource(R.string.menu_map),
                         icon = Icons.Default.Map,
                         onClick = { drawerPage = ActionsDrawerPage.Map },
                     ),
                     DrawerAction(
-                        label = "Weather",
+                        label = stringResource(R.string.menu_weather),
                         icon = Icons.Default.Cloud,
                         onClick = { drawerPage = ActionsDrawerPage.Weather },
                     ),
                     DrawerAction(
-                        label = "System",
+                        label = stringResource(R.string.menu_system),
                         icon = Icons.Default.Settings,
                         onClick = { drawerPage = ActionsDrawerPage.System },
                     ),
                     DrawerAction(
-                        label = "Help",
+                        label = stringResource(R.string.menu_help),
                         icon = Icons.AutoMirrored.Filled.Help,
                         onClick = { drawerPage = ActionsDrawerPage.Help },
                     ),
@@ -249,10 +251,10 @@ fun ActionsDrawer(
                     if (drawerPage != ActionsDrawerPage.Main) {
                         Text(
                             text = when (drawerPage) {
-                                ActionsDrawerPage.Map -> "Map"
-                                ActionsDrawerPage.Weather -> "Weather"
-                                ActionsDrawerPage.System -> "System"
-                                ActionsDrawerPage.Help -> "Help & Info"
+                                ActionsDrawerPage.Map -> stringResource(R.string.menu_map)
+                                ActionsDrawerPage.Weather -> stringResource(R.string.menu_weather)
+                                ActionsDrawerPage.System -> stringResource(R.string.menu_system)
+                                ActionsDrawerPage.Help -> stringResource(R.string.menu_help_info)
                                 ActionsDrawerPage.Main -> ""
                             },
                             style = MaterialTheme.typography.titleLarge,
@@ -293,18 +295,18 @@ fun ActionsDrawer(
                             val weatherTopActions = listOf(
                                 closeToMap,
                                 DrawerAction(
-                                    label = if (vm.windEnabled) "Wind & Temp Off" else "Wind & Temp On",
+                                    label = if (vm.windEnabled) stringResource(R.string.action_wind_temp_off) else stringResource(R.string.action_wind_temp_on),
                                     icon = Icons.Default.Air,
                                     onClick = { vm.updateWindEnabled(!vm.windEnabled) },
                                 ),
                                 DrawerAction(
-                                    label = if (vm.showLegend) "Hide Legend" else "Show Legend",
+                                    label = if (vm.showLegend) stringResource(R.string.action_hide_legend) else stringResource(R.string.action_show_legend),
                                     icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                     enabled = vm.weatherActive,
                                     onClick = { vm.updateShowLegend(!vm.showLegend) },
                                 ),
                                 DrawerAction(
-                                    label = if (vm.showTimeline) "Hide Timeline" else "Show Timeline",
+                                    label = if (vm.showTimeline) stringResource(R.string.action_hide_timeline) else stringResource(R.string.action_show_timeline),
                                     icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                     enabled = vm.weatherActive,
                                     onClick = { vm.updateShowTimeline(!vm.showTimeline) },
@@ -331,7 +333,7 @@ fun ActionsDrawer(
                             val settingsTopActions = listOf(
                                 closeToMap,
                                 DrawerAction(
-                                    label = "Reset",
+                                    label = stringResource(R.string.action_reset),
                                     icon = Icons.Default.Restore,
                                     onClick = { vm.openResetConfirm() },
                                 ),
@@ -360,17 +362,17 @@ fun ActionsDrawer(
                             val helpTopActions = listOf(closeToMap)
                             val helpLinkActions = listOf(
                                 DrawerAction(
-                                    label = "Terms & Conditions",
+                                    label = stringResource(R.string.help_terms),
                                     icon = Icons.Default.Gavel,
                                     onClick = { vm.viewTerms() },
                                 ),
                                 DrawerAction(
-                                    label = "Radar Legend",
+                                    label = stringResource(R.string.help_radar_legend),
                                     icon = Icons.Default.Layers,
                                     onClick = { vm.openLegendDetail() },
                                 ),
                                 DrawerAction(
-                                    label = "Documentation",
+                                    label = stringResource(R.string.help_documentation),
                                     icon = Icons.AutoMirrored.Filled.LibraryBooks,
                                     onClick = {
                                         context.startActivity(
@@ -379,7 +381,7 @@ fun ActionsDrawer(
                                     },
                                 ),
                                 DrawerAction(
-                                    label = "Privacy Policy",
+                                    label = stringResource(R.string.help_privacy_policy),
                                     icon = Icons.Default.Policy,
                                     onClick = {
                                         context.startActivity(
@@ -388,7 +390,7 @@ fun ActionsDrawer(
                                     },
                                 ),
                                 DrawerAction(
-                                    label = "Changelog",
+                                    label = stringResource(R.string.help_changelog),
                                     icon = Icons.Default.History,
                                     onClick = { vm.openFullChangelog() },
                                 ),
@@ -402,7 +404,7 @@ fun ActionsDrawer(
                                 DrawerTopActionsGrid(actions = helpTopActions)
                                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                                 Text(
-                                    text = "Full documentation and legal information are available from the buttons below.",
+                                    text = stringResource(R.string.help_documentation_info),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier
@@ -411,7 +413,7 @@ fun ActionsDrawer(
                                 )
                                 DrawerTopActionsGrid(actions = helpLinkActions)
                                 Text(
-                                    text = "Version ${BuildConfig.VERSION_NAME}",
+                                    text = stringResource(R.string.version_label, BuildConfig.VERSION_NAME),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier
@@ -425,7 +427,7 @@ fun ActionsDrawer(
                                             .fillMaxWidth()
                                             .padding(top = 4.dp),
                                     ) {
-                                        Text("Preview What's New (debug)")
+                                        Text(stringResource(R.string.debug_preview_whats_new))
                                     }
                                 }
                             }
@@ -490,19 +492,19 @@ fun ActionsDrawer(
     if (vm.showResetConfirm) {
         AlertDialog(
             onDismissRequest = { vm.closeResetConfirm() },
-            title = { Text("Reset to Defaults") },
-            text = { Text("All settings will be reset to their default values.") },
+            title = { Text(stringResource(R.string.dialog_reset_title)) },
+            text = { Text(stringResource(R.string.dialog_reset_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     val systemDefault = PreferencesRepository.defaultMapStyleFor(context)
                     vm.resetToDefaults(systemDefault, onStyleChange)
                 }) {
-                    Text("Reset")
+                    Text(stringResource(R.string.action_reset))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { vm.closeResetConfirm() }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.action_cancel))
                 }
             },
         )
@@ -512,8 +514,8 @@ fun ActionsDrawer(
         val buttonShape = RoundedCornerShape(20.dp)
         AlertDialog(
             onDismissRequest = { showQuitConfirm = false },
-            title = { Text("Quit") },
-            text = { Text("Are you sure you want to quit?") },
+            title = { Text(stringResource(R.string.dialog_quit_title)) },
+            text = { Text(stringResource(R.string.dialog_quit_message)) },
             confirmButton = {
                 LargeFloatingActionButton(
                     onClick = {
@@ -525,7 +527,7 @@ fun ActionsDrawer(
                     contentColor = Color.White,
                     modifier = Modifier.fillMaxWidth(0.45f),
                 ) {
-                    Text("Quit", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.action_quit), style = MaterialTheme.typography.titleMedium)
                 }
             },
             dismissButton = {
@@ -536,7 +538,7 @@ fun ActionsDrawer(
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.fillMaxWidth(0.45f),
                 ) {
-                    Text("Cancel", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.action_cancel), style = MaterialTheme.typography.titleMedium)
                 }
             },
         )
