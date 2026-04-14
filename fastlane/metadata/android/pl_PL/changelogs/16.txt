@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+Napraw CompassButton nie blokuje mapy na północ is-up kiedy użytkownik się przesuwa
