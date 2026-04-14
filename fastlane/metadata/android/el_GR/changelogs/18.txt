@@ -1,1 +1,1 @@
-Several UI fixes GPS and Network status icons
+Αρκετά UI διορθώνει τα εικονίδια κατάστασης GPS και δικτύου
