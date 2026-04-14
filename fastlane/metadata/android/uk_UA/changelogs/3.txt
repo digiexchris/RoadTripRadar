@@ -1,1 +1,1 @@
-Adjust workflow to version app correctly
+Налаштування робочого процесу до версії програми коректно
