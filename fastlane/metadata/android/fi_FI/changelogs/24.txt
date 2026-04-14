@@ -1,0 +1,1 @@
+Jos sinulla on jokin kategoria lähistöllä sijaitsevissa paikoissa, ne alkavat näkyä automaattisesti, kun sovellus käynnistyy. Jos haluat poistaa tämän käytöksen, se poistetaan käytöstä lähistöllä olevien paikkojen valikosta poistaaksesi sen käytöstä.
