@@ -1,1 +1,1 @@
-Horizontal Layout, radar legend, and general UI improvements
+水平レイアウト、レーダー凡例、および一般的な UI の改善
