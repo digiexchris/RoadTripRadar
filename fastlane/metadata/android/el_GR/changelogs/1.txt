@@ -1,13 +1,13 @@
-Initial release of RoadTripRadar.
+Αρχική κυκλοφορία του RoadTripRadar.
 
-- Live animated weather radar overlay from RainViewer
-- Bearing-based navigation to points of interest
-- POI search by name or category
-- Drop POI by long-pressing the map
-- Distance rings around your location
-- Speed readout in metric or imperial
-- Three map styles: Liberty, Dark, Color Dark
-- Compass button with heading toggle
-- Adjustable radar opacity
-- Configurable UI sizing
-- Keep-screen-on mode
+- Ζωντανό κινούμενο ραντάρ καιρού από το RainViewer
+- Βάση ρουλεμάν ναυσιπλοΐας στα σημεία ενδιαφέροντος
+- Αναζήτηση POI κατά όνομα ή κατηγορία
+- Ρίξτε POI πατώντας παρατεταμένα το χάρτη
+- Δακτύλιοι απόστασης γύρω από την τοποθεσία σας
+- Αναγνώριση ταχύτητας σε μετρική ή αυτοκρατορική
+- Τρεις μορφές χάρτη: Ελευθερία, Σκοτάδι, Χρώμα Σκοτεινό
+- Κουμπί πυξίδας με εναλλαγή κατεύθυνσης
+- Ρυθμιζόμενη αδιαφάνεια ραντάρ
+- Διαμορφώσιμο μέγεθος UI
+- Λειτουργία διατήρησης οθόνης
