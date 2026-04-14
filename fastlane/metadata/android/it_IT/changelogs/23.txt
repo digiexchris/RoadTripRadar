@@ -1,0 +1,3 @@
+changelog in-app: visualizza Novità dopo gli aggiornamenti e la cronologia completa da Aiuto & Info.
+Ora puoi vedere i punti di interesse vicino alla tua posizione! Dai un'occhiata nel menu->Luogi.
+Abbiamo fatto un grande fattore menu per rendere le cose più facili da trovare, e più facile da gestire con i guanti.
