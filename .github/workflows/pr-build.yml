@@ -10,6 +10,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changelogs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ github.token }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Generate fastlane changelog
+        run: python scripts/generate_changelogs.py
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fastlane/
+          git diff --cached --quiet && echo "No changelog changes to commit" || {
+            git commit -m "chore: generate fastlane changelog"
+            git push
+          }
+
   translations:
     runs-on: ubuntu-latest
     steps:

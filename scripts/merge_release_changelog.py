@@ -22,13 +22,15 @@ PENDING_TEMPLATE = {
 def main() -> None:
     if len(sys.argv) < 4:
         print(
-            "Usage: merge_release_changelog.py <versionName> <versionCode> <fastlane_changelog_txt_path>",
+            "Usage: merge_release_changelog.py <versionName> <versionCode> <fastlane_changelog_txt_path>"
+            " [play_release_notes_path]",
             file=sys.stderr,
         )
         sys.exit(1)
     version_name = sys.argv[1]
     version_code = int(sys.argv[2])
     fastlane_path = Path(sys.argv[3])
+    play_notes_path = Path(sys.argv[4]) if len(sys.argv) >= 5 else None
 
     root = Path(__file__).resolve().parent.parent
     pending_path = root / "changelog" / "pending.json"
@@ -65,6 +67,13 @@ def main() -> None:
 
     fastlane_path.parent.mkdir(parents=True, exist_ok=True)
     fastlane_path.write_text("\n".join(items) + "\n")
+
+    # Google Play release notes: wrap each locale's changelog in <locale> tags.
+    # Currently only en-US is generated; translated changelogs can be added later.
+    if play_notes_path is not None:
+        play_notes_path.parent.mkdir(parents=True, exist_ok=True)
+        notes_text = "\n".join(items)
+        play_notes_path.write_text(f"<en-US>\n{notes_text}\n</en-US>\n")
 
     pending_path.write_text(json.dumps(PENDING_TEMPLATE, indent=2) + "\n")
     print(f"Changelog merged for {version_name} ({version_code}), {len(items)} item(s)")
