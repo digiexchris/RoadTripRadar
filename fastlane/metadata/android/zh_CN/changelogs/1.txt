@@ -1,13 +1,13 @@
-Initial release of RoadTripRadar.
+公路三角雷达的初步释放。
 
-- Live animated weather radar overlay from RainViewer
-- Bearing-based navigation to points of interest
-- POI search by name or category
-- Drop POI by long-pressing the map
-- Distance rings around your location
-- Speed readout in metric or imperial
-- Three map styles: Liberty, Dark, Color Dark
-- Compass button with heading toggle
-- Adjustable radar opacity
-- Configurable UI sizing
-- Keep-screen-on mode
+- 来自RainViewer的动态天气雷达叠加层
+- 基于焦点的导航到关注点
+- 按名称或类别搜索 POI
+- 长按地图拖动POI
+- 位置周围的距离戒指
+- 快速读取公式或帝国式；
+- 三种地图风格：自由、 黑色、 暗色
+- 带标题切换的指南针按钮
+- 可调整雷达不透明度
+- 可配置的 UI 大小
+- 保持屏幕开启模式
