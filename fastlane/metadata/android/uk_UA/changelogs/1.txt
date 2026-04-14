@@ -1,13 +1,13 @@
-Initial release of RoadTripRadar.
+Початковий випуск RoadTripRadar.
 
-- Live animated weather radar overlay from RainViewer
-- Bearing-based navigation to points of interest
-- POI search by name or category
-- Drop POI by long-pressing the map
-- Distance rings around your location
-- Speed readout in metric or imperial
-- Three map styles: Liberty, Dark, Color Dark
-- Compass button with heading toggle
-- Adjustable radar opacity
-- Configurable UI sizing
-- Keep-screen-on mode
+- Накладення метеорологічних радарів в RainViewer
+- Навігація, що базується на ведмедя в точках інтересів
+- Пошук POI за назвою або категорією
+- Перетягніть POI довгим натисненням на карту
+-Відстань кільця навколо вашого місцезнаходження
+- Швидкість читання в імператорському або
+- Три стилі карт: свобода, чорна, кольорова темна
+- Кнопка компаса з перемикачем
+- Регульована прозорість радарів
+- Налаштовуваний розмір інтерфейсу
+- Тримати екран в режимі
