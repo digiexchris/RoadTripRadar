@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -17,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -235,9 +237,10 @@ fun BottomContent(
     onZoomOut: () -> Unit,
     isWeatherPlaying: Boolean,
     weatherActive: Boolean,
-    onToggleWeather: () -> Unit,
+    onCycleWeather: () -> Unit,
     onOpenMenu: () -> Unit,
     aboveContent: @Composable () -> Unit,
+    isLandscape: Boolean = false,
     scale: Float = 1f,
     modifier: Modifier = Modifier,
 ) {
@@ -248,11 +251,26 @@ fun BottomContent(
         aboveContent()
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = if (isLandscape) Arrangement.Start else Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            val weatherIcon = when {
+                !weatherActive -> Icons.Default.Block
+                isWeatherPlaying -> Icons.Default.Pause
+                else -> Icons.Default.PlayArrow
+            }
+            val weatherDescription = when {
+                !weatherActive -> "Weather Radar Off"
+                isWeatherPlaying -> "Pause Radar"
+                else -> "Play Radar"
+            }
+            val weatherColor = when {
+                !weatherActive -> MaterialTheme.colorScheme.surfaceVariant
+                isWeatherPlaying -> MaterialTheme.colorScheme.primaryContainer
+                else -> MaterialTheme.colorScheme.primaryContainer
+            }
             LargeFloatingActionButton(
-                onClick = onToggleWeather,
+                onClick = onCycleWeather,
                 modifier = fabBorderModifier
                     .size(80.dp)
                     .graphicsLayer {
@@ -260,14 +278,11 @@ fun BottomContent(
                         scaleY = scale
                     },
                 shape = RoundedCornerShape(12.dp),
-                containerColor = if (weatherActive)
-                    MaterialTheme.colorScheme.primaryContainer
-                else
-                    MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = weatherColor,
             ) {
                 Icon(
-                    imageVector = if (isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = if (isWeatherPlaying) "Pause Radar" else "Play Radar",
+                    imageVector = weatherIcon,
+                    contentDescription = weatherDescription,
                     modifier = Modifier.size(48.dp),
                 )
             }
@@ -288,6 +303,10 @@ fun BottomContent(
                     contentDescription = "Zoom out",
                     modifier = Modifier.size(48.dp),
                 )
+            }
+
+            if (isLandscape) {
+                Spacer(modifier = Modifier.weight(1f))
             }
 
             LargeFloatingActionButton(

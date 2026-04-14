@@ -380,6 +380,7 @@ fun MapScreen(
             poiInfo = poiInfo,
             cameraState = cameraState,
             scope = scope,
+            isLandscape = isLandscape,
         )
 
         ActionsDrawer(

@@ -47,6 +47,7 @@ fun BoxScope.MapOverlay(
     poiInfo: Pair<Length, Double>?,
     cameraState: CameraState,
     scope: CoroutineScope,
+    isLandscape: Boolean = false,
 ) {
     val sharedEdgeModifier = Modifier.padding(config.edgePadding)
     val density = LocalDensity.current
@@ -208,7 +209,16 @@ fun BoxScope.MapOverlay(
         },
         isWeatherPlaying = vm.isWeatherPlaying,
         weatherActive = vm.weatherActive,
-        onToggleWeather = { vm.toggleWeatherPlaying() },
+        onCycleWeather = {
+            when {
+                !vm.weatherActive -> {
+                    vm.updateWeatherMode(ca.voiditswarranty.roadtripradar.model.WeatherMode.ON)
+                    if (!vm.isWeatherPlaying) vm.toggleWeatherPlaying()
+                }
+                vm.isWeatherPlaying -> vm.toggleWeatherPlaying()
+                else -> vm.updateWeatherMode(ca.voiditswarranty.roadtripradar.model.WeatherMode.OFF)
+            }
+        },
         onOpenMenu = { vm.openActionsDrawer() },
         aboveContent = {
             RecenterTextButton(
@@ -218,6 +228,7 @@ fun BoxScope.MapOverlay(
                 scale = config.fabScale * 1.3f,
             )
         },
+        isLandscape = isLandscape,
         scale = config.fabScale,
         modifier = Modifier
             .align(Alignment.BottomCenter)
