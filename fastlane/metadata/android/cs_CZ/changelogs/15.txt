@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+Opravit tlačítko kompasu nezamykat mapu na severu při pohybu uživatele
