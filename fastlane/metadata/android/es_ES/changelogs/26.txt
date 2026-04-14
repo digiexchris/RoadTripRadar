@@ -1,2 +1,2 @@
-There is a new map theme chooser! Check it out in the menu -> Map -> Choose Theme. Also, the default dark map has been tweaked to show small roads and paths better. If you liked the old one better, it's still available.
-There is now a play/pause/off button for the weather radar on the main screen.
+¡Hay una nueva elección de tema de mapa! Compruébalo en el menú -> Mapa -> Elija Tema. Además, el mapa oscuro por defecto se ha ajustado para mostrar mejores caminos y caminos pequeños. Si le gustaba mucho la antigua, todavía está disponible.
+Ahora hay un botón de reproducción/pausa/apagado para el radar meteorológico en la pantalla principal.
