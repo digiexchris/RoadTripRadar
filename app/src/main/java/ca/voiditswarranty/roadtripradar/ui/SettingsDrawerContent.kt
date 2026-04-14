@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -19,11 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
+import java.util.Locale
 
 @Composable
 fun SettingsDrawerContent(
@@ -109,20 +113,46 @@ fun SettingsDrawerContent(
 
 private data class LanguageOption(val tag: String?, val label: String)
 
+/**
+ * Parses locales_config.xml to discover supported locales and shows
+ * each in its own native display name. Automatically picks up new
+ * languages without code changes.
+ */
 @Composable
 private fun LanguagePicker() {
-    val options = listOf(
-        LanguageOption(null, stringResource(R.string.language_system_default)),
-        LanguageOption("en", "English"),
-        LanguageOption("fr", "Français"),
-        LanguageOption("de", "Deutsch"),
-        LanguageOption("es", "Español"),
-    )
+    val context = LocalContext.current
+    val options = remember {
+        val list = mutableListOf(LanguageOption(null, ""))
+        try {
+            val parser = context.resources.getXml(R.xml.locales_config)
+            while (parser.next() != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
+                if (parser.eventType == org.xmlpull.v1.XmlPullParser.START_TAG && parser.name == "locale") {
+                    val tag = parser.getAttributeValue(
+                        "http://schemas.android.com/apk/res/android", "name"
+                    )
+                    if (tag != null) {
+                        val locale = Locale.forLanguageTag(tag)
+                        val native = locale.getDisplayName(locale)
+                            .replaceFirstChar { it.uppercase(locale) }
+                        list.add(LanguageOption(tag, native))
+                    }
+                }
+            }
+            parser.close()
+        } catch (_: Exception) { /* fall back to System Default only */ }
+        list
+    }
+
+    // Patch the "System Default" label (requires composable context for stringResource)
+    val systemLabel = stringResource(R.string.language_system_default)
+    val patchedOptions = remember(systemLabel) {
+        options.toMutableList().also { it[0] = it[0].copy(label = systemLabel) }
+    }
 
     val currentLocales = AppCompatDelegate.getApplicationLocales()
     val currentTag = if (currentLocales.isEmpty) null else currentLocales.toLanguageTags()
-    val currentLabel = options.firstOrNull { it.tag == currentTag }?.label
-        ?: options.first().label
+    val currentLabel = patchedOptions.firstOrNull { it.tag == currentTag }?.label
+        ?: patchedOptions.first().label
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -142,8 +172,8 @@ private fun LanguagePicker() {
             onDismissRequest = { showDialog = false },
             title = { Text(stringResource(R.string.settings_language)) },
             text = {
-                Column {
-                    options.forEach { option ->
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    patchedOptions.forEach { option ->
                         TextButton(
                             onClick = {
                                 val locales = if (option.tag == null) {
