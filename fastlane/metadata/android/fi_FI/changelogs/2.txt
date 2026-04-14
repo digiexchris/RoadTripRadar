@@ -1,0 +1,5 @@
+- Parannettu säätutkan laattakuormitus (esikuormitus kaikki kehykset)
+- Kompassi painike vaihtaa pohjoisen ja edellisen otsikon välillä
+- Karttatyyli on muutettu väri Tumma uusille asennuksille
+- Lisätty Fastlane metadata F-Droidia varten
+- Poistettu foojay-resolver- liitännäinen F-Droidin yhteensopivuutta varten
