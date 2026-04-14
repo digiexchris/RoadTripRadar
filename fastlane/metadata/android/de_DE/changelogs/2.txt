@@ -1,0 +1,5 @@
+- Verbesserte Wetter-Radarkachel-Ladeleistung (Alle Rahmen vorab laden)
+- Kompass-Taste schaltet nun zwischen Nord-oben und vorheriger Überschrift ein
+- Standard Kartenstil für neue Installationen in Farbe dunkel geändert
+- Schnell-Metadaten für F-Droid hinzugefügt
+- Entferntes foojay-Resolver-Plugin für F-Droid-Kompatibilität
