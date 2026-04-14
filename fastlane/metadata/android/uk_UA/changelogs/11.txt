@@ -1,1 +1,1 @@
-Various FDroid fixes
+Різні виправлення FDroid
