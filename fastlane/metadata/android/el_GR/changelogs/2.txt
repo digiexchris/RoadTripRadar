@@ -1,5 +1,5 @@
-- Improved weather radar tile loading performance (preload all frames)
-- Compass button now toggles between north-up and previous heading
-- Default map style changed to Color Dark for new installs
-- Added Fastlane metadata for F-Droid
-- Removed foojay-resolver plugin for F-Droid compatibility
+- Βελτιωμένη απόδοση φόρτωσης πλακιδίων ραντάρ καιρού (προφόρτωση όλων των πλαισίων)
+- Το κουμπί "Πυξίδα" εναλλάσσει τώρα μεταξύ της βόρειας και της προηγούμενης επικεφαλίδας
+- Το προεπιλεγμένο στυλ χάρτη άλλαξε σε Χρώμα Σκοτεινό για νέες εγκαταστάσεις
+- Προστέθηκαν μεταδεδομένα Fastlane για το F-Droid
+- Πρόσθετο foojay-resolver που αφαιρέθηκε για συμβατότητα με το F-Droid
