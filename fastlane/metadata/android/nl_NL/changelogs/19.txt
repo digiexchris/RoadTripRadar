@@ -1,0 +1,1 @@
+* Rangschikking lay-out * Verwijder extra knoppen van UI, ga naar een aparte overlay voor veelvoorkomende acties * Snelle help bij starten toevoegen * Verminder de clutter en acties in de kaartweergave * Naar horizontale modus uitlijnen * Voeg snelle acties lade toe bij tik voor veelvoorkomende acties in plaats van kaart knoppen
