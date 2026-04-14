@@ -1,1 +1,1 @@
-Add a quick actions button as an easier way to discover the quick actions menu
+Lägg till en snabbåtgärdsknapp som ett enklare sätt att upptäcka snabbåtgärdsmenyn
