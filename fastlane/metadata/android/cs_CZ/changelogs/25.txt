@@ -1,0 +1,1 @@
+Fix the wind direction arrow not rotating with the map.
