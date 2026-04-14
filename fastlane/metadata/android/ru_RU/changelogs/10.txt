@@ -1,1 +1,1 @@
-Changes to the build pipeline
+Изменения в конвейере сборки
