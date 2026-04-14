@@ -1,1 +1,1 @@
-Adjust workflow to version app correctly
+Justera arbetsflödet till versionsappen korrekt
