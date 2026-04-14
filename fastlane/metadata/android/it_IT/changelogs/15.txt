@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+Correggi il pulsante Compass, non bloccando la mappa a nord-is-up quando l'utente si muove
