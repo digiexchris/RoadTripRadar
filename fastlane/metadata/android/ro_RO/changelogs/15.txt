@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+Repară CompassButton care nu blochează harta la is-up de nord atunci când utilizatorul se mișcă
