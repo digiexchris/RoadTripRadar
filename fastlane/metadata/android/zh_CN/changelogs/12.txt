@@ -1,1 +1,1 @@
-Various FDroid Fixes
+各种FDroid修复程序
