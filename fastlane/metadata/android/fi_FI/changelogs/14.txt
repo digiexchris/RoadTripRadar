@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+Korjaa kompassPainike ei lukita karttaa pohjoiseen nousuun kun käyttäjä liikkuu
