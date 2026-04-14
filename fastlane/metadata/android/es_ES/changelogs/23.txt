@@ -1,3 +1,3 @@
-In-app changelog: view What's New after updates and full history from Help & Info.
-You can now see points of interest near your location! Check it out in the Menu->Places.
-We've done a big menu refactor to make things easier to find, and easier to manage with gloves on.
+Lista de cambios en la aplicación: ver Novedades después de las actualizaciones e historial completo de Ayuda e Info.
+¡Ahora puedes ver puntos de interés cerca de tu ubicación! Échale un vistazo en el Menú->Lugares.
+Hemos hecho un gran refactorizador de menús para hacer las cosas más fáciles de encontrar, y más fáciles de manejar con guantes.
