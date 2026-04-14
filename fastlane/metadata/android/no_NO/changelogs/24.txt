@@ -1,0 +1,1 @@
+Hvis du har valgte kategorier i nærheten av steder, vil de begynne å vise automatisk når appen starter opp. Hvis du vil deaktivere den adferden, er det en bryter på steder i nærheten for å skru den av.
