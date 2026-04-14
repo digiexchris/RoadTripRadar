@@ -1,0 +1,2 @@
+On olemassa uusi kartta teema valitsija! Tarkista se valikosta -> Kartta -> Valitse teema. Myös tumma oletuskartta on viritetty näyttämään pieniä teitä ja polkuja paremmin. Jos pidit vanhasta paremmin, se on vielä saatavilla.
+Tällä hetkellä päänäytöllä on säätutkan soitto/tauko/off -painike.
