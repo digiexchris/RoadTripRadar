@@ -1,0 +1,5 @@
+- Forbedret vejrradar flisebelastning ydeevne (preload alle rammer)
+- Kompas knap nu skifter mellem nord og forrige overskrift
+- Standard kortstil ændret til Farve Mørk for nye installationer
+- Tilføjet Fastlane metadata til F-Droid
+- Fjernet foojay-resolver plugin til F-Droid kompatibilitet
