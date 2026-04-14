@@ -1,0 +1,1 @@
+Corrigir a seta para o vento não girando com o mapa.
