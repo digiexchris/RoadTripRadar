@@ -1,0 +1,1 @@
+Umožnit samostatně nastavitelné většině velikostí widgetů
