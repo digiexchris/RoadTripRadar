@@ -1,0 +1,1 @@
+* Změna uspořádání * Odebrat další tlačítka z uživatelského rozhraní, přesunout na samostatný potah pro společné akce * Přidat rychlou nápovědu při startu * Snížit kloub a akce v zobrazení mapy * Zarovnat horizontální režim s režimem na výšku * Přidat nabídku rychlých akcí na klepnutí pro společné akce namísto tlačítek mapy
