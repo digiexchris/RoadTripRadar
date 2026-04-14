@@ -1,1 +1,1 @@
-A map app prioritizing situational awareness and weather.
+Una aplicación de mapa priorizando la conciencia de situaciones y el clima.
