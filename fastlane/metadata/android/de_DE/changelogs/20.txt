@@ -1,0 +1,1 @@
+Fügen Sie ein kleines Wetter-Widget für Windgeschwindigkeit, Richtung und Umgebungsgeschwindigkeit hinzu
