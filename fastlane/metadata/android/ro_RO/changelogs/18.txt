@@ -1,1 +1,1 @@
-Several UI fixes GPS and Network status icons
+Mai multe interfețe ale interfeței rezolvă pictogramele de stare GPS și rețea
