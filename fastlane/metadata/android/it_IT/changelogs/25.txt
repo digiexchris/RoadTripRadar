@@ -1,0 +1,1 @@
+Fissare la freccia di direzione del vento non ruotando con la mappa.
