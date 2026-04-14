@@ -1,1 +1,1 @@
-Horizontal Layout, radar legend, and general UI improvements
+Horizontale lay-out, radar legend en algemene UI verbeteringen
