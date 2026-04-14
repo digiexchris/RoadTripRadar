@@ -1,0 +1,2 @@
+Es gibt eine neue Karte Theme-Auswahl! Klicken Sie dazu im Menü -> Karte -> Theme auswählen. Auch die Standard-dunkle Karte wurde optimiert, um kleine Straßen und Wege besser anzuzeigen. Wenn Ihnen das alte besser gefallen hat, ist es immer noch verfügbar.
+Für das Wetterradar auf dem Hauptbildschirm gibt es jetzt einen Play/Pause/Aus-Knopf.
