@@ -1,0 +1,1 @@
+Napraw strzałkę kierunku wiatru nie obracającą się z mapą.
