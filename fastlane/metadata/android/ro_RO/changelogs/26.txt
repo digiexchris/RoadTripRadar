@@ -1,2 +1,2 @@
-There is a new map theme chooser! Check it out in the menu -> Map -> Choose Theme. Also, the default dark map has been tweaked to show small roads and paths better. If you liked the old one better, it's still available.
-There is now a play/pause/off button for the weather radar on the main screen.
+Există o nouă hartă cu tema de alegere! Verificați-l în meniul -> Harta -> Alegeți tema. De asemenea, harta întunecată implicită a fost reglată pentru a arăta mai bine drumurile mici și căile de acces. Dacă ți-a plăcut cel mai bine pe cel vechi, este încă disponibil.
+Acum există un buton de redare/întrerupere pentru radarul meteo de pe ecranul principal.
