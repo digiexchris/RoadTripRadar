@@ -1,0 +1,1 @@
+Ta bort signering av konfiguration för att bygga osignerade APK:er för FDroid
