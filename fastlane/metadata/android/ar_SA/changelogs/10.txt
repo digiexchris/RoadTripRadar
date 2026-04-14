@@ -1,1 +1,1 @@
-Changes to the build pipeline
+تغييرات في خط أنابيب البناء
