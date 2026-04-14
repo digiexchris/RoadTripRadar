@@ -1,1 +1,1 @@
-Cleaned up for FDroid build
+Очищення для збірки FDroid
