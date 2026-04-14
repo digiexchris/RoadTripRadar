@@ -1,1 +1,1 @@
-Fix CompassButton not locking map to north-is-up when the user moves
+修复用户移动时无法锁定地图到北端的 CompassButton
