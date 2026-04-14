@@ -1,11 +1,11 @@
-RoadTripRadar is a map app prioritizing situational awareness and weather. Live weather radar imagery on an interactive map, helping you see precipitation along your direction of travel at a glance.
+الطريق تريبرادار هو تطبيق خريطة يعطي الأولوية للوعي بالأوضاع والطقس. صور رادار للطقس الحية على خريطة تفاعلية، تساعدك على رؤية هطول الأمطار على طول اتجاهك للسفر في نظرة.
 
-Features:
-- Distance rings centered on your location that adapt to zoom level.
-- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!
-- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists that want notice to reroute around a storm or gear up.
-- Wind speed and direction
-- Temperature and 1 hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colours for either.
-- Speed readout with metric and imperial units, adjustable font size.
-- Open source, no tracking, no accounts, no ads.
+الميزات:
+- حلقات المسافة التي تتمحور حول موقعك والتي تتكيف مع مستوى التكبير.
+- التنقل باستخدام الحمل إلى وجهتك بدلاً من تعليمات الدوران الجامدة. ممتاز للمستكشفين والناس الذين يحب أن يذهبوا!
+- رادار الطقس المتحرك المباشر من RainViewer مع ضبط التعتيم والتحكم في التشغيل. مثالي لراكبي الدراجات النارية الذين يريدون ملاحظة أن يغيروا مسارهم حول عاصفة أو عواصف لأعلى.
+- سرعة الرياح واتجاهها
+- درجة الحرارة واتجاه ساعة واحدة
+- أنماط متعددة للخرائط: الضوء والأسود والألوان المخصصة لأي منهما.
+- قراءة سريعة مع وحدات القياس والوحدات الإمبريالية، حجم الخط القابل للتعديل.
+- فتح المصدر، لا تتبع، لا حسابات، لا إعلانات.
