@@ -1,0 +1,1 @@
+* Järjestä asettelu uudelleen * Poista ylimääräiset painikkeet käyttöliittymästä, siirry erilliseen päällykseen yhteisiä toimintoja varten * Lisää pika-apua käynnistyksen yhteydessä * Vähennä kytkintä ja toiminnot karttanäkymässä * Tasaa vaakasuorassa tilassa * Lisää pika-toiminnot valikko napauttamalla yhteisiä toimintoja karttapainikkeiden sijaan
