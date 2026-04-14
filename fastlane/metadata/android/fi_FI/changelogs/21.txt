@@ -1,0 +1,1 @@
+Salli useimpien widgettien kokojen olla yksilöllisesti säädettävissä.
