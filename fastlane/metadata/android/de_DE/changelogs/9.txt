@@ -1,0 +1,1 @@
+Entferne die Signaturkonfiguration, um unsignierte APKs für FDroid zu erstellen
