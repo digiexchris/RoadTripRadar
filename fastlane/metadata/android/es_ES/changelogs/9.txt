@@ -1,0 +1,1 @@
+Eliminar la firma de configuración para construir APKs no firmados para FDroid
