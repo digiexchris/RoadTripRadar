@@ -1,0 +1,2 @@
+C'è un nuovo selettore del tema della mappa! Dai un'occhiata nel menu -> Mappa -> Scegli Tema. Inoltre, la mappa scura predefinita è stata adattata per mostrare meglio le strade e i sentieri. Se ti è piaciuto meglio quello vecchio, è ancora disponibile.
+Ora c'è un pulsante play/pausa/off per il radar meteo sulla schermata principale.
