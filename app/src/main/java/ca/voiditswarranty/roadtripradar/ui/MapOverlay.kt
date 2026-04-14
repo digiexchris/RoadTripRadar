@@ -13,14 +13,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.size
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -211,39 +206,17 @@ fun BoxScope.MapOverlay(
                 )
             }
         },
-        navContent = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                RecenterTextButton(
-                    hasLocation = hasLocation,
-                    isTrackingCamera = vm.isTrackingCamera,
-                    onRecenter = { vm.isTrackingCamera = true },
-                    scale = config.fabScale * 1.3f,
-                )
-                Button(
-                    onClick = { vm.openActionsDrawer() },
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    ),
-                    contentPadding = PaddingValues(0.dp),
-                    modifier = Modifier
-                        .size(width = 125.dp, height = 96.dp)
-                        .graphicsLayer {
-                            scaleX = config.fabScale
-                            scaleY = config.fabScale
-                        },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
-                        contentDescription = "Quick Actions",
-                        modifier = Modifier.size(36.dp),
-                    )
-                }
-            }
+        isWeatherPlaying = vm.isWeatherPlaying,
+        weatherActive = vm.weatherActive,
+        onToggleWeather = { vm.toggleWeatherPlaying() },
+        onOpenMenu = { vm.openActionsDrawer() },
+        aboveContent = {
+            RecenterTextButton(
+                hasLocation = hasLocation,
+                isTrackingCamera = vm.isTrackingCamera,
+                onRecenter = { vm.isTrackingCamera = true },
+                scale = config.fabScale * 1.3f,
+            )
         },
         scale = config.fabScale,
         modifier = Modifier
