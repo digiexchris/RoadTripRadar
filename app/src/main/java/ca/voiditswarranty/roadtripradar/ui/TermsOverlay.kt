@@ -29,7 +29,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.TERMS_AND_CONDITIONS_TEXT
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
@@ -110,7 +112,7 @@ fun TermsOverlay(vm: MapViewModel) {
 
                 if (needsAcceptance && maxScroll > 0 && !reachedBottom) {
                     Text(
-                        text = "Scroll down to read the rest, then you can accept.",
+                        text = stringResource(R.string.terms_scroll_hint),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary,
                     )
@@ -125,7 +127,7 @@ fun TermsOverlay(vm: MapViewModel) {
                             (context as? Activity)?.finishAffinity()
                             System.exit(0)
                         }) {
-                            Text("Decline")
+                            Text(stringResource(R.string.action_decline))
                         }
                         Button(
                             onClick = { vm.acceptTerms() },
@@ -135,7 +137,7 @@ fun TermsOverlay(vm: MapViewModel) {
                                 disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                             ),
                         ) {
-                            Text("Accept")
+                            Text(stringResource(R.string.action_accept))
                         }
                     }
                 } else {
@@ -144,7 +146,7 @@ fun TermsOverlay(vm: MapViewModel) {
                         horizontalArrangement = Arrangement.End,
                     ) {
                         Button(onClick = { vm.dismissTerms() }) {
-                            Text("Close")
+                            Text(stringResource(R.string.action_close))
                         }
                     }
                 }

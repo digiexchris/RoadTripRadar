@@ -14,8 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.ChangelogRelease
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
@@ -33,7 +35,7 @@ fun WhatsNewChangelogSheet(vm: MapViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "What's new",
+                text = stringResource(R.string.changelog_whats_new),
                 style = MaterialTheme.typography.headlineSmall,
             )
             Column(
@@ -50,7 +52,7 @@ fun WhatsNewChangelogSheet(vm: MapViewModel) {
                 onClick = { vm.dismissWhatsNewChangelog() },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Got it")
+                Text(stringResource(R.string.action_got_it))
             }
         }
     }
@@ -70,7 +72,7 @@ fun FullChangelogSheet(vm: MapViewModel) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "Changelog",
+                text = stringResource(R.string.changelog_title),
                 style = MaterialTheme.typography.headlineSmall,
             )
             Column(
@@ -81,7 +83,7 @@ fun FullChangelogSheet(vm: MapViewModel) {
             ) {
                 if (releases.isEmpty()) {
                     Text(
-                        text = "No changelog entries.",
+                        text = stringResource(R.string.changelog_no_entries),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -95,7 +97,7 @@ fun FullChangelogSheet(vm: MapViewModel) {
                 onClick = { vm.closeFullChangelog() },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Close")
+                Text(stringResource(R.string.action_close))
             }
         }
     }

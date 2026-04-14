@@ -18,11 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 @Composable
@@ -74,11 +76,10 @@ fun LocationPermissionGate(
                 dismissOnBackPress = false,
                 dismissOnClickOutside = false,
             ),
-            title = { Text("Location permission required") },
+            title = { Text(stringResource(R.string.permission_location_title)) },
             text = {
                 Text(
-                    "Road Trip Radar needs access to your precise location to show where you are on the map. " +
-                        "Tap Grant permission to continue, or Quit to exit the app.",
+                    stringResource(R.string.permission_location_body),
                 )
             },
             confirmButton = {
@@ -87,12 +88,12 @@ fun LocationPermissionGate(
                         permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                     },
                 ) {
-                    Text("Grant permission")
+                    Text(stringResource(R.string.permission_grant))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { activity.finishAffinity() }) {
-                    Text("Quit")
+                    Text(stringResource(R.string.action_quit))
                 }
             },
         )

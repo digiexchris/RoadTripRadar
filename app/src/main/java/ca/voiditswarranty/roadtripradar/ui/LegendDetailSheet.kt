@@ -22,14 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private data class LegendDetailEntry(
-    val category: String,
-    val label: String,
+    val category: Int,
+    val label: Int,
     val dbz: String,
     val mmPerHour: String,
     val color: Color,
@@ -37,19 +39,19 @@ private data class LegendDetailEntry(
 
 private val legendDetailEntries = listOf(
     // Rain
-    LegendDetailEntry("Rain", "Overcast", "<10", "0", Color(0xFF2F7A2E)),
-    LegendDetailEntry("Rain", "Drizzle", "10", "<1", Color(0xFF5BAA27)),
-    LegendDetailEntry("Rain", "Light Rain", "20", "1", Color(0xFFF7F713)),
-    LegendDetailEntry("Rain", "Moderate Rain", "30", "3", Color(0xFFF9A414)),
-    LegendDetailEntry("Rain", "Showers", "40", "12", Color(0xFFF73514)),
+    LegendDetailEntry(R.string.legend_detail_rain, R.string.legend_detail_overcast, "<10", "0", Color(0xFF2F7A2E)),
+    LegendDetailEntry(R.string.legend_detail_rain, R.string.legend_detail_drizzle, "10", "<1", Color(0xFF5BAA27)),
+    LegendDetailEntry(R.string.legend_detail_rain, R.string.legend_detail_light_rain, "20", "1", Color(0xFFF7F713)),
+    LegendDetailEntry(R.string.legend_detail_rain, R.string.legend_detail_moderate_rain, "30", "3", Color(0xFFF9A414)),
+    LegendDetailEntry(R.string.legend_detail_rain, R.string.legend_detail_showers, "40", "12", Color(0xFFF73514)),
     // Hail
-    LegendDetailEntry("Hail", "Small Hail or Freezing Rain Possible", "50", "48", Color(0xFFDD1E42)),
-    LegendDetailEntry("Hail", "Hail Possible", "55", "100", Color(0xFFC01C6F)),
-    LegendDetailEntry("Hail", "Hail Likely", ">60", ">205", Color(0xFFD41E99)),
+    LegendDetailEntry(R.string.legend_detail_hail, R.string.legend_detail_small_hail, "50", "48", Color(0xFFDD1E42)),
+    LegendDetailEntry(R.string.legend_detail_hail, R.string.legend_detail_hail_possible, "55", "100", Color(0xFFC01C6F)),
+    LegendDetailEntry(R.string.legend_detail_hail, R.string.legend_detail_hail_likely, ">60", ">205", Color(0xFFD41E99)),
     // Snow
-    LegendDetailEntry("Snow", "Light Snow", "—", "—", Color(0xFF91CDFD)),
-    LegendDetailEntry("Snow", "Moderate Snow", "—", "—", Color(0xFF508CFB)),
-    LegendDetailEntry("Snow", "Heavy Snow", "—", "—", Color(0xFF195CFC)),
+    LegendDetailEntry(R.string.legend_detail_snow, R.string.legend_detail_light_snow, "—", "—", Color(0xFF91CDFD)),
+    LegendDetailEntry(R.string.legend_detail_snow, R.string.legend_detail_moderate_snow, "—", "—", Color(0xFF508CFB)),
+    LegendDetailEntry(R.string.legend_detail_snow, R.string.legend_detail_heavy_snow, "—", "—", Color(0xFF195CFC)),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -66,7 +68,7 @@ fun LegendDetailSheet(vm: MapViewModel) {
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = "Radar Legend",
+                text = stringResource(R.string.legend_detail_title),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
@@ -81,18 +83,18 @@ fun LegendDetailSheet(vm: MapViewModel) {
                     modifier = Modifier.width(20.dp),
                 )
                 Text(
-                    text = "Label",
+                    text = stringResource(R.string.legend_detail_label),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.weight(1f).padding(start = 6.dp),
                 )
                 Text(
-                    text = "dBZ",
+                    text = stringResource(R.string.legend_detail_dbz),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     textAlign = TextAlign.End,
                     modifier = Modifier.width(40.dp),
                 )
                 Text(
-                    text = "mm/h",
+                    text = stringResource(R.string.legend_detail_mmh),
                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
                     textAlign = TextAlign.End,
                     modifier = Modifier.width(48.dp),
@@ -101,10 +103,10 @@ fun LegendDetailSheet(vm: MapViewModel) {
 
             HorizontalDivider()
 
-            var lastCategory = ""
+            var lastCategory = 0
             legendDetailEntries.forEach { entry ->
                 if (entry.category != lastCategory) {
-                    if (lastCategory.isNotEmpty()) {
+                    if (lastCategory != 0) {
                         HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
                     }
                     lastCategory = entry.category
@@ -122,7 +124,7 @@ fun LegendDetailSheet(vm: MapViewModel) {
                             .background(entry.color),
                     )
                     Text(
-                        text = entry.label,
+                        text = stringResource(entry.label),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.weight(1f).padding(start = 6.dp),
                     )

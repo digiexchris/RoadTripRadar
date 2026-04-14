@@ -1,1 +1,1 @@
-Live weather radar imagery ahead of you on an interactive map
+A map app prioritizing situational awareness and weather.

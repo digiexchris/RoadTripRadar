@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
 import org.maplibre.spatialk.units.Length
 
@@ -48,7 +50,7 @@ fun NavWidget(
     ) {
         Icon(
             imageVector = Icons.Default.Navigation,
-            contentDescription = "Direction to target location",
+            contentDescription = stringResource(R.string.cd_direction_to_target),
             modifier = Modifier
                 .size(iconSize)
                 .rotate(arrowRotation),

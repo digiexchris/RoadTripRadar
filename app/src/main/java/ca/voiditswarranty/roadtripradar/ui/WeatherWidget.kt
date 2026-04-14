@@ -17,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
@@ -123,7 +125,7 @@ fun WeatherWidget(
             ) {
                 Icon(
                     imageVector = Icons.Default.Navigation,
-                    contentDescription = "Wind direction",
+                    contentDescription = stringResource(R.string.cd_wind_direction),
                     modifier = Modifier
                         .size(iconSize)
                         .rotate(windArrowRotationDeg),

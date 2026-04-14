@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German translations – TODO: replace English placeholders with German -->
+<resources>
+    <!-- Common actions -->
+    <string name="action_close">Schließen</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_quit">Beenden</string>
+    <string name="action_reset">Zurücksetzen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_share">Teilen</string>
+    <string name="action_ok">OK</string>
+    <string name="action_decline">Ablehnen</string>
+    <string name="action_accept">Akzeptieren</string>
+    <string name="action_got_it">Verstanden</string>
+
+    <!-- Location permission dialog -->
+    <string name="permission_location_title">Standortberechtigung erforderlich</string>
+    <string name="permission_location_body">Road Trip Radar benötigt Zugriff auf Ihren genauen Standort, um Ihre Position auf der Karte anzuzeigen. Tippen Sie auf Berechtigung erteilen, um fortzufahren, oder auf Beenden, um die App zu schließen.</string>
+    <string name="permission_grant">Berechtigung erteilen</string>
+
+    <!-- Terms overlay -->
+    <string name="terms_scroll_hint">Scrollen Sie nach unten, um den Rest zu lesen, dann können Sie akzeptieren.</string>
+
+    <!-- Quit dialog -->
+    <string name="dialog_quit_title">Beenden</string>
+    <string name="dialog_quit_message">Möchten Sie die App wirklich beenden?</string>
+
+    <!-- Reset dialog -->
+    <string name="dialog_reset_title">Auf Standardwerte zurücksetzen</string>
+    <string name="dialog_reset_message">Alle Einstellungen werden auf ihre Standardwerte zurückgesetzt.</string>
+
+    <!-- Actions drawer - main actions -->
+    <string name="action_nearby_places">Orte in der Nähe</string>
+    <string name="action_clear_places">Orte löschen</string>
+    <string name="action_location_search">Ortssuche</string>
+    <string name="action_clear_target">Ziel löschen</string>
+    <string name="action_track_bearing">Peilung verfolgen</string>
+    <string name="action_track_north">Norden verfolgen</string>
+
+    <!-- Actions drawer - sub menus -->
+    <string name="menu_map">Karte</string>
+    <string name="menu_weather">Wetter</string>
+    <string name="menu_system">System</string>
+    <string name="menu_help">Hilfe</string>
+    <string name="menu_help_info">Hilfe und Infos</string>
+
+    <!-- Weather toggles -->
+    <string name="action_wind_temp_off">Wind und Temp. aus</string>
+    <string name="action_wind_temp_on">Wind und Temp. an</string>
+    <string name="action_hide_legend">Legende ausblenden</string>
+    <string name="action_show_legend">Legende einblenden</string>
+    <string name="action_hide_timeline">Zeitleiste ausblenden</string>
+    <string name="action_show_timeline">Zeitleiste einblenden</string>
+
+    <!-- Help page -->
+    <string name="help_documentation_info">Die vollständige Dokumentation und rechtliche Informationen sind über die Schaltflächen unten verfügbar.</string>
+    <string name="help_terms">Nutzungsbedingungen</string>
+    <string name="help_radar_legend">Radarlegende</string>
+    <string name="help_documentation">Dokumentation</string>
+    <string name="help_privacy_policy">Datenschutzrichtlinie</string>
+    <string name="help_changelog">Änderungsprotokoll</string>
+    <string name="version_label">Version %s</string>
+    <string name="debug_preview_whats_new">Neuigkeiten-Vorschau (Debug)</string>
+
+    <!-- MapFabs -->
+    <string name="fab_recenter">Zentrieren</string>
+    <string name="fab_retry_failed">Erneut versuchen</string>
+    <string name="cd_recenter_location">Auf Standort zentrieren</string>
+    <string name="cd_gps_fix_acquired">GPS-Signal empfangen</string>
+    <string name="cd_waiting_gps_fix">Warte auf GPS-Signal</string>
+    <string name="cd_zoom_out">Herauszoomen</string>
+    <string name="cd_zoom_in">Hineinzoomen</string>
+    <string name="cd_quick_actions">Schnellaktionen</string>
+    <string name="cd_weather_off">Wetterradar aus</string>
+    <string name="cd_weather_pause">Radar pausieren</string>
+    <string name="cd_weather_play">Radar abspielen</string>
+    <string name="cd_no_network">Kein Netzwerk</string>
+    <string name="cd_wifi">WLAN</string>
+    <string name="cd_cellular">Mobilfunk</string>
+    <string name="cd_unknown_network">Unbekanntes Netzwerk</string>
+
+    <!-- Weather settings -->
+    <string name="settings_weather_radar_opacity">Wetterradar-Deckkraft</string>
+    <string name="settings_wind_speed_units">Windgeschwindigkeitseinheiten</string>
+    <string name="settings_temperature_units">Temperatureinheiten</string>
+    <string name="settings_weather_widget_size">Wetter-Widget-Größe</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="unit_knots">kn</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+
+    <!-- Map settings -->
+    <string name="settings_speed_distance_units">Geschwindigkeit/Entfernung</string>
+    <string name="settings_metric">Metrisch</string>
+    <string name="settings_imperial">Imperial</string>
+    <string name="settings_map_center_offset_portrait">Kartenversatz (Hochformat)</string>
+    <string name="settings_map_center_offset_landscape">Kartenversatz (Querformat)</string>
+    <string name="settings_places_icon_opacity">Deckkraft der Ortsymbole</string>
+    <string name="theme_current">Thema: %s</string>
+    <string name="action_choose_theme">Thema wählen</string>
+
+    <!-- System settings -->
+    <string name="settings_display">Anzeige</string>
+    <string name="settings_status_icon_opacity">Deckkraft des Statussymbols</string>
+    <string name="settings_speedometer_size">Tachogröße</string>
+    <string name="settings_compass_size">Kompassgröße</string>
+    <string name="settings_nav_widget_size">Navi-Widget-Größe</string>
+    <string name="settings_misc">Sonstiges</string>
+    <string name="settings_keep_screen_on">Bildschirm anlassen</string>
+    <string name="settings_language">Sprache</string>
+    <string name="language_system_default">Systemstandard</string>
+
+    <!-- Theme selector -->
+    <string name="theme_map_theme">Kartenthema</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_customize_maputnik">In Maputnik anpassen</string>
+    <string name="theme_overwrite_custom_light">Benutzerdefiniert Hell überschreiben</string>
+    <string name="theme_use_as_custom_light_base">Als helle Basis verwenden</string>
+    <string name="theme_overwrite_custom_dark">Benutzerdefiniert Dunkel überschreiben</string>
+    <string name="theme_use_as_custom_dark_base">Als dunkle Basis verwenden</string>
+    <string name="theme_use_in_auto_mode">Im Auto-Modus verwenden</string>
+    <string name="theme_action_edit">Bearbeiten</string>
+    <string name="theme_action_save">Speichern</string>
+    <string name="theme_action_maputnik">Maputnik</string>
+    <string name="theme_action_share">Teilen</string>
+    <string name="theme_action_delete">Löschen</string>
+    <string name="cd_edit_colors">Farben bearbeiten</string>
+    <string name="cd_save_json_downloads">JSON in Downloads speichern</string>
+    <string name="cd_open_maputnik">Maputnik öffnen</string>
+    <string name="cd_delete_custom_theme">Benutzerdefiniertes Thema löschen</string>
+    <string name="theme_invalid_file">Ungültige Themadatei</string>
+    <string name="theme_saved_to_downloads">Gespeichert in Downloads/%s</string>
+    <string name="theme_save_failed">Speichern fehlgeschlagen</string>
+    <string name="theme_export">Thema exportieren</string>
+
+    <!-- Color editor -->
+    <string name="color_editor_create_title">%s-Thema erstellen</string>
+    <string name="color_editor_no_theme">Es existiert noch kein %1$s-Thema. Eines basierend auf %2$s erstellen? Sie können auch eine JSON-Datei über die Themaauswahl importieren.</string>
+    <string name="color_editor_create_from">Erstellen aus %s</string>
+    <string name="color_editor_edit_colors">Farben bearbeiten: %s</string>
+    <string name="color_editor_preview">Vorschau</string>
+    <string name="color_editor_hex">Hex</string>
+    <string name="cd_collapse">Zuklappen</string>
+    <string name="cd_expand">Aufklappen</string>
+
+    <!-- POI search dialog -->
+    <string name="search_location_title">Ort suchen</string>
+    <string name="search_within_visible">Suche im sichtbaren Kartenbereich</string>
+    <string name="search_address_placeholder">Adresse oder Ortsname</string>
+    <string name="search_searching">Suche…</string>
+
+    <!-- POI category picker -->
+    <string name="poi_autoload_title">Orte automatisch laden</string>
+    <string name="poi_autoload_description">Orte in der Nähe beim App-Start laden</string>
+    <string name="poi_count">%1$d von %2$d</string>
+    <string name="action_search_visible_area">Sichtbaren Bereich durchsuchen</string>
+
+    <!-- Tapped POI popup -->
+    <string name="action_navigate_here">Hierhin navigieren</string>
+    <string name="cd_close">Schließen</string>
+
+    <!-- Nav widget -->
+    <string name="cd_direction_to_target">Richtung zum Ziel</string>
+
+    <!-- Changelog sheets -->
+    <string name="changelog_whats_new">Neuigkeiten</string>
+    <string name="changelog_title">Änderungsprotokoll</string>
+    <string name="changelog_no_entries">Keine Einträge vorhanden.</string>
+
+    <!-- Weather legend -->
+    <string name="legend_overcast">Bedeckt</string>
+    <string name="legend_drizzle">Niesel</string>
+    <string name="legend_rain_light">Regen?</string>
+    <string name="legend_rain_moderate">Regen.</string>
+    <string name="legend_rain_heavy">Regen!!</string>
+    <string name="legend_hail_light">Hagel?</string>
+    <string name="legend_hail_moderate">Hagel.</string>
+    <string name="legend_hail_heavy">Hagel!!</string>
+    <string name="legend_snow_light">Schnee?</string>
+    <string name="legend_snow_moderate">Schnee.</string>
+    <string name="legend_snow_heavy">Schnee!!</string>
+
+    <!-- Legend detail sheet -->
+    <string name="legend_detail_title">Radarlegende</string>
+    <string name="legend_detail_label">Bezeichnung</string>
+    <string name="legend_detail_dbz">dBZ</string>
+    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_rain">Regen</string>
+    <string name="legend_detail_hail">Hagel</string>
+    <string name="legend_detail_snow">Schnee</string>
+    <string name="legend_detail_overcast">Bedeckt</string>
+    <string name="legend_detail_drizzle">Niesel</string>
+    <string name="legend_detail_light_rain">Leichter Regen</string>
+    <string name="legend_detail_moderate_rain">Mäßiger Regen</string>
+    <string name="legend_detail_showers">Schauer</string>
+    <string name="legend_detail_small_hail">Kleiner Hagel oder Eisregen möglich</string>
+    <string name="legend_detail_hail_possible">Hagel möglich</string>
+    <string name="legend_detail_hail_likely">Hagel wahrscheinlich</string>
+    <string name="legend_detail_light_snow">Leichter Schnee</string>
+    <string name="legend_detail_moderate_snow">Mäßiger Schnee</string>
+    <string name="legend_detail_heavy_snow">Starker Schneefall</string>
+
+    <!-- Speed readout -->
+    <string name="speed_unit_kmh">km/h</string>
+    <string name="speed_unit_mph">mph</string>
+
+    <!-- Weather widget -->
+    <string name="cd_wind_direction">Windrichtung</string>
+
+    <!-- POI category labels -->
+    <string name="poi_gas_station">Tankstelle</string>
+    <string name="poi_ev_charging">Ladestation</string>
+    <string name="poi_restaurant">Restaurant</string>
+    <string name="poi_fast_food">Schnellimbiss</string>
+    <string name="poi_cafe">Café</string>
+    <string name="poi_bar">Bar / Kneipe</string>
+    <string name="poi_supermarket">Supermarkt</string>
+    <string name="poi_convenience">Kleiner Laden</string>
+    <string name="poi_pharmacy">Apotheke</string>
+    <string name="poi_hospital">Krankenhaus</string>
+    <string name="poi_hotel">Hotel</string>
+    <string name="poi_motel">Motel</string>
+    <string name="poi_campsite">Campingplatz</string>
+    <string name="poi_parking">Parkplatz</string>
+    <string name="poi_rest_area">Rastplatz</string>
+    <string name="poi_atm">Geldautomat</string>
+    <string name="poi_bank">Bank</string>
+    <string name="poi_post_office">Postamt</string>
+    <string name="poi_car_repair">Autowerkstatt</string>
+    <string name="poi_car_wash">Autowaschanlage</string>
+    <string name="poi_laundry">Waschsalon</string>
+    <string name="poi_toilets">Toiletten</string>
+    <string name="poi_police">Polizei</string>
+    <string name="poi_fire_station">Feuerwehr</string>
+    <string name="poi_library">Bibliothek</string>
+    <string name="poi_park">Park</string>
+    <string name="poi_viewpoint">Aussichtspunkt</string>
+    <string name="poi_museum">Museum</string>
+    <string name="poi_tourist_info">Touristeninformation</string>
+
+    <!-- Map style display names -->
+    <string name="style_liberty">Liberty</string>
+    <string name="style_dark">Dunkel</string>
+    <string name="style_dark_small_roads">Dunkel (kleine Straßen)</string>
+    <string name="style_custom_light">Benutzerdefiniert Hell</string>
+    <string name="style_custom_dark">Benutzerdefiniert Dunkel</string>
+    <string name="style_auto">Auto</string>
+</resources>

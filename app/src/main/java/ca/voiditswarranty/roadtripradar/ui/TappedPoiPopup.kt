@@ -31,7 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import org.maplibre.spatialk.geojson.Point
@@ -123,7 +125,7 @@ fun TappedPoiPopup(vm: MapViewModel) {
                                 }
                             }
                             IconButton(onClick = { vm.dismissTappedPoi() }) {
-                                Icon(Icons.Default.Close, contentDescription = "Close")
+                                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cd_close))
                             }
                         }
 
@@ -139,7 +141,7 @@ fun TappedPoiPopup(vm: MapViewModel) {
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
                                 Icon(Icons.Default.Navigation, contentDescription = null)
-                                Text("Navigate Here", style = MaterialTheme.typography.titleMedium)
+                                Text(stringResource(R.string.action_navigate_here), style = MaterialTheme.typography.titleMedium)
                             }
                         }
                     }
