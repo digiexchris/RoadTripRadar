@@ -1,11 +1,11 @@
-RoadTripRadar is a map app prioritizing situational awareness and weather. Live weather radar imagery on an interactive map, helping you see precipitation along your direction of travel at a glance.
+RoadTripRadar on karttasovellus, joka priorisoi tilannetietoisuutta ja säätä. Elävät säätutkakuvat interaktiivisella kartalla, mikä auttaa näkemään sademäärän matkan suunnassa yhdellä silmäyksellä.
 
-Features:
-- Distance rings centered on your location that adapt to zoom level.
-- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!
-- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists that want notice to reroute around a storm or gear up.
-- Wind speed and direction
-- Temperature and 1 hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colours for either.
-- Speed readout with metric and imperial units, adjustable font size.
-- Open source, no tracking, no accounts, no ads.
+Ominaisuudet:
+- Etäisyys renkaat keskitetty sijaintiin, joka sopeutuu zoomaustasolle.
+- Navigoi käyttäen suuntaa määränpäähän jäykän käännös-ohjeen sijasta. Täydellinen tutkimusmatkailijoille ja ihmisille, jotka haluavat vaeltaa!
+- Live animoitu säätutka RainViewerista säädettävällä läpinäkyvyydellä ja toistoohjaimilla. Täydellinen moottoripyöräilijöille, jotka haluavat ilmoituksen uudelleenreitittää noin myrsky tai vaihde ylös.
+- Tuulen nopeus ja suunta
+- Lämpötila ja 1 tunnin trendi
+- Useita karttatyylejä: Light, Dark, Auto, ja mukautettuja värejä joko.
+- Nopeus lukema metrinen ja keisarilliset yksiköt, säädettävä fontin koko.
+- Avoin lähdekoodi, ei seurantaa, ei tilejä, ei mainoksia.
