@@ -1,1 +1,1 @@
-Changes to the build pipeline
+Endringer i byggerledningen
