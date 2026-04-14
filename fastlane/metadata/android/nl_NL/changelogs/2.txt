@@ -1,0 +1,5 @@
+- Verbeterde weerradar tegel laadprestaties (voorlaad alle frames)
+- Compass knop schakelt nu tussen het noorden en de vorige kop
+- Standaard kaart-stijl gewijzigd in kleur donker voor nieuwe installaties
+- Fastlane metadata toegevoegd voor F-Droid
+- Verwijderde foojay-resolver plugin voor compatibiliteit F-Droid
