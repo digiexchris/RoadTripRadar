@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -156,11 +157,6 @@ fun ActionsDrawer(
                         onClick = { showQuitConfirm = true },
                     ),
                     DrawerAction(
-                        label = if (vm.isNorthUp) "Track Bearing" else "Track North",
-                        icon = Icons.Default.Navigation,
-                        onClick = { vm.isNorthUp = !vm.isNorthUp },
-                    ),
-                    DrawerAction(
                         label = "Nearby Places",
                         icon = Icons.Default.Place,
                         onClick = {
@@ -194,6 +190,17 @@ fun ActionsDrawer(
                             vm.closeActionsDrawer()
                         },
                     ),
+                )
+                else -> emptyList()
+            }
+
+            val subMenuActions = when (drawerPage) {
+                ActionsDrawerPage.Main -> listOf(
+                    DrawerAction(
+                        label = if (vm.isNorthUp) "Track Bearing" else "Track North",
+                        icon = Icons.Default.Navigation,
+                        onClick = { vm.isNorthUp = !vm.isNorthUp },
+                    ),
                     DrawerAction(
                         label = "Map",
                         icon = Icons.Default.Map,
@@ -215,10 +222,7 @@ fun ActionsDrawer(
                         onClick = { drawerPage = ActionsDrawerPage.Help },
                     ),
                 )
-                ActionsDrawerPage.Map -> emptyList()
-                ActionsDrawerPage.System -> emptyList()
-                ActionsDrawerPage.Weather -> emptyList()
-                ActionsDrawerPage.Help -> emptyList()
+                else -> emptyList()
             }
 
             Surface(
@@ -440,6 +444,19 @@ fun ActionsDrawer(
                                         enabled = action.enabled,
                                         onClick = action.onClick,
                                     )
+                                }
+                                if (subMenuActions.isNotEmpty()) {
+                                    item(span = { GridItemSpan(maxLineSpan) }) {
+                                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                                    }
+                                    items(subMenuActions) { action ->
+                                        DrawerActionFab(
+                                            label = action.label,
+                                            icon = action.icon,
+                                            enabled = action.enabled,
+                                            onClick = action.onClick,
+                                        )
+                                    }
                                 }
                             }
                         }
