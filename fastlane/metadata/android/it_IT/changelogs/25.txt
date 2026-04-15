@@ -1,1 +1,1 @@
-Fissare la freccia di direzione del vento non ruotando con la mappa.
+Correzione del problema per cui la freccia della direzione del vento non ruotava insieme alla mappa.
