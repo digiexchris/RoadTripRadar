@@ -1,1 +1,1 @@
-Als je categorieën hebt geselecteerd op plaatsen in de buurt die geselecteerd zijn, zullen ze automatisch laten zien wanneer de app opstart. Als je dat gedrag wilt uitschakelen, wordt het menu Dichtbij Plaatsen uitgeschakeld om het uit te schakelen.
+Als je categorieën in Nabije plaatsen hebt geselecteerd, worden ze automatisch weergegeven wanneer de app start. Als je dat gedrag wilt uitschakelen, is er een schakelaar in het menu Nabije plaatsen om dit uit te zetten.
