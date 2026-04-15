@@ -1,13 +1,13 @@
-Wstępne wydanie RoadTripRadar.
+Pierwsze wydanie RoadTripRadar.
 
-- Animowana nakładka radaru pogodowego na żywo z RainViewer
-- Nawigacja z narożnikiem do punktów interesujących
+- Nakładka z animowanym radarem pogodowym na żywo od RainViewer
+- Nawigacja do punktów zainteresowania oparta na namiarze
 - Wyszukiwanie POI według nazwy lub kategorii
-- Upuść POI przez długie naciśnięcie mapy
+- Dodawanie POI przez długie naciśnięcie mapy
 - Pierścienie odległości wokół Twojej lokalizacji
-- Odczyt prędkości w metrycznym lub imperialnym
-- Trzy style mapy: wolność, ciemność, kolor ciemny
-- Przycisk kompasu z przełącznikiem kursu
-- Przezroczystość radaru
+- Wyświetlanie prędkości w systemie metrycznym lub imperialnym
+- Trzy style mapy: Liberty, Dark, Color Dark
+- Przycisk kompasu z przełącznikiem kierunku
+- Regulowana przezroczystość radaru
 - Konfigurowalny rozmiar interfejsu użytkownika
-- Tryb włączania ekranu
+- Tryb utrzymywania włączonego ekranu
