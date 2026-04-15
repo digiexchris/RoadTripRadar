@@ -1,8 +1,8 @@
 {
   "releases": [
     {
-      "versionName": "next",
-      "versionCode": -1,
+      "versionName": "1.12.0-rc1",
+      "versionCode": 27,
       "items": [
         "Internationalization support. If you see any issues with any of these translations, or would like to help, please let me know!"
       ]
