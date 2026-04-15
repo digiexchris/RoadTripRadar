@@ -1,1 +1,1 @@
-Obsługa internacjonalizacji. Jeśli zauważysz jakiekolwiek problemy z którymkolwiek z tych tłumaczeń, daj mi znać!
+Obsługa internacjonalizacji. Jeśli zauważysz jakiekolwiek problemy z którymkolwiek z tych tłumaczeń lub chcesz pomóc, daj mi znać!
