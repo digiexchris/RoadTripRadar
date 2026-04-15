@@ -1,1 +1,1 @@
-Beheben Sie den Pfeil in Richtung Wind, der nicht mit der Karte rotiert.
+Behoben, dass sich der Pfeil für die Windrichtung nicht mit der Karte dreht.
