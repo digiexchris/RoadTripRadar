@@ -1,1 +1,1 @@
-Verschiebe Metadaten zurücksetzen
+Verschieben von Metadaten rückgängig machen
