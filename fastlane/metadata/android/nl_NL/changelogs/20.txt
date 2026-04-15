@@ -1,1 +1,1 @@
-Voeg kleine weerwidget toe voor windsnelheid, richting en sfeertemp
+Kleine weerwidget toevoegen voor windsnelheid, windrichting en omgevingstemperatuur
