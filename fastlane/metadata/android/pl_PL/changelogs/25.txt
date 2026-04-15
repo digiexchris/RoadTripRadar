@@ -1,1 +1,1 @@
-Napraw strzałkę kierunku wiatru nie obracającą się z mapą.
+Naprawiono problem z tym, że strzałka kierunku wiatru nie obracała się razem z mapą.
