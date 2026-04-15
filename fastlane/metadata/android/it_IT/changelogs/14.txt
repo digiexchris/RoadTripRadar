@@ -1,1 +1,1 @@
-Correggi il pulsante Compass, non bloccando la mappa a nord-is-up quando l'utente si muove
+Corretto il problema per cui il pulsante Bussola non bloccava la mappa con il nord rivolto verso l'alto quando l'utente si spostava
