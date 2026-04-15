@@ -1,1 +1,1 @@
-Správně upravit pracovní postup na verzi aplikace
+Upravit workflow tak, aby aplikace byla správně verzována
