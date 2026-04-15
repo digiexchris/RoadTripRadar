@@ -1,1 +1,1 @@
-Useita käyttöliittymiä korjaa GPS:n ja verkon tilan kuvakkeet
+Useita käyttöliittymäkorjauksia GPS- ja verkkotilan kuvakkeisiin
