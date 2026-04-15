@@ -1,1 +1,1 @@
-Lisää pieni sääwidget tuulen nopeudelle, suunnalle ja ympäristön temp
+Lisää pieni sääwidget tuulen nopeudelle, suunnalle ja ympäristön lämpötilalle
