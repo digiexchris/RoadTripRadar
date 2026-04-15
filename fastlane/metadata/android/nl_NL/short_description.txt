@@ -1,1 +1,1 @@
-Een kaart-app die prioriteit geeft aan situationeel bewustzijn en weer.
+Een kaartapp die situationeel bewustzijn en weer prioriteert.
