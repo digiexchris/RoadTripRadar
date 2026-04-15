@@ -1,1 +1,1 @@
-Několik ikon uživatelského rozhraní opravuje GPS a stav sítě
+Několik oprav uživatelského rozhraní ikon stavu GPS a sítě
