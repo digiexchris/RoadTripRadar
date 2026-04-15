@@ -1,1 +1,1 @@
-Ulepszenia rurociągów dla FDroid
+Drobne poprawki w pipeline dla F-Droid
