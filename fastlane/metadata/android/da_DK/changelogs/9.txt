@@ -1,1 +1,1 @@
-Fjern signeringsopsætning for at bygge usignerede APK'er til FDroid
+Fjern signeringskonfiguration for at bygge usignerede APK'er til F-Droid
