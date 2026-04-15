@@ -1,1 +1,1 @@
-Återgå flytta metadata
+Återställ flyttning av metadata
