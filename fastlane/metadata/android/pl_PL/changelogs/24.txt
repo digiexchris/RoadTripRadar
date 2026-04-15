@@ -1,1 +1,1 @@
-Jeśli masz wybrane kategorie w pobliżu miejsc, będą one automatycznie pokazywać się po uruchomieniu aplikacji. Jeśli chcesz wyłączyć to zachowanie, w menu Pobliskich Miejsc jest przełącznik aby go wyłączyć.
+Jeśli masz wybrane jakiekolwiek kategorie w sekcji Miejsca w pobliżu, będą one automatycznie wyświetlane po uruchomieniu aplikacji. Jeśli chcesz wyłączyć to działanie, w menu Miejsca w pobliżu znajduje się przełącznik, którym możesz to wyłączyć.
