@@ -1,1 +1,1 @@
-Änderungen an der Pipeline
+Änderungen an der Build-Pipeline
