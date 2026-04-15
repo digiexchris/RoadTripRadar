@@ -1,1 +1,1 @@
-Työnkulun säätäminen versiosovellukseen oikein
+Säädä työnkulku versioimaan sovellus oikein
