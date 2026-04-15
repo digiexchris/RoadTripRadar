@@ -1,1 +1,1 @@
-Repareer kompasKnop niet vergrendelen van kaart naar noord-is-up wanneer de gebruiker beweegt
+Opgelost dat de kompas-knop de kaart niet op noord-boven vergrendelde wanneer de gebruiker de kaart verplaatste
