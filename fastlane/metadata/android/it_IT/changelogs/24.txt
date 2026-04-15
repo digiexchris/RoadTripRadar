@@ -1,1 +1,1 @@
-Se hai selezionato qualche categoria nei Luoghi nelle vicinanze, inizierà a mostrare automaticamente all'avvio dell'app. Se vuoi disabilitare questo comportamento, c'è un interruttore nel menu Posti nelle vicinanze per disattivarlo.
+Se hai selezionato delle categorie in Luoghi nelle vicinanze, inizieranno a essere mostrate automaticamente all'avvio dell'app. Se vuoi disattivare questo comportamento, nel menu Luoghi nelle vicinanze c'è un interruttore per disattivarlo.
