@@ -1,1 +1,1 @@
-Aggiungi piccolo widget meteo per velocità, direzione e temperatura del vento
+Aggiungi un piccolo widget meteo per velocità del vento, direzione e temperatura ambiente
