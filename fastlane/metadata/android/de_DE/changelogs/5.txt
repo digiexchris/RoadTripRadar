@@ -1,1 +1,1 @@
-Bereinigt für FDroid-Build
+Für den F-Droid-Build bereinigt
