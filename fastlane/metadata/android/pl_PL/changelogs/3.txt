@@ -1,1 +1,1 @@
-Dostosuj przepływ pracy do aplikacji w wersji poprawnie
+Dostosuj workflow, aby poprawnie wersjonować aplikację
