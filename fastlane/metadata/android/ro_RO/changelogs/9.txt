@@ -1,1 +1,1 @@
-Eliminați configurarea semnării pentru a construi APK-uri nesemnate pentru FDroid
+Elimină configurația de semnare pentru a construi APK-uri nesemnate pentru F-Droid
