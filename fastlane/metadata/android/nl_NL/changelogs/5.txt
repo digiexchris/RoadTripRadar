@@ -1,1 +1,1 @@
-Opgeschoond voor FDroid bouwen
+Opgeschoond voor F-Droid-build
