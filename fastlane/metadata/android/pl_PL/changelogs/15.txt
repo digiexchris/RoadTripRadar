@@ -1,1 +1,1 @@
-Napraw CompassButton nie blokuje mapy na północ is-up kiedy użytkownik się przesuwa
+Naprawiono problem z tym, że przycisk kompasu nie blokował mapy w orientacji północą do góry, gdy użytkownik się poruszał
