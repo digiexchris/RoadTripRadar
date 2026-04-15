@@ -1,13 +1,13 @@
-Rilascio iniziale di RoadTripRadar.
+Versione iniziale di RoadTripRadar.
 
-- Sovrapposizione radar in tempo reale animato da RainViewer
-- Navigazione basata su cuscinetti a punti di interesse
-- Ricerca POI per nome o categoria
-- Rilascia POI premendo a lungo la mappa
-- Anelli di distanza intorno alla tua posizione
-- Velocità di lettura in metrica o imperiale
-- Tre stili della mappa: Libertà, Oscuro, Colore Scuro
-- Pulsante bussola con interruttore di intestazione
-- Opacità radar regolabile
-- Dimensione configurabile dell'interfaccia utente
-- Modalità schermo acceso
+- Sovrapposizione live del radar meteo animato da RainViewer
+- Navigazione basata sulla direzione verso punti di interesse
+- Ricerca dei POI per nome o categoria
+- Aggiunta di POI con pressione prolungata sulla mappa
+- Cerchi di distanza intorno alla tua posizione
+- Visualizzazione della velocità in unità metriche o imperiali
+- Tre stili di mappa: Liberty, Dark, Color Dark
+- Pulsante bussola con attivazione/disattivazione dell'orientamento
+- Opacità del radar regolabile
+- Dimensioni dell'interfaccia utente configurabili
+- Modalità schermo sempre acceso
