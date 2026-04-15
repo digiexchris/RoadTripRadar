@@ -1,1 +1,1 @@
-Cambia al pipeline de construcción
+Cambios en la canalización de compilación
