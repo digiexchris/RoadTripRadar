@@ -1,0 +1,1 @@
+Mejoras en el diseño horizontal, la leyenda del radar y la interfaz de usuario en general

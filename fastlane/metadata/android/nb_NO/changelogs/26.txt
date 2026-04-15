@@ -1,0 +1,2 @@
+Det finnes nå en ny temavelger for kart! Sjekk den ut i menyen -> Kart -> Velg tema. Standard mørkt kart er også justert for å vise små veier og stier bedre. Hvis du likte den gamle bedre, er den fortsatt tilgjengelig.
+Det finnes nå en spill av / pause / av-knapp for værradaren på hovedskjermen.

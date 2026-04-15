@@ -1,0 +1,1 @@
+Corrige que la flecha de dirección del viento no gire con el mapa.

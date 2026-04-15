@@ -1,0 +1,1 @@
+Naprawiono błąd polegający na tym, że przycisk kompasu nie utrzymywał orientacji mapy z północą u góry, gdy użytkownik przesuwał mapę

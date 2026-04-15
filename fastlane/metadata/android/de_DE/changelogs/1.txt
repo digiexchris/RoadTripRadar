@@ -1,0 +1,13 @@
+Erstveröffentlichung von RoadTripRadar.
+
+- Live-animierte Wetterradar-Überlagerung von RainViewer
+- Peilungsbasierte Navigation zu Sehenswürdigkeiten
+- POI-Suche nach Name oder Kategorie
+- POI durch langes Drücken auf die Karte hinzufügen
+- Distanzringe um Ihren Standort
+- Geschwindigkeitsanzeige in metrischen oder imperialen Einheiten
+- Drei Kartenstile: Liberty, Dark, Color Dark
+- Kompass-Schaltfläche mit Umschaltung der Ausrichtung
+- Anpassbare Radar-Transparenz
+- Konfigurierbare Größe der Benutzeroberfläche
+- Modus zum Eingeschaltetlassen des Bildschirms

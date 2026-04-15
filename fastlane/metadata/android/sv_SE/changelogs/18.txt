@@ -1,0 +1,1 @@
+Flera UI-fixar för GPS- och nätverksstatusikoner

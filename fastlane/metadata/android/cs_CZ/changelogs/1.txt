@@ -1,0 +1,13 @@
+První vydání aplikace RoadTripRadar.
+
+- Živá animovaná vrstva meteorologického radaru od RainViewer
+- Navigace k bodům zájmu podle azimutu
+- Vyhledávání bodů zájmu podle názvu nebo kategorie
+- Přidání bodu zájmu dlouhým stisknutím mapy
+- Vzdálenostní kružnice kolem vaší polohy
+- Zobrazení rychlosti v metrických nebo imperiálních jednotkách
+- Tři styly mapy: Liberty, Dark, Color Dark
+- Tlačítko kompasu s přepínáním směru
+- Nastavitelná průhlednost radaru
+- Nastavitelná velikost uživatelského rozhraní
+- Režim ponechání obrazovky zapnuté

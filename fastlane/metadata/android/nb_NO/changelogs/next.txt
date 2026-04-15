@@ -1,0 +1,1 @@
+Støtte for internasjonalisering. Hvis du oppdager noen problemer med noen av disse oversettelsene, gi meg gjerne beskjed!

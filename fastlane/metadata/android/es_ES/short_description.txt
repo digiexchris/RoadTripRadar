@@ -1,0 +1,1 @@
+Una aplicación de mapas que prioriza el conocimiento de la situación y el clima.

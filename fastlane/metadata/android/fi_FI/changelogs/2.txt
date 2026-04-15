@@ -1,0 +1,5 @@
+- Parannettu säätutkan karttatiilien latausnopeutta (esiladataan kaikki ruudut)
+- Kompassipainike vaihtaa nyt pohjoinen ylös -näkymän ja edellisen suunnan välillä
+- Oletuskarttatyyliksi on vaihdettu Color Dark uusissa asennuksissa
+- Lisätty Fastlane-metatiedot F-Droidia varten
+- Poistettu foojay-resolver-liitännäinen F-Droid-yhteensopivuuden vuoksi

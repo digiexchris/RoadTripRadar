@@ -1,0 +1,1 @@
+Rett feil der kompassknappen ikke låste kartet til nord opp når brukeren beveger seg

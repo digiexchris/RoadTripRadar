@@ -1,0 +1,3 @@
+Endringslogg i appen: Se Hva er nytt etter oppdateringer og hele historikken under Hjelp og info.
+Du kan nå se interessepunkter i nærheten av posisjonen din! Sjekk det ut under Meny->Steder.
+Vi har gjort en stor omarbeiding av menyen for å gjøre ting lettere å finne, og lettere å bruke med hansker på.

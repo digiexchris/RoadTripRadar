@@ -1,0 +1,5 @@
+- Forbedret innlastingsytelse for vær-radarkartfliser (forhåndslaster alle bilderammer)
+- Kompassknappen veksler nå mellom nord opp og forrige retning
+- Standard kartstil er endret til Color Dark for nye installasjoner
+- La til Fastlane-metadata for F-Droid
+- Fjernet foojay-resolver-plugin for F-Droid-kompatibilitet

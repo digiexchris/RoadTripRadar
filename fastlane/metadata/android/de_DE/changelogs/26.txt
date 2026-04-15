@@ -1,0 +1,2 @@
+Es gibt jetzt einen neuen Kartenstil-Auswahlschalter! Sieh ihn dir im Menü unter "Karte" -> "Thema auswählen" an. Außerdem wurde die standardmäßige dunkle Karte so angepasst, dass kleine Straßen und Wege besser sichtbar sind. Wenn dir die alte Variante besser gefallen hat, ist sie weiterhin verfügbar.
+Auf dem Hauptbildschirm gibt es jetzt eine Schaltfläche zum Abspielen/Pausieren/Ausschalten für das Wetterradar.

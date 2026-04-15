@@ -1,0 +1,1 @@
+Problem behoben, dass die Kompass-Schaltfläche die Karte nicht auf Nordausrichtung mit Norden oben fixiert, wenn der Benutzer die Karte bewegt

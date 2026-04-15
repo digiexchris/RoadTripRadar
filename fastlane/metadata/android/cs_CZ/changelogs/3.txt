@@ -1,0 +1,1 @@
+Upravit workflow tak, aby aplikace byla správně verzována

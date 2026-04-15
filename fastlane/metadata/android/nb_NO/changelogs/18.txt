@@ -1,0 +1,1 @@
+Flere feilrettinger i brukergrensesnittet for GPS- og nettverksstatusikoner
