@@ -1,1 +1,1 @@
-Pipeline muokkaus FDroidille
+Pieniä säätöjä F-Droid-putkeen
