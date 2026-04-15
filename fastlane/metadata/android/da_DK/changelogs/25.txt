@@ -1,1 +1,1 @@
-Fix vindretning pilen ikke roterer med kortet.
+Ret vindretningspilen, der ikke roterer med kortet.
