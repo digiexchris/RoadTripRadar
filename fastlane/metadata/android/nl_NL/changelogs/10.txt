@@ -1,1 +1,1 @@
-Wijzigingen in de bouw pipeline
+Wijzigingen in de buildpipeline
