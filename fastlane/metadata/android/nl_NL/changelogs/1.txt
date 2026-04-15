@@ -1,13 +1,13 @@
-Eerste versie van RoadTripRadar.
+Eerste release van RoadTripRadar.
 
-- Live geanimeerde weerradar overlay van RainViewer
-- Beernavigatie naar interessante punten
+- Live geanimeerde weerradar-overlay van RainViewer
+- Koersgebaseerde navigatie naar interessante plaatsen
 - POI zoeken op naam of categorie
-- Laat POI vallen door lang op de kaart te drukken
-- Afstand ringen rond je locatie
-- Snelheid readout in metrisch of imperiaal
-- Drie kaart stijlen: Liberty, Dark, Color Dark
-- Kompas met koptekstknop
-- Verstelbare doorzichtigheid van de radar
-- Configureerbare UI grootte
-- Keep-screen-on modus
+- POI toevoegen door lang op de kaart te drukken
+- Afstandsringen rond je locatie
+- Snelheidsweergave in metrisch of imperiaal
+- Drie kaartstijlen: Liberty, Dark, Color Dark
+- Kompasknop met richtingsschakelaar
+- Instelbare radartransparantie
+- Configureerbare UI-grootte
+- Scherm-aan-modus
