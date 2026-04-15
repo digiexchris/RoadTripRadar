@@ -1,1 +1,1 @@
-Limpiado para la construcción de FDroid
+Ajustado para la compilación de F-Droid
