@@ -1,1 +1,1 @@
-Repară CompassButton care nu blochează harta la is-up de nord atunci când utilizatorul se mișcă
+Remediați problema prin care Butonul busolă nu blochează harta cu nordul în sus atunci când utilizatorul se deplasează
