@@ -1,1 +1,1 @@
-Ajustări pentru conducte pentru FDroid
+Ajustări ale pipeline-ului pentru F-Droid
