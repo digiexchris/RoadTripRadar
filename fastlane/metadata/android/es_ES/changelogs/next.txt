@@ -1,1 +1,1 @@
-Soporte de internacionalización. Si ves algún problema con alguna de estas traducciones, por favor házmelo saber!
+Compatibilidad con la internacionalización. Si ves algún problema con alguna de estas traducciones, ¡háznoslo saber!
