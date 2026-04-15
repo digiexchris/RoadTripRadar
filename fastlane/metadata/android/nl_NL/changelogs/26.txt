@@ -1,2 +1,2 @@
-Er is een nieuwe kaart thema gekozen! Bekijk het in het menu -> Map -> Kies Thema. Ook is de standaard donkere kaart aangepast om kleine wegen en wegen beter te tonen. Als je de oude beter leuk vond, is het nog steeds beschikbaar.
-Er is nu een afspraak/pauze/uit knop voor de weerradar op het hoofdscherm.
+Er is een nieuwe kaartthemakeuzer! Bekijk hem in het menu -> Kaart -> Thema kiezen. Ook is de standaard donkere kaart aangepast om kleine wegen en paden beter weer te geven. Als je de oude beter vond, is die nog steeds beschikbaar.
+Er is nu een knop voor afspelen/pauzeren/uit voor de weerradar op het hoofdscherm.
