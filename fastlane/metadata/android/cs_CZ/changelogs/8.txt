@@ -1,1 +1,1 @@
-Vylepšení potrubí pro FDroid
+Úpravy pipeline pro F-Droid
