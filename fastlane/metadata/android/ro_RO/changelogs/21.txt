@@ -1,1 +1,1 @@
-Permite majorității mărimii widgetului să fie reglabil individual
+Permite ajustarea individuală a dimensiunii majorității widgeturilor
