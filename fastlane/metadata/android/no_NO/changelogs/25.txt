@@ -1,1 +1,1 @@
-Fiks vindretning pilen som ikke roterer med kartet.
+Rett feilen der pilen for vindretning ikke roterer sammen med kartet.
