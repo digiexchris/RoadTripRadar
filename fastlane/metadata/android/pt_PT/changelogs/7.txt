@@ -1,1 +1,1 @@
-Reverter metadados de movimento
+Reverter movimentação de metadados
