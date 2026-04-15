@@ -1,1 +1,1 @@
-Salli useimpien widgettien kokojen olla yksilöllisesti säädettävissä.
+Salli useimpien pienoissovellusten koon säätäminen erikseen
