@@ -1,3 +1,3 @@
-In-app changelog: bekijk wat is nieuw na updates en volledige geschiedenis van Help & Info.
-U kunt nu interessante punten zien in de buurt van uw locatie! Bekijk het in het Menu->Plaatsen.
-We hebben een grote menurefactor gedaan om dingen gemakkelijker te vinden en makkelijker te beheren met handschoenen aan.
+In-app wijzigingslogboek: bekijk Wat is er nieuw na updates en de volledige geschiedenis via Help & Info.
+Je kunt nu interessante locaties in de buurt van je locatie zien! Bekijk het in Menu->Plaatsen.
+We hebben het menu grondig herzien om dingen makkelijker te vinden te maken en makkelijker te bedienen met handschoenen aan.
