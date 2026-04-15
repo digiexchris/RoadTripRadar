@@ -1,1 +1,1 @@
-Oprenset op til FDroid build
+Ryddet op til F-Droid-build
