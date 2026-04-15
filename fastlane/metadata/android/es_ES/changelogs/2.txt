@@ -1,5 +1,5 @@
-- Mejoras en el rendimiento de carga de las baldosas radares meteorológicas (precarga todos los cuadros)
-- Botón de brújula ahora cambia entre el rumbo anterior y el norte
-- Estilo de mapa por defecto cambiado a Color Dark para nuevas instalaciones
-- Metadatos Fastlane añadidos para F-Droid
-- Se ha eliminado el plugin foojay-resolver para compatibilidad con F-Droid
+- Se mejoró el rendimiento de carga de los mosaicos del radar meteorológico (precarga de todos los fotogramas)
+- El botón de la brújula ahora alterna entre orientación al norte y el rumbo anterior
+- El estilo de mapa predeterminado se cambió a Color Dark para instalaciones nuevas
+- Se añadieron metadatos de Fastlane para F-Droid
+- Se eliminó el complemento foojay-resolver para la compatibilidad con F-Droid
