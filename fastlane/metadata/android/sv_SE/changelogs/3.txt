@@ -1,1 +1,1 @@
-Justera arbetsflödet till versionsappen korrekt
+Justera arbetsflödet så att appen versionshanteras korrekt
