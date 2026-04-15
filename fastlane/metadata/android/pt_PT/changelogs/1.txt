@@ -1,13 +1,13 @@
 Lançamento inicial do RoadTripRadar.
 
-- Sobreposição de radar meteorológico animado pelo RainViewer
-- Navegação baseada em indicador para pontos de interesse
-- Busca de POI por nome ou categoria
-- Deixar POI pressionando longamente o mapa
-- Anéis de distância em torno da sua localização
-- Velocidade de leitura em métrica ou imperial
-- Três estilos do mapa: Liberdade, Escuro, Cor Escura
-- Botão de bússola com botão de cabeçalho
+- Sobreposição de radar meteorológico animado ao vivo da RainViewer
+- Navegação baseada em rumo para pontos de interesse
+- Pesquisa de POIs por nome ou categoria
+- Adicione um POI pressionando e segurando o mapa
+- Anéis de distância ao redor da sua localização
+- Exibição de velocidade em sistema métrico ou imperial
+- Três estilos de mapa: Liberty, Dark, Color Dark
+- Botão de bússola com alternância de direção
 - Opacidade do radar ajustável
-- Tamanho Configurável da UI
-- Modo Keep-screen-on
+- Tamanho da interface configurável
+- Modo de manter a tela ligada
