@@ -1,1 +1,1 @@
-Workflow an die Versionsanwendung korrekt anpassen
+Workflow anpassen, damit die App korrekt versioniert wird
