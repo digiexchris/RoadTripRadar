@@ -1,2 +1,2 @@
-Det finns en ny karta tema väljare! Kolla in det i menyn -> Karta -> Välj tema. Dessutom har standard mörk karta tweaked för att visa små vägar och vägar bättre. Om du gillade den gamla bättre, är det fortfarande tillgängligt.
-Det finns nu en play/paus/off knapp för väderradarn på huvudskärmen.
+Det finns nu en ny väljare för karttema! Kolla in den i menyn -> Karta -> Välj tema. Dessutom har standardtemat för den mörka kartan justerats för att visa små vägar och stigar bättre. Om du tyckte bättre om den gamla finns den fortfarande kvar.
+Det finns nu en spela upp/pausa/stäng av-knapp för väderradarn på huvudskärmen.
