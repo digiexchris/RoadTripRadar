@@ -1,1 +1,1 @@
-Horizontales Layout, Radarlegende und allgemeine UI-Verbesserungen
+Horizontales Layout, Radar-Legende und allgemeine UI-Verbesserungen
