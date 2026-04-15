@@ -1,1 +1,1 @@
-Ripristina lo spostamento dei metadati
+Annulla spostamento dei metadati
