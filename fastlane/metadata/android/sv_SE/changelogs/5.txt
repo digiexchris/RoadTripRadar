@@ -1,1 +1,1 @@
-Rensade upp för att bygga FDroid
+Rensat upp för F-Droid-bygge
