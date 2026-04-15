@@ -1,1 +1,1 @@
-Kilka ikon UI naprawia GPS i stan sieci
+Kilka poprawek interfejsu użytkownika dotyczących ikon stanu GPS i sieci
