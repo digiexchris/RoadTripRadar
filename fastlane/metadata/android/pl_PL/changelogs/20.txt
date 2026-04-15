@@ -1,1 +1,1 @@
-Dodaj mały widżet pogody dla prędkości wiatru, kierunku i temperatury otoczenia
+Dodaj mały widżet pogodowy dla prędkości wiatru, kierunku wiatru i temperatury otoczenia
