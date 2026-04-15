@@ -1,1 +1,1 @@
-Pipeline optimiert für FDroid
+Pipeline-Optimierungen für F-Droid
