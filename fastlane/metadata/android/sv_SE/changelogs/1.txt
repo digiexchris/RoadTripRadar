@@ -1,13 +1,13 @@
-Initial release av RoadTripRadar.
+Första utgåvan av RoadTripRadar.
 
-- Live animerade väderradaröverlagring från RainViewer
-- Bäringsbaserad navigering till intressanta platser
+- Liveanimerat väderradaröverlägg från RainViewer
+- Kursbaserad navigering till intressanta platser
 - POI-sökning efter namn eller kategori
-- Släpp POI genom att trycka länge på kartan
-- Avstånd ringar runt din plats
-- Hastighet avläsning i metrisk eller kejserlig
-- Tre kartstilar: Frihet, mörk, Färg Mörk
-- Kompass knapp med rubrik växla
+- Lägg till POI genom att långtrycka på kartan
+- Distansringar runt din plats
+- Hastighetsvisning i metriska eller brittiska enheter
+- Tre kartstilar: Liberty, Dark, Color Dark
+- Kompassknapp med riktningsväxling
 - Justerbar radaropacitet
-- Konfigurerbar UI-dimensionering
-- Keep-screen-on-läge
+- Konfigurerbar storlek på användargränssnittet
+- Håll skärmen på-läge
