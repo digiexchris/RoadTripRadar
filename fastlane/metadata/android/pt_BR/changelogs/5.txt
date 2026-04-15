@@ -1,1 +1,1 @@
-Removido para compilação do FDroid
+Ajustado para a compilação do F-Droid
