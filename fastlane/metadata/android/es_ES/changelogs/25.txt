@@ -1,1 +1,1 @@
-Fije la flecha de dirección del viento que no gira con el mapa.
+Corrige que la flecha de dirección del viento no gire con el mapa.
