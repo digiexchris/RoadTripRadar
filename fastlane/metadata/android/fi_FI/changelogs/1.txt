@@ -1,13 +1,13 @@
-RoadTripRadarin ensimmäinen vapauttaminen.
+RoadTripRadarin ensimmäinen julkaisu.
 
-- Elävä animoitu säätutka RainViewerista
-- Suuntopohjainen navigointi kiinnostaviin kohteisiin
-- POI-haku nimen tai kategorian mukaan
-- Pudota POI painamalla karttaa pitkään
-- Etäisyys renkaat sijaintisi ympärillä
-- Nopeus lukema metrinen tai keisarillinen
-- Kolme karttatyyliä: Liberty, Tumma, väri Tumma
-- Kompassi painike otsikon päälle
-- Säädettävä tutka läpinäkyvyys
-- Konfiguroitavissa oleva käyttöliittymän mitoitus
-- Pidä näytön päällä -tila
+- RainViewerin tarjoama reaaliaikainen animoitu säätutkapeite
+- Suuntimaan perustuva navigointi kiinnostaviin kohteisiin
+- KI-pistehaku nimen tai kategorian mukaan
+- Lisää KI-piste painamalla karttaa pitkään
+- Etäisyysrenkaat sijaintisi ympärillä
+- Nopeusnäyttö metrisenä tai brittiläisenä
+- Kolme karttatyyliä: Liberty, Dark, Color Dark
+- Kompassipainike, jossa suuntakytkin
+- Säädettävä tutkan peittävyys
+- Määritettävä käyttöliittymän koko
+- Pidä näyttö päällä -tila
