@@ -1,1 +1,1 @@
-Layout orizontal, legenda radarului și îmbunătățiri generale ale interfeței
+Aspect orizontal, legendă radar și îmbunătățiri generale ale interfeței utilizator
