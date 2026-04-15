@@ -1,1 +1,1 @@
-Rimuovi la configurazione di firma per creare APK non firmati per FDroid
+Rimuovi la configurazione di firma per creare APK non firmati per F-Droid
