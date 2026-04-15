@@ -1,1 +1,1 @@
-Zmiany w budowie rurociągu
+Zmiany w potoku kompilacji
