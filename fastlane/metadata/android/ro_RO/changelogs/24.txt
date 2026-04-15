@@ -1,1 +1,1 @@
-Dacă aveți orice categorii în locurile selectate din Nearby, acestea vor începe să apară automat când aplicația pornește. Dacă doriţi să dezactivaţi acest comportament, există un întrerupător în meniul Locuri Nearby pentru a-l dezactiva.
+Dacă aveți selectate categorii în Locuri din apropiere, acestea vor începe să fie afișate automat când aplicația pornește. Dacă doriți să dezactivați acest comportament, există un comutator în meniul Locuri din apropiere pentru a-l opri.
