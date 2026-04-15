@@ -1,1 +1,1 @@
-Horizontální rozložení, legenda radaru a obecné vylepšení uživatelského rozhraní
+Vodorovné rozložení, legenda radaru a obecná vylepšení uživatelského rozhraní
