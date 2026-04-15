@@ -1,11 +1,11 @@
-RoadTripRadar este o aplicație de hartă care prioritizează conștientizarea situației și a vremii. Imaginea radarului meteo live pe o hartă interactivă, ajutându-te să vezi precipitațiile de-a lungul direcției de deplasare dintr-o privire.
+RoadTripRadar este o aplicație de hărți care prioritizează conștientizarea situațională și vremea. Imagini radar meteo live pe o hartă interactivă, ajutându-te să vezi precipitațiile de-a lungul direcției tale de deplasare dintr-o privire.
 
-Caracteristici:
-- Inelele de distanță centrate pe locația dvs. care se adaptează la nivelul de zoom.
-- Navigați folosind destinația dvs. în loc de instrucțiuni rigide de cu rotație. Perfect pentru exploratori şi oameni cărora le place să călătorească!
-- Radarul meteo viu animat din RainViewer cu opacitate reglabilă și controale de redare. Perfect pentru motocicliști care doresc să anunțe redirecționarea în jurul unei furtuni sau să se instaleze.
-- Viteza şi direcţia vântului
-- Temperatură şi tendinţă de 1 oră
-- Stiluri multiple de hărți: Lumine, Întunecat, Auto și culori personalizate pentru fie.
-- Viteza de citire cu unități metrice și imperiale, mărimea caracterelor reglabile.
-- Sursă deschisă, fără urmărire, fără conturi, fără reclame.
+Funcții:
+- Cercuri de distanță centrate pe locația ta, care se adaptează nivelului de zoom.
+- Navighează folosind direcția către destinație, în locul instrucțiunilor rigide pas cu pas. Perfect pentru exploratori și pentru oamenii cărora le place să hoinărească!
+- Radar meteo live animat de la RainViewer, cu opacitate ajustabilă și controale de redare. Perfect pentru motocicliștii care vor să fie avertizați să ocolească o furtună sau să se echipeze corespunzător.
+- Viteza și direcția vântului
+- Temperatură și tendința pe 1 oră
+- Mai multe stiluri de hartă: Deschis, Închis, Automat și culori personalizate pentru oricare dintre ele.
+- Afișarea vitezei cu unități metrice și imperiale, cu dimensiune ajustabilă a fontului.
+- Open source, fără urmărire, fără conturi, fără reclame.
