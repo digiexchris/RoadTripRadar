@@ -1,1 +1,1 @@
-Juster arbeidsflyt til versjonsprogrammet riktig
+Juster arbeidsflyten for å versjonere appen riktig
