@@ -1,1 +1,1 @@
-Fixa vind riktning pilen inte rotera med kartan.
+Åtgärda att pilen för vindriktning inte roterar med kartan.
