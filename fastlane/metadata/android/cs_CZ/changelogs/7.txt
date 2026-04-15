@@ -1,1 +1,1 @@
-Vrátit přesouvající metadata
+Vrátit přesun metadat
