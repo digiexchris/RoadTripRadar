@@ -1,1 +1,1 @@
-Corregir CompassButton no bloqueando mapa hacia el norte cuando el usuario se mueve
+Corregir que el botón de la brújula no bloquee el mapa con el norte hacia arriba cuando el usuario se mueve
