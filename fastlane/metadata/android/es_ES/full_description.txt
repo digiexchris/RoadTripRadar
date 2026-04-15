@@ -1,11 +1,11 @@
-RoadTripRadar es una aplicación de mapa que prioriza la conciencia de situación y el clima. Imágenes de radar en vivo en un mapa interactivo, ayudándote a ver precipitación a lo largo de tu dirección de viaje de un vistazo.
+RoadTripRadar es una aplicación de mapas que prioriza la conciencia situacional y el tiempo meteorológico. Imágenes en vivo del radar meteorológico en un mapa interactivo, que te ayudan a ver las precipitaciones en tu dirección de viaje de un vistazo.
 
-Caracterisas:
-- Anillos de distancia centrados en tu ubicación que se adaptan al nivel de acercamiento.
-- Navega usando el rodamiento hacia tu destino en lugar de rígidas instrucciones de giro hacia tu destino. ¡Perfecto para exploradores y personas que gustan de andar!
-- radar meteorológico animado en vivo desde RainViewer con controles ajustables de opacidad y reproducción. Perfecto para los motociclistas que quieren avisar para reorientar la ruta alrededor de una tormenta o prepararse.
-- Dirección y velocidad del viento
+Características:
+- Anillos de distancia centrados en tu ubicación que se adaptan al nivel de zoom.
+- Navega usando el rumbo hacia tu destino en lugar de instrucciones rígidas giro a giro. ¡Perfecto para exploradores y personas a las que les gusta deambular!
+- Radar meteorológico animado en vivo de RainViewer con opacidad ajustable y controles de reproducción. Perfecto para motociclistas que quieren tener aviso para desviar la ruta alrededor de una tormenta o equiparse adecuadamente.
+- Velocidad y dirección del viento
 - Temperatura y tendencia de 1 hora
-- Múltiples estilos del mapa: Luz, Oscuro, Auto, y colores personalizados para ambos.
-- Velocidad de lectura con unidades métricas e imperiales, tamaño de fuente ajustable.
-- Código abierto, sin seguimiento, sin cuentas, sin anuncios.
+- Múltiples estilos de mapa: Claro, Oscuro, Automático y colores personalizados para cualquiera de ellos.
+- Indicador de velocidad con unidades métricas e imperiales y tamaño de fuente ajustable.
+- Código abierto, sin rastreo, sin cuentas, sin anuncios.
