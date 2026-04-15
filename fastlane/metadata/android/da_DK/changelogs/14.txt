@@ -1,1 +1,1 @@
-Fix KompassButton ikke låser kort til nord-is-up når brugeren bevæger sig
+Ret fejl, hvor kompas-knappen ikke låser kortet til nord-op, når brugeren bevæger sig
