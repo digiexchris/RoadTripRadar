@@ -1,3 +1,3 @@
-Registro de mudanças no app: veja o que há de novo depois das atualizações e do histórico completo de ajuda e informação.
-Agora você pode ver pontos de interesse perto do seu local! Confira no Menu->Lugares.
-Fizemos um grande refatoração de menu para tornar as coisas mais fáceis de se encontrar e mais fáceis de se gerenciar com luvas ligadas.
+Registro de alterações no app: veja as Novidades após as atualizações e o histórico completo em Ajuda e Informações.
+Agora você pode ver pontos de interesse perto da sua localização! Confira em Menu->Locais.
+Fizemos uma grande reformulação do menu para facilitar encontrar as coisas e o uso com luvas.
