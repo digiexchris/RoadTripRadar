@@ -1,1 +1,1 @@
-Ajustar fluxo de trabalho para o aplicativo da versão corretamente
+Ajustar o fluxo de trabalho para versionar o aplicativo corretamente
