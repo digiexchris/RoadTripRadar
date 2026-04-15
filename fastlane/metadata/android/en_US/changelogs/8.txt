@@ -1,1 +1,1 @@
-Pipeline tweaks for FDroid
+Pipeline tweaks for F-Droid
