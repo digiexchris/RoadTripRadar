@@ -1,13 +1,13 @@
-Liberación inicial de RoadTripRadar.
+Lanzamiento inicial de RoadTripRadar.
 
-- Superposición de radar meteorológico animado en vivo desde RainViewer
-- Navegación basada en rodamientos a puntos de interés
-- Búsqueda POI por nombre o categoría
-- Soltar POI presionando el mapa
+- Superposición de radar meteorológico animado en vivo de RainViewer
+- Navegación basada en rumbo hacia puntos de interés
+- Búsqueda de PDI por nombre o categoría
+- Añadir un PDI manteniendo pulsado el mapa
 - Anillos de distancia alrededor de tu ubicación
-- Velocidad de lectura en métrica o imperial
-- Tres tipos de mapa: Libertad, Oscuridad, Color Oscuro
-- Botón de brújula con interruptor de encabezado
+- Indicador de velocidad en sistema métrico o imperial
+- Tres estilos de mapa: Liberty, Dark, Color Dark
+- Botón de brújula con selector de rumbo
 - Opacidad del radar ajustable
 - Tamaño de la interfaz configurable
-- Modo de bloqueo de pantalla
+- Modo de mantener la pantalla encendida
