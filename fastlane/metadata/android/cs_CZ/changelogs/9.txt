@@ -1,1 +1,1 @@
-Odstraňte konfiguraci podepisování pro sestavení nepodepsaných APK pro FDroid
+Odebrat konfiguraci podepisování pro sestavení nepodepsaných APK pro F-Droid
