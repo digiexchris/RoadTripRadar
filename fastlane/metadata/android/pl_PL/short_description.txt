@@ -1,1 +1,1 @@
-Mapa priorytetowa dla znajomości sytuacji i pogody.
+Aplikacja mapowa stawiająca na świadomość sytuacyjną i informacje pogodowe.
