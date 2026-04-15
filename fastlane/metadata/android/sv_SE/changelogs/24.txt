@@ -1,1 +1,1 @@
-Om du har några kategorier i närliggande platser valda, kommer de att visas automatiskt när appen startar. Om du vill inaktivera det beteendet finns det en strömbrytare på menyn Närliggande platser för att stänga av det.
+Om du har valt några kategorier i Platser i närheten kommer de att visas automatiskt när appen startar. Om du vill inaktivera det beteendet finns det en knapp i menyn Platser i närheten för att stänga av det.
