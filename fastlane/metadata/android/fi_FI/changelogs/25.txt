@@ -1,1 +1,1 @@
-Korjaa tuulen suunta nuoli ei pyörivät kartalla.
+Korjaa ongelma, jossa tuulen suunnan nuoli ei pyöri kartan mukana.
