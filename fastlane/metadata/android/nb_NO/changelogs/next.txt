@@ -1,1 +1,1 @@
-Internationalization support. Hvis du ser noe problem med noen av disse oversettelsene, vennligst gi meg beskjed!
+Støtte for internasjonalisering. Hvis du oppdager noen problemer med noen av disse oversettelsene, gi meg gjerne beskjed!
