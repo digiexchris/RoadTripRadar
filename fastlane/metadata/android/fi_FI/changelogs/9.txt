@@ -1,1 +1,1 @@
-Poista allekirjoitusasetus luodaksesi allekirjoittamattomat APK:t FDroidille
+Poista allekirjoitusmääritys, jotta voit rakentaa allekirjoittamattomia APK-paketteja F-Droidia varten
