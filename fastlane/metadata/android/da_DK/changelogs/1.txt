@@ -1,13 +1,13 @@
-Oprindelig frigivelse af RoadTripRadar.
+Første udgivelse af RoadTripRadar.
 
-- Live animeret vejrradar overlay fra RainViewer
-- Bæringsbaseret navigation til interessepunkter
-- POI søgning efter navn eller kategori
-- Drop POI ved at trykke længe på kortet
-- Afstand ringe omkring din placering
-- Hastighed udlæsning i metrisk eller kejserlig
-- Tre kort stilarter: Frihed, Mørk, Farve Mørk
-- Kompas knap med overskrift skifte
-- Justerbar radar opacitet
-- Konfigurerbar UI størrelse
-- Hold-skærm-on mode
+- Live animeret vejrradar-overlay fra RainViewer
+- Kursbaseret navigation til interessepunkter
+- Søg efter interessepunkter efter navn eller kategori
+- Tilføj et interessepunkt ved at trykke længe på kortet
+- Afstandsringe omkring din placering
+- Hastighedsvisning i metriske eller imperiale enheder
+- Tre kortstile: Liberty, Dark, Color Dark
+- Kompasknap med retningsskift
+- Justerbar radar-gennemsigtighed
+- Konfigurerbar størrelse på brugergrænsefladen
+- Hold-skærmen-tændt-tilstand
