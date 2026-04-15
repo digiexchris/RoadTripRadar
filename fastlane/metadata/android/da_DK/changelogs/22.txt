@@ -1,1 +1,1 @@
-Tilføj en hurtighandlingsknap som en nemmere måde at opdage hurtighandlingsmenuen
+Tilføj en knap til hurtige handlinger som en nemmere måde at finde menuen for hurtige handlinger på
