@@ -1,11 +1,11 @@
-RoadTripRadar to aplikacja wyznaczająca priorytety w zakresie znajomości sytuacji i pogody. Zdjęcie radaru pogodowego na interaktywnej mapie, dzięki któremu widzisz opady wzdłuż swojego kierunku podróży.
+RoadTripRadar to aplikacja mapowa stawiająca na świadomość sytuacyjną i pogodę. Obrazy radaru pogodowego na żywo na interaktywnej mapie pomagają jednym rzutem oka zobaczyć opady w kierunku podróży.
 
 Funkcje:
-- Pierścienie odległości wyśrodkowane na twojej lokalizacji, które dostosowują się do poziomu powiększenia.
-- Nawiguj za pomocą kierunku docelowego zamiast sztywnych instrukcji skręcania po zakręcie. Idealne dla odkrywców i ludzi, którzy lubią wędrować!
-- Żywy animowany radar pogodowy z RainViewer z regulowanymi kontrolami zmętnienia i odtwarzania. Idealne dla motocyklistów, którzy chcą zauważyć zmianę trasy wokół burzy lub rozprzętu.
+- Kręgi odległości wyśrodkowane na Twojej lokalizacji, dostosowujące się do poziomu powiększenia.
+- Nawigacja z użyciem namiaru do celu zamiast sztywnych wskazówek zakręt po zakręcie. Idealne dla odkrywców i osób, które lubią wędrować!
+- Animowany radar pogodowy na żywo od RainViewer z regulowaną przezroczystością i elementami sterowania odtwarzaniem. Idealne dla motocyklistów, którzy chcą dostać ostrzeżenie, by ominąć burzę lub odpowiednio się przygotować.
 - Prędkość i kierunek wiatru
-- Temperatura i 1-godzinny trend
-- Wiele stylów mapy: jasny, ciemny, auto i niestandardowe kolory również dla nich.
-- Odczyt prędkości z jednostkami metrycznymi i imperialnymi, regulowany rozmiar czcionki.
-- Otwarte źródło, brak śledzenia, brak kont, brak reklam.
+- Temperatura i trend z 1 godziny
+- Wiele stylów mapy: Jasny, Ciemny, Auto oraz niestandardowe kolory dla każdego z nich.
+- Wyświetlanie prędkości w jednostkach metrycznych i imperialnych z regulowanym rozmiarem czcionki.
+- Otwarte źródło, bez śledzenia, bez kont, bez reklam.
