@@ -1,2 +1,2 @@
-Existuje nový výběr mapy šablony! Podívejte se na to v menu -> Mapa -> Zvolte téma. Také výchozí tmavá mapa byla vylepšena, aby se lépe zobrazily malé silnice a cesty. Pokud se vám líbí starý lépe, je stále k dispozici.
-Nyní je na hlavní obrazovce tlačítko pro přehrávání/pozastavení/vypnutí meteorologického radaru.
+K dispozici je nový výběr motivů mapy! Najdete ho v nabídce -> Mapa -> Vybrat motiv. Výchozí tmavá mapa byla také upravena tak, aby lépe zobrazovala malé silnice a cesty. Pokud se vám stará verze líbila víc, je stále k dispozici.
+Na hlavní obrazovce je nyní pro radar počasí k dispozici tlačítko přehrát/pozastavit/vypnout.
