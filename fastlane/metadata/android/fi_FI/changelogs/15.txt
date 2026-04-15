@@ -1,1 +1,1 @@
-Korjaa kompassPainike ei lukita karttaa pohjoiseen nousuun kun käyttäjä liikkuu
+Korjattu ongelma, jossa kompassipainike ei lukitse karttaa pohjoinen ylhäällä -suuntaan, kun käyttäjä liikkuu
