@@ -52,7 +52,7 @@
     <string name="help_privacy_policy">Privacy Policy</string>
     <string name="help_changelog">Changelog</string>
     <string name="version_label">Version %s</string>
-    <string name="debug_preview_whats_new">Preview What\'s New (debug)</string>
+    <string name="debug_preview_whats_new">Preview What’s New (debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recenter</string>
     <string name="fab_retry_failed">Retry Failed</string>
@@ -146,7 +146,7 @@
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Direction to target location</string>
     <!-- Changelog sheets -->
-    <string name="changelog_whats_new">What\'s new</string>
+    <string name="changelog_whats_new">What’s new</string>
     <string name="changelog_title">Changelog</string>
     <string name="changelog_no_entries">No changelog entries.</string>
     <!-- Weather legend -->
