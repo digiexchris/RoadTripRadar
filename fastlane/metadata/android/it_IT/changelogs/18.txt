@@ -1,1 +1,1 @@
-Diversi UI correggono le icone GPS e di stato della rete
+Diverse correzioni dell'interfaccia utente per le icone di stato GPS e rete
