@@ -1,1 +1,1 @@
-Modificări la conducta de construcții
+Modificări aduse pipeline-ului de build
