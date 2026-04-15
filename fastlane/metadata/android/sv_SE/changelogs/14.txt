@@ -1,1 +1,1 @@
-Fixa CompassButton som inte låser kartan till nord-is-up när användaren flyttar
+Åtgärda att CompassButton inte låser kartan till nord upp när användaren rör sig
