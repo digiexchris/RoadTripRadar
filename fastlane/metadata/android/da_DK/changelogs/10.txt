@@ -1,1 +1,1 @@
-Ændringer til byggepipelinen
+Ændringer i build-pipelinen
