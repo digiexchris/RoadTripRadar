@@ -1,1 +1,1 @@
-Beheben Sie den CompassButton beim Wechseln der Karte nach Norden nicht sperren
+Fehler beheben, durch den die Karte beim Bewegen durch den Benutzer mit der Kompass-Schaltfläche nicht auf Nordausrichtung fixiert bleibt
