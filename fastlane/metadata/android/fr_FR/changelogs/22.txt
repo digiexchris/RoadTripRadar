@@ -1,0 +1,1 @@
+Ajoutez un bouton d’actions rapides pour faciliter la découverte du menu d’actions rapides
