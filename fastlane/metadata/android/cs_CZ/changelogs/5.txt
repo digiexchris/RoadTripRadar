@@ -1,1 +1,1 @@
-Vyčištěno pro sestavení FDroid
+Upraveno pro sestavení ve F-Droidu
