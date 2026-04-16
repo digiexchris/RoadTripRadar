@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common actions -->
+    <string name="action_close">Luk</string>
+    <string name="action_cancel">Annuller</string>
+    <string name="action_quit">Afslut</string>
+    <string name="action_reset">Nulstil</string>
+    <string name="action_save">Gem</string>
+    <string name="action_delete">Slet</string>
+    <string name="action_share">Del</string>
+    <string name="action_ok">OK</string>
+    <string name="action_decline">Afvis</string>
+    <string name="action_accept">Acceptér</string>
+    <string name="action_got_it">Forstået</string>
+    <!-- Location permission dialog -->
+    <string name="permission_location_title">Placeringstilladelse påkrævet</string>
+    <string name="permission_location_body">Road Trip Radar har brug for adgang til din præcise placering for at vise, hvor du er på kortet. Tryk på Giv tilladelse for at fortsætte, eller Afslut for at lukke appen.</string>
+    <string name="permission_grant">Giv tilladelse</string>
+    <!-- Terms overlay -->
+    <string name="terms_scroll_hint">Rul ned for at læse resten, så kan du acceptere.</string>
+    <!-- Quit dialog -->
+    <string name="dialog_quit_title">Afslut</string>
+    <string name="dialog_quit_message">Er du sikker på, at du vil afslutte?</string>
+    <!-- Reset dialog -->
+    <string name="dialog_reset_title">Nulstil til standard</string>
+    <string name="dialog_reset_message">Alle indstillinger nulstilles til deres standardværdier.</string>
+    <!-- Actions drawer - main actions -->
+    <string name="action_nearby_places">Steder i nærheden</string>
+    <string name="action_clear_places">Ryd steder</string>
+    <string name="action_location_search">Søg placering</string>
+    <string name="action_clear_target">Ryd mål</string>
+    <string name="action_track_bearing">Følg kurs</string>
+    <string name="action_track_north">Følg nord</string>
+    <!-- Actions drawer - sub menus -->
+    <string name="menu_map">Kort</string>
+    <string name="menu_weather">Vejr</string>
+    <string name="menu_system">System</string>
+    <string name="menu_help">Hjælp</string>
+    <string name="menu_help_info">Hjælp &amp; info</string>
+    <!-- Weather toggles -->
+    <string name="action_wind_temp_off">Vind &amp; temp fra</string>
+    <string name="action_wind_temp_on">Vind &amp; temp til</string>
+    <string name="action_hide_legend">Skjul signaturforklaring</string>
+    <string name="action_show_legend">Vis signaturforklaring</string>
+    <string name="action_hide_timeline">Skjul tidslinje</string>
+    <string name="action_show_timeline">Vis tidslinje</string>
+    <!-- Help page -->
+    <string name="help_documentation_info">Fuld dokumentation og juridiske oplysninger er tilgængelige via knapperne nedenfor.</string>
+    <string name="help_terms">Vilkår &amp; betingelser</string>
+    <string name="help_radar_legend">Radar-signaturforklaring</string>
+    <string name="help_documentation">Dokumentation</string>
+    <string name="help_privacy_policy">Privatlivspolitik</string>
+    <string name="help_changelog">Ændringslog</string>
+    <string name="version_label">Version %s</string>
+    <string name="debug_preview_whats_new">Vis forhåndsvisning af nyheder (debug)</string>
+    <!-- MapFabs -->
+    <string name="fab_recenter">Centrér igen</string>
+    <string name="fab_retry_failed">Prøv igen</string>
+    <string name="cd_recenter_location">Centrér igen på placering</string>
+    <string name="cd_gps_fix_acquired">GPS-fix opnået</string>
+    <string name="cd_waiting_gps_fix">Venter på GPS-fix</string>
+    <string name="cd_zoom_out">Zoom ud</string>
+    <string name="cd_zoom_in">Zoom ind</string>
+    <string name="cd_quick_actions">Hurtige handlinger</string>
+    <string name="cd_weather_off">Vejrradar fra</string>
+    <string name="cd_weather_pause">Sæt radar på pause</string>
+    <string name="cd_weather_play">Afspil radar</string>
+    <string name="cd_no_network">Intet netværk</string>
+    <string name="cd_wifi">Wi-Fi</string>
+    <string name="cd_cellular">Mobildata</string>
+    <string name="cd_unknown_network">Ukendt netværk</string>
+    <!-- Weather settings -->
+    <string name="settings_weather_radar_opacity">Opacitet for vejrradar</string>
+    <string name="settings_wind_speed_units">Enheder for vindhastighed</string>
+    <string name="settings_temperature_units">Temperaturenheder</string>
+    <string name="settings_weather_widget_size">Størrelse på vejrwidget</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="unit_knots">kn</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+    <!-- Map settings -->
+    <string name="settings_speed_distance_units">Enheder for hastighed/afstand</string>
+    <string name="settings_metric">Metrisk</string>
+    <string name="settings_imperial">Imperial</string>
+    <string name="settings_map_center_offset_portrait">Forskydning af kortcentrum (stående)</string>
+    <string name="settings_map_center_offset_landscape">Forskydning af kortcentrum (liggende)</string>
+    <string name="settings_places_icon_opacity">Opacitet for stedsikoner</string>
+    <string name="theme_current">Tema: %s</string>
+    <string name="action_choose_theme">Vælg tema</string>
+    <!-- System settings -->
+    <string name="settings_display">Skærm</string>
+    <string name="settings_status_icon_opacity">Opacitet for statusikoner</string>
+    <string name="settings_speedometer_size">Størrelse på speedometer</string>
+    <string name="settings_compass_size">Størrelse på kompas</string>
+    <string name="settings_nav_widget_size">Størrelse på navigationswidget</string>
+    <string name="settings_misc">Diverse</string>
+    <string name="settings_keep_screen_on">Hold skærmen tændt</string>
+    <string name="settings_language">Sprog</string>
+    <string name="language_system_default">Systemstandard</string>
+    <!-- Theme selector -->
+    <string name="theme_map_theme">Korttema</string>
+    <string name="theme_auto">Auto</string>
+    <string name="theme_customize_maputnik">Tilpas i Maputnik</string>
+    <string name="theme_overwrite_custom_light">Overskriv brugerdefineret lyst</string>
+    <string name="theme_use_as_custom_light_base">Brug som grundlag for brugerdefineret lyst</string>
+    <string name="theme_overwrite_custom_dark">Overskriv brugerdefineret mørkt</string>
+    <string name="theme_use_as_custom_dark_base">Brug som grundlag for brugerdefineret mørkt</string>
+    <string name="theme_use_in_auto_mode">Brug i automatisk tilstand</string>
+    <string name="theme_action_edit">Rediger</string>
+    <string name="theme_action_save">Gem</string>
+    <string name="theme_action_maputnik">Maputnik</string>
+    <string name="theme_action_share">Del</string>
+    <string name="theme_action_delete">Slet</string>
+    <string name="cd_edit_colors">Rediger farver</string>
+    <string name="cd_save_json_downloads">Gem JSON i Downloads</string>
+    <string name="cd_open_maputnik">Åbn Maputnik</string>
+    <string name="cd_delete_custom_theme">Slet brugerdefineret tema</string>
+    <string name="theme_invalid_file">Ugyldig temafil</string>
+    <string name="theme_saved_to_downloads">Gemt i Downloads/%s</string>
+    <string name="theme_save_failed">Kunne ikke gemme</string>
+    <string name="theme_export">Eksportér tema</string>
+    <!-- Color editor -->
+    <string name="color_editor_create_title">Opret %s-tema</string>
+    <string name="color_editor_no_theme">Der findes endnu ikke noget %1$s-tema. Opret et baseret på %2$s? Du kan også importere en JSON-fil fra temavælgeren.</string>
+    <string name="color_editor_create_from">Opret fra %s</string>
+    <string name="color_editor_edit_colors">Rediger farver: %s</string>
+    <string name="color_editor_preview">Forhåndsvisning</string>
+    <string name="color_editor_hex">Hex</string>
+    <string name="cd_collapse">Skjul</string>
+    <string name="cd_expand">Udvid</string>
+    <!-- POI search dialog -->
+    <string name="search_location_title">Søg placering</string>
+    <string name="search_within_visible">Søger i det synlige kortområde</string>
+    <string name="search_address_placeholder">Adresse eller stednavn</string>
+    <string name="search_searching">Søger…</string>
+    <!-- POI category picker -->
+    <string name="poi_autoload_title">Indlæs automatisk steder i nærheden</string>
+    <string name="poi_autoload_description">Begynd at indlæse steder i nærheden, når appen starter</string>
+    <string name="poi_count">%1$d af %2$d</string>
+    <string name="action_search_visible_area">Søg i synligt område</string>
+    <!-- Tapped POI popup -->
+    <string name="action_navigate_here">Navigér hertil</string>
+    <string name="cd_close">Luk</string>
+    <!-- Nav widget -->
+    <string name="cd_direction_to_target">Retning til målplacering</string>
+    <!-- Changelog sheets -->
+    <string name="changelog_whats_new">Hvad er nyt</string>
+    <string name="changelog_title">Ændringslog</string>
+    <string name="changelog_no_entries">Ingen poster i ændringsloggen.</string>
+    <!-- Weather legend -->
+    <string name="legend_overcast">Overskyet</string>
+    <string name="legend_drizzle">Støvregn</string>
+    <string name="legend_rain_light">Regn?</string>
+    <string name="legend_rain_moderate">Regn.</string>
+    <string name="legend_rain_heavy">Regn!!</string>
+    <string name="legend_hail_light">Hagl?</string>
+    <string name="legend_hail_moderate">Hagl.</string>
+    <string name="legend_hail_heavy">Hagl!!</string>
+    <string name="legend_snow_light">Sne?</string>
+    <string name="legend_snow_moderate">Sne.</string>
+    <string name="legend_snow_heavy">Sne!!</string>
+    <!-- Legend detail sheet -->
+    <string name="legend_detail_title">Radar-signaturforklaring</string>
+    <string name="legend_detail_label">Etiket</string>
+    <string name="legend_detail_dbz">dBZ</string>
+    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_rain">Regn</string>
+    <string name="legend_detail_hail">Hagl</string>
+    <string name="legend_detail_snow">Sne</string>
+    <string name="legend_detail_overcast">Overskyet</string>
+    <string name="legend_detail_drizzle">Støvregn</string>
+    <string name="legend_detail_light_rain">Let regn</string>
+    <string name="legend_detail_moderate_rain">Moderat regn</string>
+    <string name="legend_detail_showers">Byger</string>
+    <string name="legend_detail_small_hail">Små hagl eller mulighed for isslag</string>
+    <string name="legend_detail_hail_possible">Mulighed for hagl</string>
+    <string name="legend_detail_hail_likely">Hagl sandsynligt</string>
+    <string name="legend_detail_light_snow">Let sne</string>
+    <string name="legend_detail_moderate_snow">Moderat sne</string>
+    <string name="legend_detail_heavy_snow">Kraftig sne</string>
+    <!-- Speed readout -->
+    <string name="speed_unit_kmh">km/h</string>
+    <string name="speed_unit_mph">mph</string>
+    <!-- Weather widget -->
+    <string name="cd_wind_direction">Vindretning</string>
+    <!-- POI category labels -->
+    <string name="poi_gas_station">Tankstation</string>
+    <string name="poi_ev_charging">EV-opladning</string>
+    <string name="poi_restaurant">Restaurant</string>
+    <string name="poi_fast_food">Fastfood</string>
+    <string name="poi_cafe">Café / kaffe</string>
+    <string name="poi_bar">Bar / pub</string>
+    <string name="poi_supermarket">Supermarked</string>
+    <string name="poi_convenience">Kiosk</string>
+    <string name="poi_pharmacy">Apotek</string>
+    <string name="poi_hospital">Hospital</string>
+    <string name="poi_hotel">Hotel</string>
+    <string name="poi_motel">Motel</string>
+    <string name="poi_campsite">Campingplads</string>
+    <string name="poi_parking">Parkering</string>
+    <string name="poi_rest_area">Rasteplads</string>
+    <string name="poi_atm">Hæveautomat</string>
+    <string name="poi_bank">Bank</string>
+    <string name="poi_post_office">Posthus</string>
+    <string name="poi_car_repair">Bilværksted</string>
+    <string name="poi_car_wash">Bilvask</string>
+    <string name="poi_laundry">Vaskeri</string>
+    <string name="poi_toilets">Toiletter</string>
+    <string name="poi_police">Politi</string>
+    <string name="poi_fire_station">Brandstation</string>
+    <string name="poi_library">Bibliotek</string>
+    <string name="poi_park">Park</string>
+    <string name="poi_viewpoint">Udsigtspunkt</string>
+    <string name="poi_museum">Museum</string>
+    <string name="poi_tourist_info">Turistinformation</string>
+    <!-- Map style display names -->
+    <string name="style_liberty">Liberty</string>
+    <string name="style_dark">Mørk</string>
+    <string name="style_dark_small_roads">Mørk (små veje)</string>
+    <string name="style_custom_light">Brugerdefineret lys</string>
+    <string name="style_custom_dark">Brugerdefineret mørk</string>
+    <string name="style_auto">Auto</string>
+</resources>
