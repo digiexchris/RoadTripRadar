@@ -1,0 +1,5 @@
+- Verbesserte Ladeleistung der Wetterradar-Kacheln (alle Frames werden vorgeladen)
+- Die Kompass-Schaltfläche wechselt jetzt zwischen Nordausrichtung und der vorherigen Ausrichtung
+- Der Standard-Kartenstil für neue Installationen wurde zu "Color Dark" geändert
+- Fastlane-Metadaten für F-Droid hinzugefügt
+- Das foojay-resolver-Plugin wurde für die F-Droid-Kompatibilität entfernt
