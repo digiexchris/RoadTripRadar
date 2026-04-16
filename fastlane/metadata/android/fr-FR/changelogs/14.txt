@@ -1,0 +1,1 @@
+Correction du problème empêchant le bouton Boussole de verrouiller la carte en mode nord vers le haut lorsque l’utilisateur se déplace
