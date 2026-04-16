@@ -1,0 +1,3 @@
+Ændringslog i appen: Se Hvad er nyt efter opdateringer og den fulde historik under Hjælp og info.
+Du kan nu se interessante steder i nærheden af din placering! Se det under Menu->Steder.
+Vi har lavet en stor omstrukturering af menuen for at gøre tingene nemmere at finde og nemmere at betjene med handsker på.
