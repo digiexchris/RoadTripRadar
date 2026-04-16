@@ -1,0 +1,2 @@
+K dispozici je nový výběr motivů mapy! Najdete ho v nabídce -> Mapa -> Vybrat motiv. Výchozí tmavá mapa byla také upravena tak, aby lépe zobrazovala malé silnice a cesty. Pokud se vám stará verze líbila víc, je stále k dispozici.
+Na hlavní obrazovce je nyní pro radar počasí k dispozici tlačítko přehrát/pozastavit/vypnout.
