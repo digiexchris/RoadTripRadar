@@ -1,0 +1,1 @@
+Si vous avez sélectionné des catégories dans Lieux à proximité, elles s'afficheront automatiquement au démarrage de l'application. Si vous souhaitez désactiver ce comportement, un interrupteur dans le menu Lieux à proximité permet de le désactiver.
