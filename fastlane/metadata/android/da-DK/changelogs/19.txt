@@ -1,0 +1,1 @@
+* Omorganiser layoutet * Fjern ekstra knapper fra brugergrænsefladen, og flyt dem til et separat overlay til almindelige handlinger * Tilføj hurtighjælp ved opstart * Reducer rod og antallet af handlinger i kortvisningen * Tilpas vandret tilstand til stående tilstand * Tilføj en skuffe med hurtige handlinger ved tryk til almindelige handlinger i stedet for kortknapper
