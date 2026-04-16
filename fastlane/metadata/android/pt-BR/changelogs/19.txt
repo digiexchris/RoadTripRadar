@@ -1,0 +1,1 @@
+* Reorganizar o layout * Remover botões extras da interface, mover para uma sobreposição separada para ações comuns * Adicionar ajuda rápida ao iniciar * Reduzir a desordem e as ações na visualização do mapa * Alinhar o modo horizontal com o modo retrato * Adicionar uma gaveta de ações rápidas ao tocar para ações comuns em vez de botões no mapa
