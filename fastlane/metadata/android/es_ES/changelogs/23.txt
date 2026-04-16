@@ -1,3 +1,0 @@
-Registro de cambios en la aplicación: consulta las novedades después de las actualizaciones y el historial completo en Ayuda e información.
-¡Ahora puedes ver puntos de interés cerca de tu ubicación! Descúbrelo en Menú -> Lugares.
-Hemos realizado una gran reorganización del menú para que sea más fácil encontrar las cosas y gestionarlas, incluso con guantes puestos.

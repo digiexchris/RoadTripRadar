@@ -1,1 +1,0 @@
-Várias correções na interface do usuário dos ícones de status de GPS e rede

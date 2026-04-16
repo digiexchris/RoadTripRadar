@@ -1,3 +1,0 @@
-Ändringslogg i appen: visa Vad är nytt efter uppdateringar och hela historiken från Hjälp och info.
-Du kan nu se intressanta platser nära din plats! Kolla in det i Meny->Platser.
-Vi har gjort en stor omarbetning av menyn för att göra saker enklare att hitta och lättare att hantera med handskar på.

@@ -1,1 +1,0 @@
-Opravena chyba, kdy se šipka směru větru neotáčela spolu s mapou.

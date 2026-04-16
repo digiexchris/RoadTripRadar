@@ -1,1 +1,0 @@
-Supprimer la configuration de signature pour créer des APK non signés pour F-Droid

@@ -1,5 +1,0 @@
-- Melhorado o desempenho do carregamento dos blocos do radar meteorológico (pré-carrega todos os quadros)
-- O botão da bússola agora alterna entre norte para cima e a orientação anterior
-- O estilo de mapa padrão foi alterado para Color Dark em novas instalações
-- Adicionados metadados do Fastlane para o F-Droid
-- Removido o plugin foojay-resolver para compatibilidade com o F-Droid

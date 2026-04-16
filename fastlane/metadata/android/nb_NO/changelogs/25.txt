@@ -1,1 +1,0 @@
-Løs problemet med at pilen for vindretning ikke roterer sammen med kartet.

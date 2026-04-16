@@ -1,1 +1,0 @@
-Dostosuj workflow, aby poprawnie wersjonować aplikację

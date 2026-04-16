@@ -1,1 +1,0 @@
-Behoben: Der Kompass-Button sperrt die Karte nicht mehr fälschlicherweise von der Nordausrichtung, wenn sich der Benutzer bewegt

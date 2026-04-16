@@ -1,5 +1,0 @@
-- Amélioration des performances de chargement des tuiles radar météo (préchargement de toutes les images)
-- Le bouton de la boussole bascule désormais entre l’orientation vers le nord et le cap précédent
-- Le style de carte par défaut a été remplacé par Color Dark pour les nouvelles installations
-- Ajout des métadonnées Fastlane pour F-Droid
-- Suppression du plugin foojay-resolver pour la compatibilité avec F-Droid

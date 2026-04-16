@@ -1,1 +1,0 @@
-Corrigir o botão da bússola que não mantém o mapa travado com o norte para cima quando o usuário se move

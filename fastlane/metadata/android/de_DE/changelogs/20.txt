@@ -1,1 +1,0 @@
-Kleines Wetter-Widget für Windgeschwindigkeit, Windrichtung und Umgebungstemperatur hinzufügen

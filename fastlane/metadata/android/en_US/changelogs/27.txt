@@ -1,1 +1,0 @@
-Internationalization support. If you see any issues with any of these translations, or would like to help, please let me know!

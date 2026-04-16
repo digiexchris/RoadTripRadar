@@ -1,1 +1,0 @@
-Ret vindretningspilen, der ikke roterer med kortet.

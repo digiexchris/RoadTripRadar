@@ -1,1 +1,0 @@
-Se tiver alguma categoria selecionada em Locais próximos, ela começará a ser exibida automaticamente quando a aplicação iniciar. Se quiser desativar esse comportamento, há um interruptor no menu Locais próximos para o desligar.

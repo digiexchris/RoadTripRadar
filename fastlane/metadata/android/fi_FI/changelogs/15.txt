@@ -1,1 +1,0 @@
-Korjattu ongelma, jossa kompassipainike ei lukitse karttaa pohjoinen ylhäällä -suuntaan, kun käyttäjä liikkuu

@@ -1,2 +1,0 @@
-Il y a un nouveau sélecteur de thème de carte ! Découvrez-le dans le menu -> Carte -> Choisir le thème. De plus, la carte sombre par défaut a été ajustée pour mieux afficher les petites routes et les chemins. Si vous préfériez l’ancienne, elle est toujours disponible.
-Il y a maintenant un bouton lecture/pause/arrêt pour le radar météo sur l’écran principal.

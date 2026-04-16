@@ -1,1 +1,0 @@
-Behoben, dass sich der Pfeil für die Windrichtung nicht mit der Karte dreht.

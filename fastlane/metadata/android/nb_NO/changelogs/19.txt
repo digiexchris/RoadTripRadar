@@ -1,1 +1,0 @@
-* Omorganiser layouten * Fjern ekstra knapper fra brukergrensesnittet, flytt dem til et separat overlegg for vanlige handlinger * Legg til hurtighjelp ved oppstart * Reduser rot og antall handlinger i kartvisningen * Samkjør horisontal modus med stående modus * Legg til en skuff for hurtighandlinger ved trykk for vanlige handlinger i stedet for kartknapper

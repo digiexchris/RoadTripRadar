@@ -1,1 +1,0 @@
-Mapová aplikace upřednostňující přehled o situaci a počasí.

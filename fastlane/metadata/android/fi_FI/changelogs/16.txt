@@ -1,1 +1,0 @@
-Korjaa ongelma, jossa CompassButton ei lukitse karttaa pohjoinen ylhäällä -tilaan, kun käyttäjä liikkuu

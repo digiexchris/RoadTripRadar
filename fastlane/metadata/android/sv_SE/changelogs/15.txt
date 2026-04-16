@@ -1,1 +1,0 @@
-Åtgärda att kompassknappen inte låser kartan till nord uppåt när användaren flyttar sig

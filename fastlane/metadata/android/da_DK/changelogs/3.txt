@@ -1,1 +1,0 @@
-Juster workflowet, så appen versionsstyres korrekt

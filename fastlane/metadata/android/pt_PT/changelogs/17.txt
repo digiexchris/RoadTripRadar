@@ -1,1 +1,0 @@
-Melhorias no layout horizontal, na legenda do radar e na interface geral

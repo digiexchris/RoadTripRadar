@@ -1,1 +1,0 @@
-Adicionar pequeno widget meteorológico para velocidade do vento, direção e temperatura ambiente

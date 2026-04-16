@@ -1,1 +1,0 @@
-Lägg till liten väderwidget för vindhastighet, vindriktning och omgivningstemperatur

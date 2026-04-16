@@ -1,1 +1,0 @@
-Åtgärda att pilen för vindriktning inte roterar med kartan.

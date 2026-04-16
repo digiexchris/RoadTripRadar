@@ -1,1 +1,0 @@
-Se hai selezionato delle categorie in Luoghi nelle vicinanze, inizieranno a essere mostrate automaticamente all'avvio dell'app. Se vuoi disattivare questo comportamento, nel menu Luoghi nelle vicinanze c'è un interruttore per disattivarlo.

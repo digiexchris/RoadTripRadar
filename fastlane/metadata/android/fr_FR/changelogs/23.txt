@@ -1,3 +1,0 @@
-Journal des modifications intégré à l’application : consultez les nouveautés après les mises à jour ainsi que l’historique complet dans Aide et infos.
-Vous pouvez désormais voir les points d’intérêt à proximité de votre position ! Découvrez-le dans Menu -> Lieux.
-Nous avons entièrement remanié le menu pour rendre les éléments plus faciles à trouver et plus simples à utiliser, même avec des gants.

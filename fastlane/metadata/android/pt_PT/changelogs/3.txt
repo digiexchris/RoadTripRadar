@@ -1,1 +1,0 @@
-Ajustar o fluxo de trabalho para versionar corretamente a aplicação
