@@ -1,0 +1,1 @@
+Několik oprav uživatelského rozhraní ikon stavu GPS a sítě
