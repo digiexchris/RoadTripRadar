@@ -1,11 +1,11 @@
-RoadTripRadar ist eine Karten-App mit Fokus auf Situationsbewusstsein und Wetter. Live-Wetterradarbilder auf einer interaktiven Karte helfen Ihnen, Niederschläge entlang Ihrer Fahrtrichtung auf einen Blick zu erkennen.
+RoadTripRadar ist eine Karten-App, bei der Situationsbewusstsein und Wetter im Vordergrund stehen. Live-Wetterradarbilder auf einer interaktiven Karte helfen dir, Niederschlag entlang deiner Fahrtrichtung auf einen Blick zu erkennen.
 
 Funktionen:
-- Entfernungsringe um Ihren Standort, die sich an die Zoomstufe anpassen.
-- Navigation per Peilung zu Ihrem Ziel statt starrer Schritt-für-Schritt-Anweisungen. Perfekt für Entdecker und Leute, die gerne herumstreifen!
-- Live animiertes Wetterradar von RainViewer mit einstellbarer Deckkraft und Wiedergabesteuerung. Perfekt für Motorradfahrer, die rechtzeitig um ein Gewitter herumfahren oder sich ausrüsten möchten.
+- Um deinen Standort zentrierte Entfernungsringe, die sich an die Zoomstufe anpassen.
+- Navigiere anhand der Peilung zu deinem Ziel statt mit starren Abbiege-für-Abbiege-Anweisungen. Perfekt für Entdecker und alle, die gern umherschweifen!
+- Live-animiertes Wetterradar von RainViewer mit anpassbarer Deckkraft und Wiedergabesteuerung. Perfekt für Motorradfahrer, die rechtzeitig Bescheid wissen wollen, um einen Sturm zu umfahren oder ihre Ausrüstung anzupassen.
 - Windgeschwindigkeit und -richtung
 - Temperatur und 1-Stunden-Trend
-- Mehrere Kartenstile: Hell, Dunkel, Auto und benutzerdefinierte Farben.
-- Geschwindigkeitsanzeige mit metrischen und imperialen Einheiten, einstellbare Schriftgröße.
+- Mehrere Kartenstile: Hell, Dunkel, Auto und benutzerdefinierte Farben für beide.
+- Geschwindigkeitsanzeige mit metrischen und imperialen Einheiten, anpassbare Schriftgröße.
 - Open Source, kein Tracking, keine Konten, keine Werbung.
