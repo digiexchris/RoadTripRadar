@@ -1,0 +1,3 @@
+Jurnal al modificărilor în aplicație: vedeți noutățile după actualizări și istoricul complet din Ajutor și informații.
+Acum puteți vedea punctele de interes din apropierea locației dvs.! Găsiți această funcție în Meniu->Locuri.
+Am refăcut complet meniul pentru ca lucrurile să fie mai ușor de găsit și mai ușor de folosit cu mănuși.
