@@ -1,11 +1,11 @@
-RoadTripRadar est une application cartographique axée sur la vigilance et la météo. Imagerie radar météo en direct sur une carte interactive, vous permettant de voir les précipitations le long de votre direction de voyage en un coup d'œil.
+RoadTripRadar est une application cartographique qui privilégie la conscience de la situation et la météo. Des images radar météo en direct sur une carte interactive, pour vous aider à voir les précipitations dans votre direction de déplacement en un coup d’œil.
 
 Fonctionnalités :
-- Anneaux de distance centrés sur votre position qui s'adaptent au niveau de zoom.
-- Naviguez à l'aide du cap vers votre destination au lieu d'instructions virage par virage rigides. Parfait pour les explorateurs et les personnes qui aiment se promener !
-- Radar météo animé en direct de RainViewer avec opacité réglable et contrôles de lecture. Parfait pour les motocyclistes qui veulent être prévenus pour contourner un orage ou s'équiper.
+- Anneaux de distance centrés sur votre position et s’adaptant au niveau de zoom.
+- Naviguez en utilisant le cap vers votre destination au lieu d’instructions rigides virage par virage. Parfait pour les explorateurs et les personnes qui aiment vagabonder !
+- Radar météo animé en direct de RainViewer avec opacité réglable et commandes de lecture. Parfait pour les motocyclistes qui veulent être avertis afin de contourner une tempête ou s’équiper en conséquence.
 - Vitesse et direction du vent
 - Température et tendance sur 1 heure
-- Plusieurs styles de carte : Clair, Sombre, Auto, et couleurs personnalisées.
+- Plusieurs styles de carte : clair, sombre, auto et couleurs personnalisées pour chacun.
 - Affichage de la vitesse avec unités métriques et impériales, taille de police réglable.
-- Open source, pas de suivi, pas de comptes, pas de publicité.
+- Open source, sans suivi, sans compte, sans publicité.
