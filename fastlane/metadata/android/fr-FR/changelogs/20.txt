@@ -1,0 +1,1 @@
+Ajouter un petit widget météo pour la vitesse du vent, la direction du vent et la température ambiante
