@@ -1,0 +1,1 @@
+Ondertekeningsconfiguratie verwijderen om niet-ondertekende APK's voor F-Droid te bouwen
