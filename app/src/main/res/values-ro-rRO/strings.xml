@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common actions -->
+    <string name="action_close">Închide</string>
+    <string name="action_cancel">Anulează</string>
+    <string name="action_quit">Ieșire</string>
+    <string name="action_reset">Resetează</string>
+    <string name="action_save">Salvează</string>
+    <string name="action_delete">Șterge</string>
+    <string name="action_share">Partajează</string>
+    <string name="action_ok">OK</string>
+    <string name="action_decline">Refuză</string>
+    <string name="action_accept">Acceptă</string>
+    <string name="action_got_it">Am înțeles</string>
+    <!-- Location permission dialog -->
+    <string name="permission_location_title">Permisiunea de localizare este necesară</string>
+    <string name="permission_location_body">Road Trip Radar are nevoie de acces la localizarea ta precisă pentru a afișa unde te afli pe hartă. Atinge Acordă permisiunea pentru a continua sau Ieșire pentru a închide aplicația.</string>
+    <string name="permission_grant">Acordă permisiunea</string>
+    <!-- Terms overlay -->
+    <string name="terms_scroll_hint">Derulează în jos pentru a citi restul, apoi poți accepta.</string>
+    <!-- Quit dialog -->
+    <string name="dialog_quit_title">Ieșire</string>
+    <string name="dialog_quit_message">Sigur vrei să ieși?</string>
+    <!-- Reset dialog -->
+    <string name="dialog_reset_title">Resetează la valorile implicite</string>
+    <string name="dialog_reset_message">Toate setările vor fi resetate la valorile lor implicite.</string>
+    <!-- Actions drawer - main actions -->
+    <string name="action_nearby_places">Locuri din apropiere</string>
+    <string name="action_clear_places">Șterge locurile</string>
+    <string name="action_location_search">Căutare locație</string>
+    <string name="action_clear_target">Șterge ținta</string>
+    <string name="action_track_bearing">Urmărește direcția de deplasare</string>
+    <string name="action_track_north">Urmărește nordul</string>
+    <!-- Actions drawer - sub menus -->
+    <string name="menu_map">Hartă</string>
+    <string name="menu_weather">Vreme</string>
+    <string name="menu_system">Sistem</string>
+    <string name="menu_help">Ajutor</string>
+    <string name="menu_help_info">Ajutor &amp; informații</string>
+    <!-- Weather toggles -->
+    <string name="action_wind_temp_off">Vânt &amp; temperatură oprite</string>
+    <string name="action_wind_temp_on">Vânt &amp; temperatură pornite</string>
+    <string name="action_hide_legend">Ascunde legenda</string>
+    <string name="action_show_legend">Afișează legenda</string>
+    <string name="action_hide_timeline">Ascunde cronologia</string>
+    <string name="action_show_timeline">Afișează cronologia</string>
+    <!-- Help page -->
+    <string name="help_documentation_info">Documentația completă și informațiile legale sunt disponibile prin butoanele de mai jos.</string>
+    <string name="help_terms">Termeni &amp; condiții</string>
+    <string name="help_radar_legend">Legenda radarului</string>
+    <string name="help_documentation">Documentație</string>
+    <string name="help_privacy_policy">Politica de confidențialitate</string>
+    <string name="help_changelog">Jurnalul modificărilor</string>
+    <string name="version_label">Versiunea %s</string>
+    <string name="debug_preview_whats_new">Previzualizează noutățile (debug)</string>
+    <!-- MapFabs -->
+    <string name="fab_recenter">Recentrează</string>
+    <string name="fab_retry_failed">Reîncearcă eșecurile</string>
+    <string name="cd_recenter_location">Recentrează pe locație</string>
+    <string name="cd_gps_fix_acquired">Poziție GPS obținută</string>
+    <string name="cd_waiting_gps_fix">Se așteaptă poziția GPS</string>
+    <string name="cd_zoom_out">Micșorează</string>
+    <string name="cd_zoom_in">Mărește</string>
+    <string name="cd_quick_actions">Acțiuni rapide</string>
+    <string name="cd_weather_off">Radar meteo oprit</string>
+    <string name="cd_weather_pause">Pauză radar</string>
+    <string name="cd_weather_play">Pornește radarul</string>
+    <string name="cd_no_network">Fără rețea</string>
+    <string name="cd_wifi">Wi‑Fi</string>
+    <string name="cd_cellular">Rețea mobilă</string>
+    <string name="cd_unknown_network">Rețea necunoscută</string>
+    <!-- Weather settings -->
+    <string name="settings_weather_radar_opacity">Opacitatea radarului meteo</string>
+    <string name="settings_wind_speed_units">Unități pentru viteza vântului</string>
+    <string name="settings_temperature_units">Unități de temperatură</string>
+    <string name="settings_weather_widget_size">Dimensiunea widgetului meteo</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="unit_knots">kn</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+    <!-- Map settings -->
+    <string name="settings_speed_distance_units">Unități de viteză/distanță</string>
+    <string name="settings_metric">Metric</string>
+    <string name="settings_imperial">Imperial</string>
+    <string name="settings_map_center_offset_portrait">Decalajul centrului hărții (portret)</string>
+    <string name="settings_map_center_offset_landscape">Decalajul centrului hărții (peisaj)</string>
+    <string name="settings_places_icon_opacity">Opacitatea pictogramelor locurilor</string>
+    <string name="theme_current">Temă: %s</string>
+    <string name="action_choose_theme">Alege tema</string>
+    <!-- System settings -->
+    <string name="settings_display">Afișare</string>
+    <string name="settings_status_icon_opacity">Opacitatea pictogramelor de stare</string>
+    <string name="settings_speedometer_size">Dimensiunea vitezometrului</string>
+    <string name="settings_compass_size">Dimensiunea busolei</string>
+    <string name="settings_nav_widget_size">Dimensiunea widgetului de navigare</string>
+    <string name="settings_misc">Diverse</string>
+    <string name="settings_keep_screen_on">Păstrează ecranul pornit</string>
+    <string name="settings_language">Limbă</string>
+    <string name="language_system_default">Implicită a sistemului</string>
+    <!-- Theme selector -->
+    <string name="theme_map_theme">Tema hărții</string>
+    <string name="theme_auto">Automat</string>
+    <string name="theme_customize_maputnik">Personalizează în Maputnik</string>
+    <string name="theme_overwrite_custom_light">Suprascrie tema luminoasă personalizată</string>
+    <string name="theme_use_as_custom_light_base">Folosește ca bază pentru tema luminoasă personalizată</string>
+    <string name="theme_overwrite_custom_dark">Suprascrie tema întunecată personalizată</string>
+    <string name="theme_use_as_custom_dark_base">Folosește ca bază pentru tema întunecată personalizată</string>
+    <string name="theme_use_in_auto_mode">Folosește în modul automat</string>
+    <string name="theme_action_edit">Editează</string>
+    <string name="theme_action_save">Salvează</string>
+    <string name="theme_action_maputnik">Maputnik</string>
+    <string name="theme_action_share">Partajează</string>
+    <string name="theme_action_delete">Șterge</string>
+    <string name="cd_edit_colors">Editează culorile</string>
+    <string name="cd_save_json_downloads">Salvează JSON în Descărcări</string>
+    <string name="cd_open_maputnik">Deschide Maputnik</string>
+    <string name="cd_delete_custom_theme">Șterge tema personalizată</string>
+    <string name="theme_invalid_file">Fișier de temă nevalid</string>
+    <string name="theme_saved_to_downloads">Salvat în Descărcări/%s</string>
+    <string name="theme_save_failed">Salvarea a eșuat</string>
+    <string name="theme_export">Exportă tema</string>
+    <!-- Color editor -->
+    <string name="color_editor_create_title">Creează tema %s</string>
+    <string name="color_editor_no_theme">Nu există încă o temă %1$s. Creezi una bazată pe %2$s? Poți importa și un fișier JSON din selectorul de teme.</string>
+    <string name="color_editor_create_from">Creează din %s</string>
+    <string name="color_editor_edit_colors">Editează culorile: %s</string>
+    <string name="color_editor_preview">Previzualizare</string>
+    <string name="color_editor_hex">Hex</string>
+    <string name="cd_collapse">Restrânge</string>
+    <string name="cd_expand">Extinde</string>
+    <!-- POI search dialog -->
+    <string name="search_location_title">Caută locație</string>
+    <string name="search_within_visible">Se caută în zona vizibilă a hărții</string>
+    <string name="search_address_placeholder">Adresă sau nume de loc</string>
+    <string name="search_searching">Se caută…</string>
+    <!-- POI category picker -->
+    <string name="poi_autoload_title">Încarcă automat locurile din apropiere</string>
+    <string name="poi_autoload_description">Începe încărcarea locurilor din apropiere la pornirea aplicației</string>
+    <string name="poi_count">%1$d din %2$d</string>
+    <string name="action_search_visible_area">Caută în zona vizibilă</string>
+    <!-- Tapped POI popup -->
+    <string name="action_navigate_here">Navighează aici</string>
+    <string name="cd_close">Închide</string>
+    <!-- Nav widget -->
+    <string name="cd_direction_to_target">Direcția către locația țintă</string>
+    <!-- Changelog sheets -->
+    <string name="changelog_whats_new">Noutăți</string>
+    <string name="changelog_title">Jurnalul modificărilor</string>
+    <string name="changelog_no_entries">Nu există înregistrări în jurnalul modificărilor.</string>
+    <!-- Weather legend -->
+    <string name="legend_overcast">Înnorat</string>
+    <string name="legend_drizzle">Burniță</string>
+    <string name="legend_rain_light">Ploaie?</string>
+    <string name="legend_rain_moderate">Ploaie.</string>
+    <string name="legend_rain_heavy">Ploaie!!</string>
+    <string name="legend_hail_light">Grindină?</string>
+    <string name="legend_hail_moderate">Grindină.</string>
+    <string name="legend_hail_heavy">Grindină!!</string>
+    <string name="legend_snow_light">Ninsoare?</string>
+    <string name="legend_snow_moderate">Ninsoare.</string>
+    <string name="legend_snow_heavy">Ninsoare!!</string>
+    <!-- Legend detail sheet -->
+    <string name="legend_detail_title">Legenda radarului</string>
+    <string name="legend_detail_label">Etichetă</string>
+    <string name="legend_detail_dbz">dBZ</string>
+    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_rain">Ploaie</string>
+    <string name="legend_detail_hail">Grindină</string>
+    <string name="legend_detail_snow">Ninsoare</string>
+    <string name="legend_detail_overcast">Înnorat</string>
+    <string name="legend_detail_drizzle">Burniță</string>
+    <string name="legend_detail_light_rain">Ploaie ușoară</string>
+    <string name="legend_detail_moderate_rain">Ploaie moderată</string>
+    <string name="legend_detail_showers">Averse</string>
+    <string name="legend_detail_small_hail">Posibilă grindină mică sau ploaie înghețată</string>
+    <string name="legend_detail_hail_possible">Grindină posibilă</string>
+    <string name="legend_detail_hail_likely">Grindină probabilă</string>
+    <string name="legend_detail_light_snow">Ninsoare ușoară</string>
+    <string name="legend_detail_moderate_snow">Ninsoare moderată</string>
+    <string name="legend_detail_heavy_snow">Ninsoare abundentă</string>
+    <!-- Speed readout -->
+    <string name="speed_unit_kmh">km/h</string>
+    <string name="speed_unit_mph">mph</string>
+    <!-- Weather widget -->
+    <string name="cd_wind_direction">Direcția vântului</string>
+    <!-- POI category labels -->
+    <string name="poi_gas_station">Benzinărie</string>
+    <string name="poi_ev_charging">Stație de încărcare EV</string>
+    <string name="poi_restaurant">Restaurant</string>
+    <string name="poi_fast_food">Fast-food</string>
+    <string name="poi_cafe">Cafenea / Cafea</string>
+    <string name="poi_bar">Bar / Pub</string>
+    <string name="poi_supermarket">Supermarket</string>
+    <string name="poi_convenience">Magazin de proximitate</string>
+    <string name="poi_pharmacy">Farmacie</string>
+    <string name="poi_hospital">Spital</string>
+    <string name="poi_hotel">Hotel</string>
+    <string name="poi_motel">Motel</string>
+    <string name="poi_campsite">Camping</string>
+    <string name="poi_parking">Parcare</string>
+    <string name="poi_rest_area">Zonă de odihnă</string>
+    <string name="poi_atm">Bancomat</string>
+    <string name="poi_bank">Bancă</string>
+    <string name="poi_post_office">Oficiu poștal</string>
+    <string name="poi_car_repair">Service auto</string>
+    <string name="poi_car_wash">Spălătorie auto</string>
+    <string name="poi_laundry">Spălătorie</string>
+    <string name="poi_toilets">Toalete</string>
+    <string name="poi_police">Poliție</string>
+    <string name="poi_fire_station">Stație de pompieri</string>
+    <string name="poi_library">Bibliotecă</string>
+    <string name="poi_park">Parc</string>
+    <string name="poi_viewpoint">Punct de belvedere</string>
+    <string name="poi_museum">Muzeu</string>
+    <string name="poi_tourist_info">Informații turistice</string>
+    <!-- Map style display names -->
+    <string name="style_liberty">Liberty</string>
+    <string name="style_dark">Întunecată</string>
+    <string name="style_dark_small_roads">Întunecată (drumuri mici)</string>
+    <string name="style_custom_light">Luminoasă personalizată</string>
+    <string name="style_custom_dark">Întunecată personalizată</string>
+    <string name="style_auto">Automat</string>
+</resources>
