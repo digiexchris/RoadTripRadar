@@ -1,0 +1,2 @@
+Pojawił się nowy wybór motywu mapy! Sprawdź go w menu -> Mapa -> Wybierz motyw. Dodatkowo domyślna ciemna mapa została ulepszona, aby lepiej pokazywać małe drogi i ścieżki. Jeśli poprzednia wersja bardziej Ci się podobała, nadal jest dostępna.
+Na ekranie głównym dostępny jest teraz przycisk odtwarzania/wstrzymania/wyłączenia radaru pogodowego.
