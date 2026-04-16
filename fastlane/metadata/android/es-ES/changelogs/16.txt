@@ -1,0 +1,1 @@
+Corregir que el botón de la brújula no mantenga el mapa bloqueado con el norte hacia arriba cuando el usuario se mueve
