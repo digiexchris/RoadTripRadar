@@ -1,1 +1,1 @@
-Rett en feil der kompassknappen ikke låser kartet til nord opp når brukeren beveger seg
+Fix Compass button not locking the map to north-up when the user moves
