@@ -1,1 +1,1 @@
-F-Droid向けパイプラインの微調整
+Pipeline tweaks for F-Droid
