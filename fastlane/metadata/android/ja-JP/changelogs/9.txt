@@ -1,1 +1,1 @@
-FDroid向けに未署名APKをビルドできるよう、署名設定を削除する
+Remove signing config to build unsigned APKs for F-Droid
