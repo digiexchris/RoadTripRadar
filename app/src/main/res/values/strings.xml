@@ -14,8 +14,10 @@
 
     <!-- Location permission dialog -->
     <string name="permission_location_title">Location permission required</string>
-    <string name="permission_location_body">Road Trip Radar needs access to your precise location to show where you are on the map. Tap Grant permission to continue, or Quit to exit the app.</string>
+    <string name="permission_location_body">Road Trip Radar needs access to your location to show where you are on the map. Precise location is recommended for best accuracy, but approximate location will also work. Tap Grant permission to continue, or Quit to exit the app.</string>
     <string name="permission_grant">Grant permission</string>
+    <string name="permission_location_denied_title">Location required</string>
+    <string name="permission_location_denied_body">Road Trip Radar is designed to show the area around you while you drive, so it cannot function without location access. The app will now exit. You can enable location access in the system Settings and launch the app again.</string>
 
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Scroll down to read the rest, then you can accept.</string>

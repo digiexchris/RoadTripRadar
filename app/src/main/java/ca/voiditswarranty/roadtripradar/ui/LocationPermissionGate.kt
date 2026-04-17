@@ -35,20 +35,31 @@ fun LocationPermissionGate(
     val context = LocalContext.current
     val activity = context as? Activity
 
-    fun hasFineLocation(): Boolean =
-        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
+    fun hasAnyLocationPermission(): Boolean {
+        val fine = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarse = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
+        return fine || coarse
+    }
 
-    var granted by remember { mutableStateOf(hasFineLocation()) }
+    var granted by remember { mutableStateOf(hasAnyLocationPermission()) }
+    var showDeniedDialog by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { ok ->
-        granted = ok
-        if (ok) {
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) { results ->
+        val anyGranted = results[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            results[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        granted = anyGranted
+        if (anyGranted) {
             vm.updateUseGps(true)
         } else {
-            activity?.finishAffinity()
+            showDeniedDialog = true
         }
     }
 
@@ -56,7 +67,7 @@ fun LocationPermissionGate(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                val now = hasFineLocation()
+                val now = hasAnyLocationPermission()
                 granted = now
                 if (now) vm.updateUseGps(true)
             }
@@ -69,7 +80,22 @@ fun LocationPermissionGate(
         content(granted)
     }
 
-    if (!granted && activity != null) {
+    if (showDeniedDialog && activity != null) {
+        AlertDialog(
+            onDismissRequest = { },
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+            ),
+            title = { Text(stringResource(R.string.permission_location_denied_title)) },
+            text = { Text(stringResource(R.string.permission_location_denied_body)) },
+            confirmButton = {
+                TextButton(onClick = { activity.finishAffinity() }) {
+                    Text(stringResource(R.string.action_ok))
+                }
+            },
+        )
+    } else if (!granted && activity != null) {
         AlertDialog(
             onDismissRequest = { },
             properties = DialogProperties(
@@ -85,7 +111,12 @@ fun LocationPermissionGate(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        permissionLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                            ),
+                        )
                     },
                 ) {
                     Text(stringResource(R.string.permission_grant))

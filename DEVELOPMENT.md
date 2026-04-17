@@ -106,6 +106,10 @@ A device connection is required for `./build.sh --install`. Once connected, the 
    adb devices
    ```
 
+## Known emulator quirks
+
+- **Range rings do not render on the Android emulator.** The dashed radar range rings (drawn via a MapLibre `LineLayer` with `dasharray`) show up correctly on real hardware but are invisible on the emulator. Always verify ring-related changes on a physical device before assuming they are broken.
+
 ## Testing the in-app What's New changelog
 
 The first time the app stores `last_seen_changelog_version_code`, it matches the current `versionCode` and **does not** show the sheet (avoids dumping history on fresh installs).
