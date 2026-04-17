@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+Přidejte tlačítko Rychlé akce, aby se nabídka Rychlé akce dala snáze najít.
