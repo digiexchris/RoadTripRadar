@@ -1,1 +1,1 @@
-Кілька виправлень інтерфейсу користувача для значків стану GPS і мережі
+Several UI fixes for GPS and network status icons
