@@ -1,1 +1,1 @@
-Ondertekeningsconfiguratie verwijderen om niet-ondertekende APK's voor F-Droid te bouwen
+Remove signing config to build unsigned APKs for F-Droid
