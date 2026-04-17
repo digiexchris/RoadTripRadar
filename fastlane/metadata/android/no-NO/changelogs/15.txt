@@ -1,1 +1,1 @@
-Rett en feil der kompassknappen ikke låser kartet til nord opp når brukeren beveger seg
+Rett en feil der Kompass-knappen ikke låser kartet til nord opp når brukeren flytter seg
