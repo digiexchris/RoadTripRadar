@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+Προσθέστε ένα κουμπί Γρήγορων ενεργειών, ώστε να είναι πιο εύκολο να βρείτε το μενού Γρήγορων ενεργειών.
