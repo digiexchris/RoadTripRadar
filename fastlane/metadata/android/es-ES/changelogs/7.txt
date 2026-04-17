@@ -1,1 +1,1 @@
-Undo moving metadata
+Deshacer mover metadatos
