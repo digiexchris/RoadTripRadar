@@ -1,0 +1,1 @@
+Tutorial da primeira inicialização e correção de um erro que impedia o uso da localização aproximada por GPS (Obrigado, Chris L).

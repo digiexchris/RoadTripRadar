@@ -14,8 +14,10 @@
     <string name="action_got_it">Compris</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Autorisation de localisation requise</string>
-    <string name="permission_location_body">Road Trip Radar a besoin d’accéder à votre position précise pour afficher votre emplacement sur la carte. Appuyez sur Accorder l’autorisation pour continuer, ou sur Quitter pour fermer l’application.</string>
+    <string name="permission_location_body">Road Trip Radar a besoin d’accéder à votre position pour afficher où vous vous trouvez sur la carte. Une position précise est recommandée pour une meilleure exactitude, mais une position approximative fonctionnera également. Appuyez sur Autoriser pour continuer, ou sur Quitter pour fermer l’application.</string>
     <string name="permission_grant">Accorder l’autorisation</string>
+    <string name="permission_location_denied_title">Position requise</string>
+    <string name="permission_location_denied_body">Road Trip Radar est conçu pour afficher la zone autour de vous pendant que vous conduisez, et ne peut donc pas fonctionner sans accès à la position. L’application va maintenant se fermer. Vous pouvez activer l’accès à la position dans les paramètres système et relancer l’application.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Faites défiler vers le bas pour lire la suite, puis vous pourrez accepter.</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">Afficher la chronologie</string>
     <!-- Help page -->
     <string name="help_documentation_info">La documentation complète et les informations légales sont accessibles à l’aide des boutons ci-dessous.</string>
+    <string name="help_show_tutorial">Afficher le tutoriel</string>
     <string name="help_terms">Conditions générales</string>
     <string name="help_radar_legend">Légende du radar</string>
     <string name="help_documentation">Documentation</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">Journal des modifications</string>
     <string name="version_label">Version %s</string>
     <string name="debug_preview_whats_new">Aperçu des nouveautés (débogage)</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">Suivant</string>
+    <string name="tutorial_action_back">Retour</string>
+    <string name="tutorial_action_skip">Passer</string>
+    <string name="tutorial_action_done">J’ai compris</string>
+    <string name="tutorial_step_progress">Étape %1$d sur %2$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Bienvenue dans Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Un rapide tour des commandes de la carte. Pincez pour zoomer, faites glisser avec deux doigts vers le haut ou le bas pour incliner la carte, et faites pivoter deux doigts pour la faire tourner.</string>
+    <string name="tutorial_map_speed_title">Compteur de vitesse</string>
+    <string name="tutorial_map_speed_body">Votre vitesse actuelle, affichée lorsque le GPS a un signal. Basculez entre km/h et mph dans le menu des paramètres système.</string>
+    <string name="tutorial_map_compass_title">Boussole</string>
+    <string name="tutorial_map_compass_body">Appuyez une fois pour verrouiller la carte avec le nord en haut. Appuyez de nouveau pour faire pivoter la carte afin de suivre votre direction.</string>
+    <string name="tutorial_map_drop_pin_title">Déposer une épingle</string>
+    <string name="tutorial_map_drop_pin_body">Appuyez longuement n’importe où sur la carte pour déposer une épingle et naviguer vers celle-ci.</string>
+    <string name="tutorial_map_zoom_out_title">Zoom arrière</string>
+    <string name="tutorial_map_zoom_out_body">Appuyez pour zoomer en arrière. Vous pouvez aussi pincer la carte avec deux doigts.</string>
+    <string name="tutorial_map_zoom_in_title">Zoom avant</string>
+    <string name="tutorial_map_zoom_in_body">Appuyez pour zoomer en avant. Vous pouvez aussi écarter deux doigts sur la carte.</string>
+    <string name="tutorial_map_weather_title">Radar météo</string>
+    <string name="tutorial_map_weather_body">Appuyez pour lancer ou mettre en pause l’animation du radar. Appuyez longuement pour désactiver complètement le radar.</string>
+    <string name="tutorial_map_menu_title">Menu d’actions rapides</string>
+    <string name="tutorial_map_menu_body">Ouvre le panneau d’actions rapides avec les paramètres, les thèmes et les points d’intérêt.</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">Radar météo</string>
+    <string name="tutorial_menu_weather_toggle_body">Active ou désactive la superposition du radar météo.</string>
+    <string name="tutorial_menu_north_up_title">Nord en haut</string>
+    <string name="tutorial_menu_north_up_body">Verrouille la carte pour que le nord soit toujours en haut, ou la laisse pivoter pour suivre votre direction.</string>
+    <string name="tutorial_menu_nearby_places_title">Lieux à proximité</string>
+    <string name="tutorial_menu_nearby_places_body">Choisissez quelles catégories de points d’intérêt (carburant, restauration, hébergement, etc.) charger sur la carte.</string>
+    <string name="tutorial_menu_location_search_title">Recherche de lieu</string>
+    <string name="tutorial_menu_location_search_body">Recherchez une adresse ou un nom de lieu dans la zone visible de la carte.</string>
+    <string name="tutorial_menu_submenu_map_title">Sous-menu Carte</string>
+    <string name="tutorial_menu_submenu_map_body">Choisissez un thème de carte et ajustez les paramètres liés à la carte, comme le décalage du centre.</string>
+    <string name="tutorial_menu_submenu_weather_title">Sous-menu Météo</string>
+    <string name="tutorial_menu_submenu_weather_body">Affiche ou masque le widget vent/température, la légende du radar et la chronologie, et ajuste l’opacité du radar et les unités.</string>
+    <string name="tutorial_menu_submenu_system_title">Sous-menu Système</string>
+    <string name="tutorial_menu_submenu_system_body">Modifiez la langue, la taille des widgets, les unités, le comportement de l’écran et réinitialisez les valeurs par défaut.</string>
+    <string name="tutorial_menu_submenu_help_title">Aide &amp; Infos</string>
+    <string name="tutorial_menu_submenu_help_body">Trouvez la documentation, les conditions générales, le journal des modifications et rejouez ce tutoriel.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recentrer</string>
     <string name="fab_retry_failed">Réessayer</string>

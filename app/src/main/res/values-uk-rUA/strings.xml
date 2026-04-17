@@ -14,8 +14,10 @@
     <string name="action_got_it">Зрозуміло</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Потрібен дозвіл на доступ до місцезнаходження</string>
-    <string name="permission_location_body">Road Trip Radar потребує доступу до вашого точного місцезнаходження, щоб показати, де ви перебуваєте на мапі. Натисніть \"Надати дозвіл\", щоб продовжити, або \"Вийти\", щоб закрити застосунок.</string>
+    <string name="permission_location_body">Road Trip Radar потребує доступу до вашого місцезнаходження, щоб показувати, де ви перебуваєте на мапі. Для найкращої точності рекомендується точне місцезнаходження, але приблизне також підійде. Натисніть \"Надати дозвіл\", щоб продовжити, або \"Вийти\", щоб закрити застосунок.</string>
     <string name="permission_grant">Надати дозвіл</string>
+    <string name="permission_location_denied_title">Потрібен доступ до місцезнаходження</string>
+    <string name="permission_location_denied_body">Road Trip Radar створено для показу області навколо вас під час руху, тому він не може працювати без доступу до місцезнаходження. Зараз застосунок буде закрито. Ви можете ввімкнути доступ до місцезнаходження в системних Налаштуваннях і знову запустити застосунок.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Прокрутіть вниз, щоб прочитати решту, після чого зможете прийняти.</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">Показати шкалу часу</string>
     <!-- Help page -->
     <string name="help_documentation_info">Повна документація та правова інформація доступні за кнопками нижче.</string>
+    <string name="help_show_tutorial">Показати навчання</string>
     <string name="help_terms">Умови та положення</string>
     <string name="help_radar_legend">Легенда радара</string>
     <string name="help_documentation">Документація</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">Журнал змін</string>
     <string name="version_label">Версія %s</string>
     <string name="debug_preview_whats_new">Попередній перегляд новинок (debug)</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">Далі</string>
+    <string name="tutorial_action_back">Назад</string>
+    <string name="tutorial_action_skip">Пропустити</string>
+    <string name="tutorial_action_done">Зрозуміло</string>
+    <string name="tutorial_step_progress">Крок %1$d із %2$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Ласкаво просимо до Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Короткий огляд елементів керування картою. Зведіть пальці, щоб змінити масштаб, проведіть двома пальцями вгору або вниз, щоб нахилити карту, і поверніть два пальці, щоб обертати її.</string>
+    <string name="tutorial_map_speed_title">Спідометр</string>
+    <string name="tutorial_map_speed_body">Ваша поточна швидкість, що відображається, коли GPS визначив місцезнаходження. Перемикайтеся між км/год і миль/год у меню системних налаштувань.</string>
+    <string name="tutorial_map_compass_title">Компас</string>
+    <string name="tutorial_map_compass_body">Торкніться один раз, щоб зафіксувати карту з орієнтацією на північ угорі. Торкніться ще раз, щоб карта оберталася відповідно до вашого курсу.</string>
+    <string name="tutorial_map_drop_pin_title">Поставити мітку</string>
+    <string name="tutorial_map_drop_pin_body">Торкніться й утримуйте будь-де на карті, щоб поставити мітку й прокласти маршрут до неї.</string>
+    <string name="tutorial_map_zoom_out_title">Зменшити масштаб</string>
+    <string name="tutorial_map_zoom_out_body">Торкніться, щоб зменшити масштаб. Ви також можете звести два пальці на карті.</string>
+    <string name="tutorial_map_zoom_in_title">Збільшити масштаб</string>
+    <string name="tutorial_map_zoom_in_body">Торкніться, щоб збільшити масштаб. Ви також можете розвести два пальці на карті.</string>
+    <string name="tutorial_map_weather_title">Метеорадар</string>
+    <string name="tutorial_map_weather_body">Торкніться, щоб запустити або призупинити анімацію радара. Торкніться й утримуйте, щоб повністю вимкнути радар.</string>
+    <string name="tutorial_map_menu_title">Меню швидких дій</string>
+    <string name="tutorial_map_menu_body">Відкриває панель швидких дій із налаштуваннями, темами та цікавими місцями.</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">Метеорадар</string>
+    <string name="tutorial_menu_weather_toggle_body">Увімкніть або вимкніть шар метеорадара.</string>
+    <string name="tutorial_menu_north_up_title">Північ угорі</string>
+    <string name="tutorial_menu_north_up_body">Зафіксуйте карту так, щоб північ завжди була вгорі, або дозвольте їй обертатися відповідно до вашого курсу.</string>
+    <string name="tutorial_menu_nearby_places_title">Місця поруч</string>
+    <string name="tutorial_menu_nearby_places_body">Виберіть, які категорії цікавих місць (пальне, їжа, проживання тощо) завантажувати на карту.</string>
+    <string name="tutorial_menu_location_search_title">Пошук місця</string>
+    <string name="tutorial_menu_location_search_body">Шукайте адресу або назву місця в межах видимої області карти.</string>
+    <string name="tutorial_menu_submenu_map_title">Підменю карти</string>
+    <string name="tutorial_menu_submenu_map_body">Виберіть тему карти й налаштуйте параметри карти, наприклад зміщення центру.</string>
+    <string name="tutorial_menu_submenu_weather_title">Підменю погоди</string>
+    <string name="tutorial_menu_submenu_weather_body">Перемикайте віджет вітру/температури, легенду радара й часову шкалу, а також налаштовуйте прозорість радара та одиниці вимірювання.</string>
+    <string name="tutorial_menu_submenu_system_title">Підменю системи</string>
+    <string name="tutorial_menu_submenu_system_body">Змінюйте мову, розміри віджетів, одиниці вимірювання, поведінку екрана та скидайте налаштування до типових.</string>
+    <string name="tutorial_menu_submenu_help_title">Довідка &amp; інформація</string>
+    <string name="tutorial_menu_submenu_help_body">Знайдіть документацію, умови та положення, список змін і повторіть цей навчальний тур.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Центрувати</string>
     <string name="fab_retry_failed">Повторити невдалі</string>

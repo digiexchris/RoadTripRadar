@@ -1,0 +1,1 @@
+Návod při prvním spuštění a oprava chyby, která bránila použití přibližné polohy GPS (Díky Chrisovi L).

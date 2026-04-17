@@ -1,0 +1,1 @@
+Handledning vid första starten och en bugg som förhindrade användning av ungefärlig GPS-position har åtgärdats (tack Chris L).

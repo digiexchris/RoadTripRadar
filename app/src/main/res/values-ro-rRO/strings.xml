@@ -14,8 +14,10 @@
     <string name="action_got_it">Am înțeles</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Este necesară permisiunea pentru locație</string>
-    <string name="permission_location_body">Road Trip Radar are nevoie de acces la locația ta precisă pentru a arăta unde te afli pe hartă. Atinge Acordă permisiunea pentru a continua sau Ieșire pentru a închide aplicația.</string>
+    <string name="permission_location_body">Road Trip Radar are nevoie de acces la locația dvs. pentru a arăta unde vă aflați pe hartă. Locația precisă este recomandată pentru cea mai bună acuratețe, dar va funcționa și locația aproximativă. Atingeți Acordați permisiunea pentru a continua sau Ieșiți pentru a închide aplicația.</string>
     <string name="permission_grant">Acordă permisiunea</string>
+    <string name="permission_location_denied_title">Locație necesară</string>
+    <string name="permission_location_denied_body">Road Trip Radar este conceput pentru a afișa zona din jurul dvs. în timp ce conduceți, astfel că nu poate funcționa fără acces la locație. Aplicația se va închide acum. Puteți activa accesul la locație din Setările sistemului și lansa din nou aplicația.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Derulează în jos pentru a citi restul, apoi poți accepta.</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">Afișează cronologia</string>
     <!-- Help page -->
     <string name="help_documentation_info">Documentația completă și informațiile legale sunt disponibile prin butoanele de mai jos.</string>
+    <string name="help_show_tutorial">Afișați tutorialul</string>
     <string name="help_terms">Termeni și condiții</string>
     <string name="help_radar_legend">Legenda radarului</string>
     <string name="help_documentation">Documentație</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">Jurnalul modificărilor</string>
     <string name="version_label">Versiunea %s</string>
     <string name="debug_preview_whats_new">Previzualizează noutățile (debug)</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">Următorul</string>
+    <string name="tutorial_action_back">Înapoi</string>
+    <string name="tutorial_action_skip">Omite</string>
+    <string name="tutorial_action_done">Am înțeles</string>
+    <string name="tutorial_step_progress">Pasul %1$d din %2$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Bine ai venit la Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Un tur rapid al comenzilor hărții. Apropie sau depărtează două degete pentru a mări sau micșora, glisează cu două degete în sus sau în jos pentru a înclina harta și rotește două degete pentru a o roti.</string>
+    <string name="tutorial_map_speed_title">Vitezometru</string>
+    <string name="tutorial_map_speed_body">Viteza ta curentă, afișată când GPS-ul are semnal. Comută între km/h și mph în meniul Setări sistem.</string>
+    <string name="tutorial_map_compass_title">Busolă</string>
+    <string name="tutorial_map_compass_body">Atinge o dată pentru a fixa harta cu nordul în sus. Atinge din nou pentru a roti harta astfel încât să urmeze direcția ta de deplasare.</string>
+    <string name="tutorial_map_drop_pin_title">Plasează un pin</string>
+    <string name="tutorial_map_drop_pin_body">Atinge și ține apăsat oriunde pe hartă pentru a plasa un pin și a naviga spre el.</string>
+    <string name="tutorial_map_zoom_out_title">Micșorează</string>
+    <string name="tutorial_map_zoom_out_body">Atinge pentru a micșora. De asemenea, poți apropia două degete pe hartă.</string>
+    <string name="tutorial_map_zoom_in_title">Mărește</string>
+    <string name="tutorial_map_zoom_in_body">Atinge pentru a mări. De asemenea, poți depărta două degete pe hartă.</string>
+    <string name="tutorial_map_weather_title">Radar meteo</string>
+    <string name="tutorial_map_weather_body">Atinge pentru a porni sau pune pe pauză animația radarului. Atinge și ține apăsat pentru a opri complet radarul.</string>
+    <string name="tutorial_map_menu_title">Meniul de acțiuni rapide</string>
+    <string name="tutorial_map_menu_body">Deschide panoul de acțiuni rapide cu setări, teme și puncte de interes.</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">Radar meteo</string>
+    <string name="tutorial_menu_weather_toggle_body">Activează sau dezactivează suprapunerea radarului meteo.</string>
+    <string name="tutorial_menu_north_up_title">Nord în sus</string>
+    <string name="tutorial_menu_north_up_body">Fixează harta astfel încât nordul să fie mereu în sus sau las-o să se rotească pentru a urma direcția ta de deplasare.</string>
+    <string name="tutorial_menu_nearby_places_title">Locuri din apropiere</string>
+    <string name="tutorial_menu_nearby_places_body">Alege ce categorii de puncte de interes (benzină, mâncare, cazare etc.) să fie încărcate pe hartă.</string>
+    <string name="tutorial_menu_location_search_title">Căutare locație</string>
+    <string name="tutorial_menu_location_search_body">Caută o adresă sau numele unui loc în zona vizibilă a hărții.</string>
+    <string name="tutorial_menu_submenu_map_title">Submeniul Hartă</string>
+    <string name="tutorial_menu_submenu_map_body">Alege o temă pentru hartă și ajustează setări legate de hartă, cum ar fi decalajul centrului.</string>
+    <string name="tutorial_menu_submenu_weather_title">Submeniul Meteo</string>
+    <string name="tutorial_menu_submenu_weather_body">Comută widgetul de vânt/temperatură, legenda radarului și cronologia și ajustează opacitatea radarului și unitățile.</string>
+    <string name="tutorial_menu_submenu_system_title">Submeniul Sistem</string>
+    <string name="tutorial_menu_submenu_system_body">Schimbă limba, dimensiunile widgeturilor, unitățile, comportamentul ecranului și resetează la valorile implicite.</string>
+    <string name="tutorial_menu_submenu_help_title">Ajutor &amp; Informații</string>
+    <string name="tutorial_menu_submenu_help_body">Găsește documentația, termenii și condițiile, jurnalul modificărilor și redă din nou acest tutorial.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recentrează</string>
     <string name="fab_retry_failed">Reîncearcă eșecurile</string>
