@@ -1,1 +1,1 @@
-ユーザーが地図を移動したときに、CompassButton が地図を北が上の向きに固定しなくなる問題を修正
+Fix Compass button not locking the map to north-up when the user moves
