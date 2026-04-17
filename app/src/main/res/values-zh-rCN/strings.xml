@@ -14,8 +14,10 @@
     <string name="action_got_it">知道了</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">需要位置权限</string>
-    <string name="permission_location_body">Road Trip Radar 需要访问您的精确位置，以便在地图上显示您所在的位置。点按“授予权限”以继续，或点按“退出”以退出应用。</string>
+    <string name="permission_location_body">Road Trip Radar 需要访问您的位置，以便在地图上显示您所在的位置。为获得最佳精度，建议使用精确位置，但大致位置也可以正常工作。点击“授予权限”以继续，或点击“退出”以关闭应用。</string>
     <string name="permission_grant">授予权限</string>
+    <string name="permission_location_denied_title">需要位置权限</string>
+    <string name="permission_location_denied_body">Road Trip Radar 旨在在您驾驶时显示您周围的区域，因此如果没有位置访问权限则无法运行。应用现在将退出。您可以在系统“设置”中启用位置权限，然后重新启动应用。</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">向下滚动以阅读剩余内容，然后您就可以接受。</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">显示时间轴</string>
     <!-- Help page -->
     <string name="help_documentation_info">完整文档和法律信息可通过下方按钮查看。</string>
+    <string name="help_show_tutorial">显示教程</string>
     <string name="help_terms">条款和条件</string>
     <string name="help_radar_legend">雷达图例</string>
     <string name="help_documentation">文档</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">更新日志</string>
     <string name="version_label">版本 %s</string>
     <string name="debug_preview_whats_new">预览新增内容（调试）</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">下一步</string>
+    <string name="tutorial_action_back">返回</string>
+    <string name="tutorial_action_skip">跳过</string>
+    <string name="tutorial_action_done">知道了</string>
+    <string name="tutorial_step_progress">第 %1$d 步，共 %2$d 步</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">欢迎使用 Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">快速了解地图控件。双指捏合可缩放，双指上下拖动可倾斜地图，双指旋转可旋转地图。</string>
+    <string name="tutorial_map_speed_title">速度表</string>
+    <string name="tutorial_map_speed_body">显示您当前的速度，仅在 GPS 已定位时显示。可在“系统”设置菜单中切换 km/h 和 mph。</string>
+    <string name="tutorial_map_compass_title">指南针</string>
+    <string name="tutorial_map_compass_body">点击一次可将地图锁定为北向上。再次点击可旋转地图，使其跟随您的行进方向。</string>
+    <string name="tutorial_map_drop_pin_title">放置图钉</string>
+    <string name="tutorial_map_drop_pin_body">在地图任意位置长按即可放置图钉并导航前往。</string>
+    <string name="tutorial_map_zoom_out_title">缩小</string>
+    <string name="tutorial_map_zoom_out_body">点击可缩小。您也可以在地图上双指捏合。</string>
+    <string name="tutorial_map_zoom_in_title">放大</string>
+    <string name="tutorial_map_zoom_in_body">点击可放大。您也可以在地图上双指向外张开。</string>
+    <string name="tutorial_map_weather_title">天气雷达</string>
+    <string name="tutorial_map_weather_body">点击可播放或暂停雷达动画。长按可完全关闭雷达。</string>
+    <string name="tutorial_map_menu_title">快捷操作菜单</string>
+    <string name="tutorial_map_menu_body">打开快捷操作抽屉，其中包含设置、主题和兴趣点。</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">天气雷达</string>
+    <string name="tutorial_menu_weather_toggle_body">打开或关闭天气雷达叠加层。</string>
+    <string name="tutorial_menu_north_up_title">北向上</string>
+    <string name="tutorial_menu_north_up_body">锁定地图使北方始终朝上，或让地图旋转以跟随您的行进方向。</string>
+    <string name="tutorial_menu_nearby_places_title">附近地点</string>
+    <string name="tutorial_menu_nearby_places_body">选择要加载到地图上的兴趣点类别（加油、餐饮、住宿等）。</string>
+    <string name="tutorial_menu_location_search_title">位置搜索</string>
+    <string name="tutorial_menu_location_search_body">在当前可见地图区域内搜索地址或地点名称。</string>
+    <string name="tutorial_menu_submenu_map_title">地图子菜单</string>
+    <string name="tutorial_menu_submenu_map_body">选择地图主题，并调整与地图相关的设置，例如中心偏移。</string>
+    <string name="tutorial_menu_submenu_weather_title">天气子菜单</string>
+    <string name="tutorial_menu_submenu_weather_body">切换风/温度小组件、雷达图例和时间轴，并调整雷达不透明度和单位。</string>
+    <string name="tutorial_menu_submenu_system_title">系统子菜单</string>
+    <string name="tutorial_menu_submenu_system_body">更改语言、小组件大小、单位、屏幕行为，并重置为默认值。</string>
+    <string name="tutorial_menu_submenu_help_title">帮助 &amp; 信息</string>
+    <string name="tutorial_menu_submenu_help_body">查找文档、条款与条件、更新日志，并重新播放此教程。</string>
     <!-- MapFabs -->
     <string name="fab_recenter">重新居中</string>
     <string name="fab_retry_failed">重试失败项</string>
