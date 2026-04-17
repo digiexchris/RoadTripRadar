@@ -1,1 +1,1 @@
-Opgeschoond voor F-Droid-build
+Cleaned up for F-Droid build
