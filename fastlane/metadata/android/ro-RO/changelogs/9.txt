@@ -1,1 +1,1 @@
-Elimină configurația de semnare pentru a construi APK-uri nesemnate pentru F-Droid
+Remove signing config to build unsigned APKs for F-Droid
