@@ -1,1 +1,1 @@
-Los op dat de Kompasknop de kaart niet op noord-boven vergrendelt wanneer de gebruiker beweegt
+Fix Compass button not locking the map to north-up when the user moves
