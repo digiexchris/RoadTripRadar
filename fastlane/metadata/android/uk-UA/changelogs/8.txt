@@ -1,1 +1,1 @@
-Pipeline tweaks for F-Droid
+Невеликі зміни конвеєра для F-Droid
