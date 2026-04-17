@@ -1,1 +1,1 @@
-Hvis du har valgt noen kategorier i Nærliggende steder, vil de begynne å vises automatisk når appen starter. Hvis du vil deaktivere denne oppførselen, finnes det en bryter i menyen for Nærliggende steder for å slå det av.
+If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
