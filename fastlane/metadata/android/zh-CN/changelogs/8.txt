@@ -1,1 +1,1 @@
-针对 F-Droid 的流水线调整
+Pipeline tweaks for F-Droid
