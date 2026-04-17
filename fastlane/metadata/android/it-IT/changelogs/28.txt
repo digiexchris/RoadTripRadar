@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Il pulsante riproduci/pausa/spento ora passa da riproduzione a pausa con un tocco. Tocca e tieni premuto per passare da acceso a spento..

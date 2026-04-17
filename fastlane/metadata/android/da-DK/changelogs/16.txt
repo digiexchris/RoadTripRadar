@@ -1,1 +1,1 @@
-Ret Kompas-knappen, så kortet ikke låses op fra nord-opad, når brugeren flytter sig
+Ret Kompas-knappen, så den ikke låser kortet til nord-op, når brugeren bevæger sig

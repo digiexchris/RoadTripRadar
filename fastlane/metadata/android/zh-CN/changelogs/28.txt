@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+已将播放/暂停/关闭按钮更改为轻点即可在播放和暂停之间切换。 轻点并按住可在开启和关闭之间切换。。

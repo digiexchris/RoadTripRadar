@@ -1,1 +1,1 @@
-Opravena chyba, kdy tlačítko Kompas po pohybu uživatele neudrželo mapu orientovanou severem nahoru
+Oprava: tlačítko Kompas po pohybu uživatele správně uzamkne mapu se severem nahoře

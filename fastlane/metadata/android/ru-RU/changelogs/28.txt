@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Изменена работа кнопки воспроизведения/паузы/выключения: теперь она переключает между воспроизведением и паузой одним касанием. Нажмите и удерживайте, чтобы переключаться между включением и выключением..

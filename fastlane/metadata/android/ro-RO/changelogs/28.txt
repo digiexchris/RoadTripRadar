@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Butonul redare/pauză/oprit comută acum între redare și pauză printr-o atingere. Atingeți și țineți apăsat pentru a comuta între pornit și oprit..

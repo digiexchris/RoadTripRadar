@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Alterado o botão reproduzir/pausar/desligar para alternar entre reprodução e pausa com um toque. Toque e mantenha pressionado para alternar entre ligado e desligado..

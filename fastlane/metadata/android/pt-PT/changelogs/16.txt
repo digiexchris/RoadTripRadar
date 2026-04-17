@@ -1,1 +1,1 @@
-Corrigir o problema em que o Botão da bússola não mantém o mapa bloqueado com o norte para cima quando o utilizador se move
+Corrigir o botão Bússola que não bloqueia o mapa na orientação norte para cima quando o utilizador se move

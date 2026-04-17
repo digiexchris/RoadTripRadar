@@ -1,1 +1,1 @@
-Behebt, dass die Kompass-Schaltfläche die Karte nicht auf „Norden oben“ fixiert, wenn der Benutzer die Karte bewegt
+Fehler behoben: Die Kompass-Schaltfläche fixiert die Karte nicht mehr auf Nordausrichtung, wenn sich der Benutzer bewegt

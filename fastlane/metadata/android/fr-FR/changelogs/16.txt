@@ -1,1 +1,1 @@
-Correction d’un problème empêchant le bouton de la boussole de verrouiller la carte avec le nord en haut lorsque l’utilisateur la déplace
+Correction d’un problème empêchant le bouton Boussole de verrouiller la carte avec le nord en haut lorsque l’utilisateur la déplace

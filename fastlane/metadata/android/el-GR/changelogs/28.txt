@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Αλλάξαμε το κουμπί αναπαραγωγής/παύσης/απενεργοποίησης ώστε να εναλλάσσεται μεταξύ αναπαραγωγής και παύσης με ένα πάτημα. Πατήστε παρατεταμένα για εναλλαγή μεταξύ ενεργοποίησης και απενεργοποίησης..
