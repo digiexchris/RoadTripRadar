@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Διόρθωση του κουμπιού Πυξίδα που δεν κλειδώνει τον χάρτη με τον βορρά προς τα πάνω όταν ο χρήστης μετακινείται
