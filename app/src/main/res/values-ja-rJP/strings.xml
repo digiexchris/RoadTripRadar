@@ -14,8 +14,10 @@
     <string name="action_got_it">了解</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">位置情報の権限が必要です</string>
-    <string name="permission_location_body">Road Trip Radar では、地図上に現在地を表示するために正確な位置情報へのアクセスが必要です。続行するには［権限を許可］をタップするか、アプリを終了するには［終了］をタップしてください。</string>
+    <string name="permission_location_body">Road Trip Radar が地図上で現在地を表示するには、位置情報へのアクセスが必要です。最も高い精度で表示するには正確な位置情報を推奨しますが、おおよその位置情報でも動作します。続行するには［権限を許可］をタップし、アプリを終了するには［終了］をタップしてください。</string>
     <string name="permission_grant">権限を許可</string>
+    <string name="permission_location_denied_title">位置情報が必要です</string>
+    <string name="permission_location_denied_body">Road Trip Radar は運転中に現在地周辺のエリアを表示するよう設計されているため、位置情報へのアクセスなしでは機能しません。アプリを終了します。位置情報へのアクセスはシステムの設定で有効にしてから、もう一度アプリを起動してください。</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">下までスクロールして残りを読むと、同意できるようになります。</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">タイムラインを表示</string>
     <!-- Help page -->
     <string name="help_documentation_info">詳しいドキュメントと法的情報は、下のボタンから確認できます。</string>
+    <string name="help_show_tutorial">チュートリアルを表示</string>
     <string name="help_terms">利用規約</string>
     <string name="help_radar_legend">レーダー凡例</string>
     <string name="help_documentation">ドキュメント</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">変更履歴</string>
     <string name="version_label">バージョン %s</string>
     <string name="debug_preview_whats_new">新機能をプレビュー（デバッグ）</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">次へ</string>
+    <string name="tutorial_action_back">戻る</string>
+    <string name="tutorial_action_skip">スキップ</string>
+    <string name="tutorial_action_done">わかりました</string>
+    <string name="tutorial_step_progress">全%2$dステップ中 %1$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Road Trip Radar へようこそ</string>
+    <string name="tutorial_map_welcome_body">マップ操作の簡単な説明です。ピンチして拡大・縮小し、2本の指で上下にドラッグしてマップを傾け、2本の指をひねって回転します。</string>
+    <string name="tutorial_map_speed_title">スピードメーター</string>
+    <string name="tutorial_map_speed_body">GPSで現在地を取得すると、現在の速度が表示されます。システム設定メニューで km/h と mph を切り替えられます。</string>
+    <string name="tutorial_map_compass_title">コンパス</string>
+    <string name="tutorial_map_compass_body">タップすると、マップを北が上になるように固定します。もう一度タップすると、進行方向に合わせてマップが回転します。</string>
+    <string name="tutorial_map_drop_pin_title">ピンをドロップ</string>
+    <string name="tutorial_map_drop_pin_body">マップ上の任意の場所を長押しすると、ピンをドロップしてその場所へナビゲートできます。</string>
+    <string name="tutorial_map_zoom_out_title">ズームアウト</string>
+    <string name="tutorial_map_zoom_out_body">タップして縮小します。マップ上で2本の指をつまむ操作でも縮小できます。</string>
+    <string name="tutorial_map_zoom_in_title">ズームイン</string>
+    <string name="tutorial_map_zoom_in_body">タップして拡大します。マップ上で2本の指を広げる操作でも拡大できます。</string>
+    <string name="tutorial_map_weather_title">天気レーダー</string>
+    <string name="tutorial_map_weather_body">タップしてレーダーアニメーションを再生または一時停止します。長押しすると、レーダーを完全にオフにします。</string>
+    <string name="tutorial_map_menu_title">クイックアクションメニュー</string>
+    <string name="tutorial_map_menu_body">設定、テーマ、周辺スポットを含むクイックアクションドロワーを開きます。</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">天気レーダー</string>
+    <string name="tutorial_menu_weather_toggle_body">天気レーダーのオーバーレイをオンまたはオフにします。</string>
+    <string name="tutorial_menu_north_up_title">北を上に固定</string>
+    <string name="tutorial_menu_north_up_body">マップを常に北が上になるよう固定するか、進行方向に合わせて回転させます。</string>
+    <string name="tutorial_menu_nearby_places_title">周辺スポット</string>
+    <string name="tutorial_menu_nearby_places_body">どのカテゴリの周辺スポット（ガソリン、食事、宿泊など）をマップに読み込むかを選びます。</string>
+    <string name="tutorial_menu_location_search_title">場所を検索</string>
+    <string name="tutorial_menu_location_search_body">表示中のマップ範囲内で住所や場所の名前を検索します。</string>
+    <string name="tutorial_menu_submenu_map_title">マップサブメニュー</string>
+    <string name="tutorial_menu_submenu_map_body">マップテーマを選び、中心オフセットなどのマップ関連設定を調整します。</string>
+    <string name="tutorial_menu_submenu_weather_title">天気サブメニュー</string>
+    <string name="tutorial_menu_submenu_weather_body">風／気温ウィジェット、レーダー凡例、タイムラインの表示を切り替え、レーダーの不透明度と単位を調整します。</string>
+    <string name="tutorial_menu_submenu_system_title">システムサブメニュー</string>
+    <string name="tutorial_menu_submenu_system_body">言語、ウィジェットサイズ、単位、画面の動作を変更し、デフォルトにリセットします。</string>
+    <string name="tutorial_menu_submenu_help_title">ヘルプ &amp; 情報</string>
+    <string name="tutorial_menu_submenu_help_body">ドキュメント、利用規約、変更履歴を確認したり、このチュートリアルをもう一度再生したりできます。</string>
     <!-- MapFabs -->
     <string name="fab_recenter">再センタリング</string>
     <string name="fab_retry_failed">失敗分を再試行</string>
