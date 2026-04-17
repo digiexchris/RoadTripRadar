@@ -1,0 +1,1 @@
+Tutorial beim ersten Start und Behebung eines Fehlers, der die Verwendung des ungefähren GPS-Standorts verhinderte (Danke, Chris L).
