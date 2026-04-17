@@ -38,18 +38,33 @@ def main() -> None:
         sys.exit(1)
 
     latest = releases[0]
+    changelogs_dir = root / "fastlane" / "metadata" / "android" / "en-US" / "changelogs"
+    next_path = changelogs_dir / "next.txt"
+
+    # Only the pending "next" entry should produce a next.txt. After a release the
+    # top entry is a real version (e.g. "1.12.0") whose changelog has already been
+    # renamed to {versionCode}.txt — re-creating next.txt from it would resurrect
+    # the just-released text and ship it as the *following* release's changelog.
+    if latest.get("versionName") != "next":
+        if next_path.is_file():
+            next_path.unlink()
+            print(
+                f"Removed stale {next_path.relative_to(root)} "
+                f"(top entry is {latest.get('versionName')!r}, not 'next')"
+            )
+        else:
+            print("No pending 'next' entry in changelog.json; nothing to do.")
+        return
+
     items = latest.get("items") or []
 
     if not items:
-        print("changelog.json: latest release has no items", file=sys.stderr)
+        print("changelog.json: pending 'next' release has no items", file=sys.stderr)
         sys.exit(1)
 
     text = "\n".join(items)
 
-    # Write as next.txt — renamed to {versionCode}.txt by the release pipeline
-    changelogs_dir = root / "fastlane" / "metadata" / "android" / "en-US" / "changelogs"
     changelogs_dir.mkdir(parents=True, exist_ok=True)
-    next_path = changelogs_dir / "next.txt"
     next_path.write_text(text + "\n")
     print(f"Wrote {next_path.relative_to(root)}")
 

@@ -109,6 +109,17 @@ jobs:
               print(f'Renamed {next_file} -> {target}')
           "
 
+      - name: Verify no stale next.txt remains
+        if: ${{ github.event.inputs.rebuild_only != 'true' }}
+        run: |
+          STALE=$(find fastlane/metadata/android -path '*/changelogs/next.txt' -print)
+          if [ -n "$STALE" ]; then
+            echo "::error::Found leftover next.txt files after rename — release would ship stale changelog:"
+            echo "$STALE"
+            exit 1
+          fi
+          echo "OK: no next.txt files remain"
+
       - name: Commit and tag
         if: ${{ github.event.inputs.rebuild_only != 'true' }}
         run: |

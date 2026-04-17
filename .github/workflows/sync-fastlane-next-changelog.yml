@@ -27,6 +27,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Refuse non-main runs
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::This workflow may only run on main (got ${{ github.ref }})"
+          exit 1
+
       - name: Generate app token
         id: app-token
         uses: actions/create-github-app-token@v1

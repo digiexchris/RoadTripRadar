@@ -24,6 +24,39 @@ jobs:
           python-version: "3.x"
       - name: Generate fastlane changelog
         run: python scripts/generate_changelogs.py
+      - name: Validate next.txt vs changelog.json
+        run: |
+          python3 <<'PY'
+          import json, pathlib, sys
+
+          data = json.loads(pathlib.Path('app/src/main/assets/changelog.json').read_text())
+          releases = data.get('releases') or []
+          top_name = releases[0].get('versionName') if releases else None
+          stale = sorted(
+              str(p) for p in pathlib.Path('fastlane/metadata/android').glob('*/changelogs/next.txt')
+          )
+
+          if top_name == 'next':
+              if not stale:
+                  print("::error::changelog.json has a pending 'next' entry but no next.txt files exist")
+                  sys.exit(1)
+              print(f"OK: pending 'next' entry with {len(stale)} next.txt file(s)")
+          else:
+              if stale:
+                  print(
+                      f"::error::Top changelog entry is '{top_name}' (not 'next') but next.txt "
+                      f"still exists in {len(stale)} locale(s):"
+                  )
+                  for s in stale:
+                      print(f"  {s}")
+                  print(
+                      "::error::This usually means a PR branched from pre-release main is "
+                      "resurrecting a deleted next.txt. Rebase on main and re-run "
+                      "`scripts/generate_changelogs.py`."
+                  )
+                  sys.exit(1)
+              print(f"OK: no pending 'next' entry and no stale next.txt files")
+          PY
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
