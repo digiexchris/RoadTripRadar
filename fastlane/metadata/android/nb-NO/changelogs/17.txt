@@ -1,1 +1,1 @@
-Horisontalt oppsett, radarlegende og generelle forbedringer av brukergrensesnittet
+Horizontal layout, radar legend, and general UI improvements
