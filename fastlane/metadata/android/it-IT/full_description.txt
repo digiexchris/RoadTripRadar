@@ -1,0 +1,11 @@
+RoadTripRadar è un'app di mappe che dà priorità alla consapevolezza della situazione e al meteo. Immagini radar meteo in tempo reale su una mappa interattiva, per aiutarti a vedere le precipitazioni lungo la tua direzione di viaggio a colpo d'occhio.
+
+Funzionalità:
+- Anelli di distanza centrati sulla tua posizione che si adattano al livello di zoom.
+- Naviga usando la direzione verso la tua destinazione invece di rigide istruzioni svolta per svolta. Perfetta per gli esploratori e per chi ama vagabondare!
+- Radar meteo animato in tempo reale da RainViewer con opacità regolabile e controlli di riproduzione. Perfetta per i motociclisti che vogliono essere avvisati per deviare intorno a una tempesta o equipaggiarsi adeguatamente.
+- Velocità e direzione del vento
+- Temperatura e tendenza di 1 ora
+- Più stili di mappa: Chiaro, Scuro, Auto e colori personalizzati per entrambi.
+- Visualizzazione della velocità con unità metriche e imperiali, dimensione del carattere regolabile.
+- Open source, nessun tracciamento, nessun account, nessuna pubblicità.

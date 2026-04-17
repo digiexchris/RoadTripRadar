@@ -1,0 +1,3 @@
+Registo de alterações na aplicação: veja as Novidades após as atualizações e o histórico completo em Ajuda e Informações.
+Agora pode ver pontos de interesse perto da sua localização! Veja em Menu->Locais.
+Fizemos uma grande reformulação do menu para tornar as opções mais fáceis de encontrar e de gerir, mesmo com luvas calçadas.

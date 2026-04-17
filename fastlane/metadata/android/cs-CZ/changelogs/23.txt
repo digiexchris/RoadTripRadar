@@ -1,0 +1,3 @@
+Záznam změn v aplikaci: po aktualizacích si zobrazte Novinky a úplnou historii najdete v Nápověda a informace.
+Nyní si můžete zobrazit body zájmu ve svém okolí! Najdete to v nabídce Menu -> Místa.
+Výrazně jsme přepracovali nabídku, aby se v ní položky daly snáze najít a aby se lépe ovládala i v rukavicích.

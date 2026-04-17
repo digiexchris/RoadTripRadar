@@ -1,0 +1,2 @@
+Există un nou selector de teme pentru hartă! Îl găsești în meniu -> Hartă -> Alege tema. De asemenea, tema întunecată implicită a hărții a fost ajustată pentru a afișa mai bine drumurile mici și potecile. Dacă o preferai pe cea veche, este încă disponibilă.
+Acum există un buton redare/pauză/oprit pentru radarul meteo pe ecranul principal.

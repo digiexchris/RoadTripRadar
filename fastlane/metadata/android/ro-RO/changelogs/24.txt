@@ -1,0 +1,1 @@
+Dacă aveți selectate categorii în Locuri din apropiere, acestea vor începe să fie afișate automat când aplicația pornește. Dacă doriți să dezactivați acest comportament, există un comutator în meniul Locuri din apropiere pentru a-l opri.

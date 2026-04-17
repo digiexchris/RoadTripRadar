@@ -1,0 +1,1 @@
+Remediază problema prin care butonul Busolă nu menține harta blocată cu nordul în sus atunci când utilizatorul o deplasează

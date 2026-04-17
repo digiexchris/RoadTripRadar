@@ -1,0 +1,1 @@
+Probleem opgelost waarbij de kompasknop de kaart niet op noord-boven vergrendelt wanneer de gebruiker beweegt

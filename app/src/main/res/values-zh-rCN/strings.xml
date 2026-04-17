@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common actions -->
+    <string name="action_close">关闭</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_quit">退出</string>
+    <string name="action_reset">重置</string>
+    <string name="action_save">保存</string>
+    <string name="action_delete">删除</string>
+    <string name="action_share">分享</string>
+    <string name="action_ok">确定</string>
+    <string name="action_decline">拒绝</string>
+    <string name="action_accept">接受</string>
+    <string name="action_got_it">知道了</string>
+    <!-- Location permission dialog -->
+    <string name="permission_location_title">需要位置权限</string>
+    <string name="permission_location_body">Road Trip Radar 需要访问您的精确位置，以便在地图上显示您的位置。点按“授予权限”以继续，或点按“退出”以退出应用。</string>
+    <string name="permission_grant">授予权限</string>
+    <!-- Terms overlay -->
+    <string name="terms_scroll_hint">向下滚动以阅读剩余内容，然后您就可以接受。</string>
+    <!-- Quit dialog -->
+    <string name="dialog_quit_title">退出</string>
+    <string name="dialog_quit_message">您确定要退出吗？</string>
+    <!-- Reset dialog -->
+    <string name="dialog_reset_title">重置为默认值</string>
+    <string name="dialog_reset_message">所有设置都将重置为默认值。</string>
+    <!-- Actions drawer - main actions -->
+    <string name="action_nearby_places">附近地点</string>
+    <string name="action_clear_places">清除地点</string>
+    <string name="action_location_search">位置搜索</string>
+    <string name="action_clear_target">清除目标</string>
+    <string name="action_track_bearing">跟随朝向</string>
+    <string name="action_track_north">朝北显示</string>
+    <!-- Actions drawer - sub menus -->
+    <string name="menu_map">地图</string>
+    <string name="menu_weather">天气</string>
+    <string name="menu_system">系统</string>
+    <string name="menu_help">帮助</string>
+    <string name="menu_help_info">帮助 &amp; 信息</string>
+    <!-- Weather toggles -->
+    <string name="action_wind_temp_off">关闭风速 &amp; 温度</string>
+    <string name="action_wind_temp_on">开启风速 &amp; 温度</string>
+    <string name="action_hide_legend">隐藏图例</string>
+    <string name="action_show_legend">显示图例</string>
+    <string name="action_hide_timeline">隐藏时间轴</string>
+    <string name="action_show_timeline">显示时间轴</string>
+    <!-- Help page -->
+    <string name="help_documentation_info">完整文档和法律信息可通过下方按钮查看。</string>
+    <string name="help_terms">条款 &amp; 条件</string>
+    <string name="help_radar_legend">雷达图例</string>
+    <string name="help_documentation">文档</string>
+    <string name="help_privacy_policy">隐私政策</string>
+    <string name="help_changelog">更新日志</string>
+    <string name="version_label">版本 %s</string>
+    <string name="debug_preview_whats_new">预览新内容（调试）</string>
+    <!-- MapFabs -->
+    <string name="fab_recenter">重新居中</string>
+    <string name="fab_retry_failed">重试失败项</string>
+    <string name="cd_recenter_location">重新居中到当前位置</string>
+    <string name="cd_gps_fix_acquired">已获取 GPS 定位</string>
+    <string name="cd_waiting_gps_fix">正在等待 GPS 定位</string>
+    <string name="cd_zoom_out">缩小</string>
+    <string name="cd_zoom_in">放大</string>
+    <string name="cd_quick_actions">快捷操作</string>
+    <string name="cd_weather_off">天气雷达已关闭</string>
+    <string name="cd_weather_pause">暂停雷达</string>
+    <string name="cd_weather_play">播放雷达</string>
+    <string name="cd_no_network">无网络</string>
+    <string name="cd_wifi">Wi‑Fi</string>
+    <string name="cd_cellular">蜂窝网络</string>
+    <string name="cd_unknown_network">未知网络</string>
+    <!-- Weather settings -->
+    <string name="settings_weather_radar_opacity">天气雷达不透明度</string>
+    <string name="settings_wind_speed_units">风速单位</string>
+    <string name="settings_temperature_units">温度单位</string>
+    <string name="settings_weather_widget_size">天气小组件大小</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="unit_knots">kn</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+    <!-- Map settings -->
+    <string name="settings_speed_distance_units">速度/距离单位</string>
+    <string name="settings_metric">公制</string>
+    <string name="settings_imperial">英制</string>
+    <string name="settings_map_center_offset_portrait">地图中心偏移（竖屏）</string>
+    <string name="settings_map_center_offset_landscape">地图中心偏移（横屏）</string>
+    <string name="settings_places_icon_opacity">地点图标不透明度</string>
+    <string name="theme_current">主题：%s</string>
+    <string name="action_choose_theme">选择主题</string>
+    <!-- System settings -->
+    <string name="settings_display">显示</string>
+    <string name="settings_status_icon_opacity">状态图标不透明度</string>
+    <string name="settings_speedometer_size">速度表大小</string>
+    <string name="settings_compass_size">指南针大小</string>
+    <string name="settings_nav_widget_size">导航小组件大小</string>
+    <string name="settings_misc">杂项</string>
+    <string name="settings_keep_screen_on">保持屏幕常亮</string>
+    <string name="settings_language">语言</string>
+    <string name="language_system_default">系统默认</string>
+    <!-- Theme selector -->
+    <string name="theme_map_theme">地图主题</string>
+    <string name="theme_auto">自动</string>
+    <string name="theme_customize_maputnik">在 Maputnik 中自定义</string>
+    <string name="theme_overwrite_custom_light">覆盖自定义浅色主题</string>
+    <string name="theme_use_as_custom_light_base">用作自定义浅色主题基础</string>
+    <string name="theme_overwrite_custom_dark">覆盖自定义深色主题</string>
+    <string name="theme_use_as_custom_dark_base">用作自定义深色主题基础</string>
+    <string name="theme_use_in_auto_mode">在自动模式中使用</string>
+    <string name="theme_action_edit">编辑</string>
+    <string name="theme_action_save">保存</string>
+    <string name="theme_action_maputnik">Maputnik</string>
+    <string name="theme_action_share">分享</string>
+    <string name="theme_action_delete">删除</string>
+    <string name="cd_edit_colors">编辑颜色</string>
+    <string name="cd_save_json_downloads">将 JSON 保存到下载目录</string>
+    <string name="cd_open_maputnik">打开 Maputnik</string>
+    <string name="cd_delete_custom_theme">删除自定义主题</string>
+    <string name="theme_invalid_file">无效的主题文件</string>
+    <string name="theme_saved_to_downloads">已保存到 Downloads/%s</string>
+    <string name="theme_save_failed">保存失败</string>
+    <string name="theme_export">导出主题</string>
+    <!-- Color editor -->
+    <string name="color_editor_create_title">创建 %s 主题</string>
+    <string name="color_editor_no_theme">尚不存在 %1$s 主题。要基于 %2$s 创建一个吗？您也可以从主题选择器导入 JSON 文件。</string>
+    <string name="color_editor_create_from">从 %s 创建</string>
+    <string name="color_editor_edit_colors">编辑颜色：%s</string>
+    <string name="color_editor_preview">预览</string>
+    <string name="color_editor_hex">十六进制</string>
+    <string name="cd_collapse">折叠</string>
+    <string name="cd_expand">展开</string>
+    <!-- POI search dialog -->
+    <string name="search_location_title">搜索位置</string>
+    <string name="search_within_visible">在当前可见地图区域内搜索</string>
+    <string name="search_address_placeholder">地址或地点名称</string>
+    <string name="search_searching">搜索中…</string>
+    <!-- POI category picker -->
+    <string name="poi_autoload_title">自动加载附近地点</string>
+    <string name="poi_autoload_description">应用启动时开始加载附近地点</string>
+    <string name="poi_count">%1$d / %2$d</string>
+    <string name="action_search_visible_area">搜索可见区域</string>
+    <!-- Tapped POI popup -->
+    <string name="action_navigate_here">导航到这里</string>
+    <string name="cd_close">关闭</string>
+    <!-- Nav widget -->
+    <string name="cd_direction_to_target">指向目标位置的方向</string>
+    <!-- Changelog sheets -->
+    <string name="changelog_whats_new">新变化</string>
+    <string name="changelog_title">更新日志</string>
+    <string name="changelog_no_entries">没有更新日志条目。</string>
+    <!-- Weather legend -->
+    <string name="legend_overcast">阴天</string>
+    <string name="legend_drizzle">毛毛雨</string>
+    <string name="legend_rain_light">小雨？</string>
+    <string name="legend_rain_moderate">中雨。</string>
+    <string name="legend_rain_heavy">大雨！！</string>
+    <string name="legend_hail_light">冰雹？</string>
+    <string name="legend_hail_moderate">冰雹。</string>
+    <string name="legend_hail_heavy">冰雹！！</string>
+    <string name="legend_snow_light">小雪？</string>
+    <string name="legend_snow_moderate">中雪。</string>
+    <string name="legend_snow_heavy">大雪！！</string>
+    <!-- Legend detail sheet -->
+    <string name="legend_detail_title">雷达图例</string>
+    <string name="legend_detail_label">标签</string>
+    <string name="legend_detail_dbz">dBZ</string>
+    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_rain">雨</string>
+    <string name="legend_detail_hail">冰雹</string>
+    <string name="legend_detail_snow">雪</string>
+    <string name="legend_detail_overcast">阴天</string>
+    <string name="legend_detail_drizzle">毛毛雨</string>
+    <string name="legend_detail_light_rain">小雨</string>
+    <string name="legend_detail_moderate_rain">中雨</string>
+    <string name="legend_detail_showers">阵雨</string>
+    <string name="legend_detail_small_hail">可能有小冰雹或冻雨</string>
+    <string name="legend_detail_hail_possible">可能有冰雹</string>
+    <string name="legend_detail_hail_likely">很可能有冰雹</string>
+    <string name="legend_detail_light_snow">小雪</string>
+    <string name="legend_detail_moderate_snow">中雪</string>
+    <string name="legend_detail_heavy_snow">大雪</string>
+    <!-- Speed readout -->
+    <string name="speed_unit_kmh">km/h</string>
+    <string name="speed_unit_mph">mph</string>
+    <!-- Weather widget -->
+    <string name="cd_wind_direction">风向</string>
+    <!-- POI category labels -->
+    <string name="poi_gas_station">加油站</string>
+    <string name="poi_ev_charging">电动车充电</string>
+    <string name="poi_restaurant">餐厅</string>
+    <string name="poi_fast_food">快餐</string>
+    <string name="poi_cafe">咖啡馆 / 咖啡</string>
+    <string name="poi_bar">酒吧 / 酒馆</string>
+    <string name="poi_supermarket">超市</string>
+    <string name="poi_convenience">便利店</string>
+    <string name="poi_pharmacy">药店</string>
+    <string name="poi_hospital">医院</string>
+    <string name="poi_hotel">酒店</string>
+    <string name="poi_motel">汽车旅馆</string>
+    <string name="poi_campsite">露营地</string>
+    <string name="poi_parking">停车场</string>
+    <string name="poi_rest_area">休息区</string>
+    <string name="poi_atm">ATM</string>
+    <string name="poi_bank">银行</string>
+    <string name="poi_post_office">邮局</string>
+    <string name="poi_car_repair">汽车维修</string>
+    <string name="poi_car_wash">洗车</string>
+    <string name="poi_laundry">洗衣店</string>
+    <string name="poi_toilets">厕所</string>
+    <string name="poi_police">警察局</string>
+    <string name="poi_fire_station">消防站</string>
+    <string name="poi_library">图书馆</string>
+    <string name="poi_park">公园</string>
+    <string name="poi_viewpoint">观景点</string>
+    <string name="poi_museum">博物馆</string>
+    <string name="poi_tourist_info">旅游信息</string>
+    <!-- Map style display names -->
+    <string name="style_liberty">Liberty</string>
+    <string name="style_dark">深色</string>
+    <string name="style_dark_small_roads">深色（小道路）</string>
+    <string name="style_custom_light">自定义浅色</string>
+    <string name="style_custom_dark">自定义深色</string>
+    <string name="style_auto">自动</string>
+</resources>

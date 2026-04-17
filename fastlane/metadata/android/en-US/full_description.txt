@@ -2,10 +2,10 @@ RoadTripRadar is a map app prioritizing situational awareness and weather. Live 
 
 Features:
 - Distance rings centered on your location that adapt to zoom level.
-- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people that like to wander!
-- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists that want notice to reroute around a storm or gear up.
+- Navigate using bearing to your destination instead of rigid turn-by-turn instructions. Perfect for explorers and people who like to wander!
+- Live animated weather radar from RainViewer with adjustable opacity and playback controls. Perfect for motorcyclists who want notice to reroute around a storm or gear up.
 - Wind speed and direction
-- Temperature and 1 hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colours for either.
+- Temperature and 1-hour trend
+- Multiple map styles: Light, Dark, Auto, and custom colors for either.
 - Speed readout with metric and imperial units, adjustable font size.
 - Open source, no tracking, no accounts, no ads.

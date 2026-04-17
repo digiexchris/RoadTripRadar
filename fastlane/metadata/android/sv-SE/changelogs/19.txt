@@ -1,0 +1,1 @@
+* Omorganisera layouten * Ta bort extra knappar från användargränssnittet, flytta dem till ett separat överlägg för vanliga åtgärder * Lägg till snabbhjälp vid start * Minska röran och antalet åtgärder i kartvyn * Anpassa horisontellt läge till stående läge * Lägg till en låda med snabbåtgärder vid tryck för vanliga åtgärder i stället för kartknappar

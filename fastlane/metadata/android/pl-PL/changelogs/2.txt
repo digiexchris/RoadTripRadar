@@ -1,0 +1,5 @@
+- Poprawiono wydajność ładowania kafelków radaru pogodowego (wstępne ładowanie wszystkich klatek)
+- Przycisk kompasu przełącza teraz między orientacją z północą u góry a poprzednim kierunkiem
+- Domyślny styl mapy dla nowych instalacji został zmieniony na Color Dark
+- Dodano metadane Fastlane dla F-Droid
+- Usunięto wtyczkę foojay-resolver dla zgodności z F-Droid

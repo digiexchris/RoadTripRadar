@@ -1,1 +1,1 @@
-Revert moving metadata
+Undo moving metadata

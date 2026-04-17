@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common actions -->
+    <string name="action_close">Κλείσιμο</string>
+    <string name="action_cancel">Ακύρωση</string>
+    <string name="action_quit">Έξοδος</string>
+    <string name="action_reset">Επαναφορά</string>
+    <string name="action_save">Αποθήκευση</string>
+    <string name="action_delete">Διαγραφή</string>
+    <string name="action_share">Κοινοποίηση</string>
+    <string name="action_ok">Εντάξει</string>
+    <string name="action_decline">Απόρριψη</string>
+    <string name="action_accept">Αποδοχή</string>
+    <string name="action_got_it">Εντάξει</string>
+    <!-- Location permission dialog -->
+    <string name="permission_location_title">Απαιτείται άδεια τοποθεσίας</string>
+    <string name="permission_location_body">Το Road Trip Radar χρειάζεται πρόσβαση στην ακριβή τοποθεσία σας για να δείχνει πού βρίσκεστε στον χάρτη. Πατήστε \"Χορήγηση άδειας\" για να συνεχίσετε ή \"Έξοδος\" για να κλείσετε την εφαρμογή.</string>
+    <string name="permission_grant">Χορήγηση άδειας</string>
+    <!-- Terms overlay -->
+    <string name="terms_scroll_hint">Κυλήστε προς τα κάτω για να διαβάσετε τα υπόλοιπα και μετά μπορείτε να αποδεχτείτε.</string>
+    <!-- Quit dialog -->
+    <string name="dialog_quit_title">Έξοδος</string>
+    <string name="dialog_quit_message">Είστε βέβαιοι ότι θέλετε να βγείτε;</string>
+    <!-- Reset dialog -->
+    <string name="dialog_reset_title">Επαναφορά προεπιλογών</string>
+    <string name="dialog_reset_message">Όλες οι ρυθμίσεις θα επανέλθουν στις προεπιλεγμένες τιμές τους.</string>
+    <!-- Actions drawer - main actions -->
+    <string name="action_nearby_places">Κοντινά μέρη</string>
+    <string name="action_clear_places">Εκκαθάριση μερών</string>
+    <string name="action_location_search">Αναζήτηση τοποθεσίας</string>
+    <string name="action_clear_target">Εκκαθάριση στόχου</string>
+    <string name="action_track_bearing">Παρακολούθηση πορείας</string>
+    <string name="action_track_north">Παρακολούθηση Βορρά</string>
+    <!-- Actions drawer - sub menus -->
+    <string name="menu_map">Χάρτης</string>
+    <string name="menu_weather">Καιρός</string>
+    <string name="menu_system">Σύστημα</string>
+    <string name="menu_help">Βοήθεια</string>
+    <string name="menu_help_info">Βοήθεια &amp; Πληροφορίες</string>
+    <!-- Weather toggles -->
+    <string name="action_wind_temp_off">Άνεμος &amp; Θερμοκρασία ανενεργά</string>
+    <string name="action_wind_temp_on">Άνεμος &amp; Θερμοκρασία ενεργά</string>
+    <string name="action_hide_legend">Απόκρυψη υπομνήματος</string>
+    <string name="action_show_legend">Εμφάνιση υπομνήματος</string>
+    <string name="action_hide_timeline">Απόκρυψη χρονογραμμής</string>
+    <string name="action_show_timeline">Εμφάνιση χρονογραμμής</string>
+    <!-- Help page -->
+    <string name="help_documentation_info">Η πλήρης τεκμηρίωση και οι νομικές πληροφορίες είναι διαθέσιμες από τα παρακάτω κουμπιά.</string>
+    <string name="help_terms">Όροι &amp; Προϋποθέσεις</string>
+    <string name="help_radar_legend">Υπόμνημα ραντάρ</string>
+    <string name="help_documentation">Τεκμηρίωση</string>
+    <string name="help_privacy_policy">Πολιτική απορρήτου</string>
+    <string name="help_changelog">Αρχείο αλλαγών</string>
+    <string name="version_label">Έκδοση %s</string>
+    <string name="debug_preview_whats_new">Προεπισκόπηση νέων δυνατοτήτων (debug)</string>
+    <!-- MapFabs -->
+    <string name="fab_recenter">Επανακέντρωση</string>
+    <string name="fab_retry_failed">Επανάληψη αποτυχημένων</string>
+    <string name="cd_recenter_location">Επανακέντρωση στην τοποθεσία</string>
+    <string name="cd_gps_fix_acquired">Η λήψη GPS αποκτήθηκε</string>
+    <string name="cd_waiting_gps_fix">Αναμονή για λήψη GPS</string>
+    <string name="cd_zoom_out">Σμίκρυνση</string>
+    <string name="cd_zoom_in">Μεγέθυνση</string>
+    <string name="cd_quick_actions">Γρήγορες ενέργειες</string>
+    <string name="cd_weather_off">Ραντάρ καιρού ανενεργό</string>
+    <string name="cd_weather_pause">Παύση ραντάρ</string>
+    <string name="cd_weather_play">Αναπαραγωγή ραντάρ</string>
+    <string name="cd_no_network">Χωρίς δίκτυο</string>
+    <string name="cd_wifi">Wi‑Fi</string>
+    <string name="cd_cellular">Κινητό δίκτυο</string>
+    <string name="cd_unknown_network">Άγνωστο δίκτυο</string>
+    <!-- Weather settings -->
+    <string name="settings_weather_radar_opacity">Αδιαφάνεια ραντάρ καιρού</string>
+    <string name="settings_wind_speed_units">Μονάδες ταχύτητας ανέμου</string>
+    <string name="settings_temperature_units">Μονάδες θερμοκρασίας</string>
+    <string name="settings_weather_widget_size">Μέγεθος γραφικού στοιχείου καιρού</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="unit_knots">kn</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+    <!-- Map settings -->
+    <string name="settings_speed_distance_units">Μονάδες ταχύτητας/απόστασης</string>
+    <string name="settings_metric">Μετρικό</string>
+    <string name="settings_imperial">Αγγλοσαξονικό</string>
+    <string name="settings_map_center_offset_portrait">Μετατόπιση κέντρου χάρτη (Κατακόρυφα)</string>
+    <string name="settings_map_center_offset_landscape">Μετατόπιση κέντρου χάρτη (Οριζόντια)</string>
+    <string name="settings_places_icon_opacity">Αδιαφάνεια εικονιδίων μερών</string>
+    <string name="theme_current">Θέμα: %s</string>
+    <string name="action_choose_theme">Επιλογή θέματος</string>
+    <!-- System settings -->
+    <string name="settings_display">Εμφάνιση</string>
+    <string name="settings_status_icon_opacity">Αδιαφάνεια εικονιδίου κατάστασης</string>
+    <string name="settings_speedometer_size">Μέγεθος ταχύμετρου</string>
+    <string name="settings_compass_size">Μέγεθος πυξίδας</string>
+    <string name="settings_nav_widget_size">Μέγεθος γραφικού στοιχείου πλοήγησης</string>
+    <string name="settings_misc">Διάφορα</string>
+    <string name="settings_keep_screen_on">Διατήρηση οθόνης ενεργής</string>
+    <string name="settings_language">Γλώσσα</string>
+    <string name="language_system_default">Προεπιλογή συστήματος</string>
+    <!-- Theme selector -->
+    <string name="theme_map_theme">Θέμα χάρτη</string>
+    <string name="theme_auto">Αυτόματο</string>
+    <string name="theme_customize_maputnik">Προσαρμογή στο Maputnik</string>
+    <string name="theme_overwrite_custom_light">Αντικατάσταση προσαρμοσμένου φωτεινού</string>
+    <string name="theme_use_as_custom_light_base">Χρήση ως βάση προσαρμοσμένου φωτεινού</string>
+    <string name="theme_overwrite_custom_dark">Αντικατάσταση προσαρμοσμένου σκούρου</string>
+    <string name="theme_use_as_custom_dark_base">Χρήση ως βάση προσαρμοσμένου σκούρου</string>
+    <string name="theme_use_in_auto_mode">Χρήση στην αυτόματη λειτουργία</string>
+    <string name="theme_action_edit">Επεξεργασία</string>
+    <string name="theme_action_save">Αποθήκευση</string>
+    <string name="theme_action_maputnik">Maputnik</string>
+    <string name="theme_action_share">Κοινοποίηση</string>
+    <string name="theme_action_delete">Διαγραφή</string>
+    <string name="cd_edit_colors">Επεξεργασία χρωμάτων</string>
+    <string name="cd_save_json_downloads">Αποθήκευση JSON στις Λήψεις</string>
+    <string name="cd_open_maputnik">Άνοιγμα Maputnik</string>
+    <string name="cd_delete_custom_theme">Διαγραφή προσαρμοσμένου θέματος</string>
+    <string name="theme_invalid_file">Μη έγκυρο αρχείο θέματος</string>
+    <string name="theme_saved_to_downloads">Αποθηκεύτηκε στις Λήψεις/%s</string>
+    <string name="theme_save_failed">Η αποθήκευση απέτυχε</string>
+    <string name="theme_export">Εξαγωγή θέματος</string>
+    <!-- Color editor -->
+    <string name="color_editor_create_title">Δημιουργία θέματος %s</string>
+    <string name="color_editor_no_theme">Δεν υπάρχει ακόμη θέμα %1$s. Δημιουργία με βάση το %2$s; Μπορείτε επίσης να εισαγάγετε ένα αρχείο JSON από τον επιλογέα θέματος.</string>
+    <string name="color_editor_create_from">Δημιουργία από %s</string>
+    <string name="color_editor_edit_colors">Επεξεργασία χρωμάτων: %s</string>
+    <string name="color_editor_preview">Προεπισκόπηση</string>
+    <string name="color_editor_hex">Δεκαεξαδικό</string>
+    <string name="cd_collapse">Σύμπτυξη</string>
+    <string name="cd_expand">Ανάπτυξη</string>
+    <!-- POI search dialog -->
+    <string name="search_location_title">Αναζήτηση τοποθεσίας</string>
+    <string name="search_within_visible">Αναζήτηση στην ορατή περιοχή του χάρτη</string>
+    <string name="search_address_placeholder">Διεύθυνση ή όνομα μέρους</string>
+    <string name="search_searching">Αναζήτηση…</string>
+    <!-- POI category picker -->
+    <string name="poi_autoload_title">Αυτόματη φόρτωση κοντινών μερών</string>
+    <string name="poi_autoload_description">Έναρξη φόρτωσης κοντινών μερών όταν ξεκινά η εφαρμογή</string>
+    <string name="poi_count">%1$d από %2$d</string>
+    <string name="action_search_visible_area">Αναζήτηση στην ορατή περιοχή</string>
+    <!-- Tapped POI popup -->
+    <string name="action_navigate_here">Πλοήγηση εδώ</string>
+    <string name="cd_close">Κλείσιμο</string>
+    <!-- Nav widget -->
+    <string name="cd_direction_to_target">Κατεύθυνση προς την τοποθεσία στόχου</string>
+    <!-- Changelog sheets -->
+    <string name="changelog_whats_new">Τι νέο υπάρχει</string>
+    <string name="changelog_title">Αρχείο αλλαγών</string>
+    <string name="changelog_no_entries">Δεν υπάρχουν καταχωρίσεις στο αρχείο αλλαγών.</string>
+    <!-- Weather legend -->
+    <string name="legend_overcast">Συννεφιά</string>
+    <string name="legend_drizzle">Ψιχάλα</string>
+    <string name="legend_rain_light">Βροχή;</string>
+    <string name="legend_rain_moderate">Βροχή.</string>
+    <string name="legend_rain_heavy">Βροχή!!</string>
+    <string name="legend_hail_light">Χαλάζι;</string>
+    <string name="legend_hail_moderate">Χαλάζι.</string>
+    <string name="legend_hail_heavy">Χαλάζι!!</string>
+    <string name="legend_snow_light">Χιόνι;</string>
+    <string name="legend_snow_moderate">Χιόνι.</string>
+    <string name="legend_snow_heavy">Χιόνι!!</string>
+    <!-- Legend detail sheet -->
+    <string name="legend_detail_title">Υπόμνημα ραντάρ</string>
+    <string name="legend_detail_label">Ετικέτα</string>
+    <string name="legend_detail_dbz">dBZ</string>
+    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_rain">Βροχή</string>
+    <string name="legend_detail_hail">Χαλάζι</string>
+    <string name="legend_detail_snow">Χιόνι</string>
+    <string name="legend_detail_overcast">Συννεφιά</string>
+    <string name="legend_detail_drizzle">Ψιχάλα</string>
+    <string name="legend_detail_light_rain">Ελαφριά βροχή</string>
+    <string name="legend_detail_moderate_rain">Μέτρια βροχή</string>
+    <string name="legend_detail_showers">Μπόρες</string>
+    <string name="legend_detail_small_hail">Πιθανό μικρό χαλάζι ή παγωμένη βροχή</string>
+    <string name="legend_detail_hail_possible">Πιθανό χαλάζι</string>
+    <string name="legend_detail_hail_likely">Πιθανότατο χαλάζι</string>
+    <string name="legend_detail_light_snow">Ελαφρύ χιόνι</string>
+    <string name="legend_detail_moderate_snow">Μέτριο χιόνι</string>
+    <string name="legend_detail_heavy_snow">Έντονο χιόνι</string>
+    <!-- Speed readout -->
+    <string name="speed_unit_kmh">km/h</string>
+    <string name="speed_unit_mph">mph</string>
+    <!-- Weather widget -->
+    <string name="cd_wind_direction">Κατεύθυνση ανέμου</string>
+    <!-- POI category labels -->
+    <string name="poi_gas_station">Πρατήριο καυσίμων</string>
+    <string name="poi_ev_charging">Φόρτιση EV</string>
+    <string name="poi_restaurant">Εστιατόριο</string>
+    <string name="poi_fast_food">Γρήγορο φαγητό</string>
+    <string name="poi_cafe">Καφέ / Καφές</string>
+    <string name="poi_bar">Μπαρ / Παμπ</string>
+    <string name="poi_supermarket">Σούπερ μάρκετ</string>
+    <string name="poi_convenience">Μίνι μάρκετ</string>
+    <string name="poi_pharmacy">Φαρμακείο</string>
+    <string name="poi_hospital">Νοσοκομείο</string>
+    <string name="poi_hotel">Ξενοδοχείο</string>
+    <string name="poi_motel">Μοτέλ</string>
+    <string name="poi_campsite">Χώρος κατασκήνωσης</string>
+    <string name="poi_parking">Χώρος στάθμευσης</string>
+    <string name="poi_rest_area">Χώρος ανάπαυσης</string>
+    <string name="poi_atm">ΑΤΜ</string>
+    <string name="poi_bank">Τράπεζα</string>
+    <string name="poi_post_office">Ταχυδρομείο</string>
+    <string name="poi_car_repair">Επισκευή αυτοκινήτων</string>
+    <string name="poi_car_wash">Πλυντήριο αυτοκινήτων</string>
+    <string name="poi_laundry">Πλυντήριο ρούχων</string>
+    <string name="poi_toilets">Τουαλέτες</string>
+    <string name="poi_police">Αστυνομία</string>
+    <string name="poi_fire_station">Πυροσβεστικός σταθμός</string>
+    <string name="poi_library">Βιβλιοθήκη</string>
+    <string name="poi_park">Πάρκο</string>
+    <string name="poi_viewpoint">Σημείο θέας</string>
+    <string name="poi_museum">Μουσείο</string>
+    <string name="poi_tourist_info">Τουριστικές πληροφορίες</string>
+    <!-- Map style display names -->
+    <string name="style_liberty">Liberty</string>
+    <string name="style_dark">Σκούρο</string>
+    <string name="style_dark_small_roads">Σκούρο (Μικροί δρόμοι)</string>
+    <string name="style_custom_light">Προσαρμοσμένο φωτεινό</string>
+    <string name="style_custom_dark">Προσαρμοσμένο σκούρο</string>
+    <string name="style_auto">Αυτόματο</string>
+</resources>

@@ -1,0 +1,2 @@
+Há um novo seletor de tema do mapa! Confira no menu -> Mapa -> Escolher tema. Além disso, o mapa escuro padrão foi ajustado para mostrar melhor as estradas pequenas e os caminhos. Se você gostava mais do antigo, ele ainda está disponível.
+Agora há um botão de reproduzir/pausar/desligar para o radar meteorológico na tela principal.

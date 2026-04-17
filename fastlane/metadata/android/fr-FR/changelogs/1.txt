@@ -1,0 +1,13 @@
+Version initiale de RoadTripRadar.
+
+- Superposition radar météo animée en direct par RainViewer
+- Navigation basée sur le cap vers les points d’intérêt
+- Recherche de points d’intérêt par nom ou catégorie
+- Ajout d’un point d’intérêt par appui long sur la carte
+- Cercles de distance autour de votre position
+- Affichage de la vitesse en unités métriques ou impériales
+- Trois styles de carte : Liberty, Dark, Color Dark
+- Bouton de boussole avec bascule du cap
+- Opacité du radar réglable
+- Taille de l’interface configurable
+- Mode écran toujours allumé

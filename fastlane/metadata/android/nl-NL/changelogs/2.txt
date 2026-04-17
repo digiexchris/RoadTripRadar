@@ -1,0 +1,5 @@
+- Verbeterde laadprestaties van weerkaarttegels (alle frames vooraf laden)
+- Kompasknop schakelt nu tussen noord-boven en de vorige richting
+- Standaard kaartstijl gewijzigd naar Color Dark voor nieuwe installaties
+- Fastlane-metadata toegevoegd voor F-Droid
+- foojay-resolver-plug-in verwijderd voor compatibiliteit met F-Droid

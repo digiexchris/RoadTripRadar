@@ -1,0 +1,2 @@
+Der er en ny vælger til korttemaer! Se den i menuen -> Kort -> Vælg tema. Standardkortet i mørk tilstand er også blevet justeret, så små veje og stier vises bedre. Hvis du bedre kunne lide den gamle, er den stadig tilgængelig.
+Der er nu en afspil/pause/sluk-knap til vejrradaren på hovedskærmen.

@@ -1,0 +1,1 @@
+Korjaa ongelma, jossa tuulen suunnan nuoli ei pyöri kartan mukana.
