@@ -1,0 +1,1 @@
+Stöd för internationalisering. Om du upptäcker några problem med någon av dessa översättningar, eller vill hjälpa till, låt mig gärna veta!
