@@ -1,1 +1,1 @@
-Разрешить индивидуально изменять размер большинства виджетов
+Allow most widget sizes to be adjusted individually
