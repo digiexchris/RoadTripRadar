@@ -1,1 +1,1 @@
-Jos olet valinnut luokkia Lähellä olevat paikat -toiminnossa, ne alkavat näkyä automaattisesti, kun sovellus käynnistyy. Jos haluat poistaa tämän toiminnan käytöstä, voit kytkeä sen pois päältä Lähellä olevat paikat -valikon kytkimellä.
+Jos olet valinnut luokkia Lähellä olevat paikat -toiminnossa, ne näkyvät automaattisesti, kun sovellus käynnistyy. Jos haluat poistaa tämän toiminnon käytöstä, Lähellä olevat paikat -valikossa on kytkin, jolla sen voi poistaa käytöstä.
