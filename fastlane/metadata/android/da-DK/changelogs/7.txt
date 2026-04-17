@@ -1,1 +1,1 @@
-Fortryd flytning af metadata
+Undo moving metadata
