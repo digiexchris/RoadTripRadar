@@ -1,1 +1,1 @@
-撤销移动元数据
+Undo moving metadata
