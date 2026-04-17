@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+ユーザーが地図を移動しても、コンパスボタンで地図を北向き固定にできない不具合を修正
