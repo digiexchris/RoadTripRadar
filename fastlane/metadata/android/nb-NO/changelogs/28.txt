@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Endret avspillings-/pause-/av-knappen slik at den veksler mellom avspilling og pause med ett trykk. Trykk og hold for å veksle mellom på og av..
