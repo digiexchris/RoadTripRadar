@@ -1,1 +1,1 @@
-Für den F-Droid-Build bereinigt
+Cleaned up for F-Droid build
