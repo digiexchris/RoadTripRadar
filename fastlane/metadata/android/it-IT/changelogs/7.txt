@@ -1,1 +1,1 @@
-Annulla spostamento dei metadati
+Undo moving metadata
