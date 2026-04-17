@@ -3,11 +3,11 @@ Første udgivelse af RoadTripRadar.
 - Live animeret vejrradar-overlay fra RainViewer
 - Kursbaseret navigation til interessepunkter
 - Søg efter interessepunkter efter navn eller kategori
-- Tilføj et interessepunkt ved at trykke længe på kortet
+- Tilføj et interessepunkt ved at holde fingeren nede på kortet
 - Afstandsringe omkring din placering
 - Hastighedsvisning i metriske eller imperiale enheder
 - Tre kortstile: Liberty, Dark, Color Dark
-- Kompasknap med retningsskift
-- Justerbar radar-gennemsigtighed
-- Konfigurerbar størrelse på brugergrænsefladen
+- Kompasknap med kursskift
+- Justerbar radaropacitet
+- Konfigurerbar UI-størrelse
 - Hold-skærmen-tændt-tilstand

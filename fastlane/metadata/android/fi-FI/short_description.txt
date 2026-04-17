@@ -1,1 +1,1 @@
-Karttasovellus, joka painottaa tilannetietoisuutta ja säätä.
+Karttasovellus, jossa etusijalla ovat tilannetietoisuus ja sää.

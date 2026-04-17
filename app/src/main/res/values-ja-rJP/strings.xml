@@ -13,11 +13,11 @@
     <string name="action_accept">同意する</string>
     <string name="action_got_it">了解</string>
     <!-- Location permission dialog -->
-    <string name="permission_location_title">位置情報の許可が必要です</string>
-    <string name="permission_location_body">Road Trip Radar が地図上に現在地を表示するには、正確な位置情報へのアクセスが必要です。続行するには［権限を許可］をタップするか、アプリを終了するには［終了］をタップしてください。</string>
+    <string name="permission_location_title">位置情報の権限が必要です</string>
+    <string name="permission_location_body">Road Trip Radar では、地図上に現在地を表示するために正確な位置情報へのアクセスが必要です。続行するには［権限を許可］をタップするか、アプリを終了するには［終了］をタップしてください。</string>
     <string name="permission_grant">権限を許可</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">下までスクロールして残りを読むと、同意できます。</string>
+    <string name="terms_scroll_hint">下までスクロールして残りを読むと、同意できるようになります。</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">終了</string>
     <string name="dialog_quit_message">本当に終了しますか？</string>
@@ -29,24 +29,32 @@
     <string name="action_clear_places">スポットをクリア</string>
     <string name="action_location_search">場所を検索</string>
     <string name="action_clear_target">目的地をクリア</string>
-    <string name="action_track_bearing">進行方向を追従</string>
-    <string name="action_track_north">北を上に固定</string>
+    <string name="action_track_bearing">進行方向に追従</string>
+    <string name="action_track_north">北向きに固定</string>
+    <string name="action_radar_on">レーダー オン</string>
+    <string name="action_radar_off">レーダー オフ</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">天気レーダー</string>
+    <string name="toggle_north_up">北を上に固定</string>
+    <string name="toggle_wind_temp">風速・気温</string>
+    <string name="toggle_legend">凡例</string>
+    <string name="toggle_timeline">タイムライン</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">地図</string>
     <string name="menu_weather">天気</string>
     <string name="menu_system">システム</string>
     <string name="menu_help">ヘルプ</string>
-    <string name="menu_help_info">ヘルプ &amp; 情報</string>
+    <string name="menu_help_info">ヘルプと情報</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">風速 &amp; 気温 オフ</string>
-    <string name="action_wind_temp_on">風速 &amp; 気温 オン</string>
+    <string name="action_wind_temp_off">風速・気温オフ</string>
+    <string name="action_wind_temp_on">風速・気温オン</string>
     <string name="action_hide_legend">凡例を非表示</string>
     <string name="action_show_legend">凡例を表示</string>
     <string name="action_hide_timeline">タイムラインを非表示</string>
     <string name="action_show_timeline">タイムラインを表示</string>
     <!-- Help page -->
-    <string name="help_documentation_info">詳しいドキュメントと法的情報は、以下のボタンから確認できます。</string>
-    <string name="help_terms">利用規約 &amp; 条件</string>
+    <string name="help_documentation_info">詳しいドキュメントと法的情報は、下のボタンから確認できます。</string>
+    <string name="help_terms">利用規約</string>
     <string name="help_radar_legend">レーダー凡例</string>
     <string name="help_documentation">ドキュメント</string>
     <string name="help_privacy_policy">プライバシーポリシー</string>
@@ -55,14 +63,14 @@
     <string name="debug_preview_whats_new">新機能をプレビュー（デバッグ）</string>
     <!-- MapFabs -->
     <string name="fab_recenter">再センタリング</string>
-    <string name="fab_retry_failed">失敗した項目を再試行</string>
-    <string name="cd_recenter_location">現在地を中心に再表示</string>
+    <string name="fab_retry_failed">失敗分を再試行</string>
+    <string name="cd_recenter_location">現在地を中心に再配置</string>
     <string name="cd_gps_fix_acquired">GPS測位を取得しました</string>
     <string name="cd_waiting_gps_fix">GPS測位を待機中</string>
     <string name="cd_zoom_out">ズームアウト</string>
     <string name="cd_zoom_in">ズームイン</string>
     <string name="cd_quick_actions">クイックアクション</string>
-    <string name="cd_weather_off">気象レーダーオフ</string>
+    <string name="cd_weather_off">天気レーダー オフ</string>
     <string name="cd_weather_pause">レーダーを一時停止</string>
     <string name="cd_weather_play">レーダーを再生</string>
     <string name="cd_no_network">ネットワークなし</string>
@@ -70,9 +78,9 @@
     <string name="cd_cellular">モバイル通信</string>
     <string name="cd_unknown_network">不明なネットワーク</string>
     <!-- Weather settings -->
-    <string name="settings_weather_radar_opacity">気象レーダーの不透明度</string>
+    <string name="settings_weather_radar_opacity">天気レーダーの不透明度</string>
     <string name="settings_wind_speed_units">風速の単位</string>
-    <string name="settings_temperature_units">温度の単位</string>
+    <string name="settings_temperature_units">気温の単位</string>
     <string name="settings_weather_widget_size">天気ウィジェットのサイズ</string>
     <string name="unit_kmh">km/h</string>
     <string name="unit_mph">mph</string>
@@ -84,8 +92,8 @@
     <string name="settings_speed_distance_units">速度・距離の単位</string>
     <string name="settings_metric">メートル法</string>
     <string name="settings_imperial">ヤード・ポンド法</string>
-    <string name="settings_map_center_offset_portrait">地図の中心オフセット（縦向き）</string>
-    <string name="settings_map_center_offset_landscape">地図の中心オフセット（横向き）</string>
+    <string name="settings_map_center_offset_portrait">地図中心のオフセット（縦向き）</string>
+    <string name="settings_map_center_offset_landscape">地図中心のオフセット（横向き）</string>
     <string name="settings_places_icon_opacity">スポットアイコンの不透明度</string>
     <string name="theme_current">テーマ: %s</string>
     <string name="action_choose_theme">テーマを選択</string>
@@ -96,7 +104,7 @@
     <string name="settings_compass_size">コンパスのサイズ</string>
     <string name="settings_nav_widget_size">ナビウィジェットのサイズ</string>
     <string name="settings_misc">その他</string>
-    <string name="settings_keep_screen_on">画面を常にオンにする</string>
+    <string name="settings_keep_screen_on">画面を常にオン</string>
     <string name="settings_language">言語</string>
     <string name="language_system_default">システムのデフォルト</string>
     <!-- Theme selector -->
@@ -123,11 +131,11 @@
     <string name="theme_export">テーマをエクスポート</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">%s テーマを作成</string>
-    <string name="color_editor_no_theme">%1$s テーマはまだ存在しません。%2$s を元に作成しますか？ テーマセレクターから JSON ファイルをインポートすることもできます。</string>
+    <string name="color_editor_no_theme">%1$s テーマはまだありません。%2$s をもとに作成しますか？ テーマセレクターから JSON ファイルをインポートすることもできます。</string>
     <string name="color_editor_create_from">%s から作成</string>
     <string name="color_editor_edit_colors">色を編集: %s</string>
     <string name="color_editor_preview">プレビュー</string>
-    <string name="color_editor_hex">Hex</string>
+    <string name="color_editor_hex">16進数</string>
     <string name="cd_collapse">折りたたむ</string>
     <string name="cd_expand">展開</string>
     <!-- POI search dialog -->
@@ -141,14 +149,14 @@
     <string name="poi_count">%1$d / %2$d</string>
     <string name="action_search_visible_area">表示範囲を検索</string>
     <!-- Tapped POI popup -->
-    <string name="action_navigate_here">ここへナビする</string>
+    <string name="action_navigate_here">ここへ移動</string>
     <string name="cd_close">閉じる</string>
     <!-- Nav widget -->
-    <string name="cd_direction_to_target">目的地への方向</string>
+    <string name="cd_direction_to_target">目的地の方向</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">新機能</string>
     <string name="changelog_title">変更履歴</string>
-    <string name="changelog_no_entries">変更履歴はありません。</string>
+    <string name="changelog_no_entries">変更履歴の項目はありません。</string>
     <!-- Weather legend -->
     <string name="legend_overcast">曇天</string>
     <string name="legend_drizzle">霧雨</string>
@@ -157,7 +165,7 @@
     <string name="legend_rain_heavy">雨！！</string>
     <string name="legend_hail_light">ひょう？</string>
     <string name="legend_hail_moderate">ひょう。</string>
-    <string name="legend_hail_heavy">ひょう！！</string>
+    <string name="legend_hail_heavy">ひょう!!</string>
     <string name="legend_snow_light">雪？</string>
     <string name="legend_snow_moderate">雪。</string>
     <string name="legend_snow_heavy">雪！！</string>
@@ -174,9 +182,9 @@
     <string name="legend_detail_light_rain">弱い雨</string>
     <string name="legend_detail_moderate_rain">中程度の雨</string>
     <string name="legend_detail_showers">にわか雨</string>
-    <string name="legend_detail_small_hail">小粒のひょうまたは凍雨の可能性</string>
+    <string name="legend_detail_small_hail">小さなひょうまたは着氷性の雨の可能性</string>
     <string name="legend_detail_hail_possible">ひょうの可能性</string>
-    <string name="legend_detail_hail_likely">ひょうの可能性大</string>
+    <string name="legend_detail_hail_likely">ひょうの可能性が高い</string>
     <string name="legend_detail_light_snow">弱い雪</string>
     <string name="legend_detail_moderate_snow">中程度の雪</string>
     <string name="legend_detail_heavy_snow">強い雪</string>
@@ -192,7 +200,7 @@
     <string name="poi_fast_food">ファストフード</string>
     <string name="poi_cafe">カフェ / コーヒー</string>
     <string name="poi_bar">バー / パブ</string>
-    <string name="poi_supermarket">スーパー</string>
+    <string name="poi_supermarket">スーパーマーケット</string>
     <string name="poi_convenience">コンビニ</string>
     <string name="poi_pharmacy">薬局</string>
     <string name="poi_hospital">病院</string>
@@ -212,13 +220,13 @@
     <string name="poi_fire_station">消防署</string>
     <string name="poi_library">図書館</string>
     <string name="poi_park">公園</string>
-    <string name="poi_viewpoint">展望台</string>
+    <string name="poi_viewpoint">展望スポット</string>
     <string name="poi_museum">博物館</string>
     <string name="poi_tourist_info">観光案内</string>
     <!-- Map style display names -->
     <string name="style_liberty">Liberty</string>
     <string name="style_dark">ダーク</string>
-    <string name="style_dark_small_roads">ダーク（小道路あり）</string>
+    <string name="style_dark_small_roads">ダーク（細い道路）</string>
     <string name="style_custom_light">カスタムライト</string>
     <string name="style_custom_dark">カスタムダーク</string>
     <string name="style_auto">自動</string>

@@ -1,1 +1,1 @@
-Korjattu ongelma, jossa kompassipainike ei lukitse karttaa pohjoinen ylhäällä -suuntaan, kun käyttäjä liikkuu
+Korjattu virhe, jossa Kompassi-painike ei lukinnut karttaa pohjoinen ylhäällä -tilaan, kun käyttäjä liikkuu

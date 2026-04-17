@@ -1,1 +1,1 @@
-Ændringer i build-pipelinen
+Ændringer i build-pipeline

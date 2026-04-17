@@ -1,1 +1,1 @@
-Horisontell layout, radarförklaring och allmänna förbättringar av användargränssnittet
+Förbättringar av horisontell layout, radarlegend och användargränssnittet i allmänhet

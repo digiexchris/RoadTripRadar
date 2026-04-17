@@ -1,1 +1,1 @@
-Opravena chyba, kdy tlačítko kompasu při pohybu uživatele nezamklo mapu v orientaci se severem nahoře
+Opravena chyba, kdy tlačítko Kompas po pohybu uživatele neudrželo mapu orientovanou severem nahoru

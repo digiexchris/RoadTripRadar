@@ -1,1 +1,1 @@
-Mapová aplikace upřednostňující přehled o situaci a počasí.
+Mapová aplikace upřednostňující situační povědomí a informace o počasí.

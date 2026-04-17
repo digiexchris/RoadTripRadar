@@ -1,1 +1,1 @@
-Pokud máte v části Místa v okolí vybrané nějaké kategorie, začnou se automaticky zobrazovat při spuštění aplikace. Pokud chcete toto chování vypnout, v nabídce Místa v okolí je přepínač, kterým to můžete deaktivovat.
+Pokud máte v Okolních místech vybrané nějaké kategorie, po spuštění aplikace se automaticky zobrazí. Pokud chcete toto chování vypnout, v nabídce Okolní místa je přepínač, kterým ho můžete deaktivovat.

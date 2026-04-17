@@ -1,11 +1,11 @@
-RoadTripRadar on karttasovellus, jossa etusijalla ovat tilannetietoisuus ja sää. Interaktiivisella kartalla näkyvä reaaliaikainen säätutkakuva auttaa näkemään sateet kulkusuuntasi varrella yhdellä silmäyksellä.
+RoadTripRadar on karttasovellus, jossa etusijalla ovat tilannetietoisuus ja sää. Reaaliaikainen säätutkakuva interaktiivisella kartalla auttaa näkemään sateet ajosuuntasi varrella yhdellä silmäyksellä.
 
 Ominaisuudet:
-- Sijaintiisi keskitetyt etäisyysrenkaat, jotka mukautuvat zoomaustasoon.
-- Navigoi määränpäähäsi suuntiman avulla jäykkien käännös käännökseltä -ohjeiden sijaan. Täydellinen tutkimusmatkailijoille ja ihmisille, jotka tykkäävät harhailla!
-- RainViewerin reaaliaikainen animoitu säätutka säädettävällä läpinäkyvyydellä ja toiston ohjaimilla. Täydellinen moottoripyöräilijöille, jotka haluavat tiedon myrskyn kiertämiseksi tai varustautuakseen siihen.
+- Sijaintisi ympärille keskitetyt etäisyysrenkaat, jotka mukautuvat zoomaustasoon.
+- Navigoi määränpäähäsi suuntiman avulla jäykkien käännös käännökseltä -ohjeiden sijaan. Täydellinen tutkimusmatkailijoille ja niille, jotka rakastavat harhailla!
+- RainViewerin reaaliaikainen animoitu säätutka säädettävällä läpinäkyvyydellä ja toiston säätimillä. Täydellinen moottoripyöräilijöille, jotka haluavat ajoissa tiedon myrskyn kiertämisestä tai varustautua siihen.
 - Tuulen nopeus ja suunta
 - Lämpötila ja 1 tunnin trendi
 - Useita karttatyylejä: vaalea, tumma, automaattinen ja mukautetut värit kumpaankin.
-- Nopeusnäyttö metrisillä ja brittiläisillä yksiköillä sekä säädettävä kirjasinkoko.
-- Avoimen lähdekoodin sovellus: ei seurantaa, ei tilejä, ei mainoksia.
+- Nopeusnäyttö metrisillä ja brittiläisillä yksiköillä sekä säädettävällä fonttikoolla.
+- Avoimen lähdekoodin sovellus: ei seurantaa, ei käyttäjätilejä, ei mainoksia.

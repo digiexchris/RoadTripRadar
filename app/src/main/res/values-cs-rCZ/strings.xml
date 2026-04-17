@@ -4,7 +4,7 @@
     <string name="action_close">Zavřít</string>
     <string name="action_cancel">Zrušit</string>
     <string name="action_quit">Ukončit</string>
-    <string name="action_reset">Resetovat</string>
+    <string name="action_reset">Obnovit</string>
     <string name="action_save">Uložit</string>
     <string name="action_delete">Smazat</string>
     <string name="action_share">Sdílet</string>
@@ -14,13 +14,13 @@
     <string name="action_got_it">Rozumím</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Je vyžadováno oprávnění k poloze</string>
-    <string name="permission_location_body">Road Trip Radar potřebuje přístup k vaší přesné poloze, aby mohl na mapě zobrazit, kde se nacházíte. Pokračujte klepnutím na Udělit oprávnění, nebo aplikaci ukončete klepnutím na Ukončit.</string>
+    <string name="permission_location_body">Road Trip Radar potřebuje přístup k vaší přesné poloze, aby na mapě mohl zobrazit, kde se nacházíte. Pokračujte klepnutím na Udělit oprávnění, nebo aplikaci ukončete klepnutím na Ukončit.</string>
     <string name="permission_grant">Udělit oprávnění</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">Posuňte se dolů a přečtěte si zbytek, potom můžete souhlasit.</string>
+    <string name="terms_scroll_hint">Posuňte se dolů, přečtěte si zbytek a poté můžete přijmout.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Ukončit</string>
-    <string name="dialog_quit_message">Opravdu chcete ukončit aplikaci?</string>
+    <string name="dialog_quit_message">Opravdu chcete aplikaci ukončit?</string>
     <!-- Reset dialog -->
     <string name="dialog_reset_title">Obnovit výchozí nastavení</string>
     <string name="dialog_reset_message">Všechna nastavení budou obnovena na výchozí hodnoty.</string>
@@ -29,17 +29,25 @@
     <string name="action_clear_places">Vymazat místa</string>
     <string name="action_location_search">Hledání polohy</string>
     <string name="action_clear_target">Vymazat cíl</string>
-    <string name="action_track_bearing">Sledovat směr pohybu</string>
+    <string name="action_track_bearing">Sledovat směr</string>
     <string name="action_track_north">Sledovat sever</string>
+    <string name="action_radar_on">Radar zapnut</string>
+    <string name="action_radar_off">Radar vypnut</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Radar počasí</string>
+    <string name="toggle_north_up">Sever nahoře</string>
+    <string name="toggle_wind_temp">Vítr a teplota</string>
+    <string name="toggle_legend">Legenda</string>
+    <string name="toggle_timeline">Časová osa</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Mapa</string>
     <string name="menu_weather">Počasí</string>
     <string name="menu_system">Systém</string>
     <string name="menu_help">Nápověda</string>
-    <string name="menu_help_info">Nápověda &amp; informace</string>
+    <string name="menu_help_info">Nápověda a informace</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Vítr &amp; teplota vyp.</string>
-    <string name="action_wind_temp_on">Vítr &amp; teplota zap.</string>
+    <string name="action_wind_temp_off">Vítr a teplota vypnuty</string>
+    <string name="action_wind_temp_on">Vítr a teplota zapnuty</string>
     <string name="action_hide_legend">Skrýt legendu</string>
     <string name="action_show_legend">Zobrazit legendu</string>
     <string name="action_hide_timeline">Skrýt časovou osu</string>
@@ -52,11 +60,11 @@
     <string name="help_privacy_policy">Zásady ochrany osobních údajů</string>
     <string name="help_changelog">Přehled změn</string>
     <string name="version_label">Verze %s</string>
-    <string name="debug_preview_whats_new">Náhled novinek (debug)</string>
+    <string name="debug_preview_whats_new">Zobrazit náhled novinek (ladění)</string>
     <!-- MapFabs -->
-    <string name="fab_recenter">Vycentrovat</string>
+    <string name="fab_recenter">Vystředit</string>
     <string name="fab_retry_failed">Opakovat neúspěšné</string>
-    <string name="cd_recenter_location">Znovu vycentrovat na polohu</string>
+    <string name="cd_recenter_location">Znovu vystředit na polohu</string>
     <string name="cd_gps_fix_acquired">Poloha GPS určena</string>
     <string name="cd_waiting_gps_fix">Čekání na určení polohy GPS</string>
     <string name="cd_zoom_out">Oddálit</string>
@@ -65,7 +73,7 @@
     <string name="cd_weather_off">Meteorologický radar vypnut</string>
     <string name="cd_weather_pause">Pozastavit radar</string>
     <string name="cd_weather_play">Spustit radar</string>
-    <string name="cd_no_network">Žádná síť</string>
+    <string name="cd_no_network">Bez sítě</string>
     <string name="cd_wifi">Wi‑Fi</string>
     <string name="cd_cellular">Mobilní síť</string>
     <string name="cd_unknown_network">Neznámá síť</string>
@@ -98,11 +106,11 @@
     <string name="settings_misc">Různé</string>
     <string name="settings_keep_screen_on">Ponechat obrazovku zapnutou</string>
     <string name="settings_language">Jazyk</string>
-    <string name="language_system_default">Výchozí nastavení systému</string>
+    <string name="language_system_default">Výchozí systémový</string>
     <!-- Theme selector -->
     <string name="theme_map_theme">Motiv mapy</string>
     <string name="theme_auto">Automaticky</string>
-    <string name="theme_customize_maputnik">Přizpůsobit v Maputniku</string>
+    <string name="theme_customize_maputnik">Přizpůsobit v Maputnik</string>
     <string name="theme_overwrite_custom_light">Přepsat vlastní světlý</string>
     <string name="theme_use_as_custom_light_base">Použít jako základ vlastního světlého</string>
     <string name="theme_overwrite_custom_dark">Přepsat vlastní tmavý</string>
@@ -114,7 +122,7 @@
     <string name="theme_action_share">Sdílet</string>
     <string name="theme_action_delete">Smazat</string>
     <string name="cd_edit_colors">Upravit barvy</string>
-    <string name="cd_save_json_downloads">Uložit JSON do Stažených souborů</string>
+    <string name="cd_save_json_downloads">Uložit JSON do složky Downloads</string>
     <string name="cd_open_maputnik">Otevřít Maputnik</string>
     <string name="cd_delete_custom_theme">Smazat vlastní motiv</string>
     <string name="theme_invalid_file">Neplatný soubor motivu</string>
@@ -123,7 +131,7 @@
     <string name="theme_export">Exportovat motiv</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Vytvořit motiv %s</string>
-    <string name="color_editor_no_theme">Motiv %1$s ještě neexistuje. Chcete ho vytvořit na základě motivu %2$s? Soubor JSON můžete také importovat z výběru motivů.</string>
+    <string name="color_editor_no_theme">Motiv %1$s zatím neexistuje. Vytvořit ho na základě motivu %2$s? Soubor JSON můžete také importovat z výběru motivů.</string>
     <string name="color_editor_create_from">Vytvořit z %s</string>
     <string name="color_editor_edit_colors">Upravit barvy: %s</string>
     <string name="color_editor_preview">Náhled</string>
@@ -139,7 +147,7 @@
     <string name="poi_autoload_title">Automaticky načítat místa v okolí</string>
     <string name="poi_autoload_description">Začít načítat místa v okolí při spuštění aplikace</string>
     <string name="poi_count">%1$d z %2$d</string>
-    <string name="action_search_visible_area">Hledat ve viditelné oblasti</string>
+    <string name="action_search_visible_area">Prohledat viditelnou oblast</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navigovat sem</string>
     <string name="cd_close">Zavřít</string>
@@ -148,7 +156,7 @@
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Co je nového</string>
     <string name="changelog_title">Přehled změn</string>
-    <string name="changelog_no_entries">Žádné záznamy v přehledu změn.</string>
+    <string name="changelog_no_entries">Žádné položky seznamu změn.</string>
     <!-- Weather legend -->
     <string name="legend_overcast">Zataženo</string>
     <string name="legend_drizzle">Mrholení</string>
@@ -187,20 +195,20 @@
     <string name="cd_wind_direction">Směr větru</string>
     <!-- POI category labels -->
     <string name="poi_gas_station">Čerpací stanice</string>
-    <string name="poi_ev_charging">Nabíjení EV</string>
+    <string name="poi_ev_charging">Nabíjení elektromobilů</string>
     <string name="poi_restaurant">Restaurace</string>
     <string name="poi_fast_food">Rychlé občerstvení</string>
     <string name="poi_cafe">Kavárna / káva</string>
     <string name="poi_bar">Bar / hospoda</string>
     <string name="poi_supermarket">Supermarket</string>
-    <string name="poi_convenience">Večerka</string>
+    <string name="poi_convenience">Smíšené zboží</string>
     <string name="poi_pharmacy">Lékárna</string>
     <string name="poi_hospital">Nemocnice</string>
     <string name="poi_hotel">Hotel</string>
     <string name="poi_motel">Motel</string>
     <string name="poi_campsite">Kemp</string>
-    <string name="poi_parking">Parkoviště</string>
-    <string name="poi_rest_area">Odpočívadlo</string>
+    <string name="poi_parking">Parkování</string>
+    <string name="poi_rest_area">Odpočívka</string>
     <string name="poi_atm">Bankomat</string>
     <string name="poi_bank">Banka</string>
     <string name="poi_post_office">Pošta</string>

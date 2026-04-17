@@ -1,1 +1,1 @@
-Justeringer i pipeline for F-Droid
+Pipeline-justeringer for F-Droid

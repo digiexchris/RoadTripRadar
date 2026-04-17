@@ -1,4 +1,4 @@
-- Melhorado o desempenho de carregamento dos mosaicos do radar meteorológico (pré-carregamento de todos os fotogramas)
+- Melhor desempenho no carregamento de mosaicos do radar meteorológico (pré-carregamento de todos os quadros)
 - O botão da bússola agora alterna entre norte para cima e a orientação anterior
 - O estilo de mapa predefinido foi alterado para Color Dark em novas instalações
 - Adicionados metadados do Fastlane para o F-Droid

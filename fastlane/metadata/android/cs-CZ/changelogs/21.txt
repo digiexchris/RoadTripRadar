@@ -1,1 +1,1 @@
-Povolit individuální úpravu velikosti většiny widgetů
+Umožnit upravovat velikosti většiny widgetů jednotlivě

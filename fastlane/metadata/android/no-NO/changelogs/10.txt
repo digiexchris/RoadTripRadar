@@ -1,1 +1,1 @@
-Endringer i byggpipelines
+Endringer i build-pipelinen

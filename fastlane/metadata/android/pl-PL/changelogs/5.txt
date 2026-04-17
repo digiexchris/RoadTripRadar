@@ -1,1 +1,1 @@
-Uporządkowano pod kompilację dla F-Droid
+Uporządkowano pod kątem kompilacji dla F-Droid

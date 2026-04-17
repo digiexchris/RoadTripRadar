@@ -1,1 +1,1 @@
-Korjaa ongelma, jossa CompassButton ei lukitse karttaa pohjoinen ylhäällä -tilaan, kun käyttäjä liikkuu
+Korjattu ongelma, jossa Kompassi-painike ei lukitse karttaa pohjoinen ylhäällä -tilaan, kun käyttäjä liikkuu

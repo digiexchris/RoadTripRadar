@@ -1,1 +1,1 @@
-Usuń konfigurację podpisywania, aby budować niepodpisane pliki APK dla F-Droid
+Usuń konfigurację podpisywania, aby budować niepodpisane pakiety APK dla F-Droid

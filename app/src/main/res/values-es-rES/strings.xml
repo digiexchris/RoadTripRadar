@@ -14,10 +14,10 @@
     <string name="action_got_it">Entendido</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Se requiere permiso de ubicación</string>
-    <string name="permission_location_body">Road Trip Radar necesita acceso a tu ubicación precisa para mostrar dónde estás en el mapa. Toca \"Conceder permiso\" para continuar o \"Salir\" para cerrar la app.</string>
+    <string name="permission_location_body">Road Trip Radar necesita acceso a tu ubicación precisa para mostrar dónde estás en el mapa. Toca Conceder permiso para continuar o Salir para cerrar la aplicación.</string>
     <string name="permission_grant">Conceder permiso</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">Desplázate hacia abajo para leer el resto, luego podrás aceptar.</string>
+    <string name="terms_scroll_hint">Desplázate hacia abajo para leer el resto; después podrás aceptar.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Salir</string>
     <string name="dialog_quit_message">¿Seguro que quieres salir?</string>
@@ -31,22 +31,30 @@
     <string name="action_clear_target">Borrar destino</string>
     <string name="action_track_bearing">Seguir rumbo</string>
     <string name="action_track_north">Seguir norte</string>
+    <string name="action_radar_on">Radar activado</string>
+    <string name="action_radar_off">Radar desactivado</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Radar meteorológico</string>
+    <string name="toggle_north_up">Norte arriba</string>
+    <string name="toggle_wind_temp">Viento y temp.</string>
+    <string name="toggle_legend">Leyenda</string>
+    <string name="toggle_timeline">Línea de tiempo</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Mapa</string>
     <string name="menu_weather">Tiempo</string>
     <string name="menu_system">Sistema</string>
     <string name="menu_help">Ayuda</string>
-    <string name="menu_help_info">Ayuda &amp; información</string>
+    <string name="menu_help_info">Ayuda e información</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Viento &amp; temp. desactivados</string>
-    <string name="action_wind_temp_on">Viento &amp; temp. activados</string>
+    <string name="action_wind_temp_off">Viento y temp. desactivados</string>
+    <string name="action_wind_temp_on">Viento y temp. activados</string>
     <string name="action_hide_legend">Ocultar leyenda</string>
     <string name="action_show_legend">Mostrar leyenda</string>
     <string name="action_hide_timeline">Ocultar línea de tiempo</string>
     <string name="action_show_timeline">Mostrar línea de tiempo</string>
     <!-- Help page -->
     <string name="help_documentation_info">La documentación completa y la información legal están disponibles en los botones de abajo.</string>
-    <string name="help_terms">Términos &amp; condiciones</string>
+    <string name="help_terms">Términos y condiciones</string>
     <string name="help_radar_legend">Leyenda del radar</string>
     <string name="help_documentation">Documentación</string>
     <string name="help_privacy_policy">Política de privacidad</string>
@@ -67,7 +75,7 @@
     <string name="cd_weather_play">Reproducir radar</string>
     <string name="cd_no_network">Sin red</string>
     <string name="cd_wifi">Wi‑Fi</string>
-    <string name="cd_cellular">Red móvil</string>
+    <string name="cd_cellular">Datos móviles</string>
     <string name="cd_unknown_network">Red desconocida</string>
     <!-- Weather settings -->
     <string name="settings_weather_radar_opacity">Opacidad del radar meteorológico</string>
@@ -91,7 +99,7 @@
     <string name="action_choose_theme">Elegir tema</string>
     <!-- System settings -->
     <string name="settings_display">Pantalla</string>
-    <string name="settings_status_icon_opacity">Opacidad del icono de estado</string>
+    <string name="settings_status_icon_opacity">Opacidad de los iconos de estado</string>
     <string name="settings_speedometer_size">Tamaño del velocímetro</string>
     <string name="settings_compass_size">Tamaño de la brújula</string>
     <string name="settings_nav_widget_size">Tamaño del widget de navegación</string>
@@ -123,7 +131,7 @@
     <string name="theme_export">Exportar tema</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Crear tema %s</string>
-    <string name="color_editor_no_theme">Todavía no existe ningún tema %1$s. ¿Quieres crear uno basado en %2$s? También puedes importar un archivo JSON desde el selector de temas.</string>
+    <string name="color_editor_no_theme">Aún no existe un tema %1$s. ¿Quieres crear uno basado en %2$s? También puedes importar un archivo JSON desde el selector de temas.</string>
     <string name="color_editor_create_from">Crear desde %s</string>
     <string name="color_editor_edit_colors">Editar colores: %s</string>
     <string name="color_editor_preview">Vista previa</string>
@@ -150,17 +158,17 @@
     <string name="changelog_title">Registro de cambios</string>
     <string name="changelog_no_entries">No hay entradas en el registro de cambios.</string>
     <!-- Weather legend -->
-    <string name="legend_overcast">Nublado</string>
+    <string name="legend_overcast">Cubierto</string>
     <string name="legend_drizzle">Llovizna</string>
     <string name="legend_rain_light">¿Lluvia?</string>
     <string name="legend_rain_moderate">Lluvia.</string>
-    <string name="legend_rain_heavy">¡Lluvia!!</string>
+    <string name="legend_rain_heavy">¡¡Lluvia!!</string>
     <string name="legend_hail_light">¿Granizo?</string>
     <string name="legend_hail_moderate">Granizo.</string>
-    <string name="legend_hail_heavy">¡Granizo!!</string>
+    <string name="legend_hail_heavy">¡¡Granizo!!</string>
     <string name="legend_snow_light">¿Nieve?</string>
     <string name="legend_snow_moderate">Nieve.</string>
-    <string name="legend_snow_heavy">¡Nieve!!</string>
+    <string name="legend_snow_heavy">¡¡Nieve!!</string>
     <!-- Legend detail sheet -->
     <string name="legend_detail_title">Leyenda del radar</string>
     <string name="legend_detail_label">Etiqueta</string>
@@ -169,7 +177,7 @@
     <string name="legend_detail_rain">Lluvia</string>
     <string name="legend_detail_hail">Granizo</string>
     <string name="legend_detail_snow">Nieve</string>
-    <string name="legend_detail_overcast">Nublado</string>
+    <string name="legend_detail_overcast">Cubierto</string>
     <string name="legend_detail_drizzle">Llovizna</string>
     <string name="legend_detail_light_rain">Lluvia ligera</string>
     <string name="legend_detail_moderate_rain">Lluvia moderada</string>
@@ -187,7 +195,7 @@
     <string name="cd_wind_direction">Dirección del viento</string>
     <!-- POI category labels -->
     <string name="poi_gas_station">Gasolinera</string>
-    <string name="poi_ev_charging">Carga de VE</string>
+    <string name="poi_ev_charging">Carga para VE</string>
     <string name="poi_restaurant">Restaurante</string>
     <string name="poi_fast_food">Comida rápida</string>
     <string name="poi_cafe">Cafetería / Café</string>
@@ -209,7 +217,7 @@
     <string name="poi_laundry">Lavandería</string>
     <string name="poi_toilets">Baños</string>
     <string name="poi_police">Policía</string>
-    <string name="poi_fire_station">Parque de bomberos</string>
+    <string name="poi_fire_station">Estación de bomberos</string>
     <string name="poi_library">Biblioteca</string>
     <string name="poi_park">Parque</string>
     <string name="poi_viewpoint">Mirador</string>

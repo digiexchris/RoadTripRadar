@@ -2,12 +2,12 @@ Lançamento inicial do RoadTripRadar.
 
 - Sobreposição de radar meteorológico animado ao vivo da RainViewer
 - Navegação baseada em rumo para pontos de interesse
-- Pesquisa de POIs por nome ou categoria
+- Pesquisa de POI por nome ou categoria
 - Adicione um POI pressionando e segurando o mapa
 - Anéis de distância ao redor da sua localização
-- Exibição de velocidade em sistema métrico ou imperial
+- Exibição de velocidade em unidades métricas ou imperiais
 - Três estilos de mapa: Liberty, Dark, Color Dark
 - Botão de bússola com alternância de direção
 - Opacidade do radar ajustável
-- Tamanho da interface configurável
+- Tamanho da interface ajustável
 - Modo de manter a tela ligada

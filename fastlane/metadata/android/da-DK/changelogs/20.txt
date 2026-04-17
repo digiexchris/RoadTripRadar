@@ -1,1 +1,1 @@
-Tilføj lille vejrwidget til vindhastighed, vindretning og omgivelsestemperatur
+Tilføj lille vejr-widget til vindhastighed, retning og omgivelsestemperatur

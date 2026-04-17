@@ -1,1 +1,1 @@
-Lisää pikatoiminnot-painike, jotta pikatoiminnot-valikko on helpompi löytää
+Lisää Pika-toiminnot-painike, jotta Pika-toiminnot-valikko löytyy helpommin.

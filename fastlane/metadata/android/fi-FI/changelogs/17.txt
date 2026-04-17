@@ -1,1 +1,1 @@
-Vaakasuoran asettelun, tutkakaavion selitteen ja yleisen käyttöliittymän parannukset
+Vaakasuuntainen asettelu, tutkakaavion selite ja yleiset käyttöliittymäparannukset

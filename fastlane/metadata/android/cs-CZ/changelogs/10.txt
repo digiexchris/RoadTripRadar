@@ -1,1 +1,1 @@
-Změny v procesu sestavení
+Změny v pipeline sestavení

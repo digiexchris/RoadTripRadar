@@ -1,1 +1,1 @@
-Fehler beheben, durch den die Karte beim Bewegen durch den Benutzer mit der Kompass-Schaltfläche nicht auf Nordausrichtung fixiert bleibt
+Fehler behoben, durch den die Kompass-Schaltfläche die Karte nicht auf Nordausrichtung fixierte, wenn der Benutzer sie bewegte

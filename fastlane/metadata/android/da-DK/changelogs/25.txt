@@ -1,1 +1,1 @@
-Ret vindretningspilen, der ikke roterer med kortet.
+Ret fejlen, hvor pilen for vindretning ikke roterer sammen med kortet.

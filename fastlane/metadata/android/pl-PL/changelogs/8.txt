@@ -1,1 +1,1 @@
-Drobne poprawki w pipeline dla F-Droid
+Drobne poprawki potoku dla F-Droid

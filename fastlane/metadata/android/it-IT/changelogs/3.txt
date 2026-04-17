@@ -1,1 +1,1 @@
-Adatta il flusso di lavoro per gestire correttamente il versionamento dell'app
+Regola il flusso di lavoro per versionare correttamente l'app

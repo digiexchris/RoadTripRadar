@@ -1,1 +1,1 @@
-Legg til en knapp for hurtighandlinger for å gjøre menyen for hurtighandlinger enklere å finne
+Legg til en Hurtighandlinger-knapp for å gjøre menyen Hurtighandlinger enklere å finne.

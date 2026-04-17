@@ -14,7 +14,7 @@
     <string name="action_got_it">فهمت</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">يلزم إذن الموقع</string>
-    <string name="permission_location_body">يحتاج Road Trip Radar إلى الوصول إلى موقعك الدقيق لإظهار مكانك على الخريطة. اضغط على \"منح الإذن\" للمتابعة، أو \"خروج\" لمغادرة التطبيق.</string>
+    <string name="permission_location_body">يحتاج Road Trip Radar إلى الوصول إلى موقعك الدقيق لعرض مكانك على الخريطة. اضغط على \"منح الإذن\" للمتابعة، أو \"خروج\" لإغلاق التطبيق.</string>
     <string name="permission_grant">منح الإذن</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">مرّر لأسفل لقراءة الباقي، ثم يمكنك القبول.</string>
@@ -23,38 +23,46 @@
     <string name="dialog_quit_message">هل أنت متأكد أنك تريد الخروج؟</string>
     <!-- Reset dialog -->
     <string name="dialog_reset_title">إعادة التعيين إلى الافتراضيات</string>
-    <string name="dialog_reset_message">ستُعاد جميع الإعدادات إلى قيمها الافتراضية.</string>
+    <string name="dialog_reset_message">ستتم إعادة تعيين جميع الإعدادات إلى قيمها الافتراضية.</string>
     <!-- Actions drawer - main actions -->
     <string name="action_nearby_places">أماكن قريبة</string>
     <string name="action_clear_places">مسح الأماكن</string>
     <string name="action_location_search">البحث عن موقع</string>
     <string name="action_clear_target">مسح الوجهة</string>
-    <string name="action_track_bearing">تتبع الاتجاه</string>
-    <string name="action_track_north">تتبع الشمال</string>
+    <string name="action_track_bearing">تتبّع الاتجاه</string>
+    <string name="action_track_north">تتبّع الشمال</string>
+    <string name="action_radar_on">الرادار قيد التشغيل</string>
+    <string name="action_radar_off">الرادار متوقف</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">رادار الطقس</string>
+    <string name="toggle_north_up">الشمال للأعلى</string>
+    <string name="toggle_wind_temp">الرياح والحرارة</string>
+    <string name="toggle_legend">الدليل</string>
+    <string name="toggle_timeline">المخطط الزمني</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">الخريطة</string>
     <string name="menu_weather">الطقس</string>
     <string name="menu_system">النظام</string>
     <string name="menu_help">المساعدة</string>
-    <string name="menu_help_info">المساعدة &amp; المعلومات</string>
+    <string name="menu_help_info">المساعدة والمعلومات</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">إيقاف الرياح &amp; الحرارة</string>
-    <string name="action_wind_temp_on">تشغيل الرياح &amp; الحرارة</string>
-    <string name="action_hide_legend">إخفاء وسيلة الإيضاح</string>
-    <string name="action_show_legend">إظهار وسيلة الإيضاح</string>
-    <string name="action_hide_timeline">إخفاء الخط الزمني</string>
-    <string name="action_show_timeline">إظهار الخط الزمني</string>
+    <string name="action_wind_temp_off">الرياح والحرارة متوقفتان</string>
+    <string name="action_wind_temp_on">الرياح والحرارة قيد التشغيل</string>
+    <string name="action_hide_legend">إخفاء الدليل</string>
+    <string name="action_show_legend">إظهار الدليل</string>
+    <string name="action_hide_timeline">إخفاء المخطط الزمني</string>
+    <string name="action_show_timeline">إظهار المخطط الزمني</string>
     <!-- Help page -->
-    <string name="help_documentation_info">التوثيق الكامل والمعلومات القانونية متاحان من خلال الأزرار أدناه.</string>
-    <string name="help_terms">الشروط &amp; الأحكام</string>
-    <string name="help_radar_legend">مفتاح الرادار</string>
+    <string name="help_documentation_info">تتوفر الوثائق الكاملة والمعلومات القانونية عبر الأزرار أدناه.</string>
+    <string name="help_terms">الشروط والأحكام</string>
+    <string name="help_radar_legend">دليل الرادار</string>
     <string name="help_documentation">التوثيق</string>
     <string name="help_privacy_policy">سياسة الخصوصية</string>
     <string name="help_changelog">سجل التغييرات</string>
     <string name="version_label">الإصدار %s</string>
-    <string name="debug_preview_whats_new">معاينة الميزات الجديدة (تصحيح)</string>
+    <string name="debug_preview_whats_new">معاينة الجديد (تصحيح)</string>
     <!-- MapFabs -->
-    <string name="fab_recenter">إعادة توسيط</string>
+    <string name="fab_recenter">إعادة التوسيط</string>
     <string name="fab_retry_failed">إعادة محاولة الفاشل</string>
     <string name="cd_recenter_location">إعادة التوسيط على الموقع</string>
     <string name="cd_gps_fix_acquired">تم الحصول على تثبيت GPS</string>
@@ -70,15 +78,15 @@
     <string name="cd_cellular">شبكة خلوية</string>
     <string name="cd_unknown_network">شبكة غير معروفة</string>
     <!-- Weather settings -->
-    <string name="settings_weather_radar_opacity">شفافية رادار الطقس</string>
+    <string name="settings_weather_radar_opacity">عتامة رادار الطقس</string>
     <string name="settings_wind_speed_units">وحدات سرعة الرياح</string>
     <string name="settings_temperature_units">وحدات درجة الحرارة</string>
     <string name="settings_weather_widget_size">حجم أداة الطقس</string>
-    <string name="unit_kmh">km/h</string>
-    <string name="unit_mph">mph</string>
-    <string name="unit_knots">kn</string>
-    <string name="unit_celsius">°C</string>
-    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kmh">كم/س</string>
+    <string name="unit_mph">ميل/س</string>
+    <string name="unit_knots">عقدة</string>
+    <string name="unit_celsius">°م</string>
+    <string name="unit_fahrenheit">°ف</string>
     <string name="unit_kelvin">K</string>
     <!-- Map settings -->
     <string name="settings_speed_distance_units">وحدات السرعة/المسافة</string>
@@ -86,12 +94,12 @@
     <string name="settings_imperial">إمبراطوري</string>
     <string name="settings_map_center_offset_portrait">إزاحة مركز الخريطة (عمودي)</string>
     <string name="settings_map_center_offset_landscape">إزاحة مركز الخريطة (أفقي)</string>
-    <string name="settings_places_icon_opacity">شفافية أيقونات الأماكن</string>
+    <string name="settings_places_icon_opacity">عتامة أيقونات الأماكن</string>
     <string name="theme_current">السمة: %s</string>
     <string name="action_choose_theme">اختيار السمة</string>
     <!-- System settings -->
     <string name="settings_display">العرض</string>
-    <string name="settings_status_icon_opacity">شفافية أيقونات الحالة</string>
+    <string name="settings_status_icon_opacity">عتامة أيقونة الحالة</string>
     <string name="settings_speedometer_size">حجم عداد السرعة</string>
     <string name="settings_compass_size">حجم البوصلة</string>
     <string name="settings_nav_widget_size">حجم أداة التنقل</string>
@@ -103,8 +111,8 @@
     <string name="theme_map_theme">سمة الخريطة</string>
     <string name="theme_auto">تلقائي</string>
     <string name="theme_customize_maputnik">تخصيص في Maputnik</string>
-    <string name="theme_overwrite_custom_light">الكتابة فوق الضوء المخصص</string>
-    <string name="theme_use_as_custom_light_base">استخدام كأساس للضوء المخصص</string>
+    <string name="theme_overwrite_custom_light">الكتابة فوق الفاتح المخصص</string>
+    <string name="theme_use_as_custom_light_base">استخدام كأساس للفاتح المخصص</string>
     <string name="theme_overwrite_custom_dark">الكتابة فوق الداكن المخصص</string>
     <string name="theme_use_as_custom_dark_base">استخدام كأساس للداكن المخصص</string>
     <string name="theme_use_in_auto_mode">استخدام في الوضع التلقائي</string>
@@ -123,7 +131,7 @@
     <string name="theme_export">تصدير السمة</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">إنشاء سمة %s</string>
-    <string name="color_editor_no_theme">لا توجد سمة %1$s حتى الآن. هل تريد إنشاء واحدة استنادًا إلى %2$s؟ يمكنك أيضًا استيراد ملف JSON من محدد السمات.</string>
+    <string name="color_editor_no_theme">لا توجد سمة %1$s بعد. هل تريد إنشاء واحدة استنادًا إلى %2$s؟ يمكنك أيضًا استيراد ملف JSON من محدد السمات.</string>
     <string name="color_editor_create_from">إنشاء من %s</string>
     <string name="color_editor_edit_colors">تحرير الألوان: %s</string>
     <string name="color_editor_preview">معاينة</string>
@@ -132,16 +140,16 @@
     <string name="cd_expand">توسيع</string>
     <!-- POI search dialog -->
     <string name="search_location_title">البحث عن موقع</string>
-    <string name="search_within_visible">جارٍ البحث ضمن منطقة الخريطة الظاهرة</string>
+    <string name="search_within_visible">يتم البحث ضمن منطقة الخريطة الظاهرة</string>
     <string name="search_address_placeholder">العنوان أو اسم المكان</string>
     <string name="search_searching">جارٍ البحث…</string>
     <!-- POI category picker -->
-    <string name="poi_autoload_title">التحميل التلقائي للأماكن القريبة</string>
-    <string name="poi_autoload_description">ابدأ تحميل الأماكن القريبة عند بدء تشغيل التطبيق</string>
+    <string name="poi_autoload_title">تحميل الأماكن القريبة تلقائيًا</string>
+    <string name="poi_autoload_description">ابدأ تحميل الأماكن القريبة عند تشغيل التطبيق</string>
     <string name="poi_count">%1$d من %2$d</string>
     <string name="action_search_visible_area">البحث في المنطقة الظاهرة</string>
     <!-- Tapped POI popup -->
-    <string name="action_navigate_here">انتقل إلى هنا</string>
+    <string name="action_navigate_here">التنقل إلى هنا</string>
     <string name="cd_close">إغلاق</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">الاتجاه إلى الموقع المستهدف</string>
@@ -162,10 +170,10 @@
     <string name="legend_snow_moderate">ثلج.</string>
     <string name="legend_snow_heavy">ثلج!!</string>
     <!-- Legend detail sheet -->
-    <string name="legend_detail_title">مفتاح الرادار</string>
+    <string name="legend_detail_title">دليل الرادار</string>
     <string name="legend_detail_label">التسمية</string>
     <string name="legend_detail_dbz">dBZ</string>
-    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_mmh">مم/س</string>
     <string name="legend_detail_rain">مطر</string>
     <string name="legend_detail_hail">برد</string>
     <string name="legend_detail_snow">ثلج</string>
@@ -175,14 +183,14 @@
     <string name="legend_detail_moderate_rain">مطر متوسط</string>
     <string name="legend_detail_showers">زخات مطر</string>
     <string name="legend_detail_small_hail">احتمال برد صغير أو مطر متجمد</string>
-    <string name="legend_detail_hail_possible">احتمال هطول البرد</string>
+    <string name="legend_detail_hail_possible">احتمال البرد</string>
     <string name="legend_detail_hail_likely">البرد مرجح</string>
     <string name="legend_detail_light_snow">ثلج خفيف</string>
     <string name="legend_detail_moderate_snow">ثلج متوسط</string>
     <string name="legend_detail_heavy_snow">ثلج كثيف</string>
     <!-- Speed readout -->
-    <string name="speed_unit_kmh">km/h</string>
-    <string name="speed_unit_mph">mph</string>
+    <string name="speed_unit_kmh">كم/س</string>
+    <string name="speed_unit_mph">ميل/س</string>
     <!-- Weather widget -->
     <string name="cd_wind_direction">اتجاه الرياح</string>
     <!-- POI category labels -->
@@ -216,7 +224,7 @@
     <string name="poi_museum">متحف</string>
     <string name="poi_tourist_info">معلومات سياحية</string>
     <!-- Map style display names -->
-    <string name="style_liberty">ليبرتي</string>
+    <string name="style_liberty">Liberty</string>
     <string name="style_dark">داكن</string>
     <string name="style_dark_small_roads">داكن (طرق صغيرة)</string>
     <string name="style_custom_light">فاتح مخصص</string>

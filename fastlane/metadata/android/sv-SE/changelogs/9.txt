@@ -1,1 +1,1 @@
-Ta bort signeringskonfigurationen för att bygga osignerade APK:er för F-Droid
+Ta bort signeringskonfigurationen för att bygga osignerade APK-filer för F-Droid

@@ -1,1 +1,1 @@
-Justeringar i pipeline för F-Droid
+Justeringar i pipelinen för F-Droid

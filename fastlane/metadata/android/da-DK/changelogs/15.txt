@@ -1,1 +1,1 @@
-Ret fejl, hvor Kompasknappen ikke låser kortet til nord opad, når brugeren bevæger sig
+Rettet en fejl, hvor kompas-knappen ikke låste kortet til nord op, når brugeren flyttede sig

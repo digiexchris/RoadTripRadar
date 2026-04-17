@@ -1,1 +1,1 @@
-Erlaube, dass die Größe der meisten Widgets individuell angepasst werden kann
+Die Größe der meisten Widgets individuell anpassen

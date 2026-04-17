@@ -1,3 +1,3 @@
-Dziennik zmian w aplikacji: zobacz sekcję „Co nowego” po aktualizacjach oraz pełną historię w Pomocy i informacjach.
-Możesz teraz zobaczyć punkty zainteresowania w pobliżu swojej lokalizacji! Sprawdź to w Menu -> Miejsca.
-Przeprowadziliśmy dużą przebudowę menu, aby ułatwić znajdowanie opcji i obsługę, także w rękawiczkach.
+Dziennik zmian w aplikacji: zobacz „Co nowego” po aktualizacji oraz pełną historię w Pomoc i informacje.
+Możesz teraz zobaczyć pobliskie miejsca w pobliżu swojej lokalizacji! Sprawdź to w Menu->Miejsca.
+Przeprowadziliśmy dużą reorganizację menu, aby ułatwić znajdowanie funkcji i obsługę w rękawiczkach.

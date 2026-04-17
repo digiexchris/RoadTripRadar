@@ -1,5 +1,5 @@
-- Migliorate le prestazioni di caricamento dei riquadri del radar meteo (precaricamento di tutti i fotogrammi)
-- Il pulsante della bussola ora alterna tra orientamento verso nord e direzione precedente
+- Prestazioni di caricamento dei riquadri del radar meteo migliorate (precaricamento di tutti i fotogrammi)
+- Il pulsante della bussola ora passa da nord in alto all'orientamento precedente e viceversa
 - Lo stile predefinito della mappa è stato cambiato in Color Dark per le nuove installazioni
 - Aggiunti i metadati Fastlane per F-Droid
 - Rimosso il plugin foojay-resolver per la compatibilità con F-Droid

@@ -4,7 +4,7 @@
     <string name="action_close">Chiudi</string>
     <string name="action_cancel">Annulla</string>
     <string name="action_quit">Esci</string>
-    <string name="action_reset">Ripristina</string>
+    <string name="action_reset">Reimposta</string>
     <string name="action_save">Salva</string>
     <string name="action_delete">Elimina</string>
     <string name="action_share">Condividi</string>
@@ -13,40 +13,48 @@
     <string name="action_accept">Accetta</string>
     <string name="action_got_it">Ho capito</string>
     <!-- Location permission dialog -->
-    <string name="permission_location_title">Autorizzazione alla posizione necessaria</string>
-    <string name="permission_location_body">Road Trip Radar ha bisogno di accedere alla tua posizione precisa per mostrare dove ti trovi sulla mappa. Tocca Concedi autorizzazione per continuare, oppure Esci per chiudere l\'app.</string>
+    <string name="permission_location_title">Autorizzazione alla posizione richiesta</string>
+    <string name="permission_location_body">Road Trip Radar ha bisogno di accedere alla tua posizione precisa per mostrare dove ti trovi sulla mappa. Tocca Concedi autorizzazione per continuare oppure Esci per chiudere l\'app.</string>
     <string name="permission_grant">Concedi autorizzazione</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Scorri verso il basso per leggere il resto, poi potrai accettare.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Esci</string>
-    <string name="dialog_quit_message">Sei sicuro di voler uscire?</string>
+    <string name="dialog_quit_message">Vuoi davvero uscire?</string>
     <!-- Reset dialog -->
     <string name="dialog_reset_title">Ripristina predefiniti</string>
     <string name="dialog_reset_message">Tutte le impostazioni verranno ripristinate ai valori predefiniti.</string>
     <!-- Actions drawer - main actions -->
-    <string name="action_nearby_places">Luoghi nelle vicinanze</string>
+    <string name="action_nearby_places">Luoghi vicini</string>
     <string name="action_clear_places">Cancella luoghi</string>
-    <string name="action_location_search">Cerca posizione</string>
+    <string name="action_location_search">Ricerca posizione</string>
     <string name="action_clear_target">Cancella destinazione</string>
     <string name="action_track_bearing">Segui direzione</string>
     <string name="action_track_north">Segui nord</string>
+    <string name="action_radar_on">Radar attivo</string>
+    <string name="action_radar_off">Radar disattivato</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Radar meteo</string>
+    <string name="toggle_north_up">Nord in alto</string>
+    <string name="toggle_wind_temp">Vento e temp.</string>
+    <string name="toggle_legend">Legenda</string>
+    <string name="toggle_timeline">Sequenza temporale</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Mappa</string>
     <string name="menu_weather">Meteo</string>
     <string name="menu_system">Sistema</string>
     <string name="menu_help">Aiuto</string>
-    <string name="menu_help_info">Aiuto &amp; info</string>
+    <string name="menu_help_info">Aiuto e info</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Vento &amp; Temp disattivati</string>
-    <string name="action_wind_temp_on">Vento &amp; Temp attivati</string>
+    <string name="action_wind_temp_off">Vento e temp. disattivati</string>
+    <string name="action_wind_temp_on">Vento e temp. attivati</string>
     <string name="action_hide_legend">Nascondi legenda</string>
     <string name="action_show_legend">Mostra legenda</string>
-    <string name="action_hide_timeline">Nascondi timeline</string>
-    <string name="action_show_timeline">Mostra timeline</string>
+    <string name="action_hide_timeline">Nascondi sequenza temporale</string>
+    <string name="action_show_timeline">Mostra sequenza temporale</string>
     <!-- Help page -->
     <string name="help_documentation_info">La documentazione completa e le informazioni legali sono disponibili tramite i pulsanti qui sotto.</string>
-    <string name="help_terms">Termini &amp; condizioni</string>
+    <string name="help_terms">Termini e condizioni</string>
     <string name="help_radar_legend">Legenda radar</string>
     <string name="help_documentation">Documentazione</string>
     <string name="help_privacy_policy">Informativa sulla privacy</string>
@@ -55,18 +63,18 @@
     <string name="debug_preview_whats_new">Anteprima novità (debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Ricentra</string>
-    <string name="fab_retry_failed">Riprova falliti</string>
+    <string name="fab_retry_failed">Riprova elementi non riusciti</string>
     <string name="cd_recenter_location">Ricentra sulla posizione</string>
     <string name="cd_gps_fix_acquired">Fix GPS acquisito</string>
     <string name="cd_waiting_gps_fix">In attesa del fix GPS</string>
-    <string name="cd_zoom_out">Zoom indietro</string>
-    <string name="cd_zoom_in">Zoom avanti</string>
+    <string name="cd_zoom_out">Riduci zoom</string>
+    <string name="cd_zoom_in">Aumenta zoom</string>
     <string name="cd_quick_actions">Azioni rapide</string>
     <string name="cd_weather_off">Radar meteo disattivato</string>
-    <string name="cd_weather_pause">Metti in pausa radar</string>
+    <string name="cd_weather_pause">Metti in pausa il radar</string>
     <string name="cd_weather_play">Avvia radar</string>
     <string name="cd_no_network">Nessuna rete</string>
-    <string name="cd_wifi">Wi‑Fi</string>
+    <string name="cd_wifi">Wi-Fi</string>
     <string name="cd_cellular">Rete cellulare</string>
     <string name="cd_unknown_network">Rete sconosciuta</string>
     <!-- Weather settings -->
@@ -91,7 +99,7 @@
     <string name="action_choose_theme">Scegli tema</string>
     <!-- System settings -->
     <string name="settings_display">Schermo</string>
-    <string name="settings_status_icon_opacity">Opacità icone di stato</string>
+    <string name="settings_status_icon_opacity">Opacità icona di stato</string>
     <string name="settings_speedometer_size">Dimensione tachimetro</string>
     <string name="settings_compass_size">Dimensione bussola</string>
     <string name="settings_nav_widget_size">Dimensione widget navigazione</string>
@@ -103,10 +111,10 @@
     <string name="theme_map_theme">Tema mappa</string>
     <string name="theme_auto">Automatico</string>
     <string name="theme_customize_maputnik">Personalizza in Maputnik</string>
-    <string name="theme_overwrite_custom_light">Sovrascrivi tema chiaro personalizzato</string>
-    <string name="theme_use_as_custom_light_base">Usa come base del tema chiaro personalizzato</string>
-    <string name="theme_overwrite_custom_dark">Sovrascrivi tema scuro personalizzato</string>
-    <string name="theme_use_as_custom_dark_base">Usa come base del tema scuro personalizzato</string>
+    <string name="theme_overwrite_custom_light">Sovrascrivi chiaro personalizzato</string>
+    <string name="theme_use_as_custom_light_base">Usa come base per chiaro personalizzato</string>
+    <string name="theme_overwrite_custom_dark">Sovrascrivi scuro personalizzato</string>
+    <string name="theme_use_as_custom_dark_base">Usa come base per scuro personalizzato</string>
     <string name="theme_use_in_auto_mode">Usa in modalità automatica</string>
     <string name="theme_action_edit">Modifica</string>
     <string name="theme_action_save">Salva</string>
@@ -123,7 +131,7 @@
     <string name="theme_export">Esporta tema</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Crea tema %s</string>
-    <string name="color_editor_no_theme">Non esiste ancora alcun tema %1$s. Vuoi crearne uno basato su %2$s? Puoi anche importare un file JSON dal selettore dei temi.</string>
+    <string name="color_editor_no_theme">Non esiste ancora alcun tema %1$s. Vuoi crearne uno basato su %2$s? Puoi anche importare un file JSON dal selettore del tema.</string>
     <string name="color_editor_create_from">Crea da %s</string>
     <string name="color_editor_edit_colors">Modifica colori: %s</string>
     <string name="color_editor_preview">Anteprima</string>
@@ -144,7 +152,7 @@
     <string name="action_navigate_here">Naviga qui</string>
     <string name="cd_close">Chiudi</string>
     <!-- Nav widget -->
-    <string name="cd_direction_to_target">Direzione verso la posizione di destinazione</string>
+    <string name="cd_direction_to_target">Direzione verso la destinazione</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Novità</string>
     <string name="changelog_title">Registro delle modifiche</string>
@@ -186,7 +194,7 @@
     <!-- Weather widget -->
     <string name="cd_wind_direction">Direzione del vento</string>
     <!-- POI category labels -->
-    <string name="poi_gas_station">Stazione di servizio</string>
+    <string name="poi_gas_station">Distributore di carburante</string>
     <string name="poi_ev_charging">Ricarica EV</string>
     <string name="poi_restaurant">Ristorante</string>
     <string name="poi_fast_food">Fast food</string>
@@ -212,7 +220,7 @@
     <string name="poi_fire_station">Caserma dei pompieri</string>
     <string name="poi_library">Biblioteca</string>
     <string name="poi_park">Parco</string>
-    <string name="poi_viewpoint">Punto panoramico</string>
+    <string name="poi_viewpoint">Belvedere</string>
     <string name="poi_museum">Museo</string>
     <string name="poi_tourist_info">Informazioni turistiche</string>
     <!-- Map style display names -->

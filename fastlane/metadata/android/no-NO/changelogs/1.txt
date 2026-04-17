@@ -1,13 +1,13 @@
 Første utgivelse av RoadTripRadar.
 
-- Direktesendt animert værradaroverlegg fra RainViewer
-- Kursbasert navigasjon til interessepunkter
-- Søk etter interessepunkter etter navn eller kategori
-- Legg til et interessepunkt ved å trykke lenge på kartet
-- Avstandsirkler rundt posisjonen din
-- Hastighetsvisning i metriske eller britiske enheter
+- Live animert værradar-overlegg fra RainViewer
+- Peilingbasert navigasjon til interessepunkter
+- POI-søk etter navn eller kategori
+- Legg til POI ved å trykke lenge på kartet
+- Avstandsringer rundt posisjonen din
+- Hastighetsvisning i metriske eller imperiale enheter
 - Tre kartstiler: Liberty, Dark, Color Dark
-- Kompassknapp med kursveksling
+- Kompassknapp med retningsveksling
 - Justerbar radaropasitet
 - Konfigurerbar størrelse på brukergrensesnittet
-- Hold skjermen på-modus
+- Hold-skjermen-på-modus

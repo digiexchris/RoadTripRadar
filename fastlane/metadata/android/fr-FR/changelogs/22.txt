@@ -1,1 +1,1 @@
-Ajoutez un bouton d’actions rapides pour faciliter la découverte du menu d’actions rapides
+Ajoutez un bouton Actions rapides pour rendre le menu Actions rapides plus facile à trouver.

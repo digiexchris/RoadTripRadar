@@ -17,20 +17,28 @@
     <string name="permission_location_body">O Road Trip Radar precisa de acesso à sua localização precisa para mostrar onde você está no mapa. Toque em Conceder permissão para continuar ou em Sair para fechar o app.</string>
     <string name="permission_grant">Conceder permissão</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">Role para baixo para ler o restante e então você poderá aceitar.</string>
+    <string name="terms_scroll_hint">Role para baixo para ler o restante e depois você poderá aceitar.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Sair</string>
     <string name="dialog_quit_message">Tem certeza de que deseja sair?</string>
     <!-- Reset dialog -->
-    <string name="dialog_reset_title">Restaurar padrões</string>
-    <string name="dialog_reset_message">Todas as configurações serão restauradas para os valores padrão.</string>
+    <string name="dialog_reset_title">Redefinir para os padrões</string>
+    <string name="dialog_reset_message">Todas as configurações serão redefinidas para os valores padrão.</string>
     <!-- Actions drawer - main actions -->
     <string name="action_nearby_places">Locais próximos</string>
     <string name="action_clear_places">Limpar locais</string>
-    <string name="action_location_search">Buscar local</string>
+    <string name="action_location_search">Buscar localização</string>
     <string name="action_clear_target">Limpar destino</string>
-    <string name="action_track_bearing">Acompanhar direção</string>
+    <string name="action_track_bearing">Acompanhar rumo</string>
     <string name="action_track_north">Acompanhar norte</string>
+    <string name="action_radar_on">Radar ligado</string>
+    <string name="action_radar_off">Radar desligado</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Radar meteorológico</string>
+    <string name="toggle_north_up">Norte para cima</string>
+    <string name="toggle_wind_temp">Vento &amp; Temp.</string>
+    <string name="toggle_legend">Legenda</string>
+    <string name="toggle_timeline">Linha do tempo</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Mapa</string>
     <string name="menu_weather">Clima</string>
@@ -52,13 +60,13 @@
     <string name="help_privacy_policy">Política de privacidade</string>
     <string name="help_changelog">Registro de alterações</string>
     <string name="version_label">Versão %s</string>
-    <string name="debug_preview_whats_new">Prévia das novidades (depuração)</string>
+    <string name="debug_preview_whats_new">Visualizar novidades (depuração)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recentrar</string>
-    <string name="fab_retry_failed">Tentar novamente falhas</string>
+    <string name="fab_retry_failed">Tentar novamente</string>
     <string name="cd_recenter_location">Recentrar na localização</string>
-    <string name="cd_gps_fix_acquired">Sinal GPS obtido</string>
-    <string name="cd_waiting_gps_fix">Aguardando sinal GPS</string>
+    <string name="cd_gps_fix_acquired">Sinal de GPS obtido</string>
+    <string name="cd_waiting_gps_fix">Aguardando sinal de GPS</string>
     <string name="cd_zoom_out">Diminuir zoom</string>
     <string name="cd_zoom_in">Aumentar zoom</string>
     <string name="cd_quick_actions">Ações rápidas</string>
@@ -73,7 +81,7 @@
     <string name="settings_weather_radar_opacity">Opacidade do radar meteorológico</string>
     <string name="settings_wind_speed_units">Unidades de velocidade do vento</string>
     <string name="settings_temperature_units">Unidades de temperatura</string>
-    <string name="settings_weather_widget_size">Tamanho do widget do clima</string>
+    <string name="settings_weather_widget_size">Tamanho do widget de clima</string>
     <string name="unit_kmh">km/h</string>
     <string name="unit_mph">mph</string>
     <string name="unit_knots">kn</string>
@@ -96,7 +104,7 @@
     <string name="settings_compass_size">Tamanho da bússola</string>
     <string name="settings_nav_widget_size">Tamanho do widget de navegação</string>
     <string name="settings_misc">Diversos</string>
-    <string name="settings_keep_screen_on">Manter a tela ligada</string>
+    <string name="settings_keep_screen_on">Manter tela ligada</string>
     <string name="settings_language">Idioma</string>
     <string name="language_system_default">Padrão do sistema</string>
     <!-- Theme selector -->
@@ -127,11 +135,11 @@
     <string name="color_editor_create_from">Criar com base em %s</string>
     <string name="color_editor_edit_colors">Editar cores: %s</string>
     <string name="color_editor_preview">Prévia</string>
-    <string name="color_editor_hex">Hexadecimal</string>
+    <string name="color_editor_hex">Hex</string>
     <string name="cd_collapse">Recolher</string>
     <string name="cd_expand">Expandir</string>
     <!-- POI search dialog -->
-    <string name="search_location_title">Buscar local</string>
+    <string name="search_location_title">Buscar localização</string>
     <string name="search_within_visible">Buscando na área visível do mapa</string>
     <string name="search_address_placeholder">Endereço ou nome do local</string>
     <string name="search_searching">Buscando…</string>
@@ -148,7 +156,7 @@
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Novidades</string>
     <string name="changelog_title">Registro de alterações</string>
-    <string name="changelog_no_entries">Nenhuma entrada no registro de alterações.</string>
+    <string name="changelog_no_entries">Nenhum item no registro de alterações.</string>
     <!-- Weather legend -->
     <string name="legend_overcast">Encoberto</string>
     <string name="legend_drizzle">Garoa</string>
@@ -186,7 +194,7 @@
     <!-- Weather widget -->
     <string name="cd_wind_direction">Direção do vento</string>
     <!-- POI category labels -->
-    <string name="poi_gas_station">Posto de combustível</string>
+    <string name="poi_gas_station">Posto de gasolina</string>
     <string name="poi_ev_charging">Carregamento de VE</string>
     <string name="poi_restaurant">Restaurante</string>
     <string name="poi_fast_food">Fast food</string>
@@ -218,7 +226,7 @@
     <!-- Map style display names -->
     <string name="style_liberty">Liberty</string>
     <string name="style_dark">Escuro</string>
-    <string name="style_dark_small_roads">Escuro (ruas pequenas)</string>
+    <string name="style_dark_small_roads">Escuro (Ruas pequenas)</string>
     <string name="style_custom_light">Claro personalizado</string>
     <string name="style_custom_dark">Escuro personalizado</string>
     <string name="style_auto">Automático</string>

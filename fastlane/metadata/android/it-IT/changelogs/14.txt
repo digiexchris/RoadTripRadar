@@ -1,1 +1,1 @@
-Corretto il problema per cui il pulsante Bussola non bloccava la mappa con il nord rivolto verso l'alto quando l'utente si spostava
+Corretto il pulsante Bussola che non bloccava la mappa con il nord rivolto verso l'alto quando l'utente la spostava
