@@ -1,1 +1,1 @@
-Remove signing config to build unsigned APKs for F-Droid
+Fjern signeringskonfiguration for at bygge usignerede APK'er til F-Droid
