@@ -1,1 +1,1 @@
-Si tienes alguna categoría seleccionada en Lugares cercanos, empezará a mostrarse automáticamente cuando se inicie la aplicación. Si quieres desactivar ese comportamiento, hay un interruptor en el menú Lugares cercanos para desactivarlo.
+If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
