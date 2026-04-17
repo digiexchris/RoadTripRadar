@@ -1,1 +1,1 @@
-Corregge il problema per cui il pulsante Bussola non blocca la mappa con il nord verso l'alto quando l'utente si sposta
+Fix Compass button not locking the map to north-up when the user moves
