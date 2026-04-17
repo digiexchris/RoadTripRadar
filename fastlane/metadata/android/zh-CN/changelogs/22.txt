@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+添加“快速操作”按钮，让“快速操作”菜单更容易找到。
