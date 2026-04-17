@@ -2,10 +2,10 @@ RoadTripRadar este o aplicație de hărți care prioritizează conștientizarea 
 
 Funcții:
 - Cercuri de distanță centrate pe locația ta, care se adaptează nivelului de zoom.
-- Navighează folosind direcția către destinație, în locul instrucțiunilor rigide pas cu pas. Perfect for explorers and people who like to wander!
-- Radar meteo live animat de la RainViewer, cu opacitate ajustabilă și controale de redare. Perfect for motorcyclists who want notice to reroute around a storm or gear up.
+- Navighează folosind direcția către destinație, în locul instrucțiunilor rigide pas cu pas. Perfect pentru exploratori și oamenii cărora le place să hoinărească!
+- Radar meteo live animat de la RainViewer, cu opacitate ajustabilă și controale de redare. Perfect pentru motocicliștii care vor să fie anunțați să-și reruteze traseul pentru a ocoli o furtună sau să se echipeze corespunzător.
 - Viteza și direcția vântului
-- Temperature and 1-hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colors for either.
+- Temperatură și tendința pe 1 oră
+- Stiluri multiple de hartă: Deschis, Întunecat, Automat și culori personalizate pentru fiecare.
 - Afișarea vitezei cu unități metrice și imperiale, cu dimensiune ajustabilă a fontului.
 - Open source, fără urmărire, fără conturi, fără reclame.
