@@ -1,1 +1,1 @@
-Διόρθωση του προβλήματος όπου το CompassButton δεν διατηρεί τον χάρτη προσανατολισμένο με τον βορρά προς τα πάνω όταν ο χρήστης τον μετακινεί
+Fix Compass button not locking the map to north-up when the user moves
