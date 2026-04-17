@@ -12,7 +12,7 @@ Do you wish you could see what weather was coming up ahead so you could decide t
 
 [<img src="https://f-droid.org/badge/get-it-on.png"
     alt="Get it on F-Droid"
-    height="80">](https://f-droid.org/packages/YOUR.APP.ID)
+    height="80">](https://f-droid.org/packages/ca.voiditswarranty.roadtripradar)
 
 <a href="https://play.google.com/store/apps/details?id=ca.voiditswarranty.roadtripradar">
   <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
