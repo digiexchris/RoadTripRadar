@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Opraveno: tlačítko Kompas po přesunutí mapy uživatelem správně uzamkne mapu v orientaci sever nahoru
