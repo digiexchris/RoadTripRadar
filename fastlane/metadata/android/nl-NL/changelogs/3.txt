@@ -1,1 +1,1 @@
-Workflow aanpassen om de app correct van versienummers te voorzien
+Workflow aanpassen om de app correct te versioneren
