@@ -1,1 +1,1 @@
-Internationalization support. If you see any issues with any of these translations, or would like to help, please let me know!
+Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
