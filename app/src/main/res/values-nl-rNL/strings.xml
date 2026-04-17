@@ -14,7 +14,7 @@
     <string name="action_got_it">Begrepen</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Locatiemachtiging vereist</string>
-    <string name="permission_location_body">Road Trip Radar heeft toegang tot je precieze locatie nodig om te laten zien waar je op de kaart bent. Tik op Machtiging verlenen om door te gaan, of op Afsluiten om de app te verlaten.</string>
+    <string name="permission_location_body">Road Trip Radar heeft toegang tot je precieze locatie nodig om te laten zien waar je bent op de kaart. Tik op Machtiging verlenen om door te gaan, of op Afsluiten om de app te verlaten.</string>
     <string name="permission_grant">Machtiging verlenen</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Scroll omlaag om de rest te lezen, daarna kun je accepteren.</string>
@@ -30,7 +30,15 @@
     <string name="action_location_search">Locatie zoeken</string>
     <string name="action_clear_target">Doel wissen</string>
     <string name="action_track_bearing">Koers volgen</string>
-    <string name="action_track_north">Noord volgen</string>
+    <string name="action_track_north">Noord boven</string>
+    <string name="action_radar_on">Radar aan</string>
+    <string name="action_radar_off">Radar uit</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Weerradar</string>
+    <string name="toggle_north_up">Noord boven</string>
+    <string name="toggle_wind_temp">Wind &amp; temperatuur</string>
+    <string name="toggle_legend">Legenda</string>
+    <string name="toggle_timeline">Tijdlijn</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Kaart</string>
     <string name="menu_weather">Weer</string>
@@ -38,21 +46,21 @@
     <string name="menu_help">Help</string>
     <string name="menu_help_info">Help &amp; info</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Wind &amp; temp uit</string>
-    <string name="action_wind_temp_on">Wind &amp; temp aan</string>
+    <string name="action_wind_temp_off">Wind &amp; temperatuur uit</string>
+    <string name="action_wind_temp_on">Wind &amp; temperatuur aan</string>
     <string name="action_hide_legend">Legenda verbergen</string>
     <string name="action_show_legend">Legenda tonen</string>
     <string name="action_hide_timeline">Tijdlijn verbergen</string>
     <string name="action_show_timeline">Tijdlijn tonen</string>
     <!-- Help page -->
     <string name="help_documentation_info">Volledige documentatie en juridische informatie zijn beschikbaar via de knoppen hieronder.</string>
-    <string name="help_terms">Voorwaarden &amp; bepalingen</string>
+    <string name="help_terms">Algemene voorwaarden</string>
     <string name="help_radar_legend">Radarlegenda</string>
     <string name="help_documentation">Documentatie</string>
     <string name="help_privacy_policy">Privacybeleid</string>
     <string name="help_changelog">Wijzigingslog</string>
     <string name="version_label">Versie %s</string>
-    <string name="debug_preview_whats_new">Preview van wat nieuw is (debug)</string>
+    <string name="debug_preview_whats_new">Voorbeeld van nieuwigheden (debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Centreren</string>
     <string name="fab_retry_failed">Mislukt opnieuw proberen</string>
@@ -70,7 +78,7 @@
     <string name="cd_cellular">Mobiel netwerk</string>
     <string name="cd_unknown_network">Onbekend netwerk</string>
     <!-- Weather settings -->
-    <string name="settings_weather_radar_opacity">Dekking van weerradar</string>
+    <string name="settings_weather_radar_opacity">Dekking weerradar</string>
     <string name="settings_wind_speed_units">Eenheden windsnelheid</string>
     <string name="settings_temperature_units">Temperatuureenheden</string>
     <string name="settings_weather_widget_size">Grootte weerwidget</string>
@@ -81,17 +89,17 @@
     <string name="unit_fahrenheit">°F</string>
     <string name="unit_kelvin">K</string>
     <!-- Map settings -->
-    <string name="settings_speed_distance_units">Snelheids-/afstandseenheden</string>
+    <string name="settings_speed_distance_units">Eenheden snelheid/afstand</string>
     <string name="settings_metric">Metrisch</string>
     <string name="settings_imperial">Imperiaal</string>
-    <string name="settings_map_center_offset_portrait">Verschuiving kaartmiddelpunt (portret)</string>
-    <string name="settings_map_center_offset_landscape">Verschuiving kaartmiddelpunt (landschap)</string>
-    <string name="settings_places_icon_opacity">Dekking van plaatsiconen</string>
+    <string name="settings_map_center_offset_portrait">Verschuiving kaartmiddelpunt (staand)</string>
+    <string name="settings_map_center_offset_landscape">Verschuiving kaartmiddelpunt (liggend)</string>
+    <string name="settings_places_icon_opacity">Dekking pictogrammen voor plaatsen</string>
     <string name="theme_current">Thema: %s</string>
     <string name="action_choose_theme">Thema kiezen</string>
     <!-- System settings -->
     <string name="settings_display">Weergave</string>
-    <string name="settings_status_icon_opacity">Dekking van statusiconen</string>
+    <string name="settings_status_icon_opacity">Dekking statuspictogram</string>
     <string name="settings_speedometer_size">Grootte snelheidsmeter</string>
     <string name="settings_compass_size">Grootte kompas</string>
     <string name="settings_nav_widget_size">Grootte navigatiewidget</string>
@@ -104,9 +112,9 @@
     <string name="theme_auto">Automatisch</string>
     <string name="theme_customize_maputnik">Aanpassen in Maputnik</string>
     <string name="theme_overwrite_custom_light">Aangepast licht overschrijven</string>
-    <string name="theme_use_as_custom_light_base">Gebruiken als basis voor aangepast licht</string>
+    <string name="theme_use_as_custom_light_base">Als basis voor aangepast licht gebruiken</string>
     <string name="theme_overwrite_custom_dark">Aangepast donker overschrijven</string>
-    <string name="theme_use_as_custom_dark_base">Gebruiken als basis voor aangepast donker</string>
+    <string name="theme_use_as_custom_dark_base">Als basis voor aangepast donker gebruiken</string>
     <string name="theme_use_in_auto_mode">Gebruiken in automatische modus</string>
     <string name="theme_action_edit">Bewerken</string>
     <string name="theme_action_save">Opslaan</string>
@@ -123,7 +131,7 @@
     <string name="theme_export">Thema exporteren</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Thema %s maken</string>
-    <string name="color_editor_no_theme">Er bestaat nog geen thema %1$s. Wil je er een maken op basis van %2$s? Je kunt ook een JSON-bestand importeren via de themakiezer.</string>
+    <string name="color_editor_no_theme">Er bestaat nog geen thema %1$s. Wil je er een maken op basis van %2$s? Je kunt ook een JSON-bestand importeren via de themakeuze.</string>
     <string name="color_editor_create_from">Maken van %s</string>
     <string name="color_editor_edit_colors">Kleuren bewerken: %s</string>
     <string name="color_editor_preview">Voorbeeld</string>
@@ -193,7 +201,7 @@
     <string name="poi_cafe">Café / koffie</string>
     <string name="poi_bar">Bar / pub</string>
     <string name="poi_supermarket">Supermarkt</string>
-    <string name="poi_convenience">Gemakswinkel</string>
+    <string name="poi_convenience">Buurtwinkel</string>
     <string name="poi_pharmacy">Apotheek</string>
     <string name="poi_hospital">Ziekenhuis</string>
     <string name="poi_hotel">Hotel</string>
@@ -209,7 +217,7 @@
     <string name="poi_laundry">Wasserette</string>
     <string name="poi_toilets">Toiletten</string>
     <string name="poi_police">Politie</string>
-    <string name="poi_fire_station">Brandweerkazerne</string>
+    <string name="poi_fire_station">Brandweerpost</string>
     <string name="poi_library">Bibliotheek</string>
     <string name="poi_park">Park</string>
     <string name="poi_viewpoint">Uitkijkpunt</string>
