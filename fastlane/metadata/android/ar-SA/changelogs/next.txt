@@ -1,1 +1,1 @@
-First launch tutorial, and fix a bug preventing the use of approximate gps location (Thanks Chris L).
+برنامج تعليمي عند التشغيل الأول، وإصلاح خطأ كان يمنع استخدام الموقع التقريبي عبر GPS (شكرًا لـ Chris L).
