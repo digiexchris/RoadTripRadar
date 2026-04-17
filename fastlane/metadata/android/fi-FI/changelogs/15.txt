@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Korjattu ongelma, jossa Kompassi-painike ei lukinnut karttaa pohjoinen ylhäällä -tilaan, kun käyttäjä liikkuu
