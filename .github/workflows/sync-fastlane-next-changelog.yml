@@ -15,6 +15,7 @@ on:
       - main
     paths:
       - app/src/main/assets/changelog.json
+  workflow_dispatch:
 
 concurrency:
   group: sync-fastlane-next-changelog
