@@ -209,7 +209,8 @@ fun BoxScope.MapOverlay(
         },
         isWeatherPlaying = vm.isWeatherPlaying,
         weatherActive = vm.weatherActive,
-        onCycleWeather = { vm.cycleWeatherMode() },
+        onToggleWeatherPlayPause = { vm.toggleWeatherPlayPause() },
+        onWeatherOff = { vm.turnOffWeather() },
         onOpenMenu = { vm.openActionsDrawer() },
         aboveContent = {
             RecenterTextButton(

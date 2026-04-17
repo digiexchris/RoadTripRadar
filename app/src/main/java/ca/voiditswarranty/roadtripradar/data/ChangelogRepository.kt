@@ -26,7 +26,8 @@ object ChangelogRepository {
     }
 
     /**
-     * Releases with versionCode in (lastSeenCode, currentVersionCode], sorted ascending by versionCode.
+     * Releases with versionCode in (lastSeenCode, currentVersionCode], newest first. Entries with
+     * `showInApp = false` are excluded so they never appear in the What's New sheet.
      */
     fun releasesNewSince(
         bundle: ChangelogBundle,
@@ -34,12 +35,18 @@ object ChangelogRepository {
         currentVersionCode: Int,
     ): List<ChangelogRelease> {
         return bundle.releases
+            .filter { it.showInApp }
             .filter { it.versionCode > lastSeenCode && it.versionCode <= currentVersionCode }
-            .sortedBy { it.versionCode }
+            .sortedByDescending { it.versionCode }
     }
 
+    /**
+     * All releases for the Help & Info changelog, newest first. Entries with `showInApp = false`
+     * are excluded.
+     */
     fun allReleasesSortedNewestFirst(bundle: ChangelogBundle): List<ChangelogRelease> {
         return bundle.releases
+            .filter { it.showInApp }
             .filter { it.versionCode > 0 }
             .sortedByDescending { it.versionCode }
     }

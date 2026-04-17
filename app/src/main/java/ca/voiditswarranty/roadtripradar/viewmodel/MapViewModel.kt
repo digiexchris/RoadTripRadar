@@ -340,6 +340,27 @@ class MapViewModel(
         updateWeatherMode(next)
     }
 
+    fun toggleWeatherPlayPause() {
+        val next = when (weatherMode) {
+            WeatherMode.OFF -> WeatherMode.PLAYING
+            WeatherMode.PLAYING -> WeatherMode.ON
+            WeatherMode.ON -> WeatherMode.PLAYING
+        }
+        updateWeatherMode(next)
+    }
+
+    fun turnOffWeather() {
+        updateWeatherMode(WeatherMode.OFF)
+    }
+
+    fun toggleWeatherOnOff() {
+        if (weatherActive) {
+            updateWeatherMode(WeatherMode.OFF)
+        } else {
+            updateWeatherMode(WeatherMode.PLAYING)
+        }
+    }
+
     fun updateShowLegend(show: Boolean) {
         showLegend = show
         prefsRepo.showLegend = show

@@ -133,7 +133,7 @@ object PrefsDefaults {
     const val MAP_CENTER_OFFSET_LANDSCAPE_FRACTION = 0.30f
     const val RADAR_OPACITY = 0.6f
     const val USE_METRIC = true
-    const val WEATHER_MODE = "PLAYING"
+    const val WEATHER_MODE = "ON"
     const val SHOW_LEGEND = true
     const val SHOW_TIMELINE = true
     const val SPEED_SIZE = 64f

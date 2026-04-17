@@ -43,6 +43,7 @@ import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Layers
@@ -57,6 +58,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.animation.core.animateFloatAsState
@@ -87,6 +89,8 @@ private data class DrawerAction(
     val icon: ImageVector,
     val enabled: Boolean = true,
     val onClick: () -> Unit,
+    /** When non-null, this cell renders as a toggle control reflecting the given state. */
+    val toggleState: Boolean? = null,
 )
 
 private enum class ActionsDrawerPage { Main, Map, Weather, System, Help }
@@ -159,6 +163,18 @@ fun ActionsDrawer(
                         onClick = { showQuitConfirm = true },
                     ),
                     DrawerAction(
+                        label = stringResource(R.string.toggle_weather_radar),
+                        icon = if (vm.weatherActive) Icons.Default.Cloud else Icons.Default.CloudOff,
+                        onClick = { vm.toggleWeatherOnOff() },
+                        toggleState = vm.weatherActive,
+                    ),
+                    DrawerAction(
+                        label = stringResource(R.string.toggle_north_up),
+                        icon = Icons.Default.Navigation,
+                        onClick = { vm.isNorthUp = !vm.isNorthUp },
+                        toggleState = vm.isNorthUp,
+                    ),
+                    DrawerAction(
                         label = stringResource(R.string.action_nearby_places),
                         icon = Icons.Default.Place,
                         onClick = {
@@ -198,11 +214,6 @@ fun ActionsDrawer(
 
             val subMenuActions = when (drawerPage) {
                 ActionsDrawerPage.Main -> listOf(
-                    DrawerAction(
-                        label = if (vm.isNorthUp) stringResource(R.string.action_track_bearing) else stringResource(R.string.action_track_north),
-                        icon = Icons.Default.Navigation,
-                        onClick = { vm.isNorthUp = !vm.isNorthUp },
-                    ),
                     DrawerAction(
                         label = stringResource(R.string.menu_map),
                         icon = Icons.Default.Map,
@@ -295,21 +306,24 @@ fun ActionsDrawer(
                             val weatherTopActions = listOf(
                                 closeToMap,
                                 DrawerAction(
-                                    label = if (vm.windEnabled) stringResource(R.string.action_wind_temp_off) else stringResource(R.string.action_wind_temp_on),
+                                    label = stringResource(R.string.toggle_wind_temp),
                                     icon = Icons.Default.Air,
                                     onClick = { vm.updateWindEnabled(!vm.windEnabled) },
+                                    toggleState = vm.windEnabled,
                                 ),
                                 DrawerAction(
-                                    label = if (vm.showLegend) stringResource(R.string.action_hide_legend) else stringResource(R.string.action_show_legend),
-                                    icon = if (vm.showLegend) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    label = stringResource(R.string.toggle_legend),
+                                    icon = if (vm.showLegend) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     enabled = vm.weatherActive,
                                     onClick = { vm.updateShowLegend(!vm.showLegend) },
+                                    toggleState = vm.showLegend,
                                 ),
                                 DrawerAction(
-                                    label = if (vm.showTimeline) stringResource(R.string.action_hide_timeline) else stringResource(R.string.action_show_timeline),
-                                    icon = if (vm.showTimeline) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    label = stringResource(R.string.toggle_timeline),
+                                    icon = if (vm.showTimeline) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                                     enabled = vm.weatherActive,
                                     onClick = { vm.updateShowTimeline(!vm.showTimeline) },
+                                    toggleState = vm.showTimeline,
                                 ),
                             )
                             Column(
@@ -445,6 +459,7 @@ fun ActionsDrawer(
                                         icon = action.icon,
                                         enabled = action.enabled,
                                         onClick = action.onClick,
+                                        toggleState = action.toggleState,
                                     )
                                 }
                                 if (subMenuActions.isNotEmpty()) {
@@ -457,6 +472,7 @@ fun ActionsDrawer(
                                             icon = action.icon,
                                             enabled = action.enabled,
                                             onClick = action.onClick,
+                                            toggleState = action.toggleState,
                                         )
                                     }
                                 }
@@ -565,6 +581,7 @@ private fun DrawerTopActionsGrid(
                         icon = action.icon,
                         enabled = action.enabled,
                         onClick = action.onClick,
+                        toggleState = action.toggleState,
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -583,17 +600,30 @@ private fun DrawerActionFab(
     enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    toggleState: Boolean? = null,
 ) {
+    if (toggleState != null) {
+        DrawerToggleFab(
+            label = label,
+            icon = icon,
+            enabled = enabled,
+            checked = toggleState,
+            onCheckedChange = { onClick() },
+            modifier = modifier,
+        )
+        return
+    }
+
     val shape = RoundedCornerShape(20.dp)
     val containerColor = if (enabled) {
         MaterialTheme.colorScheme.primaryContainer
     } else {
-        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+        MaterialTheme.colorScheme.surfaceVariant
     }
     val contentColor = if (enabled) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
-        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+        MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     LargeFloatingActionButton(
@@ -608,13 +638,70 @@ private fun DrawerActionFab(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
+            modifier = Modifier
+                .padding(vertical = 12.dp, horizontal = 8.dp)
+                .alpha(if (enabled) 1f else 0.5f),
         ) {
             Icon(imageVector = icon, contentDescription = null)
             Text(
                 text = label,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DrawerToggleFab(
+    label: String,
+    icon: ImageVector,
+    enabled: Boolean,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val shape = RoundedCornerShape(20.dp)
+    val containerColor = if (enabled) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+    val contentColor = if (enabled) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Surface(
+        onClick = { if (enabled) onCheckedChange(!checked) },
+        shape = shape,
+        modifier = modifier
+            .fillMaxWidth()
+            .border(1.dp, MaterialTheme.colorScheme.outline, shape),
+        color = containerColor,
+        contentColor = contentColor,
+        tonalElevation = 3.dp,
+        shadowElevation = 6.dp,
+        enabled = enabled,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
+                .padding(vertical = 12.dp, horizontal = 8.dp)
+                .alpha(if (enabled) 1f else 0.5f),
+        ) {
+            Icon(imageVector = icon, contentDescription = null)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+            )
+            Switch(
+                checked = checked,
+                onCheckedChange = null,
+                enabled = enabled,
             )
         }
     }

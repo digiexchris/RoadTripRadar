@@ -6,12 +6,15 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +24,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -35,6 +39,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -242,7 +247,8 @@ fun BottomContent(
     onZoomOut: () -> Unit,
     isWeatherPlaying: Boolean,
     weatherActive: Boolean,
-    onCycleWeather: () -> Unit,
+    onToggleWeatherPlayPause: () -> Unit,
+    onWeatherOff: () -> Unit,
     onOpenMenu: () -> Unit,
     aboveContent: @Composable () -> Unit,
     isLandscape: Boolean = false,
@@ -271,11 +277,6 @@ fun BottomContent(
                 horizontalArrangement = if (isLandscape) Arrangement.spacedBy(minGap) else Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-            val weatherIcon = when {
-                !weatherActive -> Icons.Default.Block
-                isWeatherPlaying -> Icons.Default.Pause
-                else -> Icons.Default.PlayArrow
-            }
             val weatherDescription = when {
                 !weatherActive -> stringResource(R.string.cd_weather_off)
                 isWeatherPlaying -> stringResource(R.string.cd_weather_pause)
@@ -286,22 +287,40 @@ fun BottomContent(
                 isWeatherPlaying -> MaterialTheme.colorScheme.primaryContainer
                 else -> MaterialTheme.colorScheme.primaryContainer
             }
-            LargeFloatingActionButton(
-                onClick = onCycleWeather,
+            Surface(
+                shape = CircleShape,
+                color = weatherColor,
+                tonalElevation = 6.dp,
+                shadowElevation = 6.dp,
                 modifier = fabBorderModifier
                     .size(buttonSize)
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
                     },
-                shape = CircleShape,
-                containerColor = weatherColor,
             ) {
-                Icon(
-                    imageVector = weatherIcon,
-                    contentDescription = weatherDescription,
-                    modifier = Modifier.size(iconSize),
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .combinedClickable(
+                            onClick = onToggleWeatherPlayPause,
+                            onLongClick = onWeatherOff,
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (!weatherActive) {
+                        WeatherOffIcon(
+                            contentDescription = weatherDescription,
+                            modifier = Modifier.size(iconSize),
+                        )
+                    } else {
+                        Icon(
+                            imageVector = if (isWeatherPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                            contentDescription = weatherDescription,
+                            modifier = Modifier.size(iconSize),
+                        )
+                    }
+                }
             }
 
             LargeFloatingActionButton(
@@ -381,5 +400,24 @@ fun TopContent(
         leftContent()
         centerContent()
         rightContent()
+    }
+}
+
+@Composable
+private fun WeatherOffIcon(
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Icon(
+            imageVector = Icons.Default.Cloud,
+            contentDescription = contentDescription,
+            modifier = Modifier.fillMaxSize(0.6f),
+        )
+        Icon(
+            imageVector = Icons.Default.Block,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 }

@@ -2,7 +2,6 @@ package ca.voiditswarranty.roadtripradar.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
@@ -29,17 +28,8 @@ class PreferencesRepository(context: Context) {
     }
 
     companion object {
-        /** Liberty when not in night mode, [MapStyle.COLOR_DARK] (Dark Small Roads) when UI night mode is on. */
-        fun defaultMapStyleFor(context: Context): MapStyle {
-            val app = context.applicationContext
-            val night =
-                app.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            return if (night == Configuration.UI_MODE_NIGHT_YES) {
-                MapStyle.COLOR_DARK
-            } else {
-                MapStyle.LIBERTY
-            }
-        }
+        /** Auto theme, which resolves to Liberty or [MapStyle.COLOR_DARK] based on system UI night mode. */
+        fun defaultMapStyleFor(context: Context): MapStyle = MapStyle.AUTO
     }
 
     init {
@@ -133,19 +123,26 @@ class PreferencesRepository(context: Context) {
             prefs.edit().putInt("prefs_version", 9).apply()
         }
         if (prefs.getInt("prefs_version", 0) < 10) {
-            // Collapse weather_mode + weather_playing into a single tri-state weather_mode.
-            val wasOn = prefs.getString("weather_mode", "OFF") == "ON"
-            val wasPlaying = prefs.getBoolean("weather_playing", true)
-            val newMode = when {
-                !wasOn -> "OFF"
-                wasPlaying -> "PLAYING"
-                else -> "ON"
+            if (prefs.contains("weather_mode")) {
+                // Collapse weather_mode + weather_playing into a single tri-state weather_mode.
+                val wasOn = prefs.getString("weather_mode", "OFF") == "ON"
+                val wasPlaying = prefs.getBoolean("weather_playing", true)
+                val newMode = when {
+                    !wasOn -> "OFF"
+                    wasPlaying -> "PLAYING"
+                    else -> "ON"
+                }
+                prefs.edit()
+                    .putString("weather_mode", newMode)
+                    .remove("weather_playing")
+                    .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                    .apply()
+            } else {
+                prefs.edit()
+                    .remove("weather_playing")
+                    .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                    .apply()
             }
-            prefs.edit()
-                .putString("weather_mode", newMode)
-                .remove("weather_playing")
-                .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
-                .apply()
         }
     }
 

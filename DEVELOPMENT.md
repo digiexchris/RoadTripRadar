@@ -127,7 +127,51 @@ The version displayed in the app is resolved from git at build time:
 
 `versionCode` is only incremented by the CI release workflow. Local builds reuse the last released value.
 
-The **Release** workflow uses a single source for user-facing bullets: fill `changelog/pending.json` → `entries` before dispatch. That drives the GitHub Release body (markdown list), Play Store changelog text, and the merge into `app/src/main/assets/changelog.json`.
+## Changelog system
+
+User-facing release notes are driven from a single pending entry in `app/src/main/assets/changelog.json`. The release workflow stamps it with the real version during dispatch and feeds the in-app **What's New** sheet, the GitHub Release body, and the Fastlane/Play Store changelog from the same source.
+
+### Files
+
+- `app/src/main/assets/changelog.json` — bundled with the app; powers the in-app changelog sheets. Newest release is always at `releases[0]`. Between releases the top entry is a staging entry with `"versionName": "next"` where new bullets are added.
+- `fastlane/metadata/android/<locale>/changelogs/next.txt` — staging file(s) for the Play Store changelog, renamed to `<versionCode>.txt` during release.
+- `changelog/pending.json` — legacy staging file for a previous workflow; not currently consumed by `.github/workflows/prepare-release.yml` (kept for reference / tooling).
+
+### Adding entries between releases
+
+1. Edit `app/src/main/assets/changelog.json` and append user-facing bullets to the `items` array of the `releases[0]` entry (the one with `"versionName": "next"`). Keep entries short and user-readable — they appear verbatim in the What's New sheet and the GitHub Release body.
+2. Optionally mirror the English bullets into `fastlane/metadata/android/en-US/changelogs/next.txt` (one line per bullet, ≤ 500 chars total per Play Store rules) if the Play Store changelog should differ from the aggregated bullets. If not updated here, the release workflow writes this file from `changelog.json` automatically.
+
+### Hiding a release from the in-app UI
+
+Each release entry in `changelog.json` accepts an optional `"showInApp"` boolean (defaults to `true`). Set it to `false` to exclude that entry from both in-app views:
+
+- The post-update **What's New** sheet skips hidden entries entirely. If every release between the user's last-seen `versionCode` and the current one is hidden, the sheet does not appear on launch.
+- The **Help & Info → Changelog** sheet omits hidden entries from the full history.
+
+`showInApp = false` has no effect on Fastlane/Play Store changelog files or GitHub Release notes — those are still built from the raw `items`. Use this for purely internal/rebuild releases where the user-facing content is unchanged.
+
+### In-app sort order
+
+Both the What's New sheet and the Help & Info changelog sheet display releases with the highest `versionCode` at the top.
+
+### What the Release workflow does
+
+`.github/workflows/prepare-release.yml` (triggered via **Actions → Release → Run workflow**, with a `version` input like `1.12.0`):
+
+1. **Validates** `releases[0].versionName == "next"` and that `items` is non-empty. If not, the workflow fails (e.g. "already released?").
+2. **Computes `versionCode`** as `(# of existing v* tags) + 1`. There is no placeholder convention for `versionCode` in the `"next"` entry — whatever integer is there gets overwritten unconditionally. Only `versionName` is matched against the `"next"` sentinel.
+3. **Bumps** `versionCode` / `versionName` in `app/build.gradle.kts`.
+4. **Stamps** `releases[0]` in `changelog.json` with the computed `versionName` and `versionCode`, replacing `"next"` in place.
+5. **Renames** each `fastlane/metadata/android/*/changelogs/next.txt` to `<versionCode>.txt`.
+6. Writes `release_notes.md` (the GitHub Release body) from the bulleted items.
+7. Commits, tags `v<versionName>`, builds a signed APK + AAB, and creates the GitHub Release.
+
+After a release is cut, the top entry is the released one, so the next time you want to add changelog items you must first insert a new `{"versionName": "next", "versionCode": <any>, "items": [...] }` block at `releases[0]` before appending bullets. The `versionCode` value in that block is irrelevant — pick anything (e.g. the current build's `versionCode`), the workflow will overwrite it.
+
+### Rebuild-only mode
+
+If `rebuild_only` is set when dispatching the workflow, it skips the validate/bump/stamp/commit/tag steps, reads the existing `versionCode` from `build.gradle.kts`, checks out the existing `v<version>` tag, rebuilds, and replaces the APK/AAB assets on the existing GitHub Release. Use this only for re-signing or rebuilding an already-tagged release.
 
 ## Testing CI Workflows Locally
 

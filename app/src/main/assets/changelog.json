@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "versionName": "next",
+      "versionCode": 99,
+      "showInApp": true,
+      "items": [
+        "Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off.."
+      ]
+    },
+    {
       "versionName": "1.12.0-rc1",
       "versionCode": 27,
       "items": [
