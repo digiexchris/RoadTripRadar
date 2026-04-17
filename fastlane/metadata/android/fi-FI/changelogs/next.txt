@@ -1,0 +1,1 @@
+Ensikäynnistyksen opastus ja korjaus virheeseen, joka esti likimääräisen GPS-sijainnin käytön (Kiitos Chris L:lle).
