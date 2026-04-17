@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+再生/一時停止/オフ ボタンを、タップで再生中と一時停止中の間で切り替わるように変更しました。 長押ししてオンとオフを切り替えます。。
