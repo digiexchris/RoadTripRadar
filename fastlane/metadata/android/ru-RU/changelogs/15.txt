@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Исправлена ошибка, из-за которой кнопка компаса не фиксировала карту в режиме "север сверху", когда пользователь перемещался
