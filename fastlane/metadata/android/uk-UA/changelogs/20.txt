@@ -1,1 +1,1 @@
-Add small weather widget for wind speed, direction, and ambient temperature
+Додати малий віджет погоди для швидкості вітру, напрямку вітру та температури навколишнього середовища
