@@ -1,1 +1,1 @@
-Undo moving metadata
+Metadatenverschiebung rückgängig machen
