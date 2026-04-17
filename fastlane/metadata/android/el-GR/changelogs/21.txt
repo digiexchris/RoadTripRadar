@@ -1,1 +1,1 @@
-Να επιτρέπεται η ανεξάρτητη προσαρμογή μεγέθους στα περισσότερα γραφικά στοιχεία
+Allow most widget sizes to be adjusted individually
