@@ -1,13 +1,13 @@
 Lansarea inițială a RoadTripRadar.
 
 - Suprapunere live de radar meteo animat de la RainViewer
-- Navigație pe bază de azimut către puncte de interes
+- Navigare bazată pe direcție către puncte de interes
 - Căutare POI după nume sau categorie
 - Adăugare POI prin apăsare lungă pe hartă
 - Cercuri de distanță în jurul locației tale
 - Afișarea vitezei în sistem metric sau imperial
 - Trei stiluri de hartă: Liberty, Dark, Color Dark
-- Buton busolă cu comutare a direcției
+- Buton de busolă cu comutare a orientării
 - Opacitate radar reglabilă
 - Dimensiune configurabilă a interfeței
-- Mod de menținere a ecranului pornit
+- Mod menținere ecran aprins
