@@ -14,13 +14,13 @@
     <string name="action_got_it">Selvä</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Sijaintilupa vaaditaan</string>
-    <string name="permission_location_body">Road Trip Radar tarvitsee pääsyn tarkkaan sijaintiisi, jotta se voi näyttää sijaintisi kartalla. Jatka napauttamalla Myönnä lupa tai poistu sovelluksesta valitsemalla Poistu.</string>
+    <string name="permission_location_body">Road Trip Radar tarvitsee pääsyn tarkkaan sijaintiisi näyttääkseen sijaintisi kartalla. Jatka napauttamalla Myönnä lupa tai poistu sovelluksesta valitsemalla Lopeta.</string>
     <string name="permission_grant">Myönnä lupa</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">Lue loppu vierittämällä alas, sitten voit hyväksyä.</string>
+    <string name="terms_scroll_hint">Vieritä alas lukeaksesi loput, sitten voit hyväksyä.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Poistu</string>
-    <string name="dialog_quit_message">Haluatko varmasti poistua?</string>
+    <string name="dialog_quit_message">Haluatko varmasti lopettaa?</string>
     <!-- Reset dialog -->
     <string name="dialog_reset_title">Palauta oletukset</string>
     <string name="dialog_reset_message">Kaikki asetukset palautetaan oletusarvoihin.</string>
@@ -31,6 +31,14 @@
     <string name="action_clear_target">Tyhjennä kohde</string>
     <string name="action_track_bearing">Seuraa suuntaa</string>
     <string name="action_track_north">Seuraa pohjoista</string>
+    <string name="action_radar_on">Tutka päällä</string>
+    <string name="action_radar_off">Tutka pois</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Säätutka</string>
+    <string name="toggle_north_up">Pohjoinen ylhäällä</string>
+    <string name="toggle_wind_temp">Tuuli &amp; lämpötila</string>
+    <string name="toggle_legend">Selite</string>
+    <string name="toggle_timeline">Aikajana</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Kartta</string>
     <string name="menu_weather">Sää</string>
@@ -38,31 +46,31 @@
     <string name="menu_help">Ohje</string>
     <string name="menu_help_info">Ohje &amp; tiedot</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Tuuli &amp; lämpö pois</string>
-    <string name="action_wind_temp_on">Tuuli &amp; lämpö päälle</string>
+    <string name="action_wind_temp_off">Tuuli &amp; lämpötila pois</string>
+    <string name="action_wind_temp_on">Tuuli &amp; lämpötila päällä</string>
     <string name="action_hide_legend">Piilota selite</string>
     <string name="action_show_legend">Näytä selite</string>
     <string name="action_hide_timeline">Piilota aikajana</string>
     <string name="action_show_timeline">Näytä aikajana</string>
     <!-- Help page -->
-    <string name="help_documentation_info">Täydellinen dokumentaatio ja lakitiedot ovat saatavilla alla olevista painikkeista.</string>
-    <string name="help_terms">Ehdot &amp; käytännöt</string>
+    <string name="help_documentation_info">Täydellinen dokumentaatio ja oikeudelliset tiedot ovat saatavilla alla olevista painikkeista.</string>
+    <string name="help_terms">Käyttöehdot</string>
     <string name="help_radar_legend">Tutkan selite</string>
     <string name="help_documentation">Dokumentaatio</string>
     <string name="help_privacy_policy">Tietosuojakäytäntö</string>
     <string name="help_changelog">Muutosloki</string>
     <string name="version_label">Versio %s</string>
-    <string name="debug_preview_whats_new">Esikatsele uutuudet (debug)</string>
+    <string name="debug_preview_whats_new">Esikatsele uudet ominaisuudet (debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Keskitä uudelleen</string>
-    <string name="fab_retry_failed">Yritä uudelleen epäonnistuneet</string>
-    <string name="cd_recenter_location">Keskitä uudelleen sijaintiin</string>
+    <string name="fab_retry_failed">Yritä epäonnistuneet uudelleen</string>
+    <string name="cd_recenter_location">Keskitä sijaintiin uudelleen</string>
     <string name="cd_gps_fix_acquired">GPS-paikannus saatu</string>
     <string name="cd_waiting_gps_fix">Odotetaan GPS-paikannusta</string>
     <string name="cd_zoom_out">Loitonna</string>
     <string name="cd_zoom_in">Lähennä</string>
     <string name="cd_quick_actions">Pikatoiminnot</string>
-    <string name="cd_weather_off">Säätutka pois</string>
+    <string name="cd_weather_off">Säätutka pois päältä</string>
     <string name="cd_weather_pause">Keskeytä tutka</string>
     <string name="cd_weather_play">Toista tutka</string>
     <string name="cd_no_network">Ei verkkoyhteyttä</string>
@@ -72,7 +80,7 @@
     <!-- Weather settings -->
     <string name="settings_weather_radar_opacity">Säätutkan peittävyys</string>
     <string name="settings_wind_speed_units">Tuulennopeuden yksiköt</string>
-    <string name="settings_temperature_units">Lämpötilan yksiköt</string>
+    <string name="settings_temperature_units">Lämpötilayksiköt</string>
     <string name="settings_weather_widget_size">Säävimpaimen koko</string>
     <string name="unit_kmh">km/h</string>
     <string name="unit_mph">mph</string>
@@ -81,11 +89,11 @@
     <string name="unit_fahrenheit">°F</string>
     <string name="unit_kelvin">K</string>
     <!-- Map settings -->
-    <string name="settings_speed_distance_units">Nopeus-/etäisyyssyksiköt</string>
+    <string name="settings_speed_distance_units">Nopeus-/matkayksiköt</string>
     <string name="settings_metric">Metrinen</string>
-    <string name="settings_imperial">Imperiaalinen</string>
-    <string name="settings_map_center_offset_portrait">Kartan keskikohdan siirtymä (pysty)</string>
-    <string name="settings_map_center_offset_landscape">Kartan keskikohdan siirtymä (vaaka)</string>
+    <string name="settings_imperial">Brittiläinen</string>
+    <string name="settings_map_center_offset_portrait">Kartan keskityksen siirtymä (pysty)</string>
+    <string name="settings_map_center_offset_landscape">Kartan keskityksen siirtymä (vaaka)</string>
     <string name="settings_places_icon_opacity">Paikkakuvakkeiden peittävyys</string>
     <string name="theme_current">Teema: %s</string>
     <string name="action_choose_theme">Valitse teema</string>
@@ -94,8 +102,8 @@
     <string name="settings_status_icon_opacity">Tilakuvakkeiden peittävyys</string>
     <string name="settings_speedometer_size">Nopeusmittarin koko</string>
     <string name="settings_compass_size">Kompassin koko</string>
-    <string name="settings_nav_widget_size">Navigointivimpaimen koko</string>
-    <string name="settings_misc">Sekalaiset</string>
+    <string name="settings_nav_widget_size">Navigointiwidgetin koko</string>
+    <string name="settings_misc">Muut</string>
     <string name="settings_keep_screen_on">Pidä näyttö päällä</string>
     <string name="settings_language">Kieli</string>
     <string name="language_system_default">Järjestelmän oletus</string>
@@ -118,12 +126,12 @@
     <string name="cd_open_maputnik">Avaa Maputnik</string>
     <string name="cd_delete_custom_theme">Poista mukautettu teema</string>
     <string name="theme_invalid_file">Virheellinen teematiedosto</string>
-    <string name="theme_saved_to_downloads">Tallennettu kansioon Lataukset/%s</string>
+    <string name="theme_saved_to_downloads">Tallennettu kohteeseen Downloads/%s</string>
     <string name="theme_save_failed">Tallennus epäonnistui</string>
     <string name="theme_export">Vie teema</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Luo %s-teema</string>
-    <string name="color_editor_no_theme">%1$s-teemaa ei ole vielä olemassa. Luodaanko se teeman %2$s pohjalta? Voit myös tuoda JSON-tiedoston teeman valitsimesta.</string>
+    <string name="color_editor_no_theme">%1$s-teemaa ei vielä ole. Luodaanko se teeman %2$s pohjalta? Voit myös tuoda JSON-tiedoston teeman valitsimesta.</string>
     <string name="color_editor_create_from">Luo teemasta %s</string>
     <string name="color_editor_edit_colors">Muokkaa värejä: %s</string>
     <string name="color_editor_preview">Esikatselu</string>
@@ -131,7 +139,7 @@
     <string name="cd_collapse">Pienennä</string>
     <string name="cd_expand">Laajenna</string>
     <!-- POI search dialog -->
-    <string name="search_location_title">Hae sijaintia</string>
+    <string name="search_location_title">Etsi sijaintia</string>
     <string name="search_within_visible">Haetaan näkyvältä kartta-alueelta</string>
     <string name="search_address_placeholder">Osoite tai paikan nimi</string>
     <string name="search_searching">Haetaan…</string>
@@ -163,7 +171,7 @@
     <string name="legend_snow_heavy">Lunta!!</string>
     <!-- Legend detail sheet -->
     <string name="legend_detail_title">Tutkan selite</string>
-    <string name="legend_detail_label">Nimike</string>
+    <string name="legend_detail_label">Selite</string>
     <string name="legend_detail_dbz">dBZ</string>
     <string name="legend_detail_mmh">mm/h</string>
     <string name="legend_detail_rain">Sade</string>
@@ -175,11 +183,11 @@
     <string name="legend_detail_moderate_rain">Kohtalainen sade</string>
     <string name="legend_detail_showers">Sadekuuroja</string>
     <string name="legend_detail_small_hail">Pienet rakeet tai jäätävä sade mahdollisia</string>
-    <string name="legend_detail_hail_possible">Rakeita mahdollista</string>
-    <string name="legend_detail_hail_likely">Rakeita todennäköisesti</string>
+    <string name="legend_detail_hail_possible">Rakeet mahdollisia</string>
+    <string name="legend_detail_hail_likely">Rakeet todennäköisiä</string>
     <string name="legend_detail_light_snow">Heikko lumi</string>
     <string name="legend_detail_moderate_snow">Kohtalainen lumi</string>
-    <string name="legend_detail_heavy_snow">Voimakas lumi</string>
+    <string name="legend_detail_heavy_snow">Runsas lumi</string>
     <!-- Speed readout -->
     <string name="speed_unit_kmh">km/h</string>
     <string name="speed_unit_mph">mph</string>
@@ -192,7 +200,7 @@
     <string name="poi_fast_food">Pikaruoka</string>
     <string name="poi_cafe">Kahvila / kahvi</string>
     <string name="poi_bar">Baari / pubi</string>
-    <string name="poi_supermarket">Supermarketti</string>
+    <string name="poi_supermarket">Supermarket</string>
     <string name="poi_convenience">Lähikauppa</string>
     <string name="poi_pharmacy">Apteekki</string>
     <string name="poi_hospital">Sairaala</string>
@@ -207,7 +215,7 @@
     <string name="poi_car_repair">Autokorjaamo</string>
     <string name="poi_car_wash">Autopesula</string>
     <string name="poi_laundry">Pesula</string>
-    <string name="poi_toilets">Vessat</string>
+    <string name="poi_toilets">WC</string>
     <string name="poi_police">Poliisi</string>
     <string name="poi_fire_station">Paloasema</string>
     <string name="poi_library">Kirjasto</string>
