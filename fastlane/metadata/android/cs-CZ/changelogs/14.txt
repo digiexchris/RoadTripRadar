@@ -1,1 +1,1 @@
-Oprava, kdy tlačítko Kompas při pohybu uživatele nezamklo mapu do orientace sever nahoře
+Oprava tlačítka Kompas, které při pohybu uživatele neuzamkne mapu do orientace severem nahoru
