@@ -55,6 +55,8 @@ import androidx.compose.ui.unit.min
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.NetworkStatus
 import ca.voiditswarranty.roadtripradar.model.NetworkTransport
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialAnchors
+import ca.voiditswarranty.roadtripradar.ui.tutorial.tutorialAnchor
 
 private val fabBorderModifier: Modifier = Modifier
 
@@ -297,7 +299,8 @@ fun BottomContent(
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
-                    },
+                    }
+                    .tutorialAnchor(TutorialAnchors.WEATHER_FAB),
             ) {
                 Box(
                     modifier = Modifier
@@ -330,7 +333,8 @@ fun BottomContent(
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
-                    },
+                    }
+                    .tutorialAnchor(TutorialAnchors.ZOOM_OUT),
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
@@ -352,7 +356,8 @@ fun BottomContent(
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
-                    },
+                    }
+                    .tutorialAnchor(TutorialAnchors.ZOOM_IN),
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
@@ -370,7 +375,8 @@ fun BottomContent(
                     .graphicsLayer {
                         scaleX = scale
                         scaleY = scale
-                    },
+                    }
+                    .tutorialAnchor(TutorialAnchors.MENU_FAB),
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {

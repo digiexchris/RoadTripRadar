@@ -30,6 +30,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialAnchors
+import ca.voiditswarranty.roadtripradar.ui.tutorial.tutorialAnchor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.maplibre.compose.camera.CameraState
@@ -75,6 +77,7 @@ fun BoxScope.MapOverlay(
                     speedMps = speedMps,
                     useMetric = vm.useMetric,
                     speedSize = vm.speedSize * config.widgetScale,
+                    modifier = Modifier.tutorialAnchor(TutorialAnchors.SPEED),
                 )
             }
         },
@@ -117,21 +120,25 @@ fun BoxScope.MapOverlay(
             }
         },
         rightContent = {
-            CompassButton(
-                cameraState = cameraState,
-                colors = ButtonDefaults.elevatedButtonColors(),
-                size = compassSize,
-                contentPadding = PaddingValues(8.dp),
-                shape = CircleShape,
-                getHomePosition = { current ->
-                    vm.isNorthUp = !vm.isNorthUp
-                    if (vm.isNorthUp) {
-                        current.copy(bearing = 0.0, tilt = 0.0)
-                    } else {
-                        current.copy(tilt = 0.0)
-                    }
-                },
-            )
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier.tutorialAnchor(TutorialAnchors.COMPASS),
+            ) {
+                CompassButton(
+                    cameraState = cameraState,
+                    colors = ButtonDefaults.elevatedButtonColors(),
+                    size = compassSize,
+                    contentPadding = PaddingValues(8.dp),
+                    shape = CircleShape,
+                    getHomePosition = { current ->
+                        vm.isNorthUp = !vm.isNorthUp
+                        if (vm.isNorthUp) {
+                            current.copy(bearing = 0.0, tilt = 0.0)
+                        } else {
+                            current.copy(tilt = 0.0)
+                        }
+                    },
+                )
+            }
         },
     )
 
