@@ -31,6 +31,14 @@
     <string name="action_clear_target">Effacer la cible</string>
     <string name="action_track_bearing">Suivre le cap</string>
     <string name="action_track_north">Suivre le nord</string>
+    <string name="action_radar_on">Radar activé</string>
+    <string name="action_radar_off">Radar désactivé</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Radar météo</string>
+    <string name="toggle_north_up">Nord en haut</string>
+    <string name="toggle_wind_temp">Vent et amp; température</string>
+    <string name="toggle_legend">Légende</string>
+    <string name="toggle_timeline">Chronologie</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Carte</string>
     <string name="menu_weather">Météo</string>
