@@ -31,6 +31,14 @@
     <string name="action_clear_target">清除目标</string>
     <string name="action_track_bearing">跟随朝向</string>
     <string name="action_track_north">朝北显示</string>
+    <string name="action_radar_on">雷达开启</string>
+    <string name="action_radar_off">雷达关闭</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">天气雷达</string>
+    <string name="toggle_north_up">北向上</string>
+    <string name="toggle_wind_temp">风速和温度</string>
+    <string name="toggle_legend">图例</string>
+    <string name="toggle_timeline">Timeline</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">地图</string>
     <string name="menu_weather">天气</string>
