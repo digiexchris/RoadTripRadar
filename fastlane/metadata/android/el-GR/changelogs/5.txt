@@ -1,1 +1,1 @@
-Cleaned up for F-Droid build
+Καθαρίστηκε για δημιουργία έκδοσης F-Droid
