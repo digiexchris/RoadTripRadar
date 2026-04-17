@@ -31,6 +31,14 @@
     <string name="action_clear_target">Clear Target</string>
     <string name="action_track_bearing">Track Bearing</string>
     <string name="action_track_north">Track North</string>
+    <string name="action_radar_on">Radar On</string>
+    <string name="action_radar_off">Radar Off</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Weather Radar</string>
+    <string name="toggle_north_up">North Up</string>
+    <string name="toggle_wind_temp">Wind &amp; Temp</string>
+    <string name="toggle_legend">Legend</string>
+    <string name="toggle_timeline">Timeline</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Map</string>
     <string name="menu_weather">Weather</string>
@@ -50,9 +58,9 @@
     <string name="help_radar_legend">Radar Legend</string>
     <string name="help_documentation">Documentation</string>
     <string name="help_privacy_policy">Privacy Policy</string>
-    <string name="help_changelog">Changelog</string>
+    <string name="help_changelog">Changelogs</string>
     <string name="version_label">Version %s</string>
-    <string name="debug_preview_whats_new">Preview What’s New (debug)</string>
+    <string name="debug_preview_whats_new">Preview What\'s New (debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recenter</string>
     <string name="fab_retry_failed">Retry Failed</string>
@@ -146,7 +154,7 @@
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Direction to target location</string>
     <!-- Changelog sheets -->
-    <string name="changelog_whats_new">What’s new</string>
+    <string name="changelog_whats_new">What\'s new</string>
     <string name="changelog_title">Changelog</string>
     <string name="changelog_no_entries">No changelog entries.</string>
     <!-- Weather legend -->
