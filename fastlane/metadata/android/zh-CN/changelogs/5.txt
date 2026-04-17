@@ -1,1 +1,1 @@
-已为 F-Droid 构建进行清理
+Cleaned up for F-Droid build
