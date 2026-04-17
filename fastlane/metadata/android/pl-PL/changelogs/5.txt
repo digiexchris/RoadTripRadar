@@ -1,1 +1,1 @@
-Cleaned up for F-Droid build
+Uporządkowano pod kompilację dla F-Droid
