@@ -14,10 +14,10 @@
     <string name="action_got_it">Entendido</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Se requiere permiso de ubicación</string>
-    <string name="permission_location_body">Road Trip Radar needs access to your location to show where you are on the map. Precise location is recommended for best accuracy, but approximate location will also work. Tap Grant permission to continue, or Quit to exit the app.</string>
+    <string name="permission_location_body">Road Trip Radar necesita acceder a tu ubicación para mostrar dónde estás en el mapa. Se recomienda la ubicación precisa para obtener la mejor exactitud, pero la ubicación aproximada también funcionará. Toca \"Conceder permiso\" para continuar o \"Salir\" para cerrar la aplicación.</string>
     <string name="permission_grant">Conceder permiso</string>
-    <string name="permission_location_denied_title">Location required</string>
-    <string name="permission_location_denied_body">Road Trip Radar is designed to show the area around you while you drive, so it cannot function without location access. The app will now exit. You can enable location access in the system Settings and launch the app again.</string>
+    <string name="permission_location_denied_title">Ubicación obligatoria</string>
+    <string name="permission_location_denied_body">Road Trip Radar está diseñada para mostrar el área que te rodea mientras conduces, por lo que no puede funcionar sin acceso a la ubicación. La aplicación se cerrará ahora. Puedes habilitar el acceso a la ubicación en Ajustes del sistema y volver a abrir la aplicación.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Desplázate hacia abajo para leer el resto; después podrás aceptar.</string>
     <!-- Quit dialog -->
@@ -56,7 +56,7 @@
     <string name="action_show_timeline">Mostrar línea de tiempo</string>
     <!-- Help page -->
     <string name="help_documentation_info">La documentación completa y la información legal están disponibles en los botones de abajo.</string>
-    <string name="help_show_tutorial">Show Tutorial</string>
+    <string name="help_show_tutorial">Mostrar tutorial</string>
     <string name="help_terms">Términos y condiciones</string>
     <string name="help_radar_legend">Leyenda del radar</string>
     <string name="help_documentation">Documentación</string>
@@ -65,45 +65,45 @@
     <string name="version_label">Versión %s</string>
     <string name="debug_preview_whats_new">Vista previa de novedades (depuración)</string>
     <!-- Tutorial -->
-    <string name="tutorial_action_next">Next</string>
-    <string name="tutorial_action_back">Back</string>
-    <string name="tutorial_action_skip">Skip</string>
-    <string name="tutorial_action_done">Got it</string>
-    <string name="tutorial_step_progress">Step %1$d of %2$d</string>
+    <string name="tutorial_action_next">Siguiente</string>
+    <string name="tutorial_action_back">Atrás</string>
+    <string name="tutorial_action_skip">Omitir</string>
+    <string name="tutorial_action_done">Entendido</string>
+    <string name="tutorial_step_progress">Paso %1$d de %2$d</string>
     <!-- Tutorial: MAP group -->
-    <string name="tutorial_map_welcome_title">Welcome to Road Trip Radar</string>
-    <string name="tutorial_map_welcome_body">A quick tour of the map controls. Pinch to zoom, drag with two fingers up or down to tilt the map, and rotate two fingers to rotate it.</string>
-    <string name="tutorial_map_speed_title">Speedometer</string>
-    <string name="tutorial_map_speed_body">Your current speed, shown when GPS has a fix. Switch between km/h and mph in the System settings menu.</string>
-    <string name="tutorial_map_compass_title">Compass</string>
-    <string name="tutorial_map_compass_body">Tap once to lock the map to North up. Tap again to rotate the map to follow your bearing.</string>
-    <string name="tutorial_map_drop_pin_title">Drop a Pin</string>
-    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to drop a pin and navigate toward it.</string>
-    <string name="tutorial_map_zoom_out_title">Zoom Out</string>
-    <string name="tutorial_map_zoom_out_body">Tap to zoom out. You can also pinch the map with two fingers.</string>
-    <string name="tutorial_map_zoom_in_title">Zoom In</string>
-    <string name="tutorial_map_zoom_in_body">Tap to zoom in. You can also spread two fingers apart on the map.</string>
-    <string name="tutorial_map_weather_title">Weather Radar</string>
-    <string name="tutorial_map_weather_body">Tap to play or pause the radar animation. Tap and hold to turn the radar off entirely.</string>
-    <string name="tutorial_map_menu_title">Quick Actions Menu</string>
-    <string name="tutorial_map_menu_body">Opens the quick actions drawer with settings, themes, and points of interest.</string>
+    <string name="tutorial_map_welcome_title">Te damos la bienvenida a Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Un recorrido rápido por los controles del mapa. Pellizca para acercar o alejar, arrastra con dos dedos hacia arriba o hacia abajo para inclinar el mapa y gira dos dedos para rotarlo.</string>
+    <string name="tutorial_map_speed_title">Velocímetro</string>
+    <string name="tutorial_map_speed_body">Tu velocidad actual, mostrada cuando el GPS tiene señal. Cambia entre km/h y mph en el menú de ajustes del sistema.</string>
+    <string name="tutorial_map_compass_title">Brújula</string>
+    <string name="tutorial_map_compass_body">Toca una vez para fijar el mapa con el norte hacia arriba. Toca otra vez para girar el mapa y que siga tu rumbo.</string>
+    <string name="tutorial_map_drop_pin_title">Colocar un pin</string>
+    <string name="tutorial_map_drop_pin_body">Mantén pulsado en cualquier parte del mapa para colocar un pin y navegar hacia él.</string>
+    <string name="tutorial_map_zoom_out_title">Alejar</string>
+    <string name="tutorial_map_zoom_out_body">Toca para alejar. También puedes pellizcar el mapa con dos dedos.</string>
+    <string name="tutorial_map_zoom_in_title">Acercar</string>
+    <string name="tutorial_map_zoom_in_body">Toca para acercar. También puedes separar dos dedos sobre el mapa.</string>
+    <string name="tutorial_map_weather_title">Radar meteorológico</string>
+    <string name="tutorial_map_weather_body">Toca para reproducir o pausar la animación del radar. Mantén pulsado para apagar el radar por completo.</string>
+    <string name="tutorial_map_menu_title">Menú de acciones rápidas</string>
+    <string name="tutorial_map_menu_body">Abre el panel de acciones rápidas con ajustes, temas y puntos de interés.</string>
     <!-- Tutorial: MENU_MAIN group -->
-    <string name="tutorial_menu_weather_toggle_title">Weather Radar</string>
-    <string name="tutorial_menu_weather_toggle_body">Turn the weather radar overlay on or off.</string>
-    <string name="tutorial_menu_north_up_title">North Up</string>
-    <string name="tutorial_menu_north_up_body">Lock the map so North is always up, or let it rotate to follow your bearing.</string>
-    <string name="tutorial_menu_nearby_places_title">Nearby Places</string>
-    <string name="tutorial_menu_nearby_places_body">Pick which categories of points of interest (gas, food, lodging, etc.) to load onto the map.</string>
-    <string name="tutorial_menu_location_search_title">Location Search</string>
-    <string name="tutorial_menu_location_search_body">Search for an address or place name within the visible map area.</string>
-    <string name="tutorial_menu_submenu_map_title">Map Submenu</string>
-    <string name="tutorial_menu_submenu_map_body">Choose a map theme and tweak map-related settings like the center offset.</string>
-    <string name="tutorial_menu_submenu_weather_title">Weather Submenu</string>
-    <string name="tutorial_menu_submenu_weather_body">Toggle the wind/temperature widget, radar legend, and timeline, and adjust radar opacity and units.</string>
-    <string name="tutorial_menu_submenu_system_title">System Submenu</string>
-    <string name="tutorial_menu_submenu_system_body">Change language, widget sizes, units, screen behavior, and reset to defaults.</string>
-    <string name="tutorial_menu_submenu_help_title">Help &amp; Info</string>
-    <string name="tutorial_menu_submenu_help_body">Find documentation, terms and conditions, the changelog, and replay this tutorial.</string>
+    <string name="tutorial_menu_weather_toggle_title">Radar meteorológico</string>
+    <string name="tutorial_menu_weather_toggle_body">Activa o desactiva la superposición del radar meteorológico.</string>
+    <string name="tutorial_menu_north_up_title">Norte arriba</string>
+    <string name="tutorial_menu_north_up_body">Fija el mapa para que el norte esté siempre arriba o deja que gire para seguir tu rumbo.</string>
+    <string name="tutorial_menu_nearby_places_title">Lugares cercanos</string>
+    <string name="tutorial_menu_nearby_places_body">Elige qué categorías de puntos de interés (gasolina, comida, alojamiento, etc.) cargar en el mapa.</string>
+    <string name="tutorial_menu_location_search_title">Búsqueda de ubicación</string>
+    <string name="tutorial_menu_location_search_body">Busca una dirección o un lugar dentro del área visible del mapa.</string>
+    <string name="tutorial_menu_submenu_map_title">Submenú de mapa</string>
+    <string name="tutorial_menu_submenu_map_body">Elige un tema de mapa y ajusta configuraciones relacionadas con el mapa, como el desplazamiento del centro.</string>
+    <string name="tutorial_menu_submenu_weather_title">Submenú del tiempo</string>
+    <string name="tutorial_menu_submenu_weather_body">Activa o desactiva el widget de viento/temperatura, la leyenda del radar y la línea de tiempo, y ajusta la opacidad y las unidades del radar.</string>
+    <string name="tutorial_menu_submenu_system_title">Submenú del sistema</string>
+    <string name="tutorial_menu_submenu_system_body">Cambia el idioma, los tamaños de los widgets, las unidades, el comportamiento de la pantalla y restablece los valores predeterminados.</string>
+    <string name="tutorial_menu_submenu_help_title">Ayuda &amp; información</string>
+    <string name="tutorial_menu_submenu_help_body">Encuentra la documentación, los términos y condiciones, el registro de cambios y vuelve a reproducir este tutorial.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recentrar</string>
     <string name="fab_retry_failed">Reintentar fallidos</string>
