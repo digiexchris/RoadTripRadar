@@ -1,1 +1,1 @@
-If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
+Αν έχετε επιλέξει κατηγορίες στα Κοντινά μέρη, θα εμφανίζονται αυτόματα όταν ξεκινά η εφαρμογή. Αν θέλετε να απενεργοποιήσετε αυτή τη συμπεριφορά, υπάρχει ένας διακόπτης στο μενού Κοντινά μέρη για να την απενεργοποιήσετε.
