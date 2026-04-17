@@ -1,1 +1,1 @@
-Eine Karten-App, bei der Situationsbewusstsein und Wetter im Vordergrund stehen.
+Eine Karten-App, die Situationsbewusstsein und Wetter priorisiert.
