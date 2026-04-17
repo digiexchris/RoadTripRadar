@@ -1,1 +1,1 @@
-Ajustes en la canalización para F-Droid
+Pipeline tweaks for F-Droid
