@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+Adăugați un buton Acțiuni rapide pentru a face meniul Acțiuni rapide mai ușor de găsit.
