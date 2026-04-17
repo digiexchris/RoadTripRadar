@@ -1,0 +1,1 @@
+First launch tutorial, and fix a bug preventing the use of approximate gps location (Thanks Chris L).
