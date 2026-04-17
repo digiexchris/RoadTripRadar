@@ -8,13 +8,13 @@
     <string name="action_save">Зберегти</string>
     <string name="action_delete">Видалити</string>
     <string name="action_share">Поділитися</string>
-    <string name="action_ok">Гаразд</string>
+    <string name="action_ok">OK</string>
     <string name="action_decline">Відхилити</string>
     <string name="action_accept">Прийняти</string>
     <string name="action_got_it">Зрозуміло</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Потрібен дозвіл на доступ до місцезнаходження</string>
-    <string name="permission_location_body">Road Trip Radar потребує доступу до вашого точного місцезнаходження, щоб показувати ваше розташування на мапі. Натисніть «Надати дозвіл», щоб продовжити, або «Вийти», щоб закрити застосунок.</string>
+    <string name="permission_location_body">Road Trip Radar потребує доступу до вашого точного місцезнаходження, щоб показати, де ви перебуваєте на мапі. Натисніть \"Надати дозвіл\", щоб продовжити, або \"Вийти\", щоб закрити застосунок.</string>
     <string name="permission_grant">Надати дозвіл</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Прокрутіть вниз, щоб прочитати решту, після чого зможете прийняти.</string>
@@ -22,55 +22,63 @@
     <string name="dialog_quit_title">Вийти</string>
     <string name="dialog_quit_message">Ви впевнені, що хочете вийти?</string>
     <!-- Reset dialog -->
-    <string name="dialog_reset_title">Скинути до типових</string>
-    <string name="dialog_reset_message">Усі налаштування буде скинуто до типових значень.</string>
+    <string name="dialog_reset_title">Скинути до стандартних</string>
+    <string name="dialog_reset_message">Усі налаштування буде скинуто до стандартних значень.</string>
     <!-- Actions drawer - main actions -->
-    <string name="action_nearby_places">Місця поблизу</string>
+    <string name="action_nearby_places">Місця поруч</string>
     <string name="action_clear_places">Очистити місця</string>
     <string name="action_location_search">Пошук місця</string>
     <string name="action_clear_target">Очистити ціль</string>
-    <string name="action_track_bearing">Орієнтувати за курсом</string>
-    <string name="action_track_north">Орієнтувати на північ</string>
+    <string name="action_track_bearing">Орієнтація за курсом</string>
+    <string name="action_track_north">Орієнтація на північ</string>
+    <string name="action_radar_on">Радар увімкнено</string>
+    <string name="action_radar_off">Радар вимкнено</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Погодній радар</string>
+    <string name="toggle_north_up">Північ угорі</string>
+    <string name="toggle_wind_temp">Вітер і темп.</string>
+    <string name="toggle_legend">Легенда</string>
+    <string name="toggle_timeline">Шкала часу</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Мапа</string>
     <string name="menu_weather">Погода</string>
     <string name="menu_system">Система</string>
     <string name="menu_help">Довідка</string>
-    <string name="menu_help_info">Довідка &amp; інформація</string>
+    <string name="menu_help_info">Довідка й інформація</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Вітер &amp; температура вимкн.</string>
-    <string name="action_wind_temp_on">Вітер &amp; температура увімкн.</string>
+    <string name="action_wind_temp_off">Вітер і темп. вимкнено</string>
+    <string name="action_wind_temp_on">Вітер і темп. увімкнено</string>
     <string name="action_hide_legend">Сховати легенду</string>
     <string name="action_show_legend">Показати легенду</string>
     <string name="action_hide_timeline">Сховати шкалу часу</string>
     <string name="action_show_timeline">Показати шкалу часу</string>
     <!-- Help page -->
     <string name="help_documentation_info">Повна документація та правова інформація доступні за кнопками нижче.</string>
-    <string name="help_terms">Умови &amp; положення</string>
+    <string name="help_terms">Умови та положення</string>
     <string name="help_radar_legend">Легенда радара</string>
     <string name="help_documentation">Документація</string>
     <string name="help_privacy_policy">Політика конфіденційності</string>
     <string name="help_changelog">Журнал змін</string>
     <string name="version_label">Версія %s</string>
-    <string name="debug_preview_whats_new">Попередній перегляд новинок (налагодження)</string>
+    <string name="debug_preview_whats_new">Попередній перегляд новинок (debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Центрувати</string>
-    <string name="fab_retry_failed">Повторити невдале</string>
-    <string name="cd_recenter_location">Знову центрирувати за місцезнаходженням</string>
+    <string name="fab_retry_failed">Повторити невдалі</string>
+    <string name="cd_recenter_location">Знову центрувати на місцезнаходженні</string>
     <string name="cd_gps_fix_acquired">GPS-фіксацію отримано</string>
     <string name="cd_waiting_gps_fix">Очікування GPS-фіксації</string>
     <string name="cd_zoom_out">Зменшити</string>
     <string name="cd_zoom_in">Збільшити</string>
     <string name="cd_quick_actions">Швидкі дії</string>
-    <string name="cd_weather_off">Погодний радар вимкнено</string>
+    <string name="cd_weather_off">Радар погоди вимкнено</string>
     <string name="cd_weather_pause">Призупинити радар</string>
-    <string name="cd_weather_play">Відтворити радар</string>
+    <string name="cd_weather_play">Запустити радар</string>
     <string name="cd_no_network">Немає мережі</string>
     <string name="cd_wifi">Wi‑Fi</string>
     <string name="cd_cellular">Мобільна мережа</string>
     <string name="cd_unknown_network">Невідома мережа</string>
     <!-- Weather settings -->
-    <string name="settings_weather_radar_opacity">Непрозорість погодного радара</string>
+    <string name="settings_weather_radar_opacity">Непрозорість радара погоди</string>
     <string name="settings_wind_speed_units">Одиниці швидкості вітру</string>
     <string name="settings_temperature_units">Одиниці температури</string>
     <string name="settings_weather_widget_size">Розмір погодного віджета</string>
@@ -84,37 +92,37 @@
     <string name="settings_speed_distance_units">Одиниці швидкості/відстані</string>
     <string name="settings_metric">Метричні</string>
     <string name="settings_imperial">Імперські</string>
-    <string name="settings_map_center_offset_portrait">Зміщення центру мапи (портретний режим)</string>
-    <string name="settings_map_center_offset_landscape">Зміщення центру мапи (альбомний режим)</string>
+    <string name="settings_map_center_offset_portrait">Зсув центру мапи (портрет)</string>
+    <string name="settings_map_center_offset_landscape">Зсув центру мапи (альбомний)</string>
     <string name="settings_places_icon_opacity">Непрозорість значків місць</string>
     <string name="theme_current">Тема: %s</string>
     <string name="action_choose_theme">Вибрати тему</string>
     <!-- System settings -->
     <string name="settings_display">Екран</string>
-    <string name="settings_status_icon_opacity">Непрозорість значків стану</string>
+    <string name="settings_status_icon_opacity">Непрозорість значка стану</string>
     <string name="settings_speedometer_size">Розмір спідометра</string>
     <string name="settings_compass_size">Розмір компаса</string>
     <string name="settings_nav_widget_size">Розмір навігаційного віджета</string>
     <string name="settings_misc">Різне</string>
     <string name="settings_keep_screen_on">Не вимикати екран</string>
     <string name="settings_language">Мова</string>
-    <string name="language_system_default">Системна типова</string>
+    <string name="language_system_default">Системна за замовчуванням</string>
     <!-- Theme selector -->
     <string name="theme_map_theme">Тема мапи</string>
     <string name="theme_auto">Авто</string>
     <string name="theme_customize_maputnik">Налаштувати в Maputnik</string>
-    <string name="theme_overwrite_custom_light">Перезаписати власну світлу</string>
-    <string name="theme_use_as_custom_light_base">Використати як основу для власної світлої</string>
-    <string name="theme_overwrite_custom_dark">Перезаписати власну темну</string>
-    <string name="theme_use_as_custom_dark_base">Використати як основу для власної темної</string>
-    <string name="theme_use_in_auto_mode">Використовувати в режимі «Авто»</string>
+    <string name="theme_overwrite_custom_light">Перезаписати користувацьку світлу</string>
+    <string name="theme_use_as_custom_light_base">Використати як основу для користувацької світлої</string>
+    <string name="theme_overwrite_custom_dark">Перезаписати користувацьку темну</string>
+    <string name="theme_use_as_custom_dark_base">Використати як основу для користувацької темної</string>
+    <string name="theme_use_in_auto_mode">Використовувати в режимі Авто</string>
     <string name="theme_action_edit">Редагувати</string>
     <string name="theme_action_save">Зберегти</string>
     <string name="theme_action_maputnik">Maputnik</string>
     <string name="theme_action_share">Поділитися</string>
     <string name="theme_action_delete">Видалити</string>
     <string name="cd_edit_colors">Редагувати кольори</string>
-    <string name="cd_save_json_downloads">Зберегти JSON у Завантаження</string>
+    <string name="cd_save_json_downloads">Зберегти JSON у Downloads</string>
     <string name="cd_open_maputnik">Відкрити Maputnik</string>
     <string name="cd_delete_custom_theme">Видалити власну тему</string>
     <string name="theme_invalid_file">Недійсний файл теми</string>
@@ -123,8 +131,8 @@
     <string name="theme_export">Експортувати тему</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Створити тему %s</string>
-    <string name="color_editor_no_theme">Теми %1$s ще не існує. Створити її на основі %2$s? Ви також можете імпортувати JSON-файл у виборі теми.</string>
-    <string name="color_editor_create_from">Створити з %s</string>
+    <string name="color_editor_no_theme">Теми %1$s ще не існує. Створити її на основі %2$s? Ви також можете імпортувати файл JSON у засобі вибору тем.</string>
+    <string name="color_editor_create_from">Створити на основі %s</string>
     <string name="color_editor_edit_colors">Редагувати кольори: %s</string>
     <string name="color_editor_preview">Попередній перегляд</string>
     <string name="color_editor_hex">Hex</string>
@@ -136,8 +144,8 @@
     <string name="search_address_placeholder">Адреса або назва місця</string>
     <string name="search_searching">Пошук…</string>
     <!-- POI category picker -->
-    <string name="poi_autoload_title">Автозавантаження місць поблизу</string>
-    <string name="poi_autoload_description">Починати завантаження місць поблизу під час запуску застосунку</string>
+    <string name="poi_autoload_title">Автозавантаження місць поруч</string>
+    <string name="poi_autoload_description">Починати завантаження місць поруч під час запуску застосунку</string>
     <string name="poi_count">%1$d з %2$d</string>
     <string name="action_search_visible_area">Шукати у видимій області</string>
     <!-- Tapped POI popup -->
@@ -163,21 +171,21 @@
     <string name="legend_snow_heavy">Сніг!!</string>
     <!-- Legend detail sheet -->
     <string name="legend_detail_title">Легенда радара</string>
-    <string name="legend_detail_label">Позначення</string>
+    <string name="legend_detail_label">Позначка</string>
     <string name="legend_detail_dbz">dBZ</string>
-    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_mmh">мм/год</string>
     <string name="legend_detail_rain">Дощ</string>
     <string name="legend_detail_hail">Град</string>
     <string name="legend_detail_snow">Сніг</string>
     <string name="legend_detail_overcast">Суцільна хмарність</string>
     <string name="legend_detail_drizzle">Мряка</string>
-    <string name="legend_detail_light_rain">Слабкий дощ</string>
+    <string name="legend_detail_light_rain">Легкий дощ</string>
     <string name="legend_detail_moderate_rain">Помірний дощ</string>
     <string name="legend_detail_showers">Зливи</string>
     <string name="legend_detail_small_hail">Можливі дрібний град або крижаний дощ</string>
     <string name="legend_detail_hail_possible">Можливий град</string>
-    <string name="legend_detail_hail_likely">Град імовірний</string>
-    <string name="legend_detail_light_snow">Слабкий сніг</string>
+    <string name="legend_detail_hail_likely">Імовірний град</string>
+    <string name="legend_detail_light_snow">Легкий сніг</string>
     <string name="legend_detail_moderate_snow">Помірний сніг</string>
     <string name="legend_detail_heavy_snow">Сильний сніг</string>
     <!-- Speed readout -->
@@ -190,7 +198,7 @@
     <string name="poi_ev_charging">Заряджання EV</string>
     <string name="poi_restaurant">Ресторан</string>
     <string name="poi_fast_food">Фастфуд</string>
-    <string name="poi_cafe">Кафе / кава</string>
+    <string name="poi_cafe">Кафе / Кава</string>
     <string name="poi_bar">Бар / паб</string>
     <string name="poi_supermarket">Супермаркет</string>
     <string name="poi_convenience">Мінімаркет</string>
@@ -204,12 +212,12 @@
     <string name="poi_atm">Банкомат</string>
     <string name="poi_bank">Банк</string>
     <string name="poi_post_office">Пошта</string>
-    <string name="poi_car_repair">Ремонт авто</string>
+    <string name="poi_car_repair">Авторемонт</string>
     <string name="poi_car_wash">Автомийка</string>
     <string name="poi_laundry">Пральня</string>
     <string name="poi_toilets">Туалети</string>
     <string name="poi_police">Поліція</string>
-    <string name="poi_fire_station">Пожежна станція</string>
+    <string name="poi_fire_station">Пожежна частина</string>
     <string name="poi_library">Бібліотека</string>
     <string name="poi_park">Парк</string>
     <string name="poi_viewpoint">Оглядовий майданчик</string>
@@ -219,7 +227,7 @@
     <string name="style_liberty">Liberty</string>
     <string name="style_dark">Темна</string>
     <string name="style_dark_small_roads">Темна (малі дороги)</string>
-    <string name="style_custom_light">Власна світла</string>
-    <string name="style_custom_dark">Власна темна</string>
+    <string name="style_custom_light">Користувацька світла</string>
+    <string name="style_custom_dark">Користувацька темна</string>
     <string name="style_auto">Авто</string>
 </resources>
