@@ -1,0 +1,1 @@
+Veiledning ved første oppstart, og en feil som hindret bruk av omtrentlig GPS-posisjon er rettet (Takk til Chris L).
