@@ -1,1 +1,1 @@
-السماح بتعديل أحجام معظم الأدوات بشكل فردي
+Allow most widget sizes to be adjusted individually
