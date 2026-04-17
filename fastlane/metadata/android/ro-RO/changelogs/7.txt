@@ -1,1 +1,1 @@
-Reveniți asupra mutării metadatelor
+Undo moving metadata
