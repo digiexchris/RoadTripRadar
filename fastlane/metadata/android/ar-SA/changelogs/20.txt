@@ -1,1 +1,1 @@
-إضافة أداة طقس صغيرة لسرعة الرياح واتجاهها ودرجة الحرارة المحيطة
+Add small weather widget for wind speed, direction, and ambient temperature
