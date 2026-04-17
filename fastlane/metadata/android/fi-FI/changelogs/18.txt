@@ -1,1 +1,1 @@
-Several UI fixes for GPS and network status icons
+Useita käyttöliittymäkorjauksia GPS- ja verkon tilakuvakkeisiin
