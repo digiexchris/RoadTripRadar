@@ -14,23 +14,31 @@
     <string name="action_got_it">Rozumiem</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Wymagane uprawnienie do lokalizacji</string>
-    <string name="permission_location_body">Road Trip Radar potrzebuje dostępu do Twojej dokładnej lokalizacji, aby pokazać Twoje położenie na mapie. Stuknij Udziel uprawnienia, aby kontynuować, lub Wyjdź, aby zamknąć aplikację.</string>
-    <string name="permission_grant">Udziel uprawnienia</string>
+    <string name="permission_location_body">Road Trip Radar potrzebuje dostępu do Twojej dokładnej lokalizacji, aby pokazać Twoje położenie na mapie. Dotknij Przyznaj uprawnienie, aby kontynuować, lub Wyjdź, aby zamknąć aplikację.</string>
+    <string name="permission_grant">Przyznaj uprawnienie</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">Przewiń w dół, aby przeczytać resztę, a potem możesz zaakceptować.</string>
+    <string name="terms_scroll_hint">Przewiń w dół, aby przeczytać resztę, a następnie możesz zaakceptować.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Wyjdź</string>
     <string name="dialog_quit_message">Czy na pewno chcesz wyjść?</string>
     <!-- Reset dialog -->
-    <string name="dialog_reset_title">Przywróć domyślne</string>
+    <string name="dialog_reset_title">Przywróć ustawienia domyślne</string>
     <string name="dialog_reset_message">Wszystkie ustawienia zostaną przywrócone do wartości domyślnych.</string>
     <!-- Actions drawer - main actions -->
     <string name="action_nearby_places">Miejsca w pobliżu</string>
     <string name="action_clear_places">Wyczyść miejsca</string>
     <string name="action_location_search">Wyszukiwanie lokalizacji</string>
     <string name="action_clear_target">Wyczyść cel</string>
-    <string name="action_track_bearing">Śledź kierunek ruchu</string>
+    <string name="action_track_bearing">Śledź kierunek</string>
     <string name="action_track_north">Śledź północ</string>
+    <string name="action_radar_on">Radar wł.</string>
+    <string name="action_radar_off">Radar wył.</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Radar pogodowy</string>
+    <string name="toggle_north_up">Północ u góry</string>
+    <string name="toggle_wind_temp">Wiatr &amp; temp.</string>
+    <string name="toggle_legend">Legenda</string>
+    <string name="toggle_timeline">Oś czasu</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Mapa</string>
     <string name="menu_weather">Pogoda</string>
@@ -38,15 +46,15 @@
     <string name="menu_help">Pomoc</string>
     <string name="menu_help_info">Pomoc &amp; informacje</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Wiatr &amp; temp. wył.</string>
-    <string name="action_wind_temp_on">Wiatr &amp; temp. wł.</string>
+    <string name="action_wind_temp_off">Wiatr i temp. wył.</string>
+    <string name="action_wind_temp_on">Wiatr i temp. wł.</string>
     <string name="action_hide_legend">Ukryj legendę</string>
     <string name="action_show_legend">Pokaż legendę</string>
     <string name="action_hide_timeline">Ukryj oś czasu</string>
     <string name="action_show_timeline">Pokaż oś czasu</string>
     <!-- Help page -->
-    <string name="help_documentation_info">Pełna dokumentacja i informacje prawne są dostępne pod przyciskami poniżej.</string>
-    <string name="help_terms">Warunki &amp; zasady</string>
+    <string name="help_documentation_info">Pełna dokumentacja i informacje prawne są dostępne pod poniższymi przyciskami.</string>
+    <string name="help_terms">Regulamin</string>
     <string name="help_radar_legend">Legenda radaru</string>
     <string name="help_documentation">Dokumentacja</string>
     <string name="help_privacy_policy">Polityka prywatności</string>
@@ -57,12 +65,12 @@
     <string name="fab_recenter">Wyśrodkuj</string>
     <string name="fab_retry_failed">Ponów nieudane</string>
     <string name="cd_recenter_location">Wyśrodkuj na lokalizacji</string>
-    <string name="cd_gps_fix_acquired">Uzyskano sygnał GPS</string>
-    <string name="cd_waiting_gps_fix">Oczekiwanie na sygnał GPS</string>
+    <string name="cd_gps_fix_acquired">Ustalono pozycję GPS</string>
+    <string name="cd_waiting_gps_fix">Oczekiwanie na pozycję GPS</string>
     <string name="cd_zoom_out">Pomniejsz</string>
     <string name="cd_zoom_in">Powiększ</string>
     <string name="cd_quick_actions">Szybkie działania</string>
-    <string name="cd_weather_off">Radar pogodowy wyłączony</string>
+    <string name="cd_weather_off">Radar pogodowy wył.</string>
     <string name="cd_weather_pause">Wstrzymaj radar</string>
     <string name="cd_weather_play">Odtwórz radar</string>
     <string name="cd_no_network">Brak sieci</string>
@@ -84,24 +92,24 @@
     <string name="settings_speed_distance_units">Jednostki prędkości/odległości</string>
     <string name="settings_metric">Metryczne</string>
     <string name="settings_imperial">Imperialne</string>
-    <string name="settings_map_center_offset_portrait">Przesunięcie środka mapy (pion)</string>
-    <string name="settings_map_center_offset_landscape">Przesunięcie środka mapy (poziom)</string>
+    <string name="settings_map_center_offset_portrait">Przesunięcie środka mapy (pionowo)</string>
+    <string name="settings_map_center_offset_landscape">Przesunięcie środka mapy (poziomo)</string>
     <string name="settings_places_icon_opacity">Przezroczystość ikon miejsc</string>
     <string name="theme_current">Motyw: %s</string>
     <string name="action_choose_theme">Wybierz motyw</string>
     <!-- System settings -->
     <string name="settings_display">Wygląd</string>
-    <string name="settings_status_icon_opacity">Przezroczystość ikon statusu</string>
+    <string name="settings_status_icon_opacity">Przezroczystość ikon stanu</string>
     <string name="settings_speedometer_size">Rozmiar prędkościomierza</string>
     <string name="settings_compass_size">Rozmiar kompasu</string>
     <string name="settings_nav_widget_size">Rozmiar widżetu nawigacji</string>
     <string name="settings_misc">Różne</string>
-    <string name="settings_keep_screen_on">Nie wygaszaj ekranu</string>
+    <string name="settings_keep_screen_on">Pozostaw ekran włączony</string>
     <string name="settings_language">Język</string>
     <string name="language_system_default">Domyślny systemowy</string>
     <!-- Theme selector -->
     <string name="theme_map_theme">Motyw mapy</string>
-    <string name="theme_auto">Auto</string>
+    <string name="theme_auto">Automatycznie</string>
     <string name="theme_customize_maputnik">Dostosuj w Maputnik</string>
     <string name="theme_overwrite_custom_light">Nadpisz własny jasny</string>
     <string name="theme_use_as_custom_light_base">Użyj jako bazy własnego jasnego</string>
@@ -118,12 +126,12 @@
     <string name="cd_open_maputnik">Otwórz Maputnik</string>
     <string name="cd_delete_custom_theme">Usuń własny motyw</string>
     <string name="theme_invalid_file">Nieprawidłowy plik motywu</string>
-    <string name="theme_saved_to_downloads">Zapisano w Pobrane/%s</string>
+    <string name="theme_saved_to_downloads">Zapisano w Downloads/%s</string>
     <string name="theme_save_failed">Zapisywanie nie powiodło się</string>
     <string name="theme_export">Eksportuj motyw</string>
     <!-- Color editor -->
     <string name="color_editor_create_title">Utwórz motyw %s</string>
-    <string name="color_editor_no_theme">Motyw %1$s jeszcze nie istnieje. Utworzyć go na podstawie %2$s? Możesz też zaimportować plik JSON z poziomu wyboru motywu.</string>
+    <string name="color_editor_no_theme">Motyw %1$s jeszcze nie istnieje. Utworzyć go na podstawie %2$s? Możesz też zaimportować plik JSON z selektora motywów.</string>
     <string name="color_editor_create_from">Utwórz z %s</string>
     <string name="color_editor_edit_colors">Edytuj kolory: %s</string>
     <string name="color_editor_preview">Podgląd</string>
@@ -137,9 +145,9 @@
     <string name="search_searching">Wyszukiwanie…</string>
     <!-- POI category picker -->
     <string name="poi_autoload_title">Automatycznie ładuj miejsca w pobliżu</string>
-    <string name="poi_autoload_description">Zacznij ładować miejsca w pobliżu przy uruchomieniu aplikacji</string>
+    <string name="poi_autoload_description">Rozpocznij ładowanie miejsc w pobliżu przy uruchomieniu aplikacji</string>
     <string name="poi_count">%1$d z %2$d</string>
-    <string name="action_search_visible_area">Szukaj w widocznym obszarze</string>
+    <string name="action_search_visible_area">Przeszukaj widoczny obszar</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Nawiguj tutaj</string>
     <string name="cd_close">Zamknij</string>
@@ -193,14 +201,14 @@
     <string name="poi_cafe">Kawiarnia / kawa</string>
     <string name="poi_bar">Bar / pub</string>
     <string name="poi_supermarket">Supermarket</string>
-    <string name="poi_convenience">Sklep spożywczy</string>
+    <string name="poi_convenience">Sklep osiedlowy</string>
     <string name="poi_pharmacy">Apteka</string>
     <string name="poi_hospital">Szpital</string>
     <string name="poi_hotel">Hotel</string>
     <string name="poi_motel">Motel</string>
-    <string name="poi_campsite">Pole kempingowe</string>
+    <string name="poi_campsite">Pole namiotowe</string>
     <string name="poi_parking">Parking</string>
-    <string name="poi_rest_area">Miejsce odpoczynku</string>
+    <string name="poi_rest_area">Miejsce obsługi podróżnych</string>
     <string name="poi_atm">Bankomat</string>
     <string name="poi_bank">Bank</string>
     <string name="poi_post_office">Poczta</string>
@@ -221,5 +229,5 @@
     <string name="style_dark_small_roads">Ciemny (małe drogi)</string>
     <string name="style_custom_light">Własny jasny</string>
     <string name="style_custom_dark">Własny ciemny</string>
-    <string name="style_auto">Auto</string>
+    <string name="style_auto">Automatycznie</string>
 </resources>
