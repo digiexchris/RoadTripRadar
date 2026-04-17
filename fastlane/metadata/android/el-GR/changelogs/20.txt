@@ -1,1 +1,1 @@
-Προσθήκη μικρού γραφικού στοιχείου καιρού για ταχύτητα ανέμου, κατεύθυνση και θερμοκρασία περιβάλλοντος
+Add small weather widget for wind speed, direction, and ambient temperature
