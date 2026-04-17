@@ -1,1 +1,1 @@
-Allow most widget sizes to be adjusted individually
+Дозволити окремо налаштовувати розміри більшості віджетів
