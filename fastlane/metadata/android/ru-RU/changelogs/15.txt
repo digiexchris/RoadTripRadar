@@ -1,1 +1,1 @@
-Исправлено: кнопка Compass не фиксировала карту в положении «север сверху», когда пользователь перемещался
+Fix Compass button not locking the map to north-up when the user moves
