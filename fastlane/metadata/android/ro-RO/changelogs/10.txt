@@ -1,1 +1,1 @@
-Modificări aduse pipeline-ului de build
+Modificări ale pipeline-ului de build
