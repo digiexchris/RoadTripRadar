@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+إصلاح عدم قيام زر البوصلة بقفل الخريطة على وضع الشمال للأعلى عند تحريك المستخدم لها
