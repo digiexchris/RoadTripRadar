@@ -1,6 +1,14 @@
 {
   "releases": [
     {
+      "versionName": "next",
+      "versionCode": 999,
+      "showInApp": false,
+      "items": [
+        "Various bug fixes and improvements."
+      ]
+    },
+    {
       "versionName": "1.12.0",
       "versionCode": 28,
       "showInApp": true,

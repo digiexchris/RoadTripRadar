@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-Generate fastlane changelogs from changelog.json.
+Generate the English fastlane changelog from app/src/main/assets/changelog.json.
 
-Reads the first (latest) entry in app/src/main/assets/changelog.json and writes:
-  - fastlane/metadata/android/en-US/changelogs/next.txt
+Behavior:
+  - If the top entry has versionName == "next", writes its items to
+    fastlane/metadata/android/en-US/changelogs/next.txt (named "next.txt"
+    because the real versionCode is not known until release time; the release
+    pipeline renames it to {versionCode}.txt).
+  - If the top entry is a real released version (post-release state), removes
+    any leftover next.txt so a stale file from a pre-release branch can't be
+    accidentally resurrected.
 
-The file is named "next.txt" because the real versionCode is not known until
-release time.  The release pipeline renames it to {versionCode}.txt.
-
-Run this on your feature branch after editing changelog.json so that Crowdin can
-translate the fastlane changelog before you merge and release.
+This script is the single source of truth for next.txt generation. It is
+invoked by .github/workflows/sync-fastlane-next-changelog.yml on push to main.
+It is safe to run locally as well (e.g. to preview what the sync workflow
+would produce); it never touches anything other than en-US/next.txt.
 """
 from __future__ import annotations
 
@@ -38,18 +43,33 @@ def main() -> None:
         sys.exit(1)
 
     latest = releases[0]
+    changelogs_dir = root / "fastlane" / "metadata" / "android" / "en-US" / "changelogs"
+    next_path = changelogs_dir / "next.txt"
+
+    # Only the pending "next" entry should produce a next.txt. After a release the
+    # top entry is a real version (e.g. "1.12.0") whose changelog has already been
+    # renamed to {versionCode}.txt — re-creating next.txt from it would resurrect
+    # the just-released text and ship it as the *following* release's changelog.
+    if latest.get("versionName") != "next":
+        if next_path.is_file():
+            next_path.unlink()
+            print(
+                f"Removed stale {next_path.relative_to(root)} "
+                f"(top entry is {latest.get('versionName')!r}, not 'next')"
+            )
+        else:
+            print("No pending 'next' entry in changelog.json; nothing to do.")
+        return
+
     items = latest.get("items") or []
 
     if not items:
-        print("changelog.json: latest release has no items", file=sys.stderr)
+        print("changelog.json: pending 'next' release has no items", file=sys.stderr)
         sys.exit(1)
 
     text = "\n".join(items)
 
-    # Write as next.txt — renamed to {versionCode}.txt by the release pipeline
-    changelogs_dir = root / "fastlane" / "metadata" / "android" / "en-US" / "changelogs"
     changelogs_dir.mkdir(parents=True, exist_ok=True)
-    next_path = changelogs_dir / "next.txt"
     next_path.write_text(text + "\n")
     print(f"Wrote {next_path.relative_to(root)}")
 

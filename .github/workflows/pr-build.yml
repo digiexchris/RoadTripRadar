@@ -10,29 +10,52 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  changelogs:
+  validate-changelogs:
+    # Read-only consistency check. The fastlane next.txt is generated on main
+    # by .github/workflows/sync-fastlane-next-changelog.yml — never on PR
+    # branches — so this job only verifies the PR doesn't ship a stale next.txt.
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ github.token }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-      - name: Generate fastlane changelog
-        run: python scripts/generate_changelogs.py
-      - name: Commit if changed
+      - name: Validate next.txt vs changelog.json
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add fastlane/
-          git diff --cached --quiet && echo "No changelog changes to commit" || {
-            git commit -m "chore: generate fastlane changelog"
-            git push
-          }
+          python3 <<'PY'
+          import json, pathlib, sys
+
+          data = json.loads(pathlib.Path('app/src/main/assets/changelog.json').read_text())
+          releases = data.get('releases') or []
+          top_name = releases[0].get('versionName') if releases else None
+          stale = sorted(
+              str(p) for p in pathlib.Path('fastlane/metadata/android').glob('*/changelogs/next.txt')
+          )
+
+          # The only invalid state we can detect at PR time is: the top entry is
+          # already a real released version (so no "next" is pending) but a
+          # next.txt file exists. That means a stale PR is resurrecting a
+          # next.txt the release pipeline already renamed away.
+          if top_name != 'next' and stale:
+              print(
+                  f"::error::Top changelog entry is '{top_name}' (not 'next') but next.txt "
+                  f"still exists in {len(stale)} locale(s):"
+              )
+              for s in stale:
+                  print(f"  {s}")
+              print(
+                  "::error::This usually means a PR branched from pre-release main is "
+                  "resurrecting a deleted next.txt. Rebase on main and delete the file(s)."
+              )
+              sys.exit(1)
+
+          if top_name == 'next':
+              print(f"OK: pending 'next' entry; {len(stale)} next.txt file(s) on disk "
+                    "(regenerated on main after merge)")
+          else:
+              print("OK: no pending 'next' entry and no stale next.txt files")
+          PY
 
   translations:
     runs-on: ubuntu-latest

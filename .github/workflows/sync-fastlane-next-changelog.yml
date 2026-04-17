@@ -27,6 +27,12 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Refuse non-main runs
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "::error::This workflow may only run on main (got ${{ github.ref }})"
+          exit 1
+
       - name: Generate app token
         id: app-token
         uses: actions/create-github-app-token@v1
@@ -38,52 +44,14 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
       - name: Regenerate English next.txt from pending changelog
-        id: regen
-        run: |
-          python3 <<'PY'
-          import json
-          import os
-          import pathlib
-          import sys
+        run: python3 scripts/generate_changelogs.py
 
-          changelog_path = pathlib.Path('app/src/main/assets/changelog.json')
-          next_txt_path = pathlib.Path('fastlane/metadata/android/en-US/changelogs/next.txt')
-
-          data = json.loads(changelog_path.read_text())
-          releases = data.get('releases') or []
-          if not releases:
-              print('No releases in changelog.json; nothing to do.')
-              sys.exit(0)
-
-          top = releases[0]
-          if top.get('versionName') != 'next':
-              print('Top release is not a pending "next" entry; skipping.')
-              sys.exit(0)
-
-          items = [str(i).strip() for i in (top.get('items') or []) if str(i).strip()]
-          if not items:
-              print('Pending "next" entry has no items; skipping.')
-              sys.exit(0)
-
-          new_content = '\n'.join(items) + '\n'
-
-          if next_txt_path.is_file():
-              existing = next_txt_path.read_text()
-              if existing == new_content:
-                  print(f'{next_txt_path} already matches pending changelog; no change.')
-                  sys.exit(0)
-
-          next_txt_path.parent.mkdir(parents=True, exist_ok=True)
-          next_txt_path.write_text(new_content)
-          print(f'Wrote {len(items)} item(s) to {next_txt_path}')
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              f.write('changed=true\n')
-          PY
-
-      - name: Commit and push regenerated next.txt
-        if: steps.regen.outputs.changed == 'true'
+      - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
