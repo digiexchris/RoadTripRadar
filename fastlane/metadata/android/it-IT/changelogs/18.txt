@@ -1,1 +1,1 @@
-Diverse correzioni dell'interfaccia utente per le icone di stato GPS e rete
+Diverse correzioni dell'interfaccia utente per le icone di stato del GPS e della rete
