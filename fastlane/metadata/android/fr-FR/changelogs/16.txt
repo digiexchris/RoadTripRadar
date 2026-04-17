@@ -1,1 +1,1 @@
-Correction d’un problème empêchant le bouton de la boussole de verrouiller la carte avec le nord en haut lorsque l’utilisateur la déplace
+Fix Compass button not locking the map to north-up when the user moves
