@@ -1,1 +1,1 @@
-Corrige a seta de direção do vento que não gira junto com o mapa.
+Corrige a seta de direção do vento que não girava com o mapa.
