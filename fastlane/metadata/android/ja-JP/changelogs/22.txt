@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+クイックアクション メニューを見つけやすくするために、クイックアクション ボタンを追加します。
