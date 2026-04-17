@@ -2,10 +2,10 @@ RoadTripRadar 是一款以态势感知和天气为优先的地图应用。 在�
 
 功能：
 - 以您的位置为中心的距离环，并会根据缩放级别自适应调整。
-- 使用朝向目的地的方位进行导航，而不是死板的逐向转弯指引。 非常适合探险者和喜欢随性漫游的人！
-- 来自 RainViewer 的实时动态天气雷达，支持调节透明度和播放控制。 非常适合想提前获知天气并绕开风暴路线或提前做好装备准备的摩托车骑士。
+- 使用朝向目的地的方位进行导航，而不是死板的逐向转弯指引。 Perfect for explorers and people who like to wander!
+- 来自 RainViewer 的实时动态天气雷达，支持调节透明度和播放控制。 Perfect for motorcyclists who want notice to reroute around a storm or gear up.
 - 风速和风向
-- 温度和 1 小时趋势
-- 多种地图样式：浅色、深色、自动，以及两者的自定义颜色。
+- Temperature and 1-hour trend
+- Multiple map styles: Light, Dark, Auto, and custom colors for either.
 - 速度显示支持公制和英制单位，并可调节字体大小。
 - 开源、无追踪、无需账号、无广告。
