@@ -31,6 +31,14 @@
     <string name="action_clear_target">Tyhjennä kohde</string>
     <string name="action_track_bearing">Seuraa suuntaa</string>
     <string name="action_track_north">Seuraa pohjoista</string>
+    <string name="action_radar_on">Radar On</string>
+    <string name="action_radar_off">Radar Off</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Weather Radar</string>
+    <string name="toggle_north_up">North Up</string>
+    <string name="toggle_wind_temp">Wind &amp; Temp</string>
+    <string name="toggle_legend">Legend</string>
+    <string name="toggle_timeline">Timeline</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Kartta</string>
     <string name="menu_weather">Sää</string>
