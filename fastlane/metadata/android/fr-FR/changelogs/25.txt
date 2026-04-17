@@ -1,1 +1,1 @@
-Corrige la flèche de direction du vent qui ne tournait pas avec la carte.
+Corrige le problème de la flèche de direction du vent qui ne pivote pas avec la carte.
