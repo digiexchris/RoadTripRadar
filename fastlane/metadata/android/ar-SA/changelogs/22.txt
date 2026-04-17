@@ -1,1 +1,1 @@
-أضف زر الإجراءات السريعة كطريقة أسهل لاكتشاف قائمة الإجراءات السريعة
+Add a Quick Actions button to make the Quick Actions menu easier to find.
