@@ -1,1 +1,1 @@
-Several UI fixes for GPS and network status icons
+Flere feilrettinger i brukergrensesnittet for GPS- og nettverksstatusikoner
