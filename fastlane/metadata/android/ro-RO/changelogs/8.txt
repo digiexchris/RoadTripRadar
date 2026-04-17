@@ -1,1 +1,1 @@
-Ajustări ale pipeline-ului pentru F-Droid
+Pipeline tweaks for F-Droid
