@@ -1,1 +1,1 @@
-Виправлено помилку, через яку кнопка компаса не фіксувала карту в режимі "північ угорі", коли користувач рухався
+Fix Compass button not locking the map to north-up when the user moves
