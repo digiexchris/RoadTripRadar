@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+S-a remediat problema prin care butonul Busolă nu bloca harta în modul nord-sus atunci când utilizatorul o deplasa
