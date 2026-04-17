@@ -1,1 +1,1 @@
-Revertir el traslado de metadatos
+Undo moving metadata
