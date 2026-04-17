@@ -1,1 +1,1 @@
-Horizontal layout, radar legend, and general UI improvements
+تحسينات على التخطيط الأفقي، ووسيلة الإيضاح في مخطط الرادار، وواجهة المستخدم بشكل عام
