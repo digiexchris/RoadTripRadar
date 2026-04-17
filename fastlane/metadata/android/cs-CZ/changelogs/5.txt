@@ -1,1 +1,1 @@
-Upraveno pro sestavení ve F-Droidu
+Cleaned up for F-Droid build
