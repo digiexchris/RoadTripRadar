@@ -1,11 +1,11 @@
-RoadTripRadar este o aplicație de hărți care prioritizează conștientizarea situațională și vremea. Imagini radar meteo live pe o hartă interactivă, ajutându-te să vezi precipitațiile de-a lungul direcției tale de deplasare dintr-o privire.
+RoadTripRadar este o aplicație de hărți care prioritizează conștientizarea situației și vremea. Imagini radar meteo în timp real pe o hartă interactivă, care te ajută să vezi precipitațiile de-a lungul direcției tale de deplasare dintr-o privire.
 
-Funcții:
-- Cercuri de distanță centrate pe locația ta, care se adaptează nivelului de zoom.
-- Navighează folosind direcția către destinație, în locul instrucțiunilor rigide pas cu pas. Perfect pentru exploratori și pentru oamenii cărora le place să hoinărească!
-- Radar meteo live animat de la RainViewer, cu opacitate ajustabilă și controale de redare. Perfect pentru motocicliștii care vor să fie avertizați să ocolească o furtună sau să se echipeze corespunzător.
+Funcționalități:
+- Cercuri de distanță centrate pe locația ta, care se adaptează la nivelul de zoom.
+- Navighează folosind azimutul către destinație în locul instrucțiunilor rigide pas cu pas. Perfectă pentru exploratori și pentru cei cărora le place să hoinărească!
+- Radar meteo animat în timp real de la RainViewer, cu opacitate reglabilă și comenzi de redare. Perfectă pentru motocicliștii care vor să fie avertizați pentru a ocoli o furtună sau pentru a se echipa corespunzător.
 - Viteza și direcția vântului
-- Temperatură și tendința pe 1 oră
-- Mai multe stiluri de hartă: Deschis, Închis, Automat și culori personalizate pentru oricare dintre ele.
-- Afișarea vitezei cu unități metrice și imperiale, cu dimensiune ajustabilă a fontului.
+- Temperatura și tendința pe 1 oră
+- Mai multe stiluri de hartă: Deschis, Întunecat, Automat și culori personalizate pentru fiecare.
+- Afișarea vitezei cu unități metrice și imperiale, cu dimensiune a fontului reglabilă.
 - Open source, fără urmărire, fără conturi, fără reclame.
