@@ -1,1 +1,1 @@
-Verplaatsen van metadata ongedaan maken
+Undo moving metadata
