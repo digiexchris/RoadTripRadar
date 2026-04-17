@@ -1,1 +1,1 @@
-Behebt, dass die Kompass-Schaltfläche die Karte nicht auf „Norden oben“ fixiert, wenn der Benutzer die Karte bewegt
+Fix Compass button not locking the map to north-up when the user moves
