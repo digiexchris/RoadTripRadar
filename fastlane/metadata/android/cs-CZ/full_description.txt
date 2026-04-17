@@ -2,10 +2,10 @@ RoadTripRadar je mapová aplikace zaměřená na přehled o situaci a počasí. 
 
 Funkce:
 - Vzdálenostní kružnice se středem ve vaší poloze, které se přizpůsobují úrovni přiblížení.
-- Navigace podle směru k cíli místo striktních pokynů odbočka po odbočce. Ideální pro objevitele a lidi, kteří se rádi toulají!
-- Živý animovaný meteorologický radar od RainViewer s nastavitelnou průhledností a ovládáním přehrávání. Ideální pro motocyklisty, kteří chtějí včas vědět, kdy změnit trasu kvůli bouřce nebo se lépe vybavit.
+- Navigace podle směru k cíli místo striktních pokynů odbočka po odbočce. Perfect for explorers and people who like to wander!
+- Živý animovaný meteorologický radar od RainViewer s nastavitelnou průhledností a ovládáním přehrávání. Perfect for motorcyclists who want notice to reroute around a storm or gear up.
 - Rychlost a směr větru
-- Teplota a trend za 1 hodinu
-- Více stylů mapy: světlý, tmavý, automatický a vlastní barvy pro každý z nich.
+- Temperature and 1-hour trend
+- Multiple map styles: Light, Dark, Auto, and custom colors for either.
 - Zobrazení rychlosti v metrických i imperiálních jednotkách s nastavitelnou velikostí písma.
 - Open source, bez sledování, bez účtů, bez reklam.
