@@ -1,1 +1,1 @@
-Reverter movimentação de metadados
+Undo moving metadata
