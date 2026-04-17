@@ -1,1 +1,1 @@
-Salli useimpien pienoissovellusten koon säätäminen erikseen
+Allow most widget sizes to be adjusted individually
