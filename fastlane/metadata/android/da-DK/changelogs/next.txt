@@ -1,1 +1,1 @@
-First launch tutorial, and fix a bug preventing the use of approximate gps location (Thanks Chris L).
+Vejledning ved første opstart og rettelse af en fejl, der forhindrede brugen af omtrentlig GPS-position (Tak til Chris L).
