@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+Adicione um botão de Ações rápidas para facilitar a localização do menu de Ações rápidas.
