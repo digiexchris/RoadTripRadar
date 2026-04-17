@@ -1,1 +1,1 @@
-Allow most widget sizes to be adjusted individually
+Salli useimpien pienoissovelmien koon säätäminen yksittäin
