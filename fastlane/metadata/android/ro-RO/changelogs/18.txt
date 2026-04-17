@@ -1,1 +1,1 @@
-Mai multe remedieri ale interfeței pentru pictogramele de stare GPS și rețea
+Several UI fixes for GPS and network status icons
