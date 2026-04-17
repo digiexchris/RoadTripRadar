@@ -1,11 +1,11 @@
-RoadTripRadar er en kartapp som prioriterer situasjonsforståelse og vær. Direkte vær-radarbilder på et interaktivt kart, som hjelper deg med å se nedbør langs reiseretningen din med et øyekast.
+RoadTripRadar er en kartapp som prioriterer situasjonsforståelse og vær. Live vær-radarbilder på et interaktivt kart som hjelper deg å se nedbør langs reiseretningen din med et øyekast.
 
 Funksjoner:
 - Avstandsringer sentrert rundt posisjonen din som tilpasser seg zoomnivået.
-- Naviger ved hjelp av kursen til destinasjonen din i stedet for rigide sving-for-sving-instruksjoner. Perfekt for eventyrere og folk som liker å vandre!
-- Direktesendt animert vær-radar fra RainViewer med justerbar gjennomsiktighet og avspillingskontroller. Perfekt for motorsyklister som vil få beskjed om å legge om ruten rundt en storm eller kle seg for været.
+- Naviger ved hjelp av peiling til reisemålet ditt i stedet for rigide, trinnvise veibeskrivelser. Perfekt for eventyrere og folk som liker å vandre!
+- Live animert vær-radar fra RainViewer med justerbar gjennomsiktighet og avspillingskontroller. Perfekt for motorsyklister som vil ha beskjed om å legge om ruten rundt uvær eller gjøre seg klare.
 - Vindhastighet og vindretning
-- Temperatur og trend for siste 1 time
+- Temperatur og 1-times trend
 - Flere kartstiler: Lys, Mørk, Auto og egendefinerte farger for begge.
-- Hastighetsvisning med metriske og imperiale enheter, samt justerbar skriftstørrelse.
+- Fartsvisning med metriske og imperiale enheter, med justerbar skriftstørrelse.
 - Åpen kildekode, ingen sporing, ingen kontoer, ingen annonser.
