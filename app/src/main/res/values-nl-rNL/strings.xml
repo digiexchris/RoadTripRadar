@@ -14,8 +14,10 @@
     <string name="action_got_it">Begrepen</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Locatiemachtiging vereist</string>
-    <string name="permission_location_body">Road Trip Radar heeft toegang tot je precieze locatie nodig om te laten zien waar je bent op de kaart. Tik op Machtiging verlenen om door te gaan, of op Afsluiten om de app te verlaten.</string>
+    <string name="permission_location_body">Road Trip Radar heeft toegang tot je locatie nodig om te laten zien waar je bent op de kaart. Voor de beste nauwkeurigheid wordt een precieze locatie aanbevolen, maar een geschatte locatie werkt ook. Tik op Toestemming verlenen om door te gaan, of op Afsluiten om de app te sluiten.</string>
     <string name="permission_grant">Machtiging verlenen</string>
+    <string name="permission_location_denied_title">Locatie vereist</string>
+    <string name="permission_location_denied_body">Road Trip Radar is ontworpen om tijdens het rijden het gebied om je heen te tonen en kan daarom niet functioneren zonder toegang tot je locatie. De app wordt nu afgesloten. Je kunt locatietoegang inschakelen in de systeeminstellingen en de app opnieuw starten.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Scroll omlaag om de rest te lezen, daarna kun je accepteren.</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">Tijdlijn tonen</string>
     <!-- Help page -->
     <string name="help_documentation_info">Volledige documentatie en juridische informatie zijn beschikbaar via de knoppen hieronder.</string>
+    <string name="help_show_tutorial">Tutorial tonen</string>
     <string name="help_terms">Algemene voorwaarden</string>
     <string name="help_radar_legend">Radarlegenda</string>
     <string name="help_documentation">Documentatie</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">Wijzigingslog</string>
     <string name="version_label">Versie %s</string>
     <string name="debug_preview_whats_new">Voorbeeld van nieuwigheden (debug)</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">Volgende</string>
+    <string name="tutorial_action_back">Terug</string>
+    <string name="tutorial_action_skip">Overslaan</string>
+    <string name="tutorial_action_done">Begrepen</string>
+    <string name="tutorial_step_progress">Stap %1$d van %2$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Welkom bij Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Een korte rondleiding door de kaartbediening. Knijp om te zoomen, sleep met twee vingers omhoog of omlaag om de kaart te kantelen en draai twee vingers om de kaart te draaien.</string>
+    <string name="tutorial_map_speed_title">Snelheidsmeter</string>
+    <string name="tutorial_map_speed_body">Je huidige snelheid, weergegeven wanneer GPS een fix heeft. Wissel tussen km/h en mph in het menu Systeeminstellingen.</string>
+    <string name="tutorial_map_compass_title">Kompas</string>
+    <string name="tutorial_map_compass_body">Tik één keer om de kaart vast te zetten met het noorden boven. Tik nogmaals om de kaart te draaien zodat die je rijrichting volgt.</string>
+    <string name="tutorial_map_drop_pin_title">Pin neerzetten</string>
+    <string name="tutorial_map_drop_pin_body">Tik op een willekeurige plek op de kaart en houd vast om een pin neer te zetten en ernaartoe te navigeren.</string>
+    <string name="tutorial_map_zoom_out_title">Uitzoomen</string>
+    <string name="tutorial_map_zoom_out_body">Tik om uit te zoomen. Je kunt ook met twee vingers op de kaart knijpen.</string>
+    <string name="tutorial_map_zoom_in_title">Inzoomen</string>
+    <string name="tutorial_map_zoom_in_body">Tik om in te zoomen. Je kunt ook twee vingers op de kaart uit elkaar bewegen.</string>
+    <string name="tutorial_map_weather_title">Weerradar</string>
+    <string name="tutorial_map_weather_body">Tik om de radaranimatie af te spelen of te pauzeren. Tik en houd vast om de radar volledig uit te schakelen.</string>
+    <string name="tutorial_map_menu_title">Menu Snelle acties</string>
+    <string name="tutorial_map_menu_body">Opent het paneel met snelle acties met instellingen, thema\'s en interessante locaties.</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">Weerradar</string>
+    <string name="tutorial_menu_weather_toggle_body">Schakel de weerradarlaag in of uit.</string>
+    <string name="tutorial_menu_north_up_title">Noorden boven</string>
+    <string name="tutorial_menu_north_up_body">Zet de kaart vast zodat het noorden altijd boven is, of laat deze draaien zodat die je rijrichting volgt.</string>
+    <string name="tutorial_menu_nearby_places_title">Plekken in de buurt</string>
+    <string name="tutorial_menu_nearby_places_body">Kies welke categorieën interessante locaties (tankstations, eten, overnachtingen enz.) op de kaart worden geladen.</string>
+    <string name="tutorial_menu_location_search_title">Locatie zoeken</string>
+    <string name="tutorial_menu_location_search_body">Zoek naar een adres of plaatsnaam binnen het zichtbare kaartgebied.</string>
+    <string name="tutorial_menu_submenu_map_title">Kaartsubmenu</string>
+    <string name="tutorial_menu_submenu_map_body">Kies een kaartthema en pas kaartgerelateerde instellingen aan, zoals de middenverschuiving.</string>
+    <string name="tutorial_menu_submenu_weather_title">Weersubmenu</string>
+    <string name="tutorial_menu_submenu_weather_body">Schakel de widget voor wind/temperatuur, radarlegenda en tijdlijn in of uit, en pas de radaropaciteit en eenheden aan.</string>
+    <string name="tutorial_menu_submenu_system_title">Systeemsubmenu</string>
+    <string name="tutorial_menu_submenu_system_body">Wijzig taal, widgetgrootten, eenheden en schermgedrag, en herstel de standaardinstellingen.</string>
+    <string name="tutorial_menu_submenu_help_title">Help &amp; info</string>
+    <string name="tutorial_menu_submenu_help_body">Vind documentatie, algemene voorwaarden, de wijzigingenlijst en speel deze tutorial opnieuw af.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Centreren</string>
     <string name="fab_retry_failed">Mislukt opnieuw proberen</string>
