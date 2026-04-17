@@ -14,10 +14,10 @@
     <string name="action_got_it">Κατάλαβα</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Απαιτείται άδεια τοποθεσίας</string>
-    <string name="permission_location_body">Road Trip Radar needs access to your location to show where you are on the map. Precise location is recommended for best accuracy, but approximate location will also work. Tap Grant permission to continue, or Quit to exit the app.</string>
+    <string name="permission_location_body">Το Road Trip Radar χρειάζεται πρόσβαση στην τοποθεσία σας για να δείχνει πού βρίσκεστε στον χάρτη. Για βέλτιστη ακρίβεια συνιστάται η ακριβής τοποθεσία, αλλά λειτουργεί και η κατά προσέγγιση τοποθεσία. Πατήστε \"Παραχώρηση άδειας\" για να συνεχίσετε ή \"Έξοδος\" για να κλείσετε την εφαρμογή.</string>
     <string name="permission_grant">Παραχώρηση άδειας</string>
-    <string name="permission_location_denied_title">Location required</string>
-    <string name="permission_location_denied_body">Road Trip Radar is designed to show the area around you while you drive, so it cannot function without location access. The app will now exit. You can enable location access in the system Settings and launch the app again.</string>
+    <string name="permission_location_denied_title">Απαιτείται τοποθεσία</string>
+    <string name="permission_location_denied_body">Το Road Trip Radar έχει σχεδιαστεί για να εμφανίζει την περιοχή γύρω σας ενώ οδηγείτε, επομένως δεν μπορεί να λειτουργήσει χωρίς πρόσβαση στην τοποθεσία. Η εφαρμογή θα κλείσει τώρα. Μπορείτε να ενεργοποιήσετε την πρόσβαση στην τοποθεσία από τις Ρυθμίσεις συστήματος και να ανοίξετε ξανά την εφαρμογή.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Κυλήστε προς τα κάτω για να διαβάσετε τα υπόλοιπα και μετά μπορείτε να αποδεχτείτε.</string>
     <!-- Quit dialog -->
@@ -56,7 +56,7 @@
     <string name="action_show_timeline">Εμφάνιση χρονογραμμής</string>
     <!-- Help page -->
     <string name="help_documentation_info">Η πλήρης τεκμηρίωση και οι νομικές πληροφορίες είναι διαθέσιμες από τα παρακάτω κουμπιά.</string>
-    <string name="help_show_tutorial">Show Tutorial</string>
+    <string name="help_show_tutorial">Εμφάνιση οδηγού</string>
     <string name="help_terms">Όροι &amp; Προϋποθέσεις</string>
     <string name="help_radar_legend">Υπόμνημα ραντάρ</string>
     <string name="help_documentation">Τεκμηρίωση</string>
@@ -65,45 +65,45 @@
     <string name="version_label">Έκδοση %s</string>
     <string name="debug_preview_whats_new">Προεπισκόπηση νέων δυνατοτήτων (debug)</string>
     <!-- Tutorial -->
-    <string name="tutorial_action_next">Next</string>
-    <string name="tutorial_action_back">Back</string>
-    <string name="tutorial_action_skip">Skip</string>
-    <string name="tutorial_action_done">Got it</string>
-    <string name="tutorial_step_progress">Step %1$d of %2$d</string>
+    <string name="tutorial_action_next">Επόμενο</string>
+    <string name="tutorial_action_back">Πίσω</string>
+    <string name="tutorial_action_skip">Παράλειψη</string>
+    <string name="tutorial_action_done">Το κατάλαβα</string>
+    <string name="tutorial_step_progress">Βήμα %1$d από %2$d</string>
     <!-- Tutorial: MAP group -->
-    <string name="tutorial_map_welcome_title">Welcome to Road Trip Radar</string>
-    <string name="tutorial_map_welcome_body">A quick tour of the map controls. Pinch to zoom, drag with two fingers up or down to tilt the map, and rotate two fingers to rotate it.</string>
-    <string name="tutorial_map_speed_title">Speedometer</string>
-    <string name="tutorial_map_speed_body">Your current speed, shown when GPS has a fix. Switch between km/h and mph in the System settings menu.</string>
-    <string name="tutorial_map_compass_title">Compass</string>
-    <string name="tutorial_map_compass_body">Tap once to lock the map to North up. Tap again to rotate the map to follow your bearing.</string>
-    <string name="tutorial_map_drop_pin_title">Drop a Pin</string>
-    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to drop a pin and navigate toward it.</string>
-    <string name="tutorial_map_zoom_out_title">Zoom Out</string>
-    <string name="tutorial_map_zoom_out_body">Tap to zoom out. You can also pinch the map with two fingers.</string>
-    <string name="tutorial_map_zoom_in_title">Zoom In</string>
-    <string name="tutorial_map_zoom_in_body">Tap to zoom in. You can also spread two fingers apart on the map.</string>
-    <string name="tutorial_map_weather_title">Weather Radar</string>
-    <string name="tutorial_map_weather_body">Tap to play or pause the radar animation. Tap and hold to turn the radar off entirely.</string>
-    <string name="tutorial_map_menu_title">Quick Actions Menu</string>
-    <string name="tutorial_map_menu_body">Opens the quick actions drawer with settings, themes, and points of interest.</string>
+    <string name="tutorial_map_welcome_title">Καλώς ορίσατε στο Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Μια σύντομη περιήγηση στα στοιχεία ελέγχου του χάρτη. Τσιμπήστε για μεγέθυνση, σύρετε με δύο δάχτυλα προς τα πάνω ή προς τα κάτω για να γείρετε τον χάρτη και περιστρέψτε δύο δάχτυλα για να τον στρέψετε.</string>
+    <string name="tutorial_map_speed_title">Ταχύμετρο</string>
+    <string name="tutorial_map_speed_body">Η τρέχουσα ταχύτητά σας, που εμφανίζεται όταν το GPS έχει σήμα. Εναλλάξτε μεταξύ km/h και mph στο μενού ρυθμίσεων Συστήματος.</string>
+    <string name="tutorial_map_compass_title">Πυξίδα</string>
+    <string name="tutorial_map_compass_body">Πατήστε μία φορά για να κλειδώσετε τον χάρτη με τον Βορρά προς τα πάνω. Πατήστε ξανά για να περιστρέφεται ο χάρτης σύμφωνα με την πορεία σας.</string>
+    <string name="tutorial_map_drop_pin_title">Τοποθέτηση πινέζας</string>
+    <string name="tutorial_map_drop_pin_body">Πατήστε παρατεταμένα οπουδήποτε στον χάρτη για να τοποθετήσετε μια πινέζα και να πλοηγηθείτε προς αυτήν.</string>
+    <string name="tutorial_map_zoom_out_title">Σμίκρυνση</string>
+    <string name="tutorial_map_zoom_out_body">Πατήστε για σμίκρυνση. Μπορείτε επίσης να τσιμπήσετε τον χάρτη με δύο δάχτυλα.</string>
+    <string name="tutorial_map_zoom_in_title">Μεγέθυνση</string>
+    <string name="tutorial_map_zoom_in_body">Πατήστε για μεγέθυνση. Μπορείτε επίσης να ανοίξετε δύο δάχτυλα πάνω στον χάρτη.</string>
+    <string name="tutorial_map_weather_title">Ραντάρ καιρού</string>
+    <string name="tutorial_map_weather_body">Πατήστε για αναπαραγωγή ή παύση της κίνησης του ραντάρ. Πατήστε παρατεταμένα για να απενεργοποιήσετε εντελώς το ραντάρ.</string>
+    <string name="tutorial_map_menu_title">Μενού γρήγορων ενεργειών</string>
+    <string name="tutorial_map_menu_body">Ανοίγει το συρτάρι γρήγορων ενεργειών με ρυθμίσεις, θέματα και σημεία ενδιαφέροντος.</string>
     <!-- Tutorial: MENU_MAIN group -->
-    <string name="tutorial_menu_weather_toggle_title">Weather Radar</string>
-    <string name="tutorial_menu_weather_toggle_body">Turn the weather radar overlay on or off.</string>
-    <string name="tutorial_menu_north_up_title">North Up</string>
-    <string name="tutorial_menu_north_up_body">Lock the map so North is always up, or let it rotate to follow your bearing.</string>
-    <string name="tutorial_menu_nearby_places_title">Nearby Places</string>
-    <string name="tutorial_menu_nearby_places_body">Pick which categories of points of interest (gas, food, lodging, etc.) to load onto the map.</string>
-    <string name="tutorial_menu_location_search_title">Location Search</string>
-    <string name="tutorial_menu_location_search_body">Search for an address or place name within the visible map area.</string>
-    <string name="tutorial_menu_submenu_map_title">Map Submenu</string>
-    <string name="tutorial_menu_submenu_map_body">Choose a map theme and tweak map-related settings like the center offset.</string>
-    <string name="tutorial_menu_submenu_weather_title">Weather Submenu</string>
-    <string name="tutorial_menu_submenu_weather_body">Toggle the wind/temperature widget, radar legend, and timeline, and adjust radar opacity and units.</string>
-    <string name="tutorial_menu_submenu_system_title">System Submenu</string>
-    <string name="tutorial_menu_submenu_system_body">Change language, widget sizes, units, screen behavior, and reset to defaults.</string>
-    <string name="tutorial_menu_submenu_help_title">Help &amp; Info</string>
-    <string name="tutorial_menu_submenu_help_body">Find documentation, terms and conditions, the changelog, and replay this tutorial.</string>
+    <string name="tutorial_menu_weather_toggle_title">Ραντάρ καιρού</string>
+    <string name="tutorial_menu_weather_toggle_body">Ενεργοποιήστε ή απενεργοποιήστε το επίπεδο επικάλυψης του ραντάρ καιρού.</string>
+    <string name="tutorial_menu_north_up_title">Βορράς προς τα πάνω</string>
+    <string name="tutorial_menu_north_up_body">Κλειδώστε τον χάρτη ώστε ο Βορράς να είναι πάντα προς τα πάνω ή αφήστε τον να περιστρέφεται σύμφωνα με την πορεία σας.</string>
+    <string name="tutorial_menu_nearby_places_title">Κοντινά μέρη</string>
+    <string name="tutorial_menu_nearby_places_body">Επιλέξτε ποιες κατηγορίες σημείων ενδιαφέροντος (καύσιμα, φαγητό, διαμονή κ.λπ.) θα φορτωθούν στον χάρτη.</string>
+    <string name="tutorial_menu_location_search_title">Αναζήτηση τοποθεσίας</string>
+    <string name="tutorial_menu_location_search_body">Αναζητήστε μια διεύθυνση ή ένα όνομα τοποθεσίας μέσα στην ορατή περιοχή του χάρτη.</string>
+    <string name="tutorial_menu_submenu_map_title">Υπομενού χάρτη</string>
+    <string name="tutorial_menu_submenu_map_body">Επιλέξτε ένα θέμα χάρτη και προσαρμόστε ρυθμίσεις σχετικές με τον χάρτη, όπως τη μετατόπιση κέντρου.</string>
+    <string name="tutorial_menu_submenu_weather_title">Υπομενού καιρού</string>
+    <string name="tutorial_menu_submenu_weather_body">Εναλλάξτε το γραφικό στοιχείο ανέμου/θερμοκρασίας, τον υπόμνημα ραντάρ και τη χρονογραμμή, και προσαρμόστε την αδιαφάνεια και τις μονάδες του ραντάρ.</string>
+    <string name="tutorial_menu_submenu_system_title">Υπομενού συστήματος</string>
+    <string name="tutorial_menu_submenu_system_body">Αλλάξτε γλώσσα, μεγέθη γραφικών στοιχείων, μονάδες, συμπεριφορά οθόνης και επαναφέρετε τις προεπιλογές.</string>
+    <string name="tutorial_menu_submenu_help_title">Βοήθεια &amp; Πληροφορίες</string>
+    <string name="tutorial_menu_submenu_help_body">Βρείτε την τεκμηρίωση, τους όρους και τις προϋποθέσεις, το αρχείο αλλαγών και επαναλάβετε αυτό το σεμινάριο.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Επανακέντρωση</string>
     <string name="fab_retry_failed">Επανάληψη αποτυχημένων</string>
