@@ -1,1 +1,1 @@
-Forbedringer af vandret layout, radarlegende og den generelle brugergrænseflade
+Vandret layout, radarforklaring og generelle forbedringer af brugergrænsefladen
