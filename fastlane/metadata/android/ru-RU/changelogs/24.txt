@@ -1,1 +1,1 @@
-Если у вас выбраны какие-либо категории в разделе «Места поблизости», они будут автоматически отображаться при запуске приложения. Если вы хотите отключить это поведение, в меню «Места поблизости» есть переключатель, чтобы выключить это.
+If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
