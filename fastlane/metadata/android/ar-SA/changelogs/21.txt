@@ -1,1 +1,1 @@
-Allow most widget sizes to be adjusted individually
+السماح بضبط أحجام معظم الأدوات المصغّرة بشكل فردي
