@@ -1,1 +1,1 @@
-إذا كانت لديك أي فئات محددة في الأماكن القريبة، فستظهر تلقائيًا عند بدء تشغيل التطبيق. إذا كنت تريد تعطيل هذا السلوك، فهناك مفتاح تبديل في قائمة الأماكن القريبة لإيقافه.
+If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
