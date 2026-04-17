@@ -1,1 +1,1 @@
-Justeringer af pipeline til F-Droid
+Pipeline tweaks for F-Droid
