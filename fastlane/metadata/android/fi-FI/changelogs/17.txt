@@ -1,1 +1,1 @@
-Horizontal layout, radar legend, and general UI improvements
+Vaakasuoran asettelun, tutkakaavion selitteen ja yleisen käyttöliittymän parannukset
