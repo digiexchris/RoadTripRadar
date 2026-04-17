@@ -14,8 +14,10 @@
     <string name="action_got_it">Rozumiem</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Wymagane uprawnienie do lokalizacji</string>
-    <string name="permission_location_body">Road Trip Radar potrzebuje dostępu do Twojej dokładnej lokalizacji, aby pokazać Twoje położenie na mapie. Dotknij Przyznaj uprawnienie, aby kontynuować, lub Wyjdź, aby zamknąć aplikację.</string>
+    <string name="permission_location_body">Road Trip Radar potrzebuje dostępu do Twojej lokalizacji, aby pokazać, gdzie jesteś na mapie. Aby uzyskać najlepszą dokładność, zalecana jest dokładna lokalizacja, ale przybliżona lokalizacja także będzie działać. Dotknij opcji Udziel uprawnienia, aby kontynuować, lub Zakończ, aby wyjść z aplikacji.</string>
     <string name="permission_grant">Przyznaj uprawnienie</string>
+    <string name="permission_location_denied_title">Wymagana lokalizacja</string>
+    <string name="permission_location_denied_body">Road Trip Radar został zaprojektowany tak, aby pokazywać obszar wokół Ciebie podczas jazdy, więc nie może działać bez dostępu do lokalizacji. Aplikacja zostanie teraz zamknięta. Możesz włączyć dostęp do lokalizacji w systemowych Ustawieniach i uruchomić aplikację ponownie.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Przewiń w dół, aby przeczytać resztę, a następnie możesz zaakceptować.</string>
     <!-- Quit dialog -->
@@ -54,6 +56,7 @@
     <string name="action_show_timeline">Pokaż oś czasu</string>
     <!-- Help page -->
     <string name="help_documentation_info">Pełna dokumentacja i informacje prawne są dostępne pod poniższymi przyciskami.</string>
+    <string name="help_show_tutorial">Pokaż samouczek</string>
     <string name="help_terms">Regulamin</string>
     <string name="help_radar_legend">Legenda radaru</string>
     <string name="help_documentation">Dokumentacja</string>
@@ -61,6 +64,46 @@
     <string name="help_changelog">Dziennik zmian</string>
     <string name="version_label">Wersja %s</string>
     <string name="debug_preview_whats_new">Podgląd nowości (debug)</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">Dalej</string>
+    <string name="tutorial_action_back">Wstecz</string>
+    <string name="tutorial_action_skip">Pomiń</string>
+    <string name="tutorial_action_done">Rozumiem</string>
+    <string name="tutorial_step_progress">Krok %1$d z %2$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Witamy w Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Szybki przegląd elementów sterowania mapą. Uszczypnij, aby przybliżyć, przeciągnij dwoma palcami w górę lub w dół, aby pochylić mapę, i obróć dwoma palcami, aby ją obrócić.</string>
+    <string name="tutorial_map_speed_title">Prędkościomierz</string>
+    <string name="tutorial_map_speed_body">Twoja bieżąca prędkość, wyświetlana, gdy GPS ma ustaloną pozycję. Przełączaj między km/h i mph w menu ustawień systemowych.</string>
+    <string name="tutorial_map_compass_title">Kompas</string>
+    <string name="tutorial_map_compass_body">Dotknij raz, aby zablokować mapę z północą u góry. Dotknij ponownie, aby obrócić mapę zgodnie z kierunkiem jazdy.</string>
+    <string name="tutorial_map_drop_pin_title">Upuść pinezkę</string>
+    <string name="tutorial_map_drop_pin_body">Dotknij i przytrzymaj w dowolnym miejscu na mapie, aby upuścić pinezkę i nawigować w jej kierunku.</string>
+    <string name="tutorial_map_zoom_out_title">Pomniejsz</string>
+    <string name="tutorial_map_zoom_out_body">Dotknij, aby pomniejszyć. Możesz też uszczypnąć mapę dwoma palcami.</string>
+    <string name="tutorial_map_zoom_in_title">Powiększ</string>
+    <string name="tutorial_map_zoom_in_body">Dotknij, aby powiększyć. Możesz też rozsunąć dwa palce na mapie.</string>
+    <string name="tutorial_map_weather_title">Radar pogodowy</string>
+    <string name="tutorial_map_weather_body">Dotknij, aby odtworzyć lub wstrzymać animację radaru. Dotknij i przytrzymaj, aby całkowicie wyłączyć radar.</string>
+    <string name="tutorial_map_menu_title">Menu szybkich działań</string>
+    <string name="tutorial_map_menu_body">Otwiera panel szybkich działań z ustawieniami, motywami i punktami zainteresowania.</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">Radar pogodowy</string>
+    <string name="tutorial_menu_weather_toggle_body">Włącz lub wyłącz nakładkę radaru pogodowego.</string>
+    <string name="tutorial_menu_north_up_title">Północ u góry</string>
+    <string name="tutorial_menu_north_up_body">Zablokuj mapę tak, aby północ zawsze była u góry, albo pozwól jej obracać się zgodnie z kierunkiem jazdy.</string>
+    <string name="tutorial_menu_nearby_places_title">Miejsca w pobliżu</string>
+    <string name="tutorial_menu_nearby_places_body">Wybierz kategorie punktów zainteresowania (paliwo, jedzenie, noclegi itp.), które mają być wczytywane na mapę.</string>
+    <string name="tutorial_menu_location_search_title">Wyszukiwanie lokalizacji</string>
+    <string name="tutorial_menu_location_search_body">Szukaj adresu lub nazwy miejsca w widocznym obszarze mapy.</string>
+    <string name="tutorial_menu_submenu_map_title">Podmenu mapy</string>
+    <string name="tutorial_menu_submenu_map_body">Wybierz motyw mapy i dostosuj ustawienia związane z mapą, takie jak przesunięcie środka.</string>
+    <string name="tutorial_menu_submenu_weather_title">Podmenu pogody</string>
+    <string name="tutorial_menu_submenu_weather_body">Włączaj lub wyłączaj widżet wiatru/temperatury, legendę radaru i oś czasu oraz dostosowuj krycie radaru i jednostki.</string>
+    <string name="tutorial_menu_submenu_system_title">Podmenu systemowe</string>
+    <string name="tutorial_menu_submenu_system_body">Zmień język, rozmiary widżetów, jednostki, zachowanie ekranu i przywróć ustawienia domyślne.</string>
+    <string name="tutorial_menu_submenu_help_title">Pomoc &amp; informacje</string>
+    <string name="tutorial_menu_submenu_help_body">Znajdź dokumentację, regulamin, dziennik zmian i odtwórz ponownie ten samouczek.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Wyśrodkuj</string>
     <string name="fab_retry_failed">Ponów nieudane</string>
