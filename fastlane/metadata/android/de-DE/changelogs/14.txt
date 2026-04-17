@@ -1,1 +1,1 @@
-Behoben: Der Kompass-Button sperrt die Karte nicht mehr fälschlicherweise von der Nordausrichtung, wenn sich der Benutzer bewegt
+Problem behoben, bei dem die Kompass-Schaltfläche die Karte nicht auf Nordausrichtung sperrt, wenn der Benutzer sie bewegt
