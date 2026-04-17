@@ -1,1 +1,1 @@
-Als je categorieën in Nabije plaatsen hebt geselecteerd, worden ze automatisch weergegeven wanneer de app start. Als je dat gedrag wilt uitschakelen, is er een schakelaar in het menu Nabije plaatsen om dit uit te zetten.
+Als je categorieën hebt geselecteerd in Nabije plaatsen, worden die automatisch weergegeven wanneer de app wordt gestart. Als je dat gedrag wilt uitschakelen, is er een schakelaar in het menu Nabije plaatsen om het uit te zetten.
