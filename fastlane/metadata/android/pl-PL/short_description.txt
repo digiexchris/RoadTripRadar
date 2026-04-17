@@ -1,1 +1,1 @@
-Aplikacja mapowa stawiająca na świadomość sytuacyjną i informacje pogodowe.
+Aplikacja mapowa stawiająca na świadomość sytuacyjną i pogodę.
