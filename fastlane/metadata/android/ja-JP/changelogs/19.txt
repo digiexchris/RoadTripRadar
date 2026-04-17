@@ -1,1 +1,1 @@
-* Rearrange layout * Remove extra buttons from UI, move to a separate overlay for common actions * Add quick help on start * Reduce clutter and actions on the map view * Align horizontal mode with portrait mode * Add quick actions drawer on tap for common actions instead of map buttons
+* レイアウトを再構成 * UIから余分なボタンを削除し、よく使うアクション用の別個のオーバーレイに移動 * 起動時にクイックヘルプを追加 * 地図ビューの煩雑さとアクションを削減 * 横向きモードを縦向きモードに合わせる * 地図ボタンの代わりに、よく使うアクション用のクイックアクションドロワーをタップで追加
