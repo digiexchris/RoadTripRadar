@@ -1,2 +1,2 @@
-Karttateeman valitsin on uudistunut! Tutustu siihen valikossa: Kartta -> Valitse teema. Lisäksi oletusarvoista tummaa karttaa on muokattu niin, että pienet tiet ja polut näkyvät paremmin. Jos pidit vanhasta enemmän, se on edelleen saatavilla.
-Päänäytöllä on nyt säätutkalle toisto-/tauko-/pois-painike.
+Uusi karttateeman valitsin on täällä! Tutustu siihen valikossa: Kartta -> Valitse teema. Lisäksi oletustummaa karttaa on hienosäädetty niin, että pienet tiet ja polut näkyvät paremmin. Jos pidit vanhasta enemmän, se on edelleen saatavilla.
+Päänäkymässä on nyt säätutkalle toisto-/tauko-/pois-painike.
