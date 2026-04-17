@@ -1,1 +1,1 @@
-Build pipeline changes
+Cambios en la canalización de compilación
