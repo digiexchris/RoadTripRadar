@@ -1,0 +1,1 @@
+Tutoriel de premier lancement, et correction d’un bug empêchant l’utilisation de la localisation GPS approximative (Merci à Chris L).
