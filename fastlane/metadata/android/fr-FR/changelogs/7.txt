@@ -1,1 +1,1 @@
-Annuler le déplacement des métadonnées
+Undo moving metadata
