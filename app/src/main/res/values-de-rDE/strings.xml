@@ -14,7 +14,7 @@
     <string name="action_got_it">Verstanden</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Standortberechtigung erforderlich</string>
-    <string name="permission_location_body">Road Trip Radar benötigt Zugriff auf deinen genauen Standort, um auf der Karte anzuzeigen, wo du dich befindest. Tippe auf \"Berechtigung erteilen\", um fortzufahren, oder auf \"Beenden\", um die App zu schließen.</string>
+    <string name="permission_location_body">Road Trip Radar benötigt Zugriff auf deinen genauen Standort, um deinen Standort auf der Karte anzuzeigen. Tippe auf „Berechtigung erteilen“, um fortzufahren, oder auf „Beenden“, um die App zu verlassen.</string>
     <string name="permission_grant">Berechtigung erteilen</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Scrolle nach unten, um den Rest zu lesen. Danach kannst du akzeptieren.</string>
@@ -29,8 +29,16 @@
     <string name="action_clear_places">Orte löschen</string>
     <string name="action_location_search">Standortsuche</string>
     <string name="action_clear_target">Ziel löschen</string>
-    <string name="action_track_bearing">Richtung folgen</string>
+    <string name="action_track_bearing">An Fahrtrichtung ausrichten</string>
     <string name="action_track_north">Nach Norden ausrichten</string>
+    <string name="action_radar_on">Radar an</string>
+    <string name="action_radar_off">Radar aus</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Wetterradar</string>
+    <string name="toggle_north_up">Norden oben</string>
+    <string name="toggle_wind_temp">Wind &amp; Temp</string>
+    <string name="toggle_legend">Legende</string>
+    <string name="toggle_timeline">Zeitleiste</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Karte</string>
     <string name="menu_weather">Wetter</string>
@@ -46,19 +54,19 @@
     <string name="action_show_timeline">Zeitleiste anzeigen</string>
     <!-- Help page -->
     <string name="help_documentation_info">Vollständige Dokumentation und rechtliche Informationen sind über die untenstehenden Schaltflächen verfügbar.</string>
-    <string name="help_terms">Allgemeine Geschäftsbedingungen &amp; Konditionen</string>
+    <string name="help_terms">Allgemeine Geschäftsbedingungen</string>
     <string name="help_radar_legend">Radarlegende</string>
     <string name="help_documentation">Dokumentation</string>
     <string name="help_privacy_policy">Datenschutzerklärung</string>
     <string name="help_changelog">Änderungsprotokoll</string>
     <string name="version_label">Version %s</string>
-    <string name="debug_preview_whats_new">Vorschau auf Neuerungen (Debug)</string>
+    <string name="debug_preview_whats_new">Vorschau: Was ist neu (Debug)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Zentrieren</string>
-    <string name="fab_retry_failed">Fehlgeschlagenes erneut versuchen</string>
+    <string name="fab_retry_failed">Fehlgeschlagene erneut versuchen</string>
     <string name="cd_recenter_location">Auf Standort zentrieren</string>
-    <string name="cd_gps_fix_acquired">GPS-Signal empfangen</string>
-    <string name="cd_waiting_gps_fix">Warte auf GPS-Signal</string>
+    <string name="cd_gps_fix_acquired">GPS-Fix erhalten</string>
+    <string name="cd_waiting_gps_fix">Warten auf GPS-Fix</string>
     <string name="cd_zoom_out">Herauszoomen</string>
     <string name="cd_zoom_in">Hineinzoomen</string>
     <string name="cd_quick_actions">Schnellaktionen</string>
@@ -66,7 +74,7 @@
     <string name="cd_weather_pause">Radar pausieren</string>
     <string name="cd_weather_play">Radar abspielen</string>
     <string name="cd_no_network">Kein Netzwerk</string>
-    <string name="cd_wifi">WiFi</string>
+    <string name="cd_wifi">WLAN</string>
     <string name="cd_cellular">Mobilfunk</string>
     <string name="cd_unknown_network">Unbekanntes Netzwerk</string>
     <!-- Weather settings -->
@@ -86,7 +94,7 @@
     <string name="settings_imperial">Imperial</string>
     <string name="settings_map_center_offset_portrait">Versatz des Kartenzentrums (Hochformat)</string>
     <string name="settings_map_center_offset_landscape">Versatz des Kartenzentrums (Querformat)</string>
-    <string name="settings_places_icon_opacity">Deckkraft der Ortssymbole</string>
+    <string name="settings_places_icon_opacity">Deckkraft der Orts-Symbole</string>
     <string name="theme_current">Design: %s</string>
     <string name="action_choose_theme">Design auswählen</string>
     <!-- System settings -->
@@ -94,7 +102,7 @@
     <string name="settings_status_icon_opacity">Deckkraft der Statussymbole</string>
     <string name="settings_speedometer_size">Größe des Tachometers</string>
     <string name="settings_compass_size">Größe des Kompasses</string>
-    <string name="settings_nav_widget_size">Größe des Navigations-Widgets</string>
+    <string name="settings_nav_widget_size">Größe des Navi-Widgets</string>
     <string name="settings_misc">Sonstiges</string>
     <string name="settings_keep_screen_on">Bildschirm eingeschaltet lassen</string>
     <string name="settings_language">Sprache</string>
@@ -103,11 +111,11 @@
     <string name="theme_map_theme">Kartendesign</string>
     <string name="theme_auto">Automatisch</string>
     <string name="theme_customize_maputnik">In Maputnik anpassen</string>
-    <string name="theme_overwrite_custom_light">Benutzerdefiniert hell überschreiben</string>
-    <string name="theme_use_as_custom_light_base">Als Basis für \"Benutzerdefiniert hell\" verwenden</string>
-    <string name="theme_overwrite_custom_dark">Benutzerdefiniert dunkel überschreiben</string>
-    <string name="theme_use_as_custom_dark_base">Als Basis für \"Benutzerdefiniert dunkel\" verwenden</string>
-    <string name="theme_use_in_auto_mode">Im automatischen Modus verwenden</string>
+    <string name="theme_overwrite_custom_light">Benutzerdefiniertes helles Design überschreiben</string>
+    <string name="theme_use_as_custom_light_base">Als Basis für benutzerdefiniertes helles Design verwenden</string>
+    <string name="theme_overwrite_custom_dark">Benutzerdefiniertes dunkles Design überschreiben</string>
+    <string name="theme_use_as_custom_dark_base">Als Basis für benutzerdefiniertes dunkles Design verwenden</string>
+    <string name="theme_use_in_auto_mode">Im Automatikmodus verwenden</string>
     <string name="theme_action_edit">Bearbeiten</string>
     <string name="theme_action_save">Speichern</string>
     <string name="theme_action_maputnik">Maputnik</string>
@@ -117,8 +125,8 @@
     <string name="cd_save_json_downloads">JSON in Downloads speichern</string>
     <string name="cd_open_maputnik">Maputnik öffnen</string>
     <string name="cd_delete_custom_theme">Benutzerdefiniertes Design löschen</string>
-    <string name="theme_invalid_file">Ungültige Design-Datei</string>
-    <string name="theme_saved_to_downloads">In Downloads/%s gespeichert</string>
+    <string name="theme_invalid_file">Ungültige Designdatei</string>
+    <string name="theme_saved_to_downloads">Gespeichert unter Downloads/%s</string>
     <string name="theme_save_failed">Speichern fehlgeschlagen</string>
     <string name="theme_export">Design exportieren</string>
     <!-- Color editor -->
@@ -134,10 +142,10 @@
     <string name="search_location_title">Standort suchen</string>
     <string name="search_within_visible">Suche im sichtbaren Kartenbereich</string>
     <string name="search_address_placeholder">Adresse oder Ortsname</string>
-    <string name="search_searching">Suche…</string>
+    <string name="search_searching">Suche läuft…</string>
     <!-- POI category picker -->
     <string name="poi_autoload_title">Orte in der Nähe automatisch laden</string>
-    <string name="poi_autoload_description">Lade Orte in der Nähe beim Start der App</string>
+    <string name="poi_autoload_description">Beim Start der App automatisch nahegelegene Orte laden</string>
     <string name="poi_count">%1$d von %2$d</string>
     <string name="action_search_visible_area">Sichtbaren Bereich durchsuchen</string>
     <!-- Tapped POI popup -->
@@ -177,9 +185,9 @@
     <string name="legend_detail_small_hail">Kleiner Hagel oder gefrierender Regen möglich</string>
     <string name="legend_detail_hail_possible">Hagel möglich</string>
     <string name="legend_detail_hail_likely">Hagel wahrscheinlich</string>
-    <string name="legend_detail_light_snow">Leichter Schnee</string>
-    <string name="legend_detail_moderate_snow">Mäßiger Schnee</string>
-    <string name="legend_detail_heavy_snow">Starker Schnee</string>
+    <string name="legend_detail_light_snow">Leichter Schneefall</string>
+    <string name="legend_detail_moderate_snow">Mäßiger Schneefall</string>
+    <string name="legend_detail_heavy_snow">Starker Schneefall</string>
     <!-- Speed readout -->
     <string name="speed_unit_kmh">km/h</string>
     <string name="speed_unit_mph">mph</string>
@@ -214,7 +222,7 @@
     <string name="poi_park">Park</string>
     <string name="poi_viewpoint">Aussichtspunkt</string>
     <string name="poi_museum">Museum</string>
-    <string name="poi_tourist_info">Touristeninfo</string>
+    <string name="poi_tourist_info">Touristeninformation</string>
     <!-- Map style display names -->
     <string name="style_liberty">Liberty</string>
     <string name="style_dark">Dunkel</string>
