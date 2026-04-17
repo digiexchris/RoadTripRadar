@@ -1,1 +1,1 @@
-Cleaned up for F-Droid build
+Rensad för F-Droid-bygge
