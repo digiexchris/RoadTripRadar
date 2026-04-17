@@ -1,1 +1,1 @@
-Undo moving metadata
+メタデータの移動を元に戻す
