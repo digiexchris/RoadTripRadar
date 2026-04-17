@@ -1,1 +1,1 @@
-Curățat pentru versiunea F-Droid
+Cleaned up for F-Droid build
