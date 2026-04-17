@@ -1,1 +1,1 @@
-* 重新安排布局 * 从 UI 中移除多余按钮，并移至用于常用操作的单独浮层 * 启动时添加快速帮助 * 减少地图视图中的杂乱元素和操作 * 使横屏模式与竖屏模式保持一致 * 点击时添加用于常用操作的快捷操作抽屉，以替代地图按钮
+* Rearrange layout * Remove extra buttons from UI, move to a separate overlay for common actions * Add quick help on start * Reduce clutter and actions on the map view * Align horizontal mode with portrait mode * Add quick actions drawer on tap for common actions instead of map buttons
