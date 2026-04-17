@@ -42,7 +42,12 @@ import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.buildRadarRingsData
 import ca.voiditswarranty.roadtripradar.model.ringDistancesForZoom
+import ca.voiditswarranty.roadtripradar.ui.tutorial.LocalTutorialAnchors
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialGroup
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialOverlay
+import ca.voiditswarranty.roadtripradar.ui.tutorial.rememberTutorialAnchorsState
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
+import androidx.compose.runtime.CompositionLocalProvider
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
@@ -236,6 +241,8 @@ fun MapScreen(
     }
 
     // UI
+    val tutorialAnchors = rememberTutorialAnchorsState()
+    CompositionLocalProvider(LocalTutorialAnchors provides tutorialAnchors) {
     Box(modifier = Modifier.fillMaxSize()) {
         key(mapStyleUri, vm.customThemeVersion) {
             MaplibreMap(
@@ -427,6 +434,15 @@ fun MapScreen(
 
         // Tapped POI info popup
         TappedPoiPopup(vm = vm)
+
+        LaunchedEffect(vm.showTerms, vm.showActionsDrawer) {
+            if (!vm.showTerms && !vm.showActionsDrawer) {
+                vm.startTutorialIfNotCompleted(TutorialGroup.MAP)
+            }
+        }
+
+        TutorialOverlay(vm = vm)
+    }
     }
 }
 
