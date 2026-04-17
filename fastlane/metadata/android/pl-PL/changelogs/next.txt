@@ -1,0 +1,1 @@
+Samouczek przy pierwszym uruchomieniu oraz poprawka błędu uniemożliwiającego korzystanie z przybliżonej lokalizacji GPS (Dzięki Chris L).
