@@ -1,1 +1,1 @@
-Lägg till liten väderwidget för vindhastighet, vindriktning och omgivningstemperatur
+Add small weather widget for wind speed, direction, and ambient temperature
