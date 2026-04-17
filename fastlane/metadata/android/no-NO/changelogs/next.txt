@@ -1,0 +1,1 @@
+Veiledning ved første oppstart, og en feilretting som gjør det mulig å bruke omtrentlig GPS-posisjon (Takk til Chris L).
