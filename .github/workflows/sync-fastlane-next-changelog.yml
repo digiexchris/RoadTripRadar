@@ -1,0 +1,95 @@
+name: Sync Fastlane next.txt
+
+# Keeps fastlane/metadata/android/en-US/changelogs/next.txt in sync with the `items`
+# of the `"next"` entry in app/src/main/assets/changelog.json whenever that file
+# changes on main. This lets Crowdin pick up the new English changelog and
+# translate it into other locales before a release is cut.
+#
+# The workflow only pushes next.txt when its contents would actually change, so
+# it will not loop on its own commits (and its own commits don't touch
+# changelog.json so the paths filter would skip them anyway).
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/src/main/assets/changelog.json
+
+concurrency:
+  group: sync-fastlane-next-changelog
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Regenerate English next.txt from pending changelog
+        id: regen
+        run: |
+          python3 <<'PY'
+          import json
+          import os
+          import pathlib
+          import sys
+
+          changelog_path = pathlib.Path('app/src/main/assets/changelog.json')
+          next_txt_path = pathlib.Path('fastlane/metadata/android/en-US/changelogs/next.txt')
+
+          data = json.loads(changelog_path.read_text())
+          releases = data.get('releases') or []
+          if not releases:
+              print('No releases in changelog.json; nothing to do.')
+              sys.exit(0)
+
+          top = releases[0]
+          if top.get('versionName') != 'next':
+              print('Top release is not a pending "next" entry; skipping.')
+              sys.exit(0)
+
+          items = [str(i).strip() for i in (top.get('items') or []) if str(i).strip()]
+          if not items:
+              print('Pending "next" entry has no items; skipping.')
+              sys.exit(0)
+
+          new_content = '\n'.join(items) + '\n'
+
+          if next_txt_path.is_file():
+              existing = next_txt_path.read_text()
+              if existing == new_content:
+                  print(f'{next_txt_path} already matches pending changelog; no change.')
+                  sys.exit(0)
+
+          next_txt_path.parent.mkdir(parents=True, exist_ok=True)
+          next_txt_path.write_text(new_content)
+          print(f'Wrote {len(items)} item(s) to {next_txt_path}')
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write('changed=true\n')
+          PY
+
+      - name: Commit and push regenerated next.txt
+        if: steps.regen.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fastlane/metadata/android/en-US/changelogs/next.txt
+          if git diff --cached --quiet; then
+            echo "No staged changes after regen; nothing to commit."
+            exit 0
+          fi
+          git commit -m "i18n: sync fastlane en-US next.txt from changelog.json"
+          git push origin HEAD:${{ github.ref_name }}
