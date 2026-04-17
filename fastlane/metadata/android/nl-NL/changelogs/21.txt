@@ -1,1 +1,1 @@
-Sta toe dat de grootte van de meeste widgets afzonderlijk kan worden aangepast
+Toestaan dat de grootte van de meeste widgets afzonderlijk wordt aangepast
