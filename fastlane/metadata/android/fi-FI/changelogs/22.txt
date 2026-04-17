@@ -1,1 +1,1 @@
-Lisää pikatoiminnot-painike, jotta pikatoiminnot-valikko on helpompi löytää
+Add a Quick Actions button to make the Quick Actions menu easier to find.
