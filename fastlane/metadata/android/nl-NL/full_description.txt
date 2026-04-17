@@ -2,10 +2,10 @@ RoadTripRadar is een kaartapp die situationeel bewustzijn en weer prioriteit gee
 
 Functies:
 - Afstandsringen gecentreerd op je locatie die zich aanpassen aan het zoomniveau.
-- Navigeer met behulp van de peiling naar je bestemming in plaats van starre stapsgewijze route-instructies. Perfect voor ontdekkingsreizigers en mensen die graag ronddwalen!
-- Live geanimeerde weer-radar van RainViewer met instelbare transparantie en afspeelknoppen. Perfect voor motorrijders die op tijd willen weten wanneer ze om een storm heen moeten rijden of extra uitrusting moeten aantrekken.
+- Navigeer met behulp van de peiling naar je bestemming in plaats van starre stapsgewijze route-instructies. Perfect for explorers and people who like to wander!
+- Live geanimeerde weer-radar van RainViewer met instelbare transparantie en afspeelknoppen. Perfect for motorcyclists who want notice to reroute around a storm or gear up.
 - Windsnelheid en -richting
-- Temperatuur en trend over 1 uur
-- Meerdere kaartstijlen: Licht, Donker, Auto en aangepaste kleuren voor beide.
+- Temperature and 1-hour trend
+- Multiple map styles: Light, Dark, Auto, and custom colors for either.
 - Snelheidsweergave met metrische en imperiale eenheden, met instelbare lettergrootte.
 - Open source, geen tracking, geen accounts, geen advertenties.
