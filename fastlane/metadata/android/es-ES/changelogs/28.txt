@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Se cambió el botón de reproducir/pausar/apagar para alternar entre reproducción y pausa con un toque. Mantén presionado para alternar entre encendido y apagado..
