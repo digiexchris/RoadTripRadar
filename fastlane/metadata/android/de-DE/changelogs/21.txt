@@ -1,1 +1,1 @@
-Erlaube, dass die Größe der meisten Widgets individuell angepasst werden kann
+Allow most widget sizes to be adjusted individually
