@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Fehler behoben: Die Kompass-Schaltfläche fixiert die Karte nicht mehr in der Nordausrichtung, wenn der Benutzer die Karte bewegt
