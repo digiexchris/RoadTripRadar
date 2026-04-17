@@ -1,1 +1,1 @@
-If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
+「周辺の場所」でカテゴリを選択している場合、アプリの起動時に自動的に表示されます。 その動作を無効にしたい場合は、「周辺の場所」メニューにあるスイッチでオフにできます。
