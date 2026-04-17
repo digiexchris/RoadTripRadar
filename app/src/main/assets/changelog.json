@@ -1,8 +1,8 @@
 {
   "releases": [
     {
-      "versionName": "next",
-      "versionCode": 99,
+      "versionName": "1.13.0",
+      "versionCode": 30,
       "showInApp": true,
       "items": [
         "First launch tutorial, and fix a bug preventing the use of approximate gps location (Thanks Chris L)."
