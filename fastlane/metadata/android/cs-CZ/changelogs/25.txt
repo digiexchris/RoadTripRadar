@@ -1,1 +1,1 @@
-Opravena chyba, kdy se šipka směru větru neotáčela spolu s mapou.
+Oprava šipky směru větru, která se neotáčela spolu s mapou.
