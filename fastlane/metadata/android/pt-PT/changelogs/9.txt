@@ -1,1 +1,1 @@
-Remover a configuração de assinatura para criar APKs não assinados para o F-Droid
+Remove signing config to build unsigned APKs for F-Droid
