@@ -1,1 +1,1 @@
-Horizontal layout, radar legend, and general UI improvements
+Vodorovné rozvržení, legenda radarového grafu a obecná vylepšení uživatelského rozhraní
