@@ -1,0 +1,1 @@
+Tutorial bij eerste keer starten, en een bug opgelost die het gebruik van een geschatte gps-locatie verhinderde (Bedankt Chris L).
