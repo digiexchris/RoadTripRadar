@@ -1,1 +1,1 @@
-Remediază săgeata direcției vântului care nu se rotește odată cu harta.
+Săgeata pentru direcția vântului nu se mai rotește odată cu harta.
