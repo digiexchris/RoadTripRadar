@@ -1,1 +1,1 @@
-Changed the play/pause/off button to toggle between playing and paused with a tap. Tap and hold to toggle between on and off..
+Ændrede knappen afspil/pause/sluk, så den skifter mellem afspilning og pause med et tryk. Tryk og hold for at skifte mellem tændt og slukket..
