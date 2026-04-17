@@ -1,1 +1,1 @@
-Siistitty F-Droid-rakennetta varten
+Cleaned up for F-Droid build
