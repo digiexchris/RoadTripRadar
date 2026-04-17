@@ -1,1 +1,1 @@
-Ryddet opp for F-Droid-bygg
+Cleaned up for F-Droid build
