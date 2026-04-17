@@ -1,1 +1,1 @@
-Salli useimpien pienoissovellusten koon säätäminen erikseen
+Salli useimpien pienoissovelmien koon säätäminen erikseen
