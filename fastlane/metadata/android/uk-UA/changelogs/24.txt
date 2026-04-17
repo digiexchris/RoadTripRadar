@@ -1,1 +1,1 @@
-Якщо у вас вибрано будь-які категорії в розділі "Місця поруч", вони автоматично відображатимуться під час запуску застосунку. Якщо ви хочете вимкнути таку поведінку, у меню "Місця поруч" є перемикач, щоб її вимкнути.
+If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
