@@ -14,10 +14,10 @@
     <string name="action_got_it">Selvä</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Sijaintilupa vaaditaan</string>
-    <string name="permission_location_body">Road Trip Radar needs access to your location to show where you are on the map. Precise location is recommended for best accuracy, but approximate location will also work. Tap Grant permission to continue, or Quit to exit the app.</string>
+    <string name="permission_location_body">Road Trip Radar tarvitsee pääsyn sijaintiisi voidakseen näyttää, missä olet kartalla. Paras tarkkuus saadaan käyttämällä tarkkaa sijaintia, mutta myös likimääräinen sijainti toimii. Jatka napauttamalla Myönnä lupa tai poistu sovelluksesta napauttamalla Lopeta.</string>
     <string name="permission_grant">Myönnä lupa</string>
-    <string name="permission_location_denied_title">Location required</string>
-    <string name="permission_location_denied_body">Road Trip Radar is designed to show the area around you while you drive, so it cannot function without location access. The app will now exit. You can enable location access in the system Settings and launch the app again.</string>
+    <string name="permission_location_denied_title">Sijainti vaaditaan</string>
+    <string name="permission_location_denied_body">Road Trip Radar on suunniteltu näyttämään ympärilläsi oleva alue ajon aikana, joten se ei voi toimia ilman sijainnin käyttöoikeutta. Sovellus suljetaan nyt. Voit ottaa sijainnin käyttöoikeuden käyttöön järjestelmän Asetuksissa ja käynnistää sovelluksen uudelleen.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Vieritä alas lukeaksesi loput, sitten voit hyväksyä.</string>
     <!-- Quit dialog -->
@@ -56,7 +56,7 @@
     <string name="action_show_timeline">Näytä aikajana</string>
     <!-- Help page -->
     <string name="help_documentation_info">Täydellinen dokumentaatio ja oikeudelliset tiedot ovat saatavilla alla olevista painikkeista.</string>
-    <string name="help_show_tutorial">Show Tutorial</string>
+    <string name="help_show_tutorial">Näytä opastus</string>
     <string name="help_terms">Käyttöehdot</string>
     <string name="help_radar_legend">Tutkan selite</string>
     <string name="help_documentation">Dokumentaatio</string>
@@ -65,45 +65,45 @@
     <string name="version_label">Versio %s</string>
     <string name="debug_preview_whats_new">Esikatsele uudet ominaisuudet (debug)</string>
     <!-- Tutorial -->
-    <string name="tutorial_action_next">Next</string>
-    <string name="tutorial_action_back">Back</string>
-    <string name="tutorial_action_skip">Skip</string>
-    <string name="tutorial_action_done">Got it</string>
-    <string name="tutorial_step_progress">Step %1$d of %2$d</string>
+    <string name="tutorial_action_next">Seuraava</string>
+    <string name="tutorial_action_back">Takaisin</string>
+    <string name="tutorial_action_skip">Ohita</string>
+    <string name="tutorial_action_done">Selvä</string>
+    <string name="tutorial_step_progress">Vaihe %1$d / %2$d</string>
     <!-- Tutorial: MAP group -->
-    <string name="tutorial_map_welcome_title">Welcome to Road Trip Radar</string>
-    <string name="tutorial_map_welcome_body">A quick tour of the map controls. Pinch to zoom, drag with two fingers up or down to tilt the map, and rotate two fingers to rotate it.</string>
-    <string name="tutorial_map_speed_title">Speedometer</string>
-    <string name="tutorial_map_speed_body">Your current speed, shown when GPS has a fix. Switch between km/h and mph in the System settings menu.</string>
-    <string name="tutorial_map_compass_title">Compass</string>
-    <string name="tutorial_map_compass_body">Tap once to lock the map to North up. Tap again to rotate the map to follow your bearing.</string>
-    <string name="tutorial_map_drop_pin_title">Drop a Pin</string>
-    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to drop a pin and navigate toward it.</string>
-    <string name="tutorial_map_zoom_out_title">Zoom Out</string>
-    <string name="tutorial_map_zoom_out_body">Tap to zoom out. You can also pinch the map with two fingers.</string>
-    <string name="tutorial_map_zoom_in_title">Zoom In</string>
-    <string name="tutorial_map_zoom_in_body">Tap to zoom in. You can also spread two fingers apart on the map.</string>
-    <string name="tutorial_map_weather_title">Weather Radar</string>
-    <string name="tutorial_map_weather_body">Tap to play or pause the radar animation. Tap and hold to turn the radar off entirely.</string>
-    <string name="tutorial_map_menu_title">Quick Actions Menu</string>
-    <string name="tutorial_map_menu_body">Opens the quick actions drawer with settings, themes, and points of interest.</string>
+    <string name="tutorial_map_welcome_title">Tervetuloa käyttämään Road Trip Radaria</string>
+    <string name="tutorial_map_welcome_body">Tässä on nopea esittely kartan hallintapainikkeista. Nipistä zoomataksesi, kallista karttaa vetämällä kahdella sormella ylös tai alas ja kierrä karttaa kiertämällä kahta sormea.</string>
+    <string name="tutorial_map_speed_title">Nopeusmittari</string>
+    <string name="tutorial_map_speed_body">Nykyinen nopeutesi näkyy, kun GPS-sijainti on saatavilla. Voit vaihtaa km/h- ja mph-yksiköiden välillä Järjestelmäasetukset-valikossa.</string>
+    <string name="tutorial_map_compass_title">Kompassi</string>
+    <string name="tutorial_map_compass_body">Napauta kerran lukitaksesi kartan pohjoinen ylhäällä -tilaan. Napauta uudelleen, niin kartta kääntyy kulkusuuntasi mukaan.</string>
+    <string name="tutorial_map_drop_pin_title">Lisää neula</string>
+    <string name="tutorial_map_drop_pin_body">Lisää neula kartalle ja navigoi sitä kohti napauttamalla mitä tahansa kohtaa kartalla pitkään.</string>
+    <string name="tutorial_map_zoom_out_title">Loitonna</string>
+    <string name="tutorial_map_zoom_out_body">Napauta loitontaaksesi. Voit myös nipistää karttaa kahdella sormella.</string>
+    <string name="tutorial_map_zoom_in_title">Lähennä</string>
+    <string name="tutorial_map_zoom_in_body">Napauta lähentääksesi. Voit myös levittää kahta sormea erilleen kartalla.</string>
+    <string name="tutorial_map_weather_title">Säätutka</string>
+    <string name="tutorial_map_weather_body">Napauta toistaaksesi tai keskeyttääksesi tutkakuvan animaation. Pidä painettuna poistaaksesi tutkan kokonaan käytöstä.</string>
+    <string name="tutorial_map_menu_title">Pikatoiminnot-valikko</string>
+    <string name="tutorial_map_menu_body">Avaa pikatoimintopaneelin, jossa ovat asetukset, teemat ja kiinnostavat kohteet.</string>
     <!-- Tutorial: MENU_MAIN group -->
-    <string name="tutorial_menu_weather_toggle_title">Weather Radar</string>
-    <string name="tutorial_menu_weather_toggle_body">Turn the weather radar overlay on or off.</string>
-    <string name="tutorial_menu_north_up_title">North Up</string>
-    <string name="tutorial_menu_north_up_body">Lock the map so North is always up, or let it rotate to follow your bearing.</string>
-    <string name="tutorial_menu_nearby_places_title">Nearby Places</string>
-    <string name="tutorial_menu_nearby_places_body">Pick which categories of points of interest (gas, food, lodging, etc.) to load onto the map.</string>
-    <string name="tutorial_menu_location_search_title">Location Search</string>
-    <string name="tutorial_menu_location_search_body">Search for an address or place name within the visible map area.</string>
-    <string name="tutorial_menu_submenu_map_title">Map Submenu</string>
-    <string name="tutorial_menu_submenu_map_body">Choose a map theme and tweak map-related settings like the center offset.</string>
-    <string name="tutorial_menu_submenu_weather_title">Weather Submenu</string>
-    <string name="tutorial_menu_submenu_weather_body">Toggle the wind/temperature widget, radar legend, and timeline, and adjust radar opacity and units.</string>
-    <string name="tutorial_menu_submenu_system_title">System Submenu</string>
-    <string name="tutorial_menu_submenu_system_body">Change language, widget sizes, units, screen behavior, and reset to defaults.</string>
-    <string name="tutorial_menu_submenu_help_title">Help &amp; Info</string>
-    <string name="tutorial_menu_submenu_help_body">Find documentation, terms and conditions, the changelog, and replay this tutorial.</string>
+    <string name="tutorial_menu_weather_toggle_title">Säätutka</string>
+    <string name="tutorial_menu_weather_toggle_body">Laita säätutkapeite käyttöön tai pois käytöstä.</string>
+    <string name="tutorial_menu_north_up_title">Pohjoinen ylhäällä</string>
+    <string name="tutorial_menu_north_up_body">Lukitse kartta niin, että pohjoinen on aina ylhäällä, tai anna sen kääntyä kulkusuuntasi mukaan.</string>
+    <string name="tutorial_menu_nearby_places_title">Lähellä olevat paikat</string>
+    <string name="tutorial_menu_nearby_places_body">Valitse, mitkä kiinnostavien kohteiden luokat (polttoaine, ruoka, majoitus jne.) ladataan kartalle.</string>
+    <string name="tutorial_menu_location_search_title">Sijaintihaku</string>
+    <string name="tutorial_menu_location_search_body">Hae osoitetta tai paikan nimeä näkyvältä kartta-alueelta.</string>
+    <string name="tutorial_menu_submenu_map_title">Kartta-alivalikko</string>
+    <string name="tutorial_menu_submenu_map_body">Valitse karttateema ja säädä karttaan liittyviä asetuksia, kuten keskikohdan siirtymää.</string>
+    <string name="tutorial_menu_submenu_weather_title">Sää-alivalikko</string>
+    <string name="tutorial_menu_submenu_weather_body">Näytä tai piilota tuuli-/lämpötilasovellusosa, tutkan selite ja aikajana sekä säädä tutkan peittävyyttä ja yksiköitä.</string>
+    <string name="tutorial_menu_submenu_system_title">Järjestelmä-alivalikko</string>
+    <string name="tutorial_menu_submenu_system_body">Vaihda kieli, pienoissovellusten koot, yksiköt ja näytön toiminta sekä palauta oletusasetukset.</string>
+    <string name="tutorial_menu_submenu_help_title">Ohje &amp; tiedot</string>
+    <string name="tutorial_menu_submenu_help_body">Löydä dokumentaatio, ehdot, muutosloki ja tämän opastuksen uudelleentoisto.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Keskitä uudelleen</string>
     <string name="fab_retry_failed">Yritä epäonnistuneet uudelleen</string>
