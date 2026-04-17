@@ -1,5 +1,5 @@
-- Förbättrad inläsningsprestanda för väderradar-rutor (förinläser alla bildrutor)
-- Kompassknappen växlar nu mellan nord upp och föregående riktning
-- Standardkartstilen har ändrats till Color Dark för nya installationer
+- Förbättrad laddningsprestanda för väderradarrutor (förladdar alla bildrutor)
+- Kompassknappen växlar nu mellan nord upp och föregående kurs
+- Standardkartstil ändrad till Color Dark för nya installationer
 - Lade till Fastlane-metadata för F-Droid
-- Tog bort pluginen foojay-resolver för kompatibilitet med F-Droid
+- Tog bort foojay-resolver-plugin för kompatibilitet med F-Droid
