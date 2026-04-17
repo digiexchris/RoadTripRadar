@@ -1,1 +1,1 @@
-Allow most widget sizes to be adjusted individually
+Ermöglicht die individuelle Anpassung der Größe der meisten Widgets
