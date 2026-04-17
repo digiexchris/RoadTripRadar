@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Corrige o botão Bússola que não travava o mapa em orientação norte para cima quando o usuário se movia
