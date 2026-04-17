@@ -1,1 +1,1 @@
-Oprava, kdy tlačítko Kompas při pohybu uživatele nezamklo mapu do orientace sever nahoře
+Fix Compass button not locking the map to north-up when the user moves
