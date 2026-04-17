@@ -1,1 +1,1 @@
-Tillåt att de flesta widgetstorlekar kan justeras individuellt
+Allow most widget sizes to be adjusted individually
