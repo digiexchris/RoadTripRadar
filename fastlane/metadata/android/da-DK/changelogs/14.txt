@@ -1,1 +1,1 @@
-Fix Compass button not locking the map to north-up when the user moves
+Ret fejl, hvor Kompas-knappen ikke låser kortet til nord-op, når brugeren flytter det
