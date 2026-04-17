@@ -1,1 +1,1 @@
-Signaturkonfiguration entfernen, um unsignierte APKs für F-Droid zu erstellen
+Remove signing config to build unsigned APKs for F-Droid
