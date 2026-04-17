@@ -1,0 +1,1 @@
+Tutorial al primo avvio e correzione di un bug che impediva l'uso della posizione GPS approssimativa (Grazie a Chris L).
