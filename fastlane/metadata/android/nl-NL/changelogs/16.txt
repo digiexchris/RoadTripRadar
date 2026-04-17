@@ -1,1 +1,1 @@
-Opgelost dat de kompas-knop de kaart niet op noord-boven vergrendelde wanneer de gebruiker de kaart verplaatste
+Corrigeer dat de knop Kompas de kaart niet op noord-boven vergrendelt wanneer de gebruiker beweegt
