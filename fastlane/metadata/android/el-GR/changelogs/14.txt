@@ -1,1 +1,1 @@
-Διόρθωση του προβλήματος όπου το Κουμπί Πυξίδας δεν κλείδωνε τον χάρτη σε προβολή με τον βορρά προς τα επάνω όταν ο χρήστης μετακινείται
+Fix Compass button not locking the map to north-up when the user moves
