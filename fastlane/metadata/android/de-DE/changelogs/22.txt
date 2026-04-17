@@ -1,1 +1,1 @@
-Fügen Sie eine Schaltfläche für Schnellaktionen hinzu, damit das Menü für Schnellaktionen leichter zu finden ist
+Fügen Sie eine Schaltfläche für Schnellaktionen hinzu, damit das Menü „Schnellaktionen“ leichter zu finden ist.
