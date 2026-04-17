@@ -1,1 +1,1 @@
-Pipeline tweaks for F-Droid
+Poprawki potoku dla F-Droid
