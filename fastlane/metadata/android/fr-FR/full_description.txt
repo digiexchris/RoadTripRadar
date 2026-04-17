@@ -2,10 +2,10 @@ RoadTripRadar est une application cartographique qui privilégie la conscience d
 
 Fonctionnalités :
 - Anneaux de distance centrés sur votre position et s’adaptant au niveau de zoom.
-- Naviguez en utilisant le cap vers votre destination au lieu d’instructions rigides virage par virage. Perfect for explorers and people who like to wander!
-- Radar météo animé en direct de RainViewer avec opacité réglable et commandes de lecture. Perfect for motorcyclists who want notice to reroute around a storm or gear up.
+- Naviguez en utilisant le cap vers votre destination au lieu d’instructions rigides virage par virage. Parfait pour les explorateurs et les personnes qui aiment vagabonder !
+- Radar météo animé en direct de RainViewer avec opacité réglable et commandes de lecture. Parfait pour les motocyclistes qui veulent être avertis pour contourner une tempête ou s'équiper en conséquence.
 - Vitesse et direction du vent
-- Temperature and 1-hour trend
-- Multiple map styles: Light, Dark, Auto, and custom colors for either.
+- Température et tendance sur 1 heure
+- Plusieurs styles de carte : clair, sombre, auto, et couleurs personnalisées pour chacun.
 - Affichage de la vitesse avec unités métriques et impériales, taille de police réglable.
 - Open source, sans suivi, sans compte, sans publicité.
