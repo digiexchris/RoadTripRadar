@@ -14,10 +14,10 @@
     <string name="action_got_it">Skjønner</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Plasseringstillatelse kreves</string>
-    <string name="permission_location_body">Road Trip Radar needs access to your location to show where you are on the map. Precise location is recommended for best accuracy, but approximate location will also work. Tap Grant permission to continue, or Quit to exit the app.</string>
+    <string name="permission_location_body">Road Trip Radar trenger tilgang til posisjonen din for å vise hvor du er på kartet. Nøyaktig posisjon anbefales for best mulig nøyaktighet, men omtrentlig posisjon vil også fungere. Trykk på Gi tillatelse for å fortsette, eller Avslutt for å lukke appen.</string>
     <string name="permission_grant">Gi tillatelse</string>
-    <string name="permission_location_denied_title">Location required</string>
-    <string name="permission_location_denied_body">Road Trip Radar is designed to show the area around you while you drive, so it cannot function without location access. The app will now exit. You can enable location access in the system Settings and launch the app again.</string>
+    <string name="permission_location_denied_title">Posisjon kreves</string>
+    <string name="permission_location_denied_body">Road Trip Radar er laget for å vise området rundt deg mens du kjører, så den kan ikke fungere uten tilgang til posisjonen din. Appen avsluttes nå. Du kan aktivere posisjonstilgang i systeminnstillingene og starte appen på nytt.</string>
     <!-- Terms overlay -->
     <string name="terms_scroll_hint">Rull ned for å lese resten, så kan du godta.</string>
     <!-- Quit dialog -->
@@ -56,7 +56,7 @@
     <string name="action_show_timeline">Vis tidslinje</string>
     <!-- Help page -->
     <string name="help_documentation_info">Full dokumentasjon og juridisk informasjon er tilgjengelig via knappene nedenfor.</string>
-    <string name="help_show_tutorial">Show Tutorial</string>
+    <string name="help_show_tutorial">Vis veiledning</string>
     <string name="help_terms">Vilkår &amp; betingelser</string>
     <string name="help_radar_legend">Radarforklaring</string>
     <string name="help_documentation">Dokumentasjon</string>
@@ -65,45 +65,45 @@
     <string name="version_label">Versjon %s</string>
     <string name="debug_preview_whats_new">Forhåndsvis hva som er nytt (debug)</string>
     <!-- Tutorial -->
-    <string name="tutorial_action_next">Next</string>
-    <string name="tutorial_action_back">Back</string>
-    <string name="tutorial_action_skip">Skip</string>
-    <string name="tutorial_action_done">Got it</string>
-    <string name="tutorial_step_progress">Step %1$d of %2$d</string>
+    <string name="tutorial_action_next">Neste</string>
+    <string name="tutorial_action_back">Tilbake</string>
+    <string name="tutorial_action_skip">Hopp over</string>
+    <string name="tutorial_action_done">Skjønner</string>
+    <string name="tutorial_step_progress">Trinn %1$d av %2$d</string>
     <!-- Tutorial: MAP group -->
-    <string name="tutorial_map_welcome_title">Welcome to Road Trip Radar</string>
-    <string name="tutorial_map_welcome_body">A quick tour of the map controls. Pinch to zoom, drag with two fingers up or down to tilt the map, and rotate two fingers to rotate it.</string>
+    <string name="tutorial_map_welcome_title">Velkommen til Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">En rask omvisning i kartkontrollene. Klyp for å zoome, dra med to fingre opp eller ned for å vippe kartet, og roter to fingre for å rotere det.</string>
     <string name="tutorial_map_speed_title">Speedometer</string>
-    <string name="tutorial_map_speed_body">Your current speed, shown when GPS has a fix. Switch between km/h and mph in the System settings menu.</string>
-    <string name="tutorial_map_compass_title">Compass</string>
-    <string name="tutorial_map_compass_body">Tap once to lock the map to North up. Tap again to rotate the map to follow your bearing.</string>
-    <string name="tutorial_map_drop_pin_title">Drop a Pin</string>
-    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to drop a pin and navigate toward it.</string>
-    <string name="tutorial_map_zoom_out_title">Zoom Out</string>
-    <string name="tutorial_map_zoom_out_body">Tap to zoom out. You can also pinch the map with two fingers.</string>
-    <string name="tutorial_map_zoom_in_title">Zoom In</string>
-    <string name="tutorial_map_zoom_in_body">Tap to zoom in. You can also spread two fingers apart on the map.</string>
-    <string name="tutorial_map_weather_title">Weather Radar</string>
-    <string name="tutorial_map_weather_body">Tap to play or pause the radar animation. Tap and hold to turn the radar off entirely.</string>
-    <string name="tutorial_map_menu_title">Quick Actions Menu</string>
-    <string name="tutorial_map_menu_body">Opens the quick actions drawer with settings, themes, and points of interest.</string>
+    <string name="tutorial_map_speed_body">Din nåværende hastighet vises når GPS har låst posisjonen. Bytt mellom km/t og mph i menyen for systeminnstillinger.</string>
+    <string name="tutorial_map_compass_title">Kompass</string>
+    <string name="tutorial_map_compass_body">Trykk én gang for å låse kartet med nord opp. Trykk igjen for å rotere kartet slik at det følger kursen din.</string>
+    <string name="tutorial_map_drop_pin_title">Slipp en nål</string>
+    <string name="tutorial_map_drop_pin_body">Trykk og hold hvor som helst på kartet for å slippe en nål og navigere mot den.</string>
+    <string name="tutorial_map_zoom_out_title">Zoom ut</string>
+    <string name="tutorial_map_zoom_out_body">Trykk for å zoome ut. Du kan også klype på kartet med to fingre.</string>
+    <string name="tutorial_map_zoom_in_title">Zoom inn</string>
+    <string name="tutorial_map_zoom_in_body">Trykk for å zoome inn. Du kan også spre to fingre fra hverandre på kartet.</string>
+    <string name="tutorial_map_weather_title">Værradar</string>
+    <string name="tutorial_map_weather_body">Trykk for å spille av eller sette radaranimasjonen på pause. Trykk og hold for å slå av radaren helt.</string>
+    <string name="tutorial_map_menu_title">Meny for hurtighandlinger</string>
+    <string name="tutorial_map_menu_body">Åpner hurtighandlingspanelet med innstillinger, temaer og interessepunkter.</string>
     <!-- Tutorial: MENU_MAIN group -->
-    <string name="tutorial_menu_weather_toggle_title">Weather Radar</string>
-    <string name="tutorial_menu_weather_toggle_body">Turn the weather radar overlay on or off.</string>
-    <string name="tutorial_menu_north_up_title">North Up</string>
-    <string name="tutorial_menu_north_up_body">Lock the map so North is always up, or let it rotate to follow your bearing.</string>
-    <string name="tutorial_menu_nearby_places_title">Nearby Places</string>
-    <string name="tutorial_menu_nearby_places_body">Pick which categories of points of interest (gas, food, lodging, etc.) to load onto the map.</string>
-    <string name="tutorial_menu_location_search_title">Location Search</string>
-    <string name="tutorial_menu_location_search_body">Search for an address or place name within the visible map area.</string>
-    <string name="tutorial_menu_submenu_map_title">Map Submenu</string>
-    <string name="tutorial_menu_submenu_map_body">Choose a map theme and tweak map-related settings like the center offset.</string>
-    <string name="tutorial_menu_submenu_weather_title">Weather Submenu</string>
-    <string name="tutorial_menu_submenu_weather_body">Toggle the wind/temperature widget, radar legend, and timeline, and adjust radar opacity and units.</string>
-    <string name="tutorial_menu_submenu_system_title">System Submenu</string>
-    <string name="tutorial_menu_submenu_system_body">Change language, widget sizes, units, screen behavior, and reset to defaults.</string>
-    <string name="tutorial_menu_submenu_help_title">Help &amp; Info</string>
-    <string name="tutorial_menu_submenu_help_body">Find documentation, terms and conditions, the changelog, and replay this tutorial.</string>
+    <string name="tutorial_menu_weather_toggle_title">Værradar</string>
+    <string name="tutorial_menu_weather_toggle_body">Slå værradaroverlegget av eller på.</string>
+    <string name="tutorial_menu_north_up_title">Nord opp</string>
+    <string name="tutorial_menu_north_up_body">Lås kartet slik at nord alltid er opp, eller la det rotere for å følge kursen din.</string>
+    <string name="tutorial_menu_nearby_places_title">Steder i nærheten</string>
+    <string name="tutorial_menu_nearby_places_body">Velg hvilke kategorier av interessepunkter (drivstoff, mat, overnatting osv.) som skal lastes inn på kartet.</string>
+    <string name="tutorial_menu_location_search_title">Stedssøk</string>
+    <string name="tutorial_menu_location_search_body">Søk etter en adresse eller et stedsnavn innenfor det synlige kartområdet.</string>
+    <string name="tutorial_menu_submenu_map_title">Kart-undermeny</string>
+    <string name="tutorial_menu_submenu_map_body">Velg et karttema og juster kartrelaterte innstillinger som sentrumsforskyvning.</string>
+    <string name="tutorial_menu_submenu_weather_title">Vær-undermeny</string>
+    <string name="tutorial_menu_submenu_weather_body">Slå vind-/temperatur-widgeten, radarlegend og tidslinje av eller på, og juster radarens opasitet og enheter.</string>
+    <string name="tutorial_menu_submenu_system_title">System-undermeny</string>
+    <string name="tutorial_menu_submenu_system_body">Endre språk, widgetstørrelser, enheter, skjermatferd, og tilbakestill til standardinnstillingene.</string>
+    <string name="tutorial_menu_submenu_help_title">Hjelp &amp; info</string>
+    <string name="tutorial_menu_submenu_help_body">Finn dokumentasjon, vilkår og betingelser, endringsloggen, og spill av denne veiledningen på nytt.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Sentrer på nytt</string>
     <string name="fab_retry_failed">Prøv mislykkede på nytt</string>
