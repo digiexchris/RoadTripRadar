@@ -1,1 +1,1 @@
-Useita käyttöliittymäkorjauksia GPS- ja verkkotilan kuvakkeisiin
+Several UI fixes for GPS and network status icons
