@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+Lägg till en knapp för Snabbåtgärder så att menyn Snabbåtgärder blir lättare att hitta.
