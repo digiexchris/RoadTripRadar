@@ -1,5 +1,5 @@
-- Performanță îmbunătățită la încărcarea plăcilor radarului meteo (preîncarcă toate cadrele)
+- Performanță îmbunătățită la încărcarea dalelor radarului meteo (preîncărcarea tuturor cadrelor)
 - Butonul busolă comută acum între orientarea spre nord și direcția anterioară
 - Stilul implicit al hărții a fost schimbat în Color Dark pentru instalările noi
-- Au fost adăugate metadatele Fastlane pentru F-Droid
+- Au fost adăugate metadate Fastlane pentru F-Droid
 - Pluginul foojay-resolver a fost eliminat pentru compatibilitate cu F-Droid
