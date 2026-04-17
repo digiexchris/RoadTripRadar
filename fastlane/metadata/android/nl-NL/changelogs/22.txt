@@ -1,1 +1,1 @@
-Add a Quick Actions button to make the Quick Actions menu easier to find.
+Voeg een knop voor Snelle acties toe, zodat het menu Snelle acties gemakkelijker te vinden is.
