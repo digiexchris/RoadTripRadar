@@ -1,1 +1,1 @@
-Ritocchi alla pipeline per F-Droid
+Pipeline tweaks for F-Droid
