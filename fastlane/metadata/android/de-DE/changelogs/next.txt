@@ -1,1 +1,1 @@
-First launch tutorial, and fix a bug preventing the use of approximate gps location (Thanks Chris L).
+Tutorial beim ersten Start und Behebung eines Fehlers, der die Verwendung des ungefähren GPS-Standorts verhinderte (Danke, Chris L).
