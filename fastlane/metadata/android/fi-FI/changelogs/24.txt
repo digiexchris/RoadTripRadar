@@ -1,1 +1,1 @@
-Jos olet valinnut luokkia Lähellä olevat paikat -toiminnossa, ne alkavat näkyä automaattisesti, kun sovellus käynnistyy. Jos haluat poistaa tämän toiminnan käytöstä, voit kytkeä sen pois päältä Lähellä olevat paikat -valikon kytkimellä.
+If you have any categories selected in Nearby Places, they will automatically appear when the app starts. If you want to disable that behavior, there is a switch on the Nearby Places menu to turn it off.
