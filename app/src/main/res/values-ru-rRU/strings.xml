@@ -14,23 +14,31 @@
     <string name="action_got_it">Понятно</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Требуется доступ к местоположению</string>
-    <string name="permission_location_body">Road Trip Radar требуется доступ к вашему точному местоположению, чтобы показывать ваше положение на карте. Нажмите «Разрешить доступ», чтобы продолжить, или «Выйти», чтобы закрыть приложение.</string>
+    <string name="permission_location_body">Road Trip Radar нужен доступ к вашему точному местоположению, чтобы показать, где вы находитесь на карте. Нажмите «Разрешить доступ», чтобы продолжить, или «Выйти», чтобы закрыть приложение.</string>
     <string name="permission_grant">Разрешить доступ</string>
     <!-- Terms overlay -->
-    <string name="terms_scroll_hint">Прокрутите вниз, чтобы прочитать остальное, затем сможете принять условия.</string>
+    <string name="terms_scroll_hint">Прокрутите вниз, чтобы прочитать остальное, затем вы сможете принять.</string>
     <!-- Quit dialog -->
     <string name="dialog_quit_title">Выход</string>
     <string name="dialog_quit_message">Вы уверены, что хотите выйти?</string>
     <!-- Reset dialog -->
-    <string name="dialog_reset_title">Сбросить настройки по умолчанию</string>
+    <string name="dialog_reset_title">Сброс к настройкам по умолчанию</string>
     <string name="dialog_reset_message">Все настройки будут сброшены до значений по умолчанию.</string>
     <!-- Actions drawer - main actions -->
-    <string name="action_nearby_places">Места поблизости</string>
+    <string name="action_nearby_places">Места рядом</string>
     <string name="action_clear_places">Очистить места</string>
     <string name="action_location_search">Поиск места</string>
     <string name="action_clear_target">Очистить цель</string>
-    <string name="action_track_bearing">Следовать по курсу</string>
+    <string name="action_track_bearing">По курсу</string>
     <string name="action_track_north">Север сверху</string>
+    <string name="action_radar_on">Радар включён</string>
+    <string name="action_radar_off">Радар выключен</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Метеорадар</string>
+    <string name="toggle_north_up">Север сверху</string>
+    <string name="toggle_wind_temp">Ветер &amp; темп.</string>
+    <string name="toggle_legend">Легенда</string>
+    <string name="toggle_timeline">Шкала времени</string>
     <!-- Actions drawer - sub menus -->
     <string name="menu_map">Карта</string>
     <string name="menu_weather">Погода</string>
@@ -38,15 +46,15 @@
     <string name="menu_help">Справка</string>
     <string name="menu_help_info">Справка &amp; информация</string>
     <!-- Weather toggles -->
-    <string name="action_wind_temp_off">Ветер &amp; температура выкл.</string>
-    <string name="action_wind_temp_on">Ветер &amp; температура вкл.</string>
+    <string name="action_wind_temp_off">Ветер и темп. выкл.</string>
+    <string name="action_wind_temp_on">Ветер и темп. вкл.</string>
     <string name="action_hide_legend">Скрыть легенду</string>
     <string name="action_show_legend">Показать легенду</string>
     <string name="action_hide_timeline">Скрыть шкалу времени</string>
     <string name="action_show_timeline">Показать шкалу времени</string>
     <!-- Help page -->
     <string name="help_documentation_info">Полная документация и правовая информация доступны по кнопкам ниже.</string>
-    <string name="help_terms">Условия &amp; положения</string>
+    <string name="help_terms">Условия использования</string>
     <string name="help_radar_legend">Легенда радара</string>
     <string name="help_documentation">Документация</string>
     <string name="help_privacy_policy">Политика конфиденциальности</string>
@@ -55,14 +63,14 @@
     <string name="debug_preview_whats_new">Предпросмотр нововведений (отладка)</string>
     <!-- MapFabs -->
     <string name="fab_recenter">По центру</string>
-    <string name="fab_retry_failed">Повторить неудавшиеся</string>
-    <string name="cd_recenter_location">Центрировать по местоположению</string>
+    <string name="fab_retry_failed">Повторить неудачные</string>
+    <string name="cd_recenter_location">Повторно центрировать по местоположению</string>
     <string name="cd_gps_fix_acquired">GPS-сигнал получен</string>
     <string name="cd_waiting_gps_fix">Ожидание GPS-сигнала</string>
     <string name="cd_zoom_out">Уменьшить</string>
     <string name="cd_zoom_in">Увеличить</string>
     <string name="cd_quick_actions">Быстрые действия</string>
-    <string name="cd_weather_off">Погодный радар выключен</string>
+    <string name="cd_weather_off">Метеорадар выключен</string>
     <string name="cd_weather_pause">Пауза радара</string>
     <string name="cd_weather_play">Запустить радар</string>
     <string name="cd_no_network">Нет сети</string>
@@ -70,10 +78,10 @@
     <string name="cd_cellular">Мобильная сеть</string>
     <string name="cd_unknown_network">Неизвестная сеть</string>
     <!-- Weather settings -->
-    <string name="settings_weather_radar_opacity">Непрозрачность погодного радара</string>
+    <string name="settings_weather_radar_opacity">Прозрачность метеорадара</string>
     <string name="settings_wind_speed_units">Единицы скорости ветра</string>
     <string name="settings_temperature_units">Единицы температуры</string>
-    <string name="settings_weather_widget_size">Размер виджета погоды</string>
+    <string name="settings_weather_widget_size">Размер погодного виджета</string>
     <string name="unit_kmh">км/ч</string>
     <string name="unit_mph">миль/ч</string>
     <string name="unit_knots">уз</string>
@@ -82,16 +90,16 @@
     <string name="unit_kelvin">K</string>
     <!-- Map settings -->
     <string name="settings_speed_distance_units">Единицы скорости/расстояния</string>
-    <string name="settings_metric">Метрические</string>
+    <string name="settings_metric">Метрическая</string>
     <string name="settings_imperial">Имперские</string>
     <string name="settings_map_center_offset_portrait">Смещение центра карты (портрет)</string>
     <string name="settings_map_center_offset_landscape">Смещение центра карты (альбомная)</string>
-    <string name="settings_places_icon_opacity">Непрозрачность значков мест</string>
+    <string name="settings_places_icon_opacity">Прозрачность значков мест</string>
     <string name="theme_current">Тема: %s</string>
     <string name="action_choose_theme">Выбрать тему</string>
     <!-- System settings -->
     <string name="settings_display">Экран</string>
-    <string name="settings_status_icon_opacity">Непрозрачность значка статуса</string>
+    <string name="settings_status_icon_opacity">Прозрачность значков состояния</string>
     <string name="settings_speedometer_size">Размер спидометра</string>
     <string name="settings_compass_size">Размер компаса</string>
     <string name="settings_nav_widget_size">Размер виджета навигации</string>
@@ -103,11 +111,11 @@
     <string name="theme_map_theme">Тема карты</string>
     <string name="theme_auto">Авто</string>
     <string name="theme_customize_maputnik">Настроить в Maputnik</string>
-    <string name="theme_overwrite_custom_light">Перезаписать пользовательскую светлую</string>
-    <string name="theme_use_as_custom_light_base">Использовать как базу для пользовательской светлой</string>
-    <string name="theme_overwrite_custom_dark">Перезаписать пользовательскую тёмную</string>
-    <string name="theme_use_as_custom_dark_base">Использовать как базу для пользовательской тёмной</string>
-    <string name="theme_use_in_auto_mode">Использовать в авторежиме</string>
+    <string name="theme_overwrite_custom_light">Перезаписать Custom Light</string>
+    <string name="theme_use_as_custom_light_base">Использовать как основу для Custom Light</string>
+    <string name="theme_overwrite_custom_dark">Перезаписать Custom Dark</string>
+    <string name="theme_use_as_custom_dark_base">Использовать как основу для Custom Dark</string>
+    <string name="theme_use_in_auto_mode">Использовать в режиме «Авто»</string>
     <string name="theme_action_edit">Изменить</string>
     <string name="theme_action_save">Сохранить</string>
     <string name="theme_action_maputnik">Maputnik</string>
@@ -127,7 +135,7 @@
     <string name="color_editor_create_from">Создать из %s</string>
     <string name="color_editor_edit_colors">Изменить цвета: %s</string>
     <string name="color_editor_preview">Предпросмотр</string>
-    <string name="color_editor_hex">HEX</string>
+    <string name="color_editor_hex">Hex</string>
     <string name="cd_collapse">Свернуть</string>
     <string name="cd_expand">Развернуть</string>
     <!-- POI search dialog -->
@@ -136,21 +144,21 @@
     <string name="search_address_placeholder">Адрес или название места</string>
     <string name="search_searching">Поиск…</string>
     <!-- POI category picker -->
-    <string name="poi_autoload_title">Автозагрузка мест поблизости</string>
+    <string name="poi_autoload_title">Автозагрузка мест рядом</string>
     <string name="poi_autoload_description">Начинать загрузку ближайших мест при запуске приложения</string>
     <string name="poi_count">%1$d из %2$d</string>
     <string name="action_search_visible_area">Искать в видимой области</string>
     <!-- Tapped POI popup -->
-    <string name="action_navigate_here">Построить маршрут сюда</string>
+    <string name="action_navigate_here">Проложить маршрут сюда</string>
     <string name="cd_close">Закрыть</string>
     <!-- Nav widget -->
-    <string name="cd_direction_to_target">Направление к целевому месту</string>
+    <string name="cd_direction_to_target">Направление к целевому местоположению</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Что нового</string>
     <string name="changelog_title">Список изменений</string>
     <string name="changelog_no_entries">Нет записей в списке изменений.</string>
     <!-- Weather legend -->
-    <string name="legend_overcast">Сплошная облачность</string>
+    <string name="legend_overcast">Пасмурно</string>
     <string name="legend_drizzle">Морось</string>
     <string name="legend_rain_light">Дождь?</string>
     <string name="legend_rain_moderate">Дождь.</string>
@@ -169,7 +177,7 @@
     <string name="legend_detail_rain">Дождь</string>
     <string name="legend_detail_hail">Град</string>
     <string name="legend_detail_snow">Снег</string>
-    <string name="legend_detail_overcast">Сплошная облачность</string>
+    <string name="legend_detail_overcast">Пасмурно</string>
     <string name="legend_detail_drizzle">Морось</string>
     <string name="legend_detail_light_rain">Слабый дождь</string>
     <string name="legend_detail_moderate_rain">Умеренный дождь</string>
@@ -187,7 +195,7 @@
     <string name="cd_wind_direction">Направление ветра</string>
     <!-- POI category labels -->
     <string name="poi_gas_station">АЗС</string>
-    <string name="poi_ev_charging">Зарядка для электромобилей</string>
+    <string name="poi_ev_charging">Зарядка EV</string>
     <string name="poi_restaurant">Ресторан</string>
     <string name="poi_fast_food">Фастфуд</string>
     <string name="poi_cafe">Кафе / кофе</string>
@@ -204,7 +212,7 @@
     <string name="poi_atm">Банкомат</string>
     <string name="poi_bank">Банк</string>
     <string name="poi_post_office">Почта</string>
-    <string name="poi_car_repair">Авторемонт</string>
+    <string name="poi_car_repair">Автосервис</string>
     <string name="poi_car_wash">Автомойка</string>
     <string name="poi_laundry">Прачечная</string>
     <string name="poi_toilets">Туалеты</string>
@@ -219,7 +227,7 @@
     <string name="style_liberty">Liberty</string>
     <string name="style_dark">Тёмная</string>
     <string name="style_dark_small_roads">Тёмная (малые дороги)</string>
-    <string name="style_custom_light">Пользовательская светлая</string>
-    <string name="style_custom_dark">Пользовательская тёмная</string>
+    <string name="style_custom_light">Custom Light</string>
+    <string name="style_custom_dark">Custom Dark</string>
     <string name="style_auto">Авто</string>
 </resources>
