@@ -16,7 +16,7 @@ Do you wish you could see what weather was coming up ahead so you could decide t
 
 <a href="https://play.google.com/store/apps/details?id=ca.voiditswarranty.roadtripradar">
   <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-       alt="Get it on Google Play" height="60">
+       alt="Get it on Google Play" height="80">
 </a>
 
 [Latest Releases](https://github.com/digiexchris/RoadTripRadar/releases)
