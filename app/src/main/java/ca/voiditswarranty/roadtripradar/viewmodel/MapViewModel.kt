@@ -35,6 +35,8 @@ import ca.voiditswarranty.roadtripradar.model.SearchResult
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialGroup
+import ca.voiditswarranty.roadtripradar.ui.tutorial.stepsFor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -255,6 +257,14 @@ class MapViewModel(
     var showTerms by mutableStateOf(false)
         private set
     var termsNeedAcceptance by mutableStateOf(false)
+        private set
+
+    // Tutorial
+    var tutorialActiveGroup by mutableStateOf<TutorialGroup?>(null)
+        private set
+    var tutorialStepIndex by mutableIntStateOf(0)
+        private set
+    var completedTutorialGroups by mutableStateOf(prefsRepo.completedTutorialGroups)
         private set
 
     // Theme selector
@@ -628,6 +638,78 @@ class MapViewModel(
 
     fun dismissTerms() {
         showTerms = false
+    }
+
+    // --- Tutorial ---
+
+    fun isTutorialGroupCompleted(group: TutorialGroup): Boolean =
+        completedTutorialGroups.contains(group.name)
+
+    fun startTutorialIfNotCompleted(group: TutorialGroup) {
+        if (tutorialActiveGroup != null) return
+        if (isTutorialGroupCompleted(group)) return
+        tutorialActiveGroup = group
+        tutorialStepIndex = 0
+    }
+
+    fun startTutorial(group: TutorialGroup) {
+        tutorialActiveGroup = group
+        tutorialStepIndex = 0
+    }
+
+    fun tutorialNext() {
+        val group = tutorialActiveGroup ?: return
+        val steps = stepsFor(group)
+        val next = tutorialStepIndex + 1
+        if (next >= steps.size) {
+            markTutorialGroupCompleted(group)
+            tutorialActiveGroup = null
+            tutorialStepIndex = 0
+        } else {
+            tutorialStepIndex = next
+        }
+    }
+
+    fun tutorialBack() {
+        if (tutorialActiveGroup == null) return
+        tutorialStepIndex = (tutorialStepIndex - 1).coerceAtLeast(0)
+    }
+
+    fun skipTutorial() {
+        val group = tutorialActiveGroup ?: return
+        markTutorialGroupCompleted(group)
+        tutorialActiveGroup = null
+        tutorialStepIndex = 0
+    }
+
+    /**
+     * Clears the active tutorial without persisting completion. Used when the context
+     * for the active tutorial disappears (e.g. the drawer navigates to a submenu while
+     * MENU_MAIN is running). The tutorial can fire again on its next trigger.
+     */
+    fun cancelTutorial(group: TutorialGroup) {
+        if (tutorialActiveGroup == group) {
+            tutorialActiveGroup = null
+            tutorialStepIndex = 0
+        }
+    }
+
+    private fun markTutorialGroupCompleted(group: TutorialGroup) {
+        val updated = completedTutorialGroups + group.name
+        completedTutorialGroups = updated
+        prefsRepo.completedTutorialGroups = updated
+    }
+
+    /**
+     * Clears all completed tutorial groups and starts the MAP group from the beginning.
+     * If the user later opens the actions drawer, the MENU_MAIN group will fire on its
+     * own trigger since it is no longer marked completed.
+     */
+    fun replayTutorials() {
+        completedTutorialGroups = emptySet()
+        prefsRepo.completedTutorialGroups = emptySet()
+        closeActionsDrawer()
+        startTutorial(TutorialGroup.MAP)
     }
 
     // --- Theme selector ---

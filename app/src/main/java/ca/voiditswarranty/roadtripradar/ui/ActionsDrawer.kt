@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -82,6 +83,10 @@ import ca.voiditswarranty.roadtripradar.BuildConfig
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.model.MapStyle
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialAnchors
+import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialGroup
+import ca.voiditswarranty.roadtripradar.ui.tutorial.stepsFor
+import ca.voiditswarranty.roadtripradar.ui.tutorial.tutorialAnchor
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private data class DrawerAction(
@@ -91,6 +96,8 @@ private data class DrawerAction(
     val onClick: () -> Unit,
     /** When non-null, this cell renders as a toggle control reflecting the given state. */
     val toggleState: Boolean? = null,
+    /** When non-null, registers this cell's bounds with the tutorial anchors state. */
+    val tutorialAnchorId: String? = null,
 )
 
 private enum class ActionsDrawerPage { Main, Map, Weather, System, Help }
@@ -111,6 +118,15 @@ fun ActionsDrawer(
         } else {
             drawerPage = ActionsDrawerPage.Main
             showQuitConfirm = false
+            vm.cancelTutorial(TutorialGroup.MENU_MAIN)
+        }
+    }
+
+    LaunchedEffect(vm.showActionsDrawer, drawerPage) {
+        if (vm.showActionsDrawer && drawerPage == ActionsDrawerPage.Main) {
+            vm.startTutorialIfNotCompleted(TutorialGroup.MENU_MAIN)
+        } else if (drawerPage != ActionsDrawerPage.Main) {
+            vm.cancelTutorial(TutorialGroup.MENU_MAIN)
         }
     }
 
@@ -167,12 +183,14 @@ fun ActionsDrawer(
                         icon = if (vm.weatherActive) Icons.Default.Cloud else Icons.Default.CloudOff,
                         onClick = { vm.toggleWeatherOnOff() },
                         toggleState = vm.weatherActive,
+                        tutorialAnchorId = TutorialAnchors.MENU_WEATHER_TOGGLE,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.toggle_north_up),
                         icon = Icons.Default.Navigation,
                         onClick = { vm.isNorthUp = !vm.isNorthUp },
                         toggleState = vm.isNorthUp,
+                        tutorialAnchorId = TutorialAnchors.MENU_NORTH_UP,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.action_nearby_places),
@@ -181,6 +199,7 @@ fun ActionsDrawer(
                             vm.openPoiCategoryPicker()
                             vm.closeActionsDrawer()
                         },
+                        tutorialAnchorId = TutorialAnchors.MENU_NEARBY_PLACES,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.action_clear_places),
@@ -198,6 +217,7 @@ fun ActionsDrawer(
                             vm.openPoiSearch()
                             vm.closeActionsDrawer()
                         },
+                        tutorialAnchorId = TutorialAnchors.MENU_LOCATION_SEARCH,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.action_clear_target),
@@ -218,21 +238,25 @@ fun ActionsDrawer(
                         label = stringResource(R.string.menu_map),
                         icon = Icons.Default.Map,
                         onClick = { drawerPage = ActionsDrawerPage.Map },
+                        tutorialAnchorId = TutorialAnchors.MENU_SUBMENU_MAP,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.menu_weather),
                         icon = Icons.Default.Cloud,
                         onClick = { drawerPage = ActionsDrawerPage.Weather },
+                        tutorialAnchorId = TutorialAnchors.MENU_SUBMENU_WEATHER,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.menu_system),
                         icon = Icons.Default.Settings,
                         onClick = { drawerPage = ActionsDrawerPage.System },
+                        tutorialAnchorId = TutorialAnchors.MENU_SUBMENU_SYSTEM,
                     ),
                     DrawerAction(
                         label = stringResource(R.string.menu_help),
                         icon = Icons.AutoMirrored.Filled.Help,
                         onClick = { drawerPage = ActionsDrawerPage.Help },
+                        tutorialAnchorId = TutorialAnchors.MENU_SUBMENU_HELP,
                     ),
                 )
                 else -> emptyList()
@@ -376,6 +400,11 @@ fun ActionsDrawer(
                             val helpTopActions = listOf(closeToMap)
                             val helpLinkActions = listOf(
                                 DrawerAction(
+                                    label = stringResource(R.string.help_show_tutorial),
+                                    icon = Icons.AutoMirrored.Filled.Help,
+                                    onClick = { vm.replayTutorials() },
+                                ),
+                                DrawerAction(
                                     label = stringResource(R.string.help_terms),
                                     icon = Icons.Default.Gavel,
                                     onClick = { vm.viewTerms() },
@@ -447,8 +476,41 @@ fun ActionsDrawer(
                             }
                         }
                         else -> {
+                            val mainGridState = rememberLazyGridState()
+
+                            LaunchedEffect(
+                                vm.tutorialActiveGroup,
+                                vm.tutorialStepIndex,
+                                drawerPage,
+                            ) {
+                                val group = vm.tutorialActiveGroup
+                                if (group != TutorialGroup.MENU_MAIN) return@LaunchedEffect
+                                if (drawerPage != ActionsDrawerPage.Main) return@LaunchedEffect
+                                val step = stepsFor(group).getOrNull(vm.tutorialStepIndex)
+                                    ?: return@LaunchedEffect
+                                val anchorId = step.anchorId ?: return@LaunchedEffect
+                                val actionIdx = actions.indexOfFirst { it.tutorialAnchorId == anchorId }
+                                val targetIndex = if (actionIdx >= 0) {
+                                    actionIdx
+                                } else {
+                                    val subIdx = subMenuActions.indexOfFirst {
+                                        it.tutorialAnchorId == anchorId
+                                    }
+                                    if (subIdx < 0) {
+                                        -1
+                                    } else {
+                                        actions.size +
+                                            (if (subMenuActions.isNotEmpty()) 1 else 0) +
+                                            subIdx
+                                    }
+                                }
+                                if (targetIndex < 0) return@LaunchedEffect
+                                mainGridState.animateScrollToItem(targetIndex)
+                            }
+
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(2),
+                                state = mainGridState,
                                 modifier = Modifier.weight(1f),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -460,6 +522,7 @@ fun ActionsDrawer(
                                         enabled = action.enabled,
                                         onClick = action.onClick,
                                         toggleState = action.toggleState,
+                                        tutorialAnchorId = action.tutorialAnchorId,
                                     )
                                 }
                                 if (subMenuActions.isNotEmpty()) {
@@ -473,6 +536,7 @@ fun ActionsDrawer(
                                             enabled = action.enabled,
                                             onClick = action.onClick,
                                             toggleState = action.toggleState,
+                                            tutorialAnchorId = action.tutorialAnchorId,
                                         )
                                     }
                                 }
@@ -601,6 +665,7 @@ private fun DrawerActionFab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     toggleState: Boolean? = null,
+    tutorialAnchorId: String? = null,
 ) {
     if (toggleState != null) {
         DrawerToggleFab(
@@ -610,6 +675,7 @@ private fun DrawerActionFab(
             checked = toggleState,
             onCheckedChange = { onClick() },
             modifier = modifier,
+            tutorialAnchorId = tutorialAnchorId,
         )
         return
     }
@@ -626,10 +692,16 @@ private fun DrawerActionFab(
         MaterialTheme.colorScheme.onSurfaceVariant
     }
 
+    val anchored = if (tutorialAnchorId != null) {
+        modifier.tutorialAnchor(tutorialAnchorId)
+    } else {
+        modifier
+    }
+
     LargeFloatingActionButton(
         onClick = { if (enabled) onClick() },
         shape = shape,
-        modifier = modifier
+        modifier = anchored
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, shape),
         containerColor = containerColor,
@@ -660,6 +732,7 @@ private fun DrawerToggleFab(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    tutorialAnchorId: String? = null,
 ) {
     val shape = RoundedCornerShape(20.dp)
     val containerColor = if (enabled) {
@@ -673,10 +746,16 @@ private fun DrawerToggleFab(
         MaterialTheme.colorScheme.onSurfaceVariant
     }
 
+    val anchored = if (tutorialAnchorId != null) {
+        modifier.tutorialAnchor(tutorialAnchorId)
+    } else {
+        modifier
+    }
+
     Surface(
         onClick = { if (enabled) onCheckedChange(!checked) },
         shape = shape,
-        modifier = modifier
+        modifier = anchored
             .fillMaxWidth()
             .border(1.dp, MaterialTheme.colorScheme.outline, shape),
         color = containerColor,
