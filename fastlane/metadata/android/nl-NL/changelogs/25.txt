@@ -1,1 +1,1 @@
-De pijl voor de windrichting die niet met de kaart meedraaide, is opgelost.
+Los op dat de pijl voor de windrichting niet meedraait met de kaart.
