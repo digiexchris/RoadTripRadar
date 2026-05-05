@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.voiditswarranty.roadtripradar.BuildConfig
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.ChangelogRepository
 import ca.voiditswarranty.roadtripradar.data.CustomThemeRepository
 import ca.voiditswarranty.roadtripradar.data.InvalidStyleJsonException
@@ -61,7 +62,7 @@ class MapViewModel(
     val customThemeRepo: CustomThemeRepository = CustomThemeRepository(appContext),
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
-    val postpassRepo: PostpassRepository = PostpassRepository(),
+    val postpassRepo: PostpassRepository = PostpassRepository(appContext),
 ) : ViewModel() {
     private val geocodingRepo: GeocodingRepository = GeocodingRepository()
 
@@ -147,7 +148,8 @@ class MapViewModel(
     var poiPosition by mutableStateOf(prefsRepo.poiPosition)
         private set
     var poiName by mutableStateOf(
-        prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null
+        prefsRepo.poiName
+            ?: if (prefsRepo.poiPosition != null) appContext.getString(R.string.dropped_pin_title) else null
     )
         private set
     var poiSubtitle by mutableStateOf(prefsRepo.poiSubtitle)
@@ -760,11 +762,15 @@ class MapViewModel(
                 }
             } catch (e: InvalidStyleJsonException) {
                 withContext(Dispatchers.Main) {
-                    customThemeImportError = e.message
+                    customThemeImportError = if (e.formatArg != null) {
+                        appContext.getString(e.messageRes, e.formatArg)
+                    } else {
+                        appContext.getString(e.messageRes)
+                    }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    customThemeImportError = "Import failed: ${e.message}"
+                    customThemeImportError = appContext.getString(R.string.theme_import_error_generic)
                 }
             }
         }

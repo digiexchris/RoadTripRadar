@@ -270,7 +270,7 @@ private fun ColorCategoryRow(
         ) {
             ColorSwatch(color = color, modifier = Modifier.size(32.dp))
             Text(
-                category.label,
+                stringResource(category.labelRes),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f),
             )

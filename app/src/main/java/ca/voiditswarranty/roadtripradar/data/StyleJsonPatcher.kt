@@ -1,6 +1,8 @@
 package ca.voiditswarranty.roadtripradar.data
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import ca.voiditswarranty.roadtripradar.R
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -13,11 +15,11 @@ import kotlinx.serialization.json.jsonPrimitive
 
 /**
  * Defines a color editing category with the layer IDs it targets,
- * the paint property to modify, and a human-readable label.
+ * the paint property to modify, and a localized label resource.
  */
 data class ThemeColorCategory(
     val id: String,
-    val label: String,
+    @param:StringRes val labelRes: Int,
     /** Layer IDs (or ID prefixes via [matchAsPrefix]) that belong to this category. */
     val layerIds: List<String>,
     /** Whether to match [layerIds] as ID prefix patterns. */
@@ -29,96 +31,96 @@ data class ThemeColorCategory(
 val THEME_COLOR_CATEGORIES: List<ThemeColorCategory> = listOf(
     ThemeColorCategory(
         id = "background",
-        label = "Background / Land",
+        labelRes = R.string.color_category_background,
         layerIds = listOf("background"),
         paintProperty = "background-color",
     ),
     ThemeColorCategory(
         id = "water",
-        label = "Water",
+        labelRes = R.string.color_category_water,
         layerIds = listOf("water", "waterway"),
         matchAsPrefix = true,
         paintProperty = "fill-color",
     ),
     ThemeColorCategory(
         id = "parks",
-        label = "Parks & Greenery",
+        labelRes = R.string.color_category_parks,
         layerIds = listOf("park", "landcover_wood", "landcover_grass"),
         paintProperty = "fill-color",
     ),
     ThemeColorCategory(
         id = "buildings",
-        label = "Buildings",
+        labelRes = R.string.color_category_buildings,
         layerIds = listOf("building"),
         matchAsPrefix = true,
         paintProperty = "fill-color",
     ),
     ThemeColorCategory(
         id = "road_motorway",
-        label = "Motorway / Freeway",
+        labelRes = R.string.color_category_road_motorway,
         layerIds = listOf("road_motorway", "tunnel_motorway", "bridge_motorway"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_motorway_casing",
-        label = "Motorway Casing",
+        labelRes = R.string.color_category_road_motorway_casing,
         layerIds = listOf("road_motorway_casing", "tunnel_motorway_casing", "bridge_motorway_casing"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_trunk_primary",
-        label = "Trunk & Primary Roads",
+        labelRes = R.string.color_category_road_trunk_primary,
         layerIds = listOf("road_trunk_primary", "tunnel_trunk_primary", "bridge_trunk_primary"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_secondary_tertiary",
-        label = "Secondary & Tertiary Roads",
+        labelRes = R.string.color_category_road_secondary_tertiary,
         layerIds = listOf("road_secondary_tertiary", "tunnel_secondary_tertiary", "bridge_secondary_tertiary"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_minor",
-        label = "Minor Roads",
+        labelRes = R.string.color_category_road_minor,
         layerIds = listOf("road_minor", "tunnel_minor", "bridge_minor"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_service_track",
-        label = "Service Roads & Tracks",
+        labelRes = R.string.color_category_road_service_track,
         layerIds = listOf("road_service_track", "tunnel_service_track", "bridge_service_track"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_service_track_casing",
-        label = "Service Roads & Tracks Casing",
+        labelRes = R.string.color_category_road_service_track_casing,
         layerIds = listOf("road_service_track_casing", "tunnel_service_track_casing", "bridge_service_track_casing"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "road_path_pedestrian",
-        label = "Paths & Pedestrian",
+        labelRes = R.string.color_category_road_path_pedestrian,
         layerIds = listOf("road_path_pedestrian", "tunnel_path_pedestrian", "bridge_path_pedestrian"),
         matchAsPrefix = true,
         paintProperty = "line-color",
     ),
     ThemeColorCategory(
         id = "label_text",
-        label = "Labels (Text)",
+        labelRes = R.string.color_category_label_text,
         layerIds = listOf("place_", "poi_", "road_label", "country_", "state_", "city_", "town_"),
         matchAsPrefix = true,
         paintProperty = "text-color",
     ),
     ThemeColorCategory(
         id = "label_halo",
-        label = "Labels (Halo)",
+        labelRes = R.string.color_category_label_halo,
         layerIds = listOf("place_", "poi_", "road_label", "country_", "state_", "city_", "town_"),
         matchAsPrefix = true,
         paintProperty = "text-halo-color",

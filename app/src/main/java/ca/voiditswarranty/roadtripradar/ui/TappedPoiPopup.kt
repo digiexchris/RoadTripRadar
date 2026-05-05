@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Navigation
@@ -42,10 +43,14 @@ import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import org.maplibre.spatialk.geojson.Point
+import org.maplibre.spatialk.geojson.Position
 import org.maplibre.spatialk.turf.measurement.distance
 
 @Composable
-fun TappedPoiPopup(vm: MapViewModel) {
+fun TappedPoiPopup(
+    vm: MapViewModel,
+    onCenterOnMap: (Position) -> Unit = {},
+) {
     val poi = vm.tappedPoi
     val origin = vm.tappedPoiOrigin
     val isFromSearch = origin == MapViewModel.TappedPoiOrigin.Search
@@ -194,42 +199,96 @@ fun TappedPoiPopup(vm: MapViewModel) {
                                 }
                             }
                             isNavigationTarget -> {
-                                LargeFloatingActionButton(
-                                    onClick = { vm.removeNavigationTarget() },
-                                    shape = RoundedCornerShape(20.dp),
-                                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                Row(
                                     modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    LargeFloatingActionButton(
+                                        onClick = { onCenterOnMap(poi.position) },
+                                        shape = RoundedCornerShape(20.dp),
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.weight(1f),
                                     ) {
-                                        Icon(Icons.Default.Delete, contentDescription = null)
-                                        Text(
-                                            stringResource(R.string.action_remove_waypoint),
-                                            style = MaterialTheme.typography.titleMedium,
-                                        )
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            Icon(
+                                                Icons.Default.CenterFocusStrong,
+                                                contentDescription = null,
+                                            )
+                                            Text(
+                                                stringResource(R.string.action_center_on_map),
+                                                style = MaterialTheme.typography.titleMedium,
+                                            )
+                                        }
+                                    }
+                                    LargeFloatingActionButton(
+                                        onClick = { vm.removeNavigationTarget() },
+                                        shape = RoundedCornerShape(20.dp),
+                                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            Icon(Icons.Default.Delete, contentDescription = null)
+                                            Text(
+                                                stringResource(R.string.action_remove_waypoint),
+                                                style = MaterialTheme.typography.titleMedium,
+                                            )
+                                        }
                                     }
                                 }
                             }
                             else -> {
-                                LargeFloatingActionButton(
-                                    onClick = { vm.navigateToTappedPoi() },
-                                    shape = RoundedCornerShape(20.dp),
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                Row(
                                     modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    LargeFloatingActionButton(
+                                        onClick = { onCenterOnMap(poi.position) },
+                                        shape = RoundedCornerShape(20.dp),
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.weight(1f),
                                     ) {
-                                        Icon(Icons.Default.Navigation, contentDescription = null)
-                                        Text(
-                                            stringResource(R.string.action_navigate_here),
-                                            style = MaterialTheme.typography.titleMedium,
-                                        )
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            Icon(
+                                                Icons.Default.CenterFocusStrong,
+                                                contentDescription = null,
+                                            )
+                                            Text(
+                                                stringResource(R.string.action_center_on_map),
+                                                style = MaterialTheme.typography.titleMedium,
+                                            )
+                                        }
+                                    }
+                                    LargeFloatingActionButton(
+                                        onClick = { vm.navigateToTappedPoi() },
+                                        shape = RoundedCornerShape(20.dp),
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            Icon(Icons.Default.Navigation, contentDescription = null)
+                                            Text(
+                                                stringResource(R.string.action_navigate_here),
+                                                style = MaterialTheme.typography.titleMedium,
+                                            )
+                                        }
                                     }
                                 }
                             }

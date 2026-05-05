@@ -218,9 +218,33 @@ fun TappedPoiPreviewLayer(position: Position) {
 }
 
 @Composable
-fun PoiLayers(
+fun PoiRouteLineLayer(
     poiPosition: Position,
-    userPosition: Position?,
+    userPosition: Position,
+) {
+    val poiLineData = remember(
+        userPosition.latitude, userPosition.longitude, poiPosition,
+    ) {
+        FeatureCollection(listOf(Feature(
+            geometry = LineString(listOf(userPosition, poiPosition)),
+            properties = buildJsonObject {},
+        )))
+    }
+    val poiLineSource = rememberGeoJsonSource(
+        data = GeoJsonData.Features(poiLineData),
+    )
+    LineLayer(
+        id = "poi-line",
+        source = poiLineSource,
+        color = const(Color.Green),
+        width = const(4.dp),
+        opacity = const(0.8f),
+    )
+}
+
+@Composable
+fun PoiMarkerLayer(
+    poiPosition: Position,
     onClick: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -259,27 +283,6 @@ fun PoiLayers(
                 onClick()
                 ClickResult.Consume
             },
-        )
-    }
-
-    if (userPosition != null) {
-        val poiLineData = remember(
-            userPosition.latitude, userPosition.longitude, poiPosition,
-        ) {
-            FeatureCollection(listOf(Feature(
-                geometry = LineString(listOf(userPosition, poiPosition)),
-                properties = buildJsonObject {},
-            )))
-        }
-        val poiLineSource = rememberGeoJsonSource(
-            data = GeoJsonData.Features(poiLineData),
-        )
-        LineLayer(
-            id = "poi-line",
-            source = poiLineSource,
-            color = const(Color.Green),
-            width = const(4.dp),
-            opacity = const(0.8f),
         )
     }
 }

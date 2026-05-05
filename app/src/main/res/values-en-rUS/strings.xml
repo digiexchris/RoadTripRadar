@@ -16,7 +16,8 @@
     <!-- POI slideout -->
     <string name="dropped_pin_title">Dropped Pin</string>
     <string name="address_loading">Locating address…</string>
-    <string name="action_remove_waypoint">Remove Waypoint</string>
+    <string name="action_remove_waypoint">Remove</string>
+    <string name="action_center_on_map">Center on Map</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Location permission required</string>
     <string name="permission_location_body">Road Trip Radar needs access to your location to show where you are on the map. Precise location is recommended for best accuracy, but approximate location will also work. Tap Grant permission to continue, or Quit to exit the app.</string>
@@ -278,4 +279,33 @@
     <string name="style_custom_light">Custom Light</string>
     <string name="style_custom_dark">Custom Dark</string>
     <string name="style_auto">Auto</string>
+
+    <!-- Map loading status -->
+    <string name="loading_areas">Loading areas</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+
+    <!-- Color editor categories -->
+    <string name="color_category_background">Background / Land</string>
+    <string name="color_category_water">Water</string>
+    <string name="color_category_parks">Parks &amp; Greenery</string>
+    <string name="color_category_buildings">Buildings</string>
+    <string name="color_category_road_motorway">Motorway / Freeway</string>
+    <string name="color_category_road_motorway_casing">Motorway Casing</string>
+    <string name="color_category_road_trunk_primary">Trunk &amp; Primary Roads</string>
+    <string name="color_category_road_secondary_tertiary">Secondary &amp; Tertiary Roads</string>
+    <string name="color_category_road_minor">Minor Roads</string>
+    <string name="color_category_road_service_track">Service Roads &amp; Tracks</string>
+    <string name="color_category_road_service_track_casing">Service Roads &amp; Tracks Casing</string>
+    <string name="color_category_road_path_pedestrian">Paths &amp; Pedestrian</string>
+    <string name="color_category_label_text">Labels (Text)</string>
+    <string name="color_category_label_halo">Labels (Halo)</string>
+
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Could not open the selected file.</string>
+    <string name="theme_import_error_read_failed">Could not read the selected file.</string>
+    <string name="theme_import_error_not_json">Not valid JSON.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Style is missing the required \'layers\' field.</string>
+    <string name="theme_import_error_missing_sources">Style is missing the required \'sources\' field.</string>
+    <string name="theme_import_error_generic">Import failed.</string>
 </resources>

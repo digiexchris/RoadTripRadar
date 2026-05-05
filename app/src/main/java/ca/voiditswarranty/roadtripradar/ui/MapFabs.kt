@@ -340,7 +340,7 @@ fun BottomContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Remove,
-                    contentDescription = "Zoom out",
+                    contentDescription = stringResource(R.string.cd_zoom_out),
                     modifier = Modifier.size(iconSize),
                 )
             }
@@ -363,7 +363,7 @@ fun BottomContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Zoom in",
+                    contentDescription = stringResource(R.string.cd_zoom_in),
                     modifier = Modifier.size(iconSize),
                 )
             }
@@ -382,7 +382,7 @@ fun BottomContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = "Quick Actions",
+                    contentDescription = stringResource(R.string.cd_quick_actions),
                     modifier = Modifier.size(iconSize),
                 )
             }

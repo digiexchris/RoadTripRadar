@@ -36,7 +36,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
 import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.MapStyle
@@ -295,11 +297,10 @@ fun MapScreen(
                     )
                 }
 
-                if (vm.poiPosition != null) {
-                    PoiLayers(
+                if (vm.poiPosition != null && userPosition != null) {
+                    PoiRouteLineLayer(
                         poiPosition = vm.poiPosition!!,
                         userPosition = userPosition,
-                        onClick = { vm.showNavigationTargetPopup() },
                     )
                 }
 
@@ -329,6 +330,13 @@ fun MapScreen(
                         }
                     },
                 )
+
+                if (vm.poiPosition != null) {
+                    PoiMarkerLayer(
+                        poiPosition = vm.poiPosition!!,
+                        onClick = { vm.showNavigationTargetPopup() },
+                    )
+                }
             }
             }
         }
@@ -367,12 +375,12 @@ fun MapScreen(
                             strokeWidth = 2.dp,
                         )
                         Text(
-                            "Loading areas",
+                            stringResource(R.string.loading_areas),
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     Text(
-                        "${vm.cellsRemaining} remaining",
+                        stringResource(R.string.loading_cells_remaining, vm.cellsRemaining),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -443,7 +451,18 @@ fun MapScreen(
         PoiCategoryPicker(vm = vm)
 
         // Tapped POI info popup
-        TappedPoiPopup(vm = vm)
+        TappedPoiPopup(
+            vm = vm,
+            onCenterOnMap = { pos ->
+                vm.dismissTappedPoi()
+                vm.isTrackingCamera = false
+                scope.launch {
+                    cameraState.animateTo(
+                        cameraState.position.copy(target = pos)
+                    )
+                }
+            },
+        )
 
         LaunchedEffect(vm.showTerms, vm.showActionsDrawer) {
             if (!vm.showTerms && !vm.showActionsDrawer) {
