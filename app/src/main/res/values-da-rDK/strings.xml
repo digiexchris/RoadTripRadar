@@ -12,6 +12,12 @@
     <string name="action_decline">Afvis</string>
     <string name="action_accept">Acceptér</string>
     <string name="action_got_it">Forstået</string>
+    <string name="action_back">Tilbage</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Sluppet nål</string>
+    <string name="address_loading">Finder adresse…</string>
+    <string name="action_remove_waypoint">Fjern</string>
+    <string name="action_center_on_map">Centrér på kort</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Placeringstilladelse påkrævet</string>
     <string name="permission_location_body">Road Trip Radar har brug for adgang til din placering for at vise, hvor du er på kortet. Præcis placering anbefales for bedst mulig nøjagtighed, men omtrentlig placering fungerer også. Tryk på Giv tilladelse for at fortsætte eller Afslut for at lukke appen.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Brugerdefineret lys</string>
     <string name="style_custom_dark">Brugerdefineret mørk</string>
     <string name="style_auto">Auto</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Indlæser områder</string>
+    <string name="loading_cells_remaining">%1$d tilbage</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Baggrund / Land</string>
+    <string name="color_category_water">Vand</string>
+    <string name="color_category_parks">Parker &amp; grønne områder</string>
+    <string name="color_category_buildings">Bygninger</string>
+    <string name="color_category_road_motorway">Motorvej / Freeway</string>
+    <string name="color_category_road_motorway_casing">Motorvejsomrids</string>
+    <string name="color_category_road_trunk_primary">Hovedveje &amp; primære veje</string>
+    <string name="color_category_road_secondary_tertiary">Sekundære &amp; tertiære veje</string>
+    <string name="color_category_road_minor">Mindre veje</string>
+    <string name="color_category_road_service_track">Adgangsveje &amp; spor</string>
+    <string name="color_category_road_service_track_casing">Omrids for adgangsveje &amp; spor</string>
+    <string name="color_category_road_path_pedestrian">Stier &amp; gågader</string>
+    <string name="color_category_label_text">Etiketter (tekst)</string>
+    <string name="color_category_label_halo">Etiketter (glød)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Kunne ikke åbne den valgte fil.</string>
+    <string name="theme_import_error_read_failed">Kunne ikke læse den valgte fil.</string>
+    <string name="theme_import_error_not_json">Ugyldig JSON.</string>
+    <string name="theme_import_error_unsupported_version">Stilen mangler eller bruger en ikke-understøttet stilversion (forventede 8, fik %1$s). Sørg for at eksportere en MapLibre GL-stil fra Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Stilen mangler det påkrævede felt \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">Stilen mangler det påkrævede felt \'sources\'.</string>
+    <string name="theme_import_error_generic">Import mislykkedes.</string>
 </resources>
