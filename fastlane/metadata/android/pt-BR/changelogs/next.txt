@@ -1,0 +1,2 @@
+Adicionar suporte à navegação de volta em todos os menus, em vez de ter apenas um botão de fechar.
+Permitir que o painel deslizante de informações do ponto de referência seja exibido ao tocar no seu ponto de referência de destino atual e ao tocar no widget de navegação.
