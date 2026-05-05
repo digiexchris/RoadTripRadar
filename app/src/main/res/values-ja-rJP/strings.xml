@@ -12,6 +12,12 @@
     <string name="action_decline">同意しない</string>
     <string name="action_accept">同意する</string>
     <string name="action_got_it">了解</string>
+    <string name="action_back">戻る</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">ドロップしたピン</string>
+    <string name="address_loading">住所を特定中…</string>
+    <string name="action_remove_waypoint">削除</string>
+    <string name="action_center_on_map">地図上で中央に表示</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">位置情報の権限が必要です</string>
     <string name="permission_location_body">Road Trip Radar が地図上で現在地を表示するには、位置情報へのアクセスが必要です。最も高い精度で表示するには正確な位置情報を推奨しますが、おおよその位置情報でも動作します。続行するには［権限を許可］をタップし、アプリを終了するには［終了］をタップしてください。</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">カスタムライト</string>
     <string name="style_custom_dark">カスタムダーク</string>
     <string name="style_auto">自動</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">エリアを読み込み中</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">背景 / 陸地</string>
+    <string name="color_category_water">水域</string>
+    <string name="color_category_parks">公園 &amp; 緑地</string>
+    <string name="color_category_buildings">建物</string>
+    <string name="color_category_road_motorway">高速道路 / フリーウェイ</string>
+    <string name="color_category_road_motorway_casing">高速道路の縁取り</string>
+    <string name="color_category_road_trunk_primary">幹線道路 &amp; 主要道路</string>
+    <string name="color_category_road_secondary_tertiary">二次道路 &amp; 三次道路</string>
+    <string name="color_category_road_minor">細街路</string>
+    <string name="color_category_road_service_track">サービス道路 &amp; 小道</string>
+    <string name="color_category_road_service_track_casing">サービス道路 &amp; 小道の縁取り</string>
+    <string name="color_category_road_path_pedestrian">小道 &amp; 歩行者道路</string>
+    <string name="color_category_label_text">ラベル（テキスト）</string>
+    <string name="color_category_label_halo">ラベル（ハロー）</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">選択したファイルを開けませんでした。</string>
+    <string name="theme_import_error_read_failed">選択したファイルを読み取れませんでした。</string>
+    <string name="theme_import_error_not_json">有効な JSON ではありません。</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">スタイルに必須の「layers」フィールドがありません。</string>
+    <string name="theme_import_error_missing_sources">スタイルに必須の「sources」フィールドがありません。</string>
+    <string name="theme_import_error_generic">インポートに失敗しました。</string>
 </resources>
