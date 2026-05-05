@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Common actions -->
     <string name="action_close">Zamknij</string>
     <string name="action_cancel">Anuluj</string>
@@ -281,7 +281,7 @@
     <string name="style_auto">Automatycznie</string>
     <!-- Map loading status -->
     <string name="loading_areas">Ładowanie obszarów</string>
-    <string name="loading_cells_remaining">Pozostało: %1$d</string>
+    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> remaining</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Tło / Ląd</string>
     <string name="color_category_water">Woda</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Nie udało się otworzyć wybranego pliku.</string>
     <string name="theme_import_error_read_failed">Nie udało się odczytać wybranego pliku.</string>
     <string name="theme_import_error_not_json">Nieprawidłowy plik JSON.</string>
-    <string name="theme_import_error_unsupported_version">Brak wersji stylu lub jest ona nieobsługiwana (oczekiwano 8, otrzymano %1$s). Upewnij się, że eksportujesz styl MapLibre GL z Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Make sure you export a MapLibre GL style from Maputnik.</string>
     <string name="theme_import_error_missing_layers">W stylu brakuje wymaganego pola „layers”.</string>
     <string name="theme_import_error_missing_sources">W stylu brakuje wymaganego pola „sources”.</string>
     <string name="theme_import_error_generic">Importowanie nie powiodło się.</string>
