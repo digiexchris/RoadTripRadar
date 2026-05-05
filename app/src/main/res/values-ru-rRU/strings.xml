@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Common actions -->
     <string name="action_close">Закрыть</string>
     <string name="action_cancel">Отмена</string>
@@ -281,7 +281,7 @@
     <string name="style_auto">Авто</string>
     <!-- Map loading status -->
     <string name="loading_areas">Загрузка областей</string>
-    <string name="loading_cells_remaining">Осталось: %1$d</string>
+    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> remaining</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Фон / Суша</string>
     <string name="color_category_water">Вода</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Не удалось открыть выбранный файл.</string>
     <string name="theme_import_error_read_failed">Не удалось прочитать выбранный файл.</string>
     <string name="theme_import_error_not_json">Недопустимый JSON.</string>
-    <string name="theme_import_error_unsupported_version">Отсутствует или не поддерживается версия стиля (ожидалась 8, получена %1$s). Убедитесь, что вы экспортировали стиль MapLibre GL из Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Make sure you export a MapLibre GL style from Maputnik.</string>
     <string name="theme_import_error_missing_layers">В стиле отсутствует обязательное поле \"layers\".</string>
     <string name="theme_import_error_missing_sources">В стиле отсутствует обязательное поле \"sources\".</string>
     <string name="theme_import_error_generic">Не удалось импортировать.</string>
