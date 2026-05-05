@@ -12,6 +12,12 @@
     <string name="action_decline">رفض</string>
     <string name="action_accept">قبول</string>
     <string name="action_got_it">فهمت</string>
+    <string name="action_back">رجوع</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">دبوس مُسقَط</string>
+    <string name="address_loading">جارٍ تحديد العنوان…</string>
+    <string name="action_remove_waypoint">إزالة</string>
+    <string name="action_center_on_map">توسيط على الخريطة</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">يلزم إذن الموقع</string>
     <string name="permission_location_body">يحتاج Road Trip Radar إلى الوصول إلى موقعك لإظهار مكانك على الخريطة. يُوصى بالموقع الدقيق للحصول على أفضل دقة، ولكن سيعمل الموقع التقريبي أيضًا. اضغط على \"منح الإذن\" للمتابعة، أو \"إنهاء\" للخروج من التطبيق.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">فاتح مخصص</string>
     <string name="style_custom_dark">داكن مخصص</string>
     <string name="style_auto">تلقائي</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">جارٍ تحميل المناطق</string>
+    <string name="loading_cells_remaining">المتبقي %1$d</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">الخلفية / اليابسة</string>
+    <string name="color_category_water">الماء</string>
+    <string name="color_category_parks">المتنزهات والمساحات الخضراء</string>
+    <string name="color_category_buildings">المباني</string>
+    <string name="color_category_road_motorway">الطرق السريعة / الحرة</string>
+    <string name="color_category_road_motorway_casing">حدود الطرق السريعة</string>
+    <string name="color_category_road_trunk_primary">الطرق الرئيسية والأولية</string>
+    <string name="color_category_road_secondary_tertiary">الطرق الثانوية والثالثية</string>
+    <string name="color_category_road_minor">الطرق الفرعية</string>
+    <string name="color_category_road_service_track">طرق الخدمة والمسارات</string>
+    <string name="color_category_road_service_track_casing">حدود طرق الخدمة والمسارات</string>
+    <string name="color_category_road_path_pedestrian">المسارات والمشاة</string>
+    <string name="color_category_label_text">التسميات (النص)</string>
+    <string name="color_category_label_halo">التسميات (الهالة)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">تعذر فتح الملف المحدد.</string>
+    <string name="theme_import_error_read_failed">تعذر قراءة الملف المحدد.</string>
+    <string name="theme_import_error_not_json">ليس ملف JSON صالحًا.</string>
+    <string name="theme_import_error_unsupported_version">إصدار النمط مفقود أو غير مدعوم (المتوقع 8، والموجود %1$s). تأكد من تصدير نمط MapLibre GL من Maputnik.</string>
+    <string name="theme_import_error_missing_layers">النمط يفتقد الحقل المطلوب \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">النمط يفتقد الحقل المطلوب \'sources\'.</string>
+    <string name="theme_import_error_generic">فشل الاستيراد.</string>
 </resources>
