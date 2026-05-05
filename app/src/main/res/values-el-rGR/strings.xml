@@ -281,7 +281,7 @@
     <string name="style_auto">Αυτόματο</string>
     <!-- Map loading status -->
     <string name="loading_areas">Φόρτωση περιοχών</string>
-    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> remaining</string>
+    <string name="loading_cells_remaining">Απομένουν <xliff:g id="count" example="42">%1$d</xliff:g></string>
     <!-- Color editor categories -->
     <string name="color_category_background">Φόντο / Έδαφος</string>
     <string name="color_category_water">Νερό</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Δεν ήταν δυνατό το άνοιγμα του επιλεγμένου αρχείου.</string>
     <string name="theme_import_error_read_failed">Δεν ήταν δυνατή η ανάγνωση του επιλεγμένου αρχείου.</string>
     <string name="theme_import_error_not_json">Μη έγκυρο JSON.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Λείπει ή δεν υποστηρίζεται η έκδοση του στυλ (αναμενόταν η 8, λήφθηκε <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Βεβαιωθείτε ότι εξάγετε ένα στυλ MapLibre GL από το Maputnik.</string>
     <string name="theme_import_error_missing_layers">Από το στυλ λείπει το απαιτούμενο πεδίο \'layers\'.</string>
     <string name="theme_import_error_missing_sources">Από το στυλ λείπει το απαιτούμενο πεδίο \'sources\'.</string>
     <string name="theme_import_error_generic">Η εισαγωγή απέτυχε.</string>
