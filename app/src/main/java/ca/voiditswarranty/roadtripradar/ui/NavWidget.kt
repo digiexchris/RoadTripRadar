@@ -1,6 +1,7 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,7 @@ fun NavWidget(
     poiName: String?,
     useMetric: Boolean,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     val arrowRotation = (poiBearingDeg - cameraBearing).toFloat()
     val iconSize = navWidgetSize.dp
@@ -45,6 +47,7 @@ fun NavWidget(
                 MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
                 RoundedCornerShape(8.dp),
             )
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {

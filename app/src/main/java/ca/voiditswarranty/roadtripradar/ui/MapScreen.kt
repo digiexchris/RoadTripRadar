@@ -299,7 +299,17 @@ fun MapScreen(
                     PoiLayers(
                         poiPosition = vm.poiPosition!!,
                         userPosition = userPosition,
+                        onClick = { vm.showNavigationTargetPopup() },
                     )
+                }
+
+                val previewOrigin = vm.tappedPoiOrigin
+                val previewPoi = vm.tappedPoi
+                if (previewPoi != null &&
+                    (previewOrigin == MapViewModel.TappedPoiOrigin.LongPress ||
+                        previewOrigin == MapViewModel.TappedPoiOrigin.Search)
+                ) {
+                    TappedPoiPreviewLayer(position = previewPoi.position)
                 }
 
                 NearbyPoiLayers(

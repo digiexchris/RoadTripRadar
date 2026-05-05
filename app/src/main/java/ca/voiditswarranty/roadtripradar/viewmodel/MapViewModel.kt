@@ -179,6 +179,8 @@ class MapViewModel(
         private set
     var tappedPoi by mutableStateOf<TappedPoiInfo?>(null)
         private set
+    var tappedPoiOrigin by mutableStateOf<TappedPoiOrigin?>(null)
+        private set
 
     /** True when the cell pipeline has been activated by the user (Search Visible Area / Refresh / autostart). */
     var poiPipelineActive by mutableStateOf(false)
@@ -234,6 +236,8 @@ class MapViewModel(
         val position: Position,
         val openingHours: String? = null,
     )
+
+    enum class TappedPoiOrigin { NearbyPoi, LongPress, Search, NavigationTarget }
 
     // UI state
     var isTrackingCamera by mutableStateOf(true)
@@ -809,9 +813,15 @@ class MapViewModel(
     // --- POI ---
 
     fun setPoiFromLongPress(position: Position) {
-        poiPosition = position
-        poiName = "Dropped Pin"
-        persistPoi()
+        val info = TappedPoiInfo(
+            name = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.dropped_pin_title),
+            subtitle = formatLatLng(position),
+            categoryLabel = "",
+            iconName = "",
+            position = position,
+        )
+        showTappedPoi(info, TappedPoiOrigin.LongPress)
+        triggerReverseGeocode(position)
     }
 
     fun setPoiFromSearch(position: Position, name: String) {
@@ -819,6 +829,43 @@ class MapViewModel(
         poiName = name
         persistPoi()
         showPoiSearch = false
+    }
+
+    fun selectSearchResult(result: SearchResult) {
+        showPoiSearch = false
+        showTappedPoi(
+            TappedPoiInfo(
+                name = result.name,
+                subtitle = result.subtitle,
+                categoryLabel = "",
+                iconName = "",
+                position = result.position,
+            ),
+            TappedPoiOrigin.Search,
+        )
+    }
+
+    private fun formatLatLng(position: Position): String =
+        "%.5f, %.5f".format(position.latitude, position.longitude)
+
+    private fun triggerReverseGeocode(position: Position) {
+        val loadingSuffix = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.address_loading)
+        tappedPoi = tappedPoi?.copy(subtitle = "$loadingSuffix\n${formatLatLng(position)}")
+        viewModelScope.launch {
+            val address = geocodingRepo.reverseGeocode(position.latitude, position.longitude)
+            val current = tappedPoi
+            if (current != null
+                && tappedPoiOrigin == TappedPoiOrigin.LongPress
+                && current.position == position
+            ) {
+                val newSubtitle = if (address != null) {
+                    "$address\n${formatLatLng(position)}"
+                } else {
+                    formatLatLng(position)
+                }
+                tappedPoi = current.copy(subtitle = newSubtitle)
+            }
+        }
     }
 
     fun clearPoi() {
@@ -906,13 +953,50 @@ class MapViewModel(
     fun openPoiCategoryPicker() { showPoiCategoryPicker = true }
     fun closePoiCategoryPicker() { showPoiCategoryPicker = false }
 
-    fun showTappedPoi(info: TappedPoiInfo) { tappedPoi = info }
-    fun dismissTappedPoi() { tappedPoi = null }
+    fun showTappedPoi(info: TappedPoiInfo, origin: TappedPoiOrigin = TappedPoiOrigin.NearbyPoi) {
+        tappedPoi = info
+        tappedPoiOrigin = origin
+    }
+
+    fun dismissTappedPoi() {
+        tappedPoi = null
+        tappedPoiOrigin = null
+    }
 
     fun navigateToTappedPoi() {
         val poi = tappedPoi ?: return
+        val origin = tappedPoiOrigin
         setPoiFromSearch(poi.position, poi.name)
         tappedPoi = null
+        tappedPoiOrigin = null
+        if (origin == TappedPoiOrigin.Search) {
+            searchQuery = ""
+            searchResults = emptyList()
+        }
+    }
+
+    fun tappedPoiBackToSearch() {
+        tappedPoi = null
+        tappedPoiOrigin = null
+        showPoiSearch = true
+    }
+
+    fun showNavigationTargetPopup() {
+        val pos = poiPosition ?: return
+        val info = TappedPoiInfo(
+            name = poiName ?: appContext.getString(ca.voiditswarranty.roadtripradar.R.string.dropped_pin_title),
+            subtitle = formatLatLng(pos),
+            categoryLabel = "",
+            iconName = "",
+            position = pos,
+        )
+        showTappedPoi(info, TappedPoiOrigin.NavigationTarget)
+    }
+
+    fun removeNavigationTarget() {
+        clearPoi()
+        tappedPoi = null
+        tappedPoiOrigin = null
     }
 
     // --- Cell pipeline helpers ---

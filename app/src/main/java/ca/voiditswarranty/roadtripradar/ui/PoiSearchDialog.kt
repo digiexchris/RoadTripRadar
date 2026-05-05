@@ -60,7 +60,7 @@ fun PoiSearchDialog(vm: MapViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    vm.setPoiFromSearch(result.position, result.name)
+                                    vm.selectSearchResult(result)
                                 }
                                 .padding(vertical = 8.dp),
                         ) {

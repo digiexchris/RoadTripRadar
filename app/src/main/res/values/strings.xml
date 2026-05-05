@@ -11,6 +11,12 @@
     <string name="action_decline">Decline</string>
     <string name="action_accept">Accept</string>
     <string name="action_got_it">Got it</string>
+    <string name="action_back">Back</string>
+
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Dropped Pin</string>
+    <string name="address_loading">Locating address…</string>
+    <string name="action_remove_waypoint">Remove Waypoint</string>
 
     <!-- Location permission dialog -->
     <string name="permission_location_title">Location permission required</string>

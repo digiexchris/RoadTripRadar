@@ -197,9 +197,31 @@ fun UserLocationPuck(
 }
 
 @Composable
+fun TappedPoiPreviewLayer(position: Position) {
+    val pointData = remember(position) {
+        FeatureCollection(listOf(Feature(
+            geometry = Point(position),
+            properties = buildJsonObject {},
+        )))
+    }
+    val source = rememberGeoJsonSource(
+        data = GeoJsonData.Features(pointData),
+    )
+    CircleLayer(
+        id = "tapped-poi-preview-marker",
+        source = source,
+        radius = const(10.dp),
+        color = const(Color.Red.copy(alpha = 0.6f)),
+        strokeColor = const(Color.White),
+        strokeWidth = const(2.dp),
+    )
+}
+
+@Composable
 fun PoiLayers(
     poiPosition: Position,
     userPosition: Position?,
+    onClick: () -> Unit = {},
 ) {
     val poiPointData = remember(poiPosition) {
         FeatureCollection(listOf(Feature(
@@ -217,6 +239,10 @@ fun PoiLayers(
         color = const(Color.Red),
         strokeColor = const(Color.White),
         strokeWidth = const(2.dp),
+        onClick = {
+            onClick()
+            ClickResult.Consume
+        },
     )
 
     if (userPosition != null) {
@@ -361,14 +387,17 @@ fun NearbyPoiLayers(
             onClick = handleClick@{ clicked ->
                 val f = clicked.firstOrNull() ?: return@handleClick ClickResult.Pass
                 val props = f.properties ?: return@handleClick ClickResult.Pass
-                vm.showTappedPoi(MapViewModel.TappedPoiInfo(
-                    name = props["name"]?.jsonPrimitive?.content ?: "",
-                    subtitle = props["subtitle"]?.jsonPrimitive?.content ?: "",
-                    categoryLabel = props["categoryLabel"]?.jsonPrimitive?.content ?: "",
-                    iconName = props["iconName"]?.jsonPrimitive?.content ?: "",
-                    position = (f.geometry as? Point)?.coordinates ?: return@handleClick ClickResult.Pass,
-                    openingHours = props["openingHours"]?.jsonPrimitive?.content,
-                ))
+                vm.showTappedPoi(
+                    MapViewModel.TappedPoiInfo(
+                        name = props["name"]?.jsonPrimitive?.content ?: "",
+                        subtitle = props["subtitle"]?.jsonPrimitive?.content ?: "",
+                        categoryLabel = props["categoryLabel"]?.jsonPrimitive?.content ?: "",
+                        iconName = props["iconName"]?.jsonPrimitive?.content ?: "",
+                        position = (f.geometry as? Point)?.coordinates ?: return@handleClick ClickResult.Pass,
+                        openingHours = props["openingHours"]?.jsonPrimitive?.content,
+                    ),
+                    MapViewModel.TappedPoiOrigin.NearbyPoi,
+                )
                 ClickResult.Consume
             },
         )

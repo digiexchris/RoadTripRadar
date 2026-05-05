@@ -103,6 +103,7 @@ fun BoxScope.MapOverlay(
                             navWidgetSize = vm.navWidgetSize * config.widgetScale,
                             poiName = vm.poiName,
                             useMetric = vm.useMetric,
+                            onClick = { vm.showNavigationTargetPopup() },
                         )
                     }
                     if (vm.useGps) {

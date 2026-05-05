@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,12 +15,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Navigation
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeFloatingActionButton
@@ -42,6 +47,17 @@ import org.maplibre.spatialk.turf.measurement.distance
 @Composable
 fun TappedPoiPopup(vm: MapViewModel) {
     val poi = vm.tappedPoi
+    val origin = vm.tappedPoiOrigin
+    val isFromSearch = origin == MapViewModel.TappedPoiOrigin.Search
+    val isNavigationTarget = origin == MapViewModel.TappedPoiOrigin.NavigationTarget
+
+    BackHandler(enabled = poi != null) {
+        if (isFromSearch) {
+            vm.tappedPoiBackToSearch()
+        } else {
+            vm.dismissTappedPoi()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(
@@ -97,11 +113,13 @@ fun TappedPoiPopup(vm: MapViewModel) {
                                     text = poi.name,
                                     style = MaterialTheme.typography.titleLarge,
                                 )
-                                Text(
-                                    text = poi.categoryLabel,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
+                                if (poi.categoryLabel.isNotEmpty()) {
+                                    Text(
+                                        text = poi.categoryLabel,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
                                 if (poi.subtitle.isNotEmpty()) {
                                     Text(
                                         text = poi.subtitle,
@@ -129,19 +147,91 @@ fun TappedPoiPopup(vm: MapViewModel) {
                             }
                         }
 
-                        LargeFloatingActionButton(
-                            onClick = { vm.navigateToTappedPoi() },
-                            shape = RoundedCornerShape(20.dp),
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
-                                Icon(Icons.Default.Navigation, contentDescription = null)
-                                Text(stringResource(R.string.action_navigate_here), style = MaterialTheme.typography.titleMedium)
+                        when {
+                            isFromSearch -> {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    FilledTonalButton(
+                                        onClick = { vm.tappedPoiBackToSearch() },
+                                        shape = RoundedCornerShape(20.dp),
+                                        modifier = Modifier.height(72.dp),
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            Icon(
+                                                Icons.AutoMirrored.Filled.ArrowBack,
+                                                contentDescription = null,
+                                            )
+                                            Text(
+                                                stringResource(R.string.action_back),
+                                                style = MaterialTheme.typography.titleMedium,
+                                            )
+                                        }
+                                    }
+                                    LargeFloatingActionButton(
+                                        onClick = { vm.navigateToTappedPoi() },
+                                        shape = RoundedCornerShape(20.dp),
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier.weight(1f),
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            Icon(Icons.Default.Navigation, contentDescription = null)
+                                            Text(
+                                                stringResource(R.string.action_navigate_here),
+                                                style = MaterialTheme.typography.titleMedium,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            isNavigationTarget -> {
+                                LargeFloatingActionButton(
+                                    onClick = { vm.removeNavigationTarget() },
+                                    shape = RoundedCornerShape(20.dp),
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    ) {
+                                        Icon(Icons.Default.Delete, contentDescription = null)
+                                        Text(
+                                            stringResource(R.string.action_remove_waypoint),
+                                            style = MaterialTheme.typography.titleMedium,
+                                        )
+                                    }
+                                }
+                            }
+                            else -> {
+                                LargeFloatingActionButton(
+                                    onClick = { vm.navigateToTappedPoi() },
+                                    shape = RoundedCornerShape(20.dp),
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    ) {
+                                        Icon(Icons.Default.Navigation, contentDescription = null)
+                                        Text(
+                                            stringResource(R.string.action_navigate_here),
+                                            style = MaterialTheme.typography.titleMedium,
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
