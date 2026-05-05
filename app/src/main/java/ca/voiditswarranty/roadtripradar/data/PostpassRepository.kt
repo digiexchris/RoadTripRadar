@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.data
 
+import android.content.Context
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,7 +34,9 @@ sealed interface TileFetchResult {
  * public instance but does not publish fixed numeric rate limits. Use modest concurrency,
  * backoff on errors, and avoid oversized queries to stay within fair use.
  */
-class PostpassRepository {
+class PostpassRepository(context: Context) {
+
+    private val appContext: Context = context.applicationContext
 
     private val categoryTagMap: Map<String, String> by lazy {
         val map = mutableMapOf<String, String>()
@@ -143,17 +146,18 @@ class PostpassRepository {
             tags[tag]?.jsonPrimitive?.content == cat
         } ?: return null
         val poiCat = POI_CATEGORIES.firstOrNull { it.query == matchedCategory } ?: return null
+        val categoryLabel = appContext.getString(poiCat.labelRes)
         val name = tags["name"]?.jsonPrimitive?.content?.ifEmpty { null }
             ?: tags["brand"]?.jsonPrimitive?.content
             ?: tags["operator"]?.jsonPrimitive?.content
-            ?: poiCat.label
+            ?: categoryLabel
         return Feature(
             geometry = Point(Position(latitude = lat, longitude = lon)),
             properties = buildJsonObject {
                 put("name", name)
                 put("subtitle", buildSubtitle(tags))
                 put("categoryQuery", matchedCategory)
-                put("categoryLabel", poiCat.label)
+                put("categoryLabel", categoryLabel)
                 put("iconName", poiCat.iconName)
                 tags["opening_hours"]?.jsonPrimitive?.content?.let { put("openingHours", it) }
             }

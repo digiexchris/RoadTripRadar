@@ -103,6 +103,22 @@ fun BoxScope.MapOverlay(
                             navWidgetSize = vm.navWidgetSize * config.widgetScale,
                             poiName = vm.poiName,
                             useMetric = vm.useMetric,
+                            onClick = {
+                                val pos = vm.poiPosition
+                                val bounds = vm.poiMapVisibleBounds
+                                val inView = pos != null && bounds != null &&
+                                    pos.latitude in bounds.southwest.latitude..bounds.northeast.latitude &&
+                                    pos.longitude in bounds.southwest.longitude..bounds.northeast.longitude
+                                if (pos != null && !inView) {
+                                    vm.isTrackingCamera = false
+                                    scope.launch {
+                                        cameraState.animateTo(
+                                            cameraState.position.copy(target = pos)
+                                        )
+                                    }
+                                }
+                                vm.showNavigationTargetPopup()
+                            },
                         )
                     }
                     if (vm.useGps) {

@@ -207,7 +207,7 @@ fun ThemeSelectorPanel(
                         )
                     } else {
                         ImportThemeCard(
-                            label = "Custom Light",
+                            label = stringResource(R.string.style_custom_light),
                             onClick = {
                                 pendingImportTarget = MapStyle.CUSTOM_LIGHT
                                 importLauncher.launch(arrayOf("application/json", "*/*"))
@@ -226,7 +226,7 @@ fun ThemeSelectorPanel(
                         )
                     } else {
                         ImportThemeCard(
-                            label = "Custom Dark",
+                            label = stringResource(R.string.style_custom_dark),
                             onClick = {
                                 pendingImportTarget = MapStyle.CUSTOM_DARK
                                 importLauncher.launch(arrayOf("application/json", "*/*"))
@@ -258,6 +258,7 @@ fun ThemeSelectorPanel(
                 )
             } else if (showCustomActions) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
+                val exportChooserTitle = stringResource(R.string.theme_export)
                 CustomThemeActions(
                     style = currentStyle,
                     vm = vm,
@@ -269,7 +270,7 @@ fun ThemeSelectorPanel(
                             putExtra(Intent.EXTRA_STREAM, uri)
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         }
-                        context.startActivity(Intent.createChooser(intent, "Export Theme"))
+                        context.startActivity(Intent.createChooser(intent, exportChooserTitle))
                     },
                 )
             }

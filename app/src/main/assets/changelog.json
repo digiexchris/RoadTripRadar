@@ -1,6 +1,15 @@
 {
   "releases": [
     {
+      "versionName": "next",
+      "versionCode": 99,
+      "showInApp": true,
+      "items": [
+        "Add back navigation support to all menus instead of only having a close button.",
+        "Allow the waypoint info slideout to show when you tap on your current target waypoint and if you tap on the navigation widget."
+      ]
+    },
+    {
       "versionName": "1.13.0",
       "versionCode": 30,
       "showInApp": true,

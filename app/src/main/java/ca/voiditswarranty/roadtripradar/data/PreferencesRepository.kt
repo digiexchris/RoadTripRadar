@@ -341,6 +341,16 @@ class PreferencesRepository(context: Context) {
             }
         }
 
+    var poiSubtitle: String?
+        get() = prefs.getString("poi_subtitle", null)
+        set(value) {
+            if (value != null) {
+                prefs.edit().putString("poi_subtitle", value).apply()
+            } else {
+                prefs.edit().remove("poi_subtitle").apply()
+            }
+        }
+
 
     var enabledPoiCategories: Set<String>
         get() {
@@ -377,7 +387,7 @@ class PreferencesRepository(context: Context) {
             .remove("enabled_poi_categories")
             .remove("show_pois_on_map")
             .remove("poi_display_mode")
-            .remove("poi_lat").remove("poi_lon").remove("poi_name")
+            .remove("poi_lat").remove("poi_lon").remove("poi_name").remove("poi_subtitle")
             .remove("last_known_lat").remove("last_known_lon")
             .putBoolean("custom_light_auto_enabled", PrefsDefaults.CUSTOM_LIGHT_AUTO_ENABLED)
             .putBoolean("custom_dark_auto_enabled", PrefsDefaults.CUSTOM_DARK_AUTO_ENABLED)

@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.voiditswarranty.roadtripradar.BuildConfig
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.ChangelogRepository
 import ca.voiditswarranty.roadtripradar.data.CustomThemeRepository
 import ca.voiditswarranty.roadtripradar.data.InvalidStyleJsonException
@@ -61,7 +62,7 @@ class MapViewModel(
     val customThemeRepo: CustomThemeRepository = CustomThemeRepository(appContext),
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
-    val postpassRepo: PostpassRepository = PostpassRepository(),
+    val postpassRepo: PostpassRepository = PostpassRepository(appContext),
 ) : ViewModel() {
     private val geocodingRepo: GeocodingRepository = GeocodingRepository()
 
@@ -147,8 +148,11 @@ class MapViewModel(
     var poiPosition by mutableStateOf(prefsRepo.poiPosition)
         private set
     var poiName by mutableStateOf(
-        prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null
+        prefsRepo.poiName
+            ?: if (prefsRepo.poiPosition != null) appContext.getString(R.string.dropped_pin_title) else null
     )
+        private set
+    var poiSubtitle by mutableStateOf(prefsRepo.poiSubtitle)
         private set
 
     // Nearby POIs — cell-based pipeline
@@ -178,6 +182,8 @@ class MapViewModel(
     var poiCategoriesVersion by mutableStateOf(0)
         private set
     var tappedPoi by mutableStateOf<TappedPoiInfo?>(null)
+        private set
+    var tappedPoiOrigin by mutableStateOf<TappedPoiOrigin?>(null)
         private set
 
     /** True when the cell pipeline has been activated by the user (Search Visible Area / Refresh / autostart). */
@@ -234,6 +240,8 @@ class MapViewModel(
         val position: Position,
         val openingHours: String? = null,
     )
+
+    enum class TappedPoiOrigin { NearbyPoi, LongPress, Search, NavigationTarget }
 
     // UI state
     var isTrackingCamera by mutableStateOf(true)
@@ -754,11 +762,15 @@ class MapViewModel(
                 }
             } catch (e: InvalidStyleJsonException) {
                 withContext(Dispatchers.Main) {
-                    customThemeImportError = e.message
+                    customThemeImportError = if (e.formatArg != null) {
+                        appContext.getString(e.messageRes, e.formatArg)
+                    } else {
+                        appContext.getString(e.messageRes)
+                    }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    customThemeImportError = "Import failed: ${e.message}"
+                    customThemeImportError = appContext.getString(R.string.theme_import_error_generic)
                 }
             }
         }
@@ -809,9 +821,15 @@ class MapViewModel(
     // --- POI ---
 
     fun setPoiFromLongPress(position: Position) {
-        poiPosition = position
-        poiName = "Dropped Pin"
-        persistPoi()
+        val info = TappedPoiInfo(
+            name = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.dropped_pin_title),
+            subtitle = formatLatLng(position),
+            categoryLabel = "",
+            iconName = "",
+            position = position,
+        )
+        showTappedPoi(info, TappedPoiOrigin.LongPress)
+        triggerReverseGeocode(position)
     }
 
     fun setPoiFromSearch(position: Position, name: String) {
@@ -821,15 +839,57 @@ class MapViewModel(
         showPoiSearch = false
     }
 
+    fun selectSearchResult(result: SearchResult) {
+        showPoiSearch = false
+        showTappedPoi(
+            TappedPoiInfo(
+                name = result.name,
+                subtitle = result.subtitle,
+                categoryLabel = "",
+                iconName = "",
+                position = result.position,
+            ),
+            TappedPoiOrigin.Search,
+        )
+    }
+
+    private fun formatLatLng(position: Position): String =
+        "%.5f, %.5f".format(position.latitude, position.longitude)
+
+    private fun triggerReverseGeocode(position: Position) {
+        val loadingSuffix = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.address_loading)
+        if (tappedPoi?.position == position) {
+            tappedPoi = tappedPoi?.copy(subtitle = "$loadingSuffix\n${formatLatLng(position)}")
+        }
+        viewModelScope.launch {
+            val address = geocodingRepo.reverseGeocode(position.latitude, position.longitude)
+            val newSubtitle = if (address != null) {
+                "$address\n${formatLatLng(position)}"
+            } else {
+                formatLatLng(position)
+            }
+            val current = tappedPoi
+            if (current != null && current.position == position) {
+                tappedPoi = current.copy(subtitle = newSubtitle)
+            }
+            if (poiPosition == position && address != null) {
+                poiSubtitle = newSubtitle
+                persistPoi()
+            }
+        }
+    }
+
     fun clearPoi() {
         poiPosition = null
         poiName = null
+        poiSubtitle = null
         persistPoi()
     }
 
     private fun persistPoi() {
         prefsRepo.poiPosition = poiPosition
         prefsRepo.poiName = poiName
+        prefsRepo.poiSubtitle = poiSubtitle
     }
 
     // --- Nearby POIs (cell-based pipeline) ---
@@ -906,13 +966,55 @@ class MapViewModel(
     fun openPoiCategoryPicker() { showPoiCategoryPicker = true }
     fun closePoiCategoryPicker() { showPoiCategoryPicker = false }
 
-    fun showTappedPoi(info: TappedPoiInfo) { tappedPoi = info }
-    fun dismissTappedPoi() { tappedPoi = null }
+    fun showTappedPoi(info: TappedPoiInfo, origin: TappedPoiOrigin = TappedPoiOrigin.NearbyPoi) {
+        tappedPoi = info
+        tappedPoiOrigin = origin
+    }
+
+    fun dismissTappedPoi() {
+        tappedPoi = null
+        tappedPoiOrigin = null
+    }
 
     fun navigateToTappedPoi() {
         val poi = tappedPoi ?: return
+        val origin = tappedPoiOrigin
+        poiSubtitle = poi.subtitle.takeIf { it.isNotBlank() }
         setPoiFromSearch(poi.position, poi.name)
         tappedPoi = null
+        tappedPoiOrigin = null
+        if (origin == TappedPoiOrigin.Search) {
+            searchQuery = ""
+            searchResults = emptyList()
+        }
+    }
+
+    fun tappedPoiBackToSearch() {
+        tappedPoi = null
+        tappedPoiOrigin = null
+        showPoiSearch = true
+    }
+
+    fun showNavigationTargetPopup() {
+        val pos = poiPosition ?: return
+        val cachedSubtitle = poiSubtitle?.takeIf { it.isNotBlank() }
+        val info = TappedPoiInfo(
+            name = poiName ?: appContext.getString(ca.voiditswarranty.roadtripradar.R.string.dropped_pin_title),
+            subtitle = cachedSubtitle ?: formatLatLng(pos),
+            categoryLabel = "",
+            iconName = "",
+            position = pos,
+        )
+        showTappedPoi(info, TappedPoiOrigin.NavigationTarget)
+        if (cachedSubtitle == null) {
+            triggerReverseGeocode(pos)
+        }
+    }
+
+    fun removeNavigationTarget() {
+        clearPoi()
+        tappedPoi = null
+        tappedPoiOrigin = null
     }
 
     // --- Cell pipeline helpers ---
@@ -1229,6 +1331,7 @@ class MapViewModel(
         isNorthUp = false
         poiPosition = null
         poiName = null
+        poiSubtitle = null
         enabledPoiCategories = emptySet()
         cellWorkerJob?.cancel()
         cellWorkerJob = null

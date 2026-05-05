@@ -67,4 +67,28 @@ class GeocodingRepository {
             emptyList()
         }
     }
+
+    suspend fun reverseGeocode(lat: Double, lon: Double): String? {
+        return try {
+            val url = "https://photon.komoot.io/reverse?lat=$lat&lon=$lon&limit=1"
+            val jsonStr = withContext(Dispatchers.IO) { URL(url).readText() }
+            val props = Json.parseToJsonElement(jsonStr).jsonObject["features"]
+                ?.jsonArray?.firstOrNull()?.jsonObject?.get("properties")?.jsonObject
+                ?: return null
+            val streetParts = listOfNotNull(
+                props["housenumber"]?.jsonPrimitive?.content,
+                props["street"]?.jsonPrimitive?.content,
+            )
+            val street = streetParts.joinToString(" ").ifEmpty { null }
+            val parts = listOfNotNull(
+                street,
+                props["city"]?.jsonPrimitive?.content,
+                props["state"]?.jsonPrimitive?.content,
+                props["country"]?.jsonPrimitive?.content,
+            )
+            parts.joinToString(", ").ifEmpty { null }
+        } catch (_: Exception) {
+            null
+        }
+    }
 }

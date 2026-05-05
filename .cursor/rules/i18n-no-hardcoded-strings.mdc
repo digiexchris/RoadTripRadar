@@ -1,0 +1,52 @@
+---
+description: Require localized string resources for all user-facing text
+alwaysApply: true
+---
+
+# i18n: No hardcoded user-facing strings
+
+All user-facing text in this project must come from `app/src/main/res/values*/strings.xml` and be referenced through the i18n system. Any new or modified feature must follow this — never introduce English (or any language) string literals into UI code.
+
+## Sources of truth
+
+- Default English: `app/src/main/res/values/strings.xml` (always update this).
+- Per-locale overrides: `app/src/main/res/values-<locale>/strings.xml` (translations are managed via Crowdin; missing locales fall back to the default values, which is acceptable for new keys).
+
+## Composables and Activities
+
+```kotlin
+// BAD — hardcoded literal in UI
+Text("Center on Map")
+Icon(..., contentDescription = "Close")
+
+// GOOD — pulled from resources
+Text(stringResource(R.string.action_center_on_map))
+Icon(..., contentDescription = stringResource(R.string.cd_close))
+```
+
+## ViewModels and non-Composable code
+
+Use the injected `appContext` (already available in `MapViewModel`) — never pass strings down from Composables or hardcode them:
+
+```kotlin
+// BAD
+poiName = "Dropped Pin"
+
+// GOOD
+poiName = appContext.getString(R.string.dropped_pin_title)
+```
+
+## When adding a new string
+
+1. Add the key to `values/strings.xml` and `values-en-rUS/strings.xml`.
+2. Reference it via `R.string.<key>` (`stringResource(...)` in Compose, `getString(...)` in Kotlin).
+3. Do not hand-translate other locales; Crowdin syncs them. English fallback in the meantime is fine.
+
+## What is exempt
+
+- Log tags / `android.util.Log` messages (developer-only).
+- Internal identifiers: layer ids (`"poi-marker"`), asset names (`"marker"`, `"marker-stroked"`), JSON keys, preference keys.
+- Test fixtures and `BuildConfig` values.
+- `contentDescription = null` is allowed when an adjacent `Text` already provides the accessibility name for an icon.
+
+If you are unsure whether a string is user-facing, treat it as user-facing and add a resource.

@@ -3,6 +3,7 @@ package ca.voiditswarranty.roadtripradar.ui
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -40,6 +41,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Gavel
@@ -142,6 +144,14 @@ fun ActionsDrawer(
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
+        BackHandler(enabled = vm.showActionsDrawer) {
+            if (drawerPage != ActionsDrawerPage.Main) {
+                drawerPage = ActionsDrawerPage.Main
+            } else {
+                vm.closeActionsDrawer()
+            }
+        }
+
         AnimatedVisibility(
             visible = vm.showActionsDrawer,
             enter = fadeIn(),
@@ -168,6 +178,12 @@ fun ActionsDrawer(
                 label = stringResource(R.string.action_close),
                 icon = Icons.Default.KeyboardArrowDown,
                 onClick = { vm.closeActionsDrawer() },
+            )
+
+            val backToMain = DrawerAction(
+                label = stringResource(R.string.action_back),
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                onClick = { drawerPage = ActionsDrawerPage.Main },
             )
 
             val actions = when (drawerPage) {
@@ -301,6 +317,7 @@ fun ActionsDrawer(
                         ActionsDrawerPage.Map -> {
                             val mapScroll = rememberScrollState()
                             val mapTopActions = listOf(
+                                backToMain,
                                 closeToMap,
                             )
                             Column(
@@ -328,6 +345,7 @@ fun ActionsDrawer(
                         ActionsDrawerPage.Weather -> {
                             val weatherScroll = rememberScrollState()
                             val weatherTopActions = listOf(
+                                backToMain,
                                 closeToMap,
                                 DrawerAction(
                                     label = stringResource(R.string.toggle_wind_temp),
@@ -369,6 +387,7 @@ fun ActionsDrawer(
                         ActionsDrawerPage.System -> {
                             val settingsScroll = rememberScrollState()
                             val settingsTopActions = listOf(
+                                backToMain,
                                 closeToMap,
                                 DrawerAction(
                                     label = stringResource(R.string.action_reset),
@@ -397,7 +416,7 @@ fun ActionsDrawer(
                             val wikiUri = Uri.parse("https://github.com/digiexchris/RoadTripRadar/wiki")
                             val privacyUri =
                                 Uri.parse("https://github.com/digiexchris/RoadTripRadar/wiki/Privacy-Policy")
-                            val helpTopActions = listOf(closeToMap)
+                            val helpTopActions = listOf(backToMain, closeToMap)
                             val helpLinkActions = listOf(
                                 DrawerAction(
                                     label = stringResource(R.string.help_show_tutorial),

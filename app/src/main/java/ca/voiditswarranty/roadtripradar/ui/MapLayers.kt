@@ -197,10 +197,57 @@ fun UserLocationPuck(
 }
 
 @Composable
-fun PoiLayers(
+fun TappedPoiPreviewLayer(position: Position) {
+    val pointData = remember(position) {
+        FeatureCollection(listOf(Feature(
+            geometry = Point(position),
+            properties = buildJsonObject {},
+        )))
+    }
+    val source = rememberGeoJsonSource(
+        data = GeoJsonData.Features(pointData),
+    )
+    CircleLayer(
+        id = "tapped-poi-preview-marker",
+        source = source,
+        radius = const(10.dp),
+        color = const(Color.Red.copy(alpha = 0.6f)),
+        strokeColor = const(Color.White),
+        strokeWidth = const(2.dp),
+    )
+}
+
+@Composable
+fun PoiRouteLineLayer(
     poiPosition: Position,
-    userPosition: Position?,
+    userPosition: Position,
 ) {
+    val poiLineData = remember(
+        userPosition.latitude, userPosition.longitude, poiPosition,
+    ) {
+        FeatureCollection(listOf(Feature(
+            geometry = LineString(listOf(userPosition, poiPosition)),
+            properties = buildJsonObject {},
+        )))
+    }
+    val poiLineSource = rememberGeoJsonSource(
+        data = GeoJsonData.Features(poiLineData),
+    )
+    LineLayer(
+        id = "poi-line",
+        source = poiLineSource,
+        color = const(Color.Green),
+        width = const(4.dp),
+        opacity = const(0.8f),
+    )
+}
+
+@Composable
+fun PoiMarkerLayer(
+    poiPosition: Position,
+    onClick: () -> Unit = {},
+) {
+    val context = LocalContext.current
     val poiPointData = remember(poiPosition) {
         FeatureCollection(listOf(Feature(
             geometry = Point(poiPosition),
@@ -210,33 +257,32 @@ fun PoiLayers(
     val poiSource = rememberGeoJsonSource(
         data = GeoJsonData.Features(poiPointData),
     )
-    CircleLayer(
-        id = "poi-marker",
-        source = poiSource,
-        radius = const(12.dp),
-        color = const(Color.Red),
-        strokeColor = const(Color.White),
-        strokeWidth = const(2.dp),
-    )
-
-    if (userPosition != null) {
-        val poiLineData = remember(
-            userPosition.latitude, userPosition.longitude, poiPosition,
-        ) {
-            FeatureCollection(listOf(Feature(
-                geometry = LineString(listOf(userPosition, poiPosition)),
-                properties = buildJsonObject {},
-            )))
-        }
-        val poiLineSource = rememberGeoJsonSource(
-            data = GeoJsonData.Features(poiLineData),
+    val markerBitmap = remember { loadMakiIcon(context, "marker") }
+    if (markerBitmap != null) {
+        SymbolLayer(
+            id = "poi-marker",
+            source = poiSource,
+            iconImage = image(markerBitmap),
+            iconSize = const(1.75f),
+            iconAllowOverlap = const(true),
+            iconIgnorePlacement = const(true),
+            onClick = {
+                onClick()
+                ClickResult.Consume
+            },
         )
-        LineLayer(
-            id = "poi-line",
-            source = poiLineSource,
-            color = const(Color.Blue),
-            width = const(2.dp),
-            opacity = const(0.8f),
+    } else {
+        CircleLayer(
+            id = "poi-marker",
+            source = poiSource,
+            radius = const(12.dp),
+            color = const(Color.Red),
+            strokeColor = const(Color.White),
+            strokeWidth = const(2.dp),
+            onClick = {
+                onClick()
+                ClickResult.Consume
+            },
         )
     }
 }
@@ -361,14 +407,17 @@ fun NearbyPoiLayers(
             onClick = handleClick@{ clicked ->
                 val f = clicked.firstOrNull() ?: return@handleClick ClickResult.Pass
                 val props = f.properties ?: return@handleClick ClickResult.Pass
-                vm.showTappedPoi(MapViewModel.TappedPoiInfo(
-                    name = props["name"]?.jsonPrimitive?.content ?: "",
-                    subtitle = props["subtitle"]?.jsonPrimitive?.content ?: "",
-                    categoryLabel = props["categoryLabel"]?.jsonPrimitive?.content ?: "",
-                    iconName = props["iconName"]?.jsonPrimitive?.content ?: "",
-                    position = (f.geometry as? Point)?.coordinates ?: return@handleClick ClickResult.Pass,
-                    openingHours = props["openingHours"]?.jsonPrimitive?.content,
-                ))
+                vm.showTappedPoi(
+                    MapViewModel.TappedPoiInfo(
+                        name = props["name"]?.jsonPrimitive?.content ?: "",
+                        subtitle = props["subtitle"]?.jsonPrimitive?.content ?: "",
+                        categoryLabel = props["categoryLabel"]?.jsonPrimitive?.content ?: "",
+                        iconName = props["iconName"]?.jsonPrimitive?.content ?: "",
+                        position = (f.geometry as? Point)?.coordinates ?: return@handleClick ClickResult.Pass,
+                        openingHours = props["openingHours"]?.jsonPrimitive?.content,
+                    ),
+                    MapViewModel.TappedPoiOrigin.NearbyPoi,
+                )
                 ClickResult.Consume
             },
         )

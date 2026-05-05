@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.MapStyle
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -70,7 +71,7 @@ class CustomThemeRepository(context: Context) {
      */
     fun importTheme(sourceUri: Uri, target: MapStyle) {
         val inputStream = appContext.contentResolver.openInputStream(sourceUri)
-            ?: throw InvalidStyleJsonException("Could not open the selected file.")
+            ?: throw InvalidStyleJsonException(R.string.theme_import_error_open_failed)
 
         // Write to a temp file so an existing theme is not corrupted on failure.
         val tempFile = File(appContext.filesDir, "${fileFor(target).name}.tmp")
@@ -90,7 +91,7 @@ class CustomThemeRepository(context: Context) {
             throw e
         } catch (e: Exception) {
             tempFile.delete()
-            throw InvalidStyleJsonException("Could not read the selected file: ${e.message}")
+            throw InvalidStyleJsonException(R.string.theme_import_error_read_failed, cause = e)
         }
     }
 
@@ -102,20 +103,20 @@ class CustomThemeRepository(context: Context) {
         val root = try {
             styleJson.parseToJsonElement(json).jsonObject
         } catch (e: Exception) {
-            throw InvalidStyleJsonException("Not valid JSON: ${e.message}")
+            throw InvalidStyleJsonException(R.string.theme_import_error_not_json, cause = e)
         }
         val version = root["version"]?.jsonPrimitive?.content
         if (version != "8") {
             throw InvalidStyleJsonException(
-                "Missing or unsupported style version (expected 8, got $version). " +
-                    "Make sure you export a MapLibre GL style from Maputnik.",
+                R.string.theme_import_error_unsupported_version,
+                formatArg = version ?: "null",
             )
         }
         if (!root.containsKey("layers")) {
-            throw InvalidStyleJsonException("Style is missing the required 'layers' field.")
+            throw InvalidStyleJsonException(R.string.theme_import_error_missing_layers)
         }
         if (!root.containsKey("sources")) {
-            throw InvalidStyleJsonException("Style is missing the required 'sources' field.")
+            throw InvalidStyleJsonException(R.string.theme_import_error_missing_sources)
         }
     }
 
@@ -247,4 +248,8 @@ class CustomThemeRepository(context: Context) {
 }
 
 /** Thrown when a user-supplied file is not a valid MapLibre style document. */
-class InvalidStyleJsonException(message: String) : Exception(message)
+class InvalidStyleJsonException(
+    @androidx.annotation.StringRes val messageRes: Int,
+    val formatArg: String? = null,
+    cause: Throwable? = null,
+) : Exception(cause)
