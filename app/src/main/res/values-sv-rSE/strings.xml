@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Common actions -->
     <string name="action_close">Stäng</string>
     <string name="action_cancel">Avbryt</string>
@@ -281,7 +281,7 @@
     <string name="style_auto">Auto</string>
     <!-- Map loading status -->
     <string name="loading_areas">Laddar områden</string>
-    <string name="loading_cells_remaining">%1$d återstår</string>
+    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> remaining</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Bakgrund / Mark</string>
     <string name="color_category_water">Vatten</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Det gick inte att öppna den valda filen.</string>
     <string name="theme_import_error_read_failed">Det gick inte att läsa den valda filen.</string>
     <string name="theme_import_error_not_json">Ogiltig JSON.</string>
-    <string name="theme_import_error_unsupported_version">Stilversionen saknas eller stöds inte (förväntade 8, fick %1$s). Se till att du exporterar en MapLibre GL-stil från Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Make sure you export a MapLibre GL style from Maputnik.</string>
     <string name="theme_import_error_missing_layers">Stilen saknar det obligatoriska fältet \'layers\'.</string>
     <string name="theme_import_error_missing_sources">Stilen saknar det obligatoriska fältet \'sources\'.</string>
     <string name="theme_import_error_generic">Importen misslyckades.</string>
