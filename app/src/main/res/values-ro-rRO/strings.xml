@@ -12,6 +12,12 @@
     <string name="action_decline">Refuză</string>
     <string name="action_accept">Acceptă</string>
     <string name="action_got_it">Am înțeles</string>
+    <string name="action_back">Înapoi</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Pin plasat</string>
+    <string name="address_loading">Se localizează adresa…</string>
+    <string name="action_remove_waypoint">Elimină</string>
+    <string name="action_center_on_map">Centrează pe hartă</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Este necesară permisiunea pentru locație</string>
     <string name="permission_location_body">Road Trip Radar are nevoie de acces la locația dvs. pentru a arăta unde vă aflați pe hartă. Locația precisă este recomandată pentru cea mai bună acuratețe, dar va funcționa și locația aproximativă. Atingeți Acordați permisiunea pentru a continua sau Ieșiți pentru a închide aplicația.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Luminos personalizat</string>
     <string name="style_custom_dark">Întunecată personalizată</string>
     <string name="style_auto">Automat</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Se încarcă zonele</string>
+    <string name="loading_cells_remaining">%1$d rămase</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Fundal / Teren</string>
+    <string name="color_category_water">Apă</string>
+    <string name="color_category_parks">Parcuri &amp; spații verzi</string>
+    <string name="color_category_buildings">Clădiri</string>
+    <string name="color_category_road_motorway">Autostradă / Drum expres</string>
+    <string name="color_category_road_motorway_casing">Contur autostradă</string>
+    <string name="color_category_road_trunk_primary">Drumuri naționale &amp; principale</string>
+    <string name="color_category_road_secondary_tertiary">Drumuri secundare &amp; terțiare</string>
+    <string name="color_category_road_minor">Drumuri minore</string>
+    <string name="color_category_road_service_track">Drumuri de serviciu &amp; piste</string>
+    <string name="color_category_road_service_track_casing">Contur drumuri de serviciu &amp; piste</string>
+    <string name="color_category_road_path_pedestrian">Poteci &amp; pietonal</string>
+    <string name="color_category_label_text">Etichete (text)</string>
+    <string name="color_category_label_halo">Etichete (halou)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Nu s-a putut deschide fișierul selectat.</string>
+    <string name="theme_import_error_read_failed">Nu s-a putut citi fișierul selectat.</string>
+    <string name="theme_import_error_not_json">JSON nevalid.</string>
+    <string name="theme_import_error_unsupported_version">Versiune de stil lipsă sau neacceptată (se aștepta 8, s-a primit %1$s). Asigură-te că exporți un stil MapLibre GL din Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Stilului îi lipsește câmpul obligatoriu \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">Stilului îi lipsește câmpul obligatoriu \'sources\'.</string>
+    <string name="theme_import_error_generic">Importul a eșuat.</string>
 </resources>
