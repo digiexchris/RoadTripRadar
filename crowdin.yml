@@ -6,6 +6,7 @@ preserve_hierarchy: true
 files:
   - source: /app/src/main/res/values/strings.xml
     translation: /app/src/main/res/values-%android_code%/strings.xml
+    type: android
     language_mapping:
       pt-BR:
         android_code: "pt-rBR"
