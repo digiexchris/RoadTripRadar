@@ -1,0 +1,2 @@
+Aggiungi il supporto alla navigazione indietro in tutti i menu invece di avere solo un pulsante di chiusura.
+Consenti alla schermata laterale delle informazioni sul waypoint di essere visualizzata quando tocchi il waypoint di destinazione corrente e quando tocchi il widget di navigazione.
