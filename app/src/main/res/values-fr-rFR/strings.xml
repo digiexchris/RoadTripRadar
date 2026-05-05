@@ -12,6 +12,12 @@
     <string name="action_decline">Refuser</string>
     <string name="action_accept">Accepter</string>
     <string name="action_got_it">Compris</string>
+    <string name="action_back">Retour</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Repère déposé</string>
+    <string name="address_loading">Localisation de l’adresse…</string>
+    <string name="action_remove_waypoint">Supprimer</string>
+    <string name="action_center_on_map">Centrer sur la carte</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Autorisation de localisation requise</string>
     <string name="permission_location_body">Road Trip Radar a besoin d’accéder à votre position pour afficher où vous vous trouvez sur la carte. Une position précise est recommandée pour une meilleure exactitude, mais une position approximative fonctionnera également. Appuyez sur Autoriser pour continuer, ou sur Quitter pour fermer l’application.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Clair personnalisé</string>
     <string name="style_custom_dark">Sombre personnalisé</string>
     <string name="style_auto">Auto</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Chargement des zones</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Arrière-plan / Terre</string>
+    <string name="color_category_water">Eau</string>
+    <string name="color_category_parks">Parcs et espaces verts</string>
+    <string name="color_category_buildings">Bâtiments</string>
+    <string name="color_category_road_motorway">Autoroute / Voie rapide</string>
+    <string name="color_category_road_motorway_casing">Contour des autoroutes</string>
+    <string name="color_category_road_trunk_primary">Routes principales et nationales</string>
+    <string name="color_category_road_secondary_tertiary">Routes secondaires et tertiaires</string>
+    <string name="color_category_road_minor">Routes mineures</string>
+    <string name="color_category_road_service_track">Routes de service et pistes</string>
+    <string name="color_category_road_service_track_casing">Contour des routes de service et pistes</string>
+    <string name="color_category_road_path_pedestrian">Chemins et piétons</string>
+    <string name="color_category_label_text">Étiquettes (texte)</string>
+    <string name="color_category_label_halo">Étiquettes (halo)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Impossible d’ouvrir le fichier sélectionné.</string>
+    <string name="theme_import_error_read_failed">Impossible de lire le fichier sélectionné.</string>
+    <string name="theme_import_error_not_json">JSON non valide.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Le style ne contient pas le champ obligatoire \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">Le style ne contient pas le champ obligatoire \'sources\'.</string>
+    <string name="theme_import_error_generic">Échec de l’importation.</string>
 </resources>
