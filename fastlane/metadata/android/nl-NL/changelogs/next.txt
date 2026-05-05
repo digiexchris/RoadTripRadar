@@ -1,0 +1,2 @@
+Voeg terugnavigatieondersteuning toe aan alle menu's in plaats van alleen een sluitknop te hebben.
+Laat de infouitschuif van waypoints zien wanneer je op je huidige doel-waypoint tikt en wanneer je op de navigatiewidget tikt.
