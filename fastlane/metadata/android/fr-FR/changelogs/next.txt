@@ -1,0 +1,2 @@
+Ajouter la prise en charge de la navigation de retour dans tous les menus au lieu d’avoir seulement un bouton de fermeture.
+Permettre à la fenêtre latérale d’informations du point de passage de s’afficher lorsque vous appuyez sur votre point de passage cible actuel et lorsque vous appuyez sur le widget de navigation.
