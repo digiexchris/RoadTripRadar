@@ -12,6 +12,12 @@
     <string name="action_decline">Hylkää</string>
     <string name="action_accept">Hyväksy</string>
     <string name="action_got_it">Selvä</string>
+    <string name="action_back">Takaisin</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Pudotettu merkki</string>
+    <string name="address_loading">Haetaan osoitetta…</string>
+    <string name="action_remove_waypoint">Poista</string>
+    <string name="action_center_on_map">Keskitä kartalle</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Sijaintilupa vaaditaan</string>
     <string name="permission_location_body">Road Trip Radar tarvitsee pääsyn sijaintiisi voidakseen näyttää, missä olet kartalla. Paras tarkkuus saadaan käyttämällä tarkkaa sijaintia, mutta myös likimääräinen sijainti toimii. Jatka napauttamalla Myönnä lupa tai poistu sovelluksesta napauttamalla Lopeta.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Mukautettu vaalea</string>
     <string name="style_custom_dark">Mukautettu tumma</string>
     <string name="style_auto">Automaattinen</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Ladataan alueita</string>
+    <string name="loading_cells_remaining">%1$d jäljellä</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Tausta / maa</string>
+    <string name="color_category_water">Vesi</string>
+    <string name="color_category_parks">Puistot &amp; viheralueet</string>
+    <string name="color_category_buildings">Rakennukset</string>
+    <string name="color_category_road_motorway">Moottoritie / valtatie</string>
+    <string name="color_category_road_motorway_casing">Moottoritien reunus</string>
+    <string name="color_category_road_trunk_primary">Valta- &amp; päätiet</string>
+    <string name="color_category_road_secondary_tertiary">Seutu- &amp; yhdystiet</string>
+    <string name="color_category_road_minor">Pienet tiet</string>
+    <string name="color_category_road_service_track">Huoltotiet &amp; ajourat</string>
+    <string name="color_category_road_service_track_casing">Huoloteiden &amp; ajourien reunus</string>
+    <string name="color_category_road_path_pedestrian">Polut &amp; kävelyalueet</string>
+    <string name="color_category_label_text">Nimet (teksti)</string>
+    <string name="color_category_label_halo">Nimet (hehku)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Valittua tiedostoa ei voitu avata.</string>
+    <string name="theme_import_error_read_failed">Valittua tiedostoa ei voitu lukea.</string>
+    <string name="theme_import_error_not_json">JSON ei ole kelvollinen.</string>
+    <string name="theme_import_error_unsupported_version">Tyylistä puuttuu versio tai sitä ei tueta (odotettiin versiota 8, saatiin %1$s). Varmista, että viet Maputnikista MapLibre GL -tyylin.</string>
+    <string name="theme_import_error_missing_layers">Tyylistä puuttuu pakollinen \"layers\"-kenttä.</string>
+    <string name="theme_import_error_missing_sources">Tyylistä puuttuu pakollinen \"sources\"-kenttä.</string>
+    <string name="theme_import_error_generic">Tuonti epäonnistui.</string>
 </resources>
