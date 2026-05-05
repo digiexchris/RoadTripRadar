@@ -281,7 +281,7 @@
     <string name="style_auto">Automatico</string>
     <!-- Map loading status -->
     <string name="loading_areas">Caricamento aree</string>
-    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> remaining</string>
+    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> rimanenti</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Sfondo / Terra</string>
     <string name="color_category_water">Acqua</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Impossibile aprire il file selezionato.</string>
     <string name="theme_import_error_read_failed">Impossibile leggere il file selezionato.</string>
     <string name="theme_import_error_not_json">JSON non valido.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Versione dello stile mancante o non supportata (prevista 8, ottenuta <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Assicurati di esportare uno stile MapLibre GL da Maputnik.</string>
     <string name="theme_import_error_missing_layers">Nello stile manca il campo obbligatorio \'layers\'.</string>
     <string name="theme_import_error_missing_sources">Nello stile manca il campo obbligatorio \'sources\'.</string>
     <string name="theme_import_error_generic">Importazione non riuscita.</string>
