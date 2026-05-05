@@ -279,11 +279,9 @@
     <string name="style_custom_light">Custom Light</string>
     <string name="style_custom_dark">Custom Dark</string>
     <string name="style_auto">Auto</string>
-
     <!-- Map loading status -->
     <string name="loading_areas">Loading areas</string>
     <string name="loading_cells_remaining">%1$d remaining</string>
-
     <!-- Color editor categories -->
     <string name="color_category_background">Background / Land</string>
     <string name="color_category_water">Water</string>
@@ -299,7 +297,6 @@
     <string name="color_category_road_path_pedestrian">Paths &amp; Pedestrian</string>
     <string name="color_category_label_text">Labels (Text)</string>
     <string name="color_category_label_halo">Labels (Halo)</string>
-
     <!-- Custom theme import errors -->
     <string name="theme_import_error_open_failed">Could not open the selected file.</string>
     <string name="theme_import_error_read_failed">Could not read the selected file.</string>
