@@ -12,6 +12,12 @@
     <string name="action_decline">Weigeren</string>
     <string name="action_accept">Accepteren</string>
     <string name="action_got_it">Begrepen</string>
+    <string name="action_back">Terug</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Geplaatste pin</string>
+    <string name="address_loading">Adres wordt bepaald…</string>
+    <string name="action_remove_waypoint">Verwijderen</string>
+    <string name="action_center_on_map">Centreren op kaart</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Locatiemachtiging vereist</string>
     <string name="permission_location_body">Road Trip Radar heeft toegang tot je locatie nodig om te laten zien waar je bent op de kaart. Voor de beste nauwkeurigheid wordt een precieze locatie aanbevolen, maar een geschatte locatie werkt ook. Tik op Toestemming verlenen om door te gaan, of op Afsluiten om de app te sluiten.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Aangepast licht</string>
     <string name="style_custom_dark">Aangepast donker</string>
     <string name="style_auto">Automatisch</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Gebieden laden</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Achtergrond / Land</string>
+    <string name="color_category_water">Water</string>
+    <string name="color_category_parks">Parken &amp; groen</string>
+    <string name="color_category_buildings">Gebouwen</string>
+    <string name="color_category_road_motorway">Autosnelweg / Snelweg</string>
+    <string name="color_category_road_motorway_casing">Rand van autosnelweg</string>
+    <string name="color_category_road_trunk_primary">Hoofdwegen &amp; primaire wegen</string>
+    <string name="color_category_road_secondary_tertiary">Secundaire &amp; tertiaire wegen</string>
+    <string name="color_category_road_minor">Kleine wegen</string>
+    <string name="color_category_road_service_track">Toegangswegen &amp; paden</string>
+    <string name="color_category_road_service_track_casing">Rand van toegangswegen &amp; paden</string>
+    <string name="color_category_road_path_pedestrian">Paden &amp; voetgangers</string>
+    <string name="color_category_label_text">Labels (tekst)</string>
+    <string name="color_category_label_halo">Labels (gloed)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Kon het geselecteerde bestand niet openen.</string>
+    <string name="theme_import_error_read_failed">Kon het geselecteerde bestand niet lezen.</string>
+    <string name="theme_import_error_not_json">Geen geldige JSON.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">In de stijl ontbreekt het vereiste veld \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">In de stijl ontbreekt het vereiste veld \'sources\'.</string>
+    <string name="theme_import_error_generic">Importeren mislukt.</string>
 </resources>
