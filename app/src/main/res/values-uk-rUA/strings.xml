@@ -12,6 +12,12 @@
     <string name="action_decline">Відхилити</string>
     <string name="action_accept">Прийняти</string>
     <string name="action_got_it">Зрозуміло</string>
+    <string name="action_back">Назад</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Скинута мітка</string>
+    <string name="address_loading">Визначення адреси…</string>
+    <string name="action_remove_waypoint">Видалити</string>
+    <string name="action_center_on_map">Центрувати на мапі</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Потрібен дозвіл на доступ до місцезнаходження</string>
     <string name="permission_location_body">Road Trip Radar потребує доступу до вашого місцезнаходження, щоб показувати, де ви перебуваєте на мапі. Для найкращої точності рекомендується точне місцезнаходження, але приблизне також підійде. Натисніть \"Надати дозвіл\", щоб продовжити, або \"Вийти\", щоб закрити застосунок.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Користувацька світла</string>
     <string name="style_custom_dark">Користувацька темна</string>
     <string name="style_auto">Авто</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Завантаження областей</string>
+    <string name="loading_cells_remaining">Залишилося %1$d</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Тло / Суходіл</string>
+    <string name="color_category_water">Вода</string>
+    <string name="color_category_parks">Парки &amp; озеленення</string>
+    <string name="color_category_buildings">Будівлі</string>
+    <string name="color_category_road_motorway">Автомагістраль / Фривей</string>
+    <string name="color_category_road_motorway_casing">Контур автомагістралі</string>
+    <string name="color_category_road_trunk_primary">Магістралі &amp; основні дороги</string>
+    <string name="color_category_road_secondary_tertiary">Другорядні &amp; третьорядні дороги</string>
+    <string name="color_category_road_minor">Малі дороги</string>
+    <string name="color_category_road_service_track">Службові дороги &amp; ґрунтові шляхи</string>
+    <string name="color_category_road_service_track_casing">Контур службових доріг &amp; ґрунтових шляхів</string>
+    <string name="color_category_road_path_pedestrian">Стежки &amp; пішохідні зони</string>
+    <string name="color_category_label_text">Написи (текст)</string>
+    <string name="color_category_label_halo">Написи (ореол)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Не вдалося відкрити вибраний файл.</string>
+    <string name="theme_import_error_read_failed">Не вдалося прочитати вибраний файл.</string>
+    <string name="theme_import_error_not_json">Некоректний JSON.</string>
+    <string name="theme_import_error_unsupported_version">Відсутня або непідтримувана версія стилю (очікувалася 8, отримано %1$s). Переконайтеся, що ви експортуєте стиль MapLibre GL з Maputnik.</string>
+    <string name="theme_import_error_missing_layers">У стилі відсутнє обов’язкове поле \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">У стилі відсутнє обов’язкове поле \'sources\'.</string>
+    <string name="theme_import_error_generic">Не вдалося імпортувати.</string>
 </resources>
