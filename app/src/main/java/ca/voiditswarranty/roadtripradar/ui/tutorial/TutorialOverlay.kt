@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.ui.tutorial
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.clickable
@@ -52,6 +53,8 @@ fun TutorialOverlay(vm: MapViewModel) {
     val step = steps[index]
     val anchors = LocalTutorialAnchors.current
     val anchorRect: Rect? = anchors?.get(step.anchorId)
+
+    BackHandler { vm.skipTutorial() }
 
     val density = LocalDensity.current
     val cornerRadiusPx = with(density) { SpotlightCornerDp.toPx() }

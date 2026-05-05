@@ -223,6 +223,7 @@ fun PoiLayers(
     userPosition: Position?,
     onClick: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val poiPointData = remember(poiPosition) {
         FeatureCollection(listOf(Feature(
             geometry = Point(poiPosition),
@@ -232,18 +233,34 @@ fun PoiLayers(
     val poiSource = rememberGeoJsonSource(
         data = GeoJsonData.Features(poiPointData),
     )
-    CircleLayer(
-        id = "poi-marker",
-        source = poiSource,
-        radius = const(12.dp),
-        color = const(Color.Red),
-        strokeColor = const(Color.White),
-        strokeWidth = const(2.dp),
-        onClick = {
-            onClick()
-            ClickResult.Consume
-        },
-    )
+    val markerBitmap = remember { loadMakiIcon(context, "marker") }
+    if (markerBitmap != null) {
+        SymbolLayer(
+            id = "poi-marker",
+            source = poiSource,
+            iconImage = image(markerBitmap),
+            iconSize = const(1.75f),
+            iconAllowOverlap = const(true),
+            iconIgnorePlacement = const(true),
+            onClick = {
+                onClick()
+                ClickResult.Consume
+            },
+        )
+    } else {
+        CircleLayer(
+            id = "poi-marker",
+            source = poiSource,
+            radius = const(12.dp),
+            color = const(Color.Red),
+            strokeColor = const(Color.White),
+            strokeWidth = const(2.dp),
+            onClick = {
+                onClick()
+                ClickResult.Consume
+            },
+        )
+    }
 
     if (userPosition != null) {
         val poiLineData = remember(
@@ -260,8 +277,8 @@ fun PoiLayers(
         LineLayer(
             id = "poi-line",
             source = poiLineSource,
-            color = const(Color.Blue),
-            width = const(2.dp),
+            color = const(Color.Green),
+            width = const(4.dp),
             opacity = const(0.8f),
         )
     }

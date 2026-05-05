@@ -150,6 +150,8 @@ class MapViewModel(
         prefsRepo.poiName ?: if (prefsRepo.poiPosition != null) "Dropped Pin" else null
     )
         private set
+    var poiSubtitle by mutableStateOf(prefsRepo.poiSubtitle)
+        private set
 
     // Nearby POIs — cell-based pipeline
     data class CachedCell(
@@ -850,20 +852,23 @@ class MapViewModel(
 
     private fun triggerReverseGeocode(position: Position) {
         val loadingSuffix = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.address_loading)
-        tappedPoi = tappedPoi?.copy(subtitle = "$loadingSuffix\n${formatLatLng(position)}")
+        if (tappedPoi?.position == position) {
+            tappedPoi = tappedPoi?.copy(subtitle = "$loadingSuffix\n${formatLatLng(position)}")
+        }
         viewModelScope.launch {
             val address = geocodingRepo.reverseGeocode(position.latitude, position.longitude)
+            val newSubtitle = if (address != null) {
+                "$address\n${formatLatLng(position)}"
+            } else {
+                formatLatLng(position)
+            }
             val current = tappedPoi
-            if (current != null
-                && tappedPoiOrigin == TappedPoiOrigin.LongPress
-                && current.position == position
-            ) {
-                val newSubtitle = if (address != null) {
-                    "$address\n${formatLatLng(position)}"
-                } else {
-                    formatLatLng(position)
-                }
+            if (current != null && current.position == position) {
                 tappedPoi = current.copy(subtitle = newSubtitle)
+            }
+            if (poiPosition == position && address != null) {
+                poiSubtitle = newSubtitle
+                persistPoi()
             }
         }
     }
@@ -871,12 +876,14 @@ class MapViewModel(
     fun clearPoi() {
         poiPosition = null
         poiName = null
+        poiSubtitle = null
         persistPoi()
     }
 
     private fun persistPoi() {
         prefsRepo.poiPosition = poiPosition
         prefsRepo.poiName = poiName
+        prefsRepo.poiSubtitle = poiSubtitle
     }
 
     // --- Nearby POIs (cell-based pipeline) ---
@@ -966,6 +973,7 @@ class MapViewModel(
     fun navigateToTappedPoi() {
         val poi = tappedPoi ?: return
         val origin = tappedPoiOrigin
+        poiSubtitle = poi.subtitle.takeIf { it.isNotBlank() }
         setPoiFromSearch(poi.position, poi.name)
         tappedPoi = null
         tappedPoiOrigin = null
@@ -983,14 +991,18 @@ class MapViewModel(
 
     fun showNavigationTargetPopup() {
         val pos = poiPosition ?: return
+        val cachedSubtitle = poiSubtitle?.takeIf { it.isNotBlank() }
         val info = TappedPoiInfo(
             name = poiName ?: appContext.getString(ca.voiditswarranty.roadtripradar.R.string.dropped_pin_title),
-            subtitle = formatLatLng(pos),
+            subtitle = cachedSubtitle ?: formatLatLng(pos),
             categoryLabel = "",
             iconName = "",
             position = pos,
         )
         showTappedPoi(info, TappedPoiOrigin.NavigationTarget)
+        if (cachedSubtitle == null) {
+            triggerReverseGeocode(pos)
+        }
     }
 
     fun removeNavigationTarget() {
@@ -1313,6 +1325,7 @@ class MapViewModel(
         isNorthUp = false
         poiPosition = null
         poiName = null
+        poiSubtitle = null
         enabledPoiCategories = emptySet()
         cellWorkerJob?.cancel()
         cellWorkerJob = null
