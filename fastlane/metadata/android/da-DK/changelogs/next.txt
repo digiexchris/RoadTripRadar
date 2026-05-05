@@ -1,0 +1,2 @@
+Tilføj understøttelse af tilbagennavigation til alle menuer i stedet for kun at have en lukknap.
+Tillad, at informationspanelet for waypoint vises, når du trykker på dit aktuelle mål-waypoint, og hvis du trykker på navigationswidgetten.
