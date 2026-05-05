@@ -281,7 +281,7 @@
     <string name="style_auto">Авто</string>
     <!-- Map loading status -->
     <string name="loading_areas">Завантаження областей</string>
-    <string name="loading_cells_remaining"><xliff:g id="count" example="42">%1$d</xliff:g> remaining</string>
+    <string name="loading_cells_remaining">Залишилося <xliff:g id="count" example="42">%1$d</xliff:g></string>
     <!-- Color editor categories -->
     <string name="color_category_background">Тло / Суходіл</string>
     <string name="color_category_water">Вода</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Не вдалося відкрити вибраний файл.</string>
     <string name="theme_import_error_read_failed">Не вдалося прочитати вибраний файл.</string>
     <string name="theme_import_error_not_json">Некоректний JSON.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Відсутня або непідтримувана версія стилю (очікувалася 8, отримано <xliff:g id="actual_version" example="7">%1$s</xliff:g>). Переконайтеся, що ви експортуєте стиль MapLibre GL з Maputnik.</string>
     <string name="theme_import_error_missing_layers">У стилі відсутнє обов’язкове поле \'layers\'.</string>
     <string name="theme_import_error_missing_sources">У стилі відсутнє обов’язкове поле \'sources\'.</string>
     <string name="theme_import_error_generic">Не вдалося імпортувати.</string>
