@@ -12,6 +12,12 @@
     <string name="action_decline">拒绝</string>
     <string name="action_accept">接受</string>
     <string name="action_got_it">知道了</string>
+    <string name="action_back">返回</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">放置的图钉</string>
+    <string name="address_loading">正在定位地址…</string>
+    <string name="action_remove_waypoint">移除</string>
+    <string name="action_center_on_map">在地图上居中</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">需要位置权限</string>
     <string name="permission_location_body">Road Trip Radar 需要访问您的位置，以便在地图上显示您所在的位置。为获得最佳精度，建议使用精确位置，但大致位置也可以正常工作。点击“授予权限”以继续，或点击“退出”以关闭应用。</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">自定义浅色</string>
     <string name="style_custom_dark">自定义深色</string>
     <string name="style_auto">自动</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">正在加载区域</string>
+    <string name="loading_cells_remaining">剩余 %1$d 个</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">背景 / 陆地</string>
+    <string name="color_category_water">水域</string>
+    <string name="color_category_parks">公园 &amp; 绿地</string>
+    <string name="color_category_buildings">建筑物</string>
+    <string name="color_category_road_motorway">高速公路 / 快速路</string>
+    <string name="color_category_road_motorway_casing">高速公路描边</string>
+    <string name="color_category_road_trunk_primary">主干道 &amp; 一级道路</string>
+    <string name="color_category_road_secondary_tertiary">次干道 &amp; 三级道路</string>
+    <string name="color_category_road_minor">小型道路</string>
+    <string name="color_category_road_service_track">服务道路 &amp; 小径</string>
+    <string name="color_category_road_service_track_casing">服务道路 &amp; 小径描边</string>
+    <string name="color_category_road_path_pedestrian">小路 &amp; 步行道</string>
+    <string name="color_category_label_text">标签（文字）</string>
+    <string name="color_category_label_halo">标签（光晕）</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">无法打开所选文件。</string>
+    <string name="theme_import_error_read_failed">无法读取所选文件。</string>
+    <string name="theme_import_error_not_json">不是有效的 JSON。</string>
+    <string name="theme_import_error_unsupported_version">缺少或不支持的样式版本（预期为 8，实际为 %1$s）。请确保你从 Maputnik 导出的是 MapLibre GL 样式。</string>
+    <string name="theme_import_error_missing_layers">样式缺少必需的“layers”字段。</string>
+    <string name="theme_import_error_missing_sources">样式缺少必需的“sources”字段。</string>
+    <string name="theme_import_error_generic">导入失败。</string>
 </resources>
