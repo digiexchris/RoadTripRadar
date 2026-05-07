@@ -1,8 +1,8 @@
 {
   "releases": [
     {
-      "versionName": "next",
-      "versionCode": 99,
+      "versionName": "1.14.0",
+      "versionCode": 31,
       "showInApp": true,
       "items": [
         "Add back navigation support to all menus instead of only having a close button.",
