@@ -12,6 +12,12 @@
     <string name="action_decline">Neka</string>
     <string name="action_accept">Acceptera</string>
     <string name="action_got_it">Jag förstår</string>
+    <string name="action_back">Tillbaka</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Nålfäst plats</string>
+    <string name="address_loading">Söker adress…</string>
+    <string name="action_remove_waypoint">Ta bort</string>
+    <string name="action_center_on_map">Centrera på kartan</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Platsbehörighet krävs</string>
     <string name="permission_location_body">Road Trip Radar behöver åtkomst till din plats för att visa var du är på kartan. Exakt plats rekommenderas för bästa noggrannhet, men ungefärlig plats fungerar också. Tryck på Ge behörighet för att fortsätta eller på Avsluta för att stänga appen.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Anpassat ljust</string>
     <string name="style_custom_dark">Anpassat mörkt</string>
     <string name="style_auto">Auto</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Laddar områden</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Bakgrund / Mark</string>
+    <string name="color_category_water">Vatten</string>
+    <string name="color_category_parks">Parker &amp; grönska</string>
+    <string name="color_category_buildings">Byggnader</string>
+    <string name="color_category_road_motorway">Motorväg / Motortrafikled</string>
+    <string name="color_category_road_motorway_casing">Motorvägskontur</string>
+    <string name="color_category_road_trunk_primary">Stamvägar &amp; primärvägar</string>
+    <string name="color_category_road_secondary_tertiary">Sekundära &amp; tertiära vägar</string>
+    <string name="color_category_road_minor">Mindre vägar</string>
+    <string name="color_category_road_service_track">Servicevägar &amp; spår</string>
+    <string name="color_category_road_service_track_casing">Kontur för servicevägar &amp; spår</string>
+    <string name="color_category_road_path_pedestrian">Stigar &amp; gångvägar</string>
+    <string name="color_category_label_text">Etiketter (text)</string>
+    <string name="color_category_label_halo">Etiketter (gloria)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Det gick inte att öppna den valda filen.</string>
+    <string name="theme_import_error_read_failed">Det gick inte att läsa den valda filen.</string>
+    <string name="theme_import_error_not_json">Ogiltig JSON.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Stilen saknar det obligatoriska fältet \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">Stilen saknar det obligatoriska fältet \'sources\'.</string>
+    <string name="theme_import_error_generic">Importen misslyckades.</string>
 </resources>

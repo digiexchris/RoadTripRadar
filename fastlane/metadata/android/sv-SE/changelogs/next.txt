@@ -1,0 +1,2 @@
+Lägg till stöd för tillbakanavigering i alla menyer i stället för att bara ha en stängningsknapp.
+Tillåt att utfällbar waypointinformation visas när du trycker på din aktuella målwaypoint och om du trycker på navigeringswidgeten.

@@ -12,6 +12,12 @@
     <string name="action_decline">Απόρριψη</string>
     <string name="action_accept">Αποδοχή</string>
     <string name="action_got_it">Κατάλαβα</string>
+    <string name="action_back">Πίσω</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Καρφιτσωμένη τοποθεσία</string>
+    <string name="address_loading">Εντοπισμός διεύθυνσης…</string>
+    <string name="action_remove_waypoint">Κατάργηση</string>
+    <string name="action_center_on_map">Κεντράρισμα στον χάρτη</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Απαιτείται άδεια τοποθεσίας</string>
     <string name="permission_location_body">Το Road Trip Radar χρειάζεται πρόσβαση στην τοποθεσία σας για να δείχνει πού βρίσκεστε στον χάρτη. Για βέλτιστη ακρίβεια συνιστάται η ακριβής τοποθεσία, αλλά λειτουργεί και η κατά προσέγγιση τοποθεσία. Πατήστε \"Παραχώρηση άδειας\" για να συνεχίσετε ή \"Έξοδος\" για να κλείσετε την εφαρμογή.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Προσαρμοσμένο ανοιχτό</string>
     <string name="style_custom_dark">Προσαρμοσμένο σκούρο</string>
     <string name="style_auto">Αυτόματο</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Φόρτωση περιοχών</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Φόντο / Έδαφος</string>
+    <string name="color_category_water">Νερό</string>
+    <string name="color_category_parks">Πάρκα &amp; Πράσινο</string>
+    <string name="color_category_buildings">Κτίρια</string>
+    <string name="color_category_road_motorway">Αυτοκινητόδρομος / Ελεύθερος αυτοκινητόδρομος</string>
+    <string name="color_category_road_motorway_casing">Περίγραμμα αυτοκινητόδρομου</string>
+    <string name="color_category_road_trunk_primary">Οδοί ταχείας κυκλοφορίας &amp; πρωτεύοντες δρόμοι</string>
+    <string name="color_category_road_secondary_tertiary">Δευτερεύοντες &amp; τριτεύοντες δρόμοι</string>
+    <string name="color_category_road_minor">Μικροί δρόμοι</string>
+    <string name="color_category_road_service_track">Δρόμοι εξυπηρέτησης &amp; χωματόδρομοι</string>
+    <string name="color_category_road_service_track_casing">Περίγραμμα δρόμων εξυπηρέτησης &amp; χωματόδρομων</string>
+    <string name="color_category_road_path_pedestrian">Μονοπάτια &amp; πεζόδρομοι</string>
+    <string name="color_category_label_text">Ετικέτες (Κείμενο)</string>
+    <string name="color_category_label_halo">Ετικέτες (Φωτοστέφανο)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Δεν ήταν δυνατό το άνοιγμα του επιλεγμένου αρχείου.</string>
+    <string name="theme_import_error_read_failed">Δεν ήταν δυνατή η ανάγνωση του επιλεγμένου αρχείου.</string>
+    <string name="theme_import_error_not_json">Μη έγκυρο JSON.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Από το στυλ λείπει το απαιτούμενο πεδίο \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">Από το στυλ λείπει το απαιτούμενο πεδίο \'sources\'.</string>
+    <string name="theme_import_error_generic">Η εισαγωγή απέτυχε.</string>
 </resources>

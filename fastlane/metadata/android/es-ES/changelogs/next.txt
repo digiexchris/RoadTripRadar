@@ -1,0 +1,2 @@
+Agregar compatibilidad de navegación hacia atrás en todos los menús en lugar de tener solo un botón de cierre.
+Permitir que el panel deslizable de información del punto de referencia se muestre al tocar tu punto de referencia de destino actual y al tocar el widget de navegación.

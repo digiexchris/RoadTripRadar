@@ -12,6 +12,12 @@
     <string name="action_decline">Odmítnout</string>
     <string name="action_accept">Přijmout</string>
     <string name="action_got_it">Rozumím</string>
+    <string name="action_back">Zpět</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Připnutý bod</string>
+    <string name="address_loading">Zjišťování adresy…</string>
+    <string name="action_remove_waypoint">Odstranit</string>
+    <string name="action_center_on_map">Vycentrovat na mapě</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Je vyžadováno oprávnění k poloze</string>
     <string name="permission_location_body">Road Trip Radar potřebuje přístup k vaší poloze, aby na mapě ukázal, kde se nacházíte. Pro nejlepší přesnost doporučujeme přesnou polohu, ale bude fungovat i přibližná poloha. Klepněte na Udělit oprávnění a pokračujte, nebo aplikaci ukončete klepnutím na Ukončit.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Vlastní světlý</string>
     <string name="style_custom_dark">Vlastní tmavý</string>
     <string name="style_auto">Automaticky</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Načítání oblastí</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Pozadí / Země</string>
+    <string name="color_category_water">Voda</string>
+    <string name="color_category_parks">Parky &amp; zeleň</string>
+    <string name="color_category_buildings">Budovy</string>
+    <string name="color_category_road_motorway">Dálnice / rychlostní silnice</string>
+    <string name="color_category_road_motorway_casing">Obrys dálnice</string>
+    <string name="color_category_road_trunk_primary">Silnice I. třídy &amp; hlavní silnice</string>
+    <string name="color_category_road_secondary_tertiary">Vedlejší &amp; terciární silnice</string>
+    <string name="color_category_road_minor">Vedlejší silnice</string>
+    <string name="color_category_road_service_track">Obslužné cesty &amp; stezky</string>
+    <string name="color_category_road_service_track_casing">Obrys obslužných cest &amp; stezek</string>
+    <string name="color_category_road_path_pedestrian">Cesty &amp; pěší zóny</string>
+    <string name="color_category_label_text">Popisky (text)</string>
+    <string name="color_category_label_halo">Popisky (halo)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Vybraný soubor se nepodařilo otevřít.</string>
+    <string name="theme_import_error_read_failed">Vybraný soubor se nepodařilo přečíst.</string>
+    <string name="theme_import_error_not_json">Neplatný JSON.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Ve stylu chybí povinné pole „layers“.</string>
+    <string name="theme_import_error_missing_sources">Ve stylu chybí povinné pole „sources“.</string>
+    <string name="theme_import_error_generic">Import se nezdařil.</string>
 </resources>

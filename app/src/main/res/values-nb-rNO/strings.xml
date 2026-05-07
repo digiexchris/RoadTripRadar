@@ -12,6 +12,12 @@
     <string name="action_decline">Avslå</string>
     <string name="action_accept">Godta</string>
     <string name="action_got_it">Skjønner</string>
+    <string name="action_back">Tilbake</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Sluppet nål</string>
+    <string name="address_loading">Finner adresse …</string>
+    <string name="action_remove_waypoint">Fjern</string>
+    <string name="action_center_on_map">Sentrer på kartet</string>
     <!-- Location permission dialog -->
     <string name="permission_location_title">Posisjonstillatelse kreves</string>
     <string name="permission_location_body">Road Trip Radar trenger tilgang til posisjonen din for å vise hvor du er på kartet. Nøyaktig posisjon anbefales for best mulig nøyaktighet, men omtrentlig posisjon vil også fungere. Trykk på Gi tillatelse for å fortsette, eller Avslutt for å lukke appen.</string>
@@ -273,4 +279,30 @@
     <string name="style_custom_light">Egendefinert lyst</string>
     <string name="style_custom_dark">Egendefinert mørkt</string>
     <string name="style_auto">Auto</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Laster inn områder</string>
+    <string name="loading_cells_remaining">%1$d remaining</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Bakgrunn / Land</string>
+    <string name="color_category_water">Vann</string>
+    <string name="color_category_parks">Parker &amp; grøntområder</string>
+    <string name="color_category_buildings">Bygninger</string>
+    <string name="color_category_road_motorway">Motorvei / Frivei</string>
+    <string name="color_category_road_motorway_casing">Motorvei-kantlinje</string>
+    <string name="color_category_road_trunk_primary">Riksveier &amp; hovedveier</string>
+    <string name="color_category_road_secondary_tertiary">Sekundær- &amp; tertiærveier</string>
+    <string name="color_category_road_minor">Mindre veier</string>
+    <string name="color_category_road_service_track">Serviceveier &amp; spor</string>
+    <string name="color_category_road_service_track_casing">Kantlinje for serviceveier &amp; spor</string>
+    <string name="color_category_road_path_pedestrian">Stier &amp; gangveier</string>
+    <string name="color_category_label_text">Etiketter (tekst)</string>
+    <string name="color_category_label_halo">Etiketter (glorie)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Kunne ikke åpne den valgte filen.</string>
+    <string name="theme_import_error_read_failed">Kunne ikke lese den valgte filen.</string>
+    <string name="theme_import_error_not_json">Ikke gyldig JSON.</string>
+    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_missing_layers">Stilen mangler det påkrevde feltet \"layers\".</string>
+    <string name="theme_import_error_missing_sources">Stilen mangler det påkrevde feltet \"sources\".</string>
+    <string name="theme_import_error_generic">Import mislyktes.</string>
 </resources>
