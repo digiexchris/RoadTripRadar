@@ -7,7 +7,9 @@ import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
+import kotlinx.serialization.json.Json
 import org.maplibre.spatialk.geojson.Position
+import java.util.UUID
 
 class PreferencesRepository(context: Context) {
 
@@ -135,14 +137,39 @@ class PreferencesRepository(context: Context) {
                 prefs.edit()
                     .putString("weather_mode", newMode)
                     .remove("weather_playing")
-                    .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                    .putInt("prefs_version", 10)
                     .apply()
             } else {
                 prefs.edit()
                     .remove("weather_playing")
-                    .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                    .putInt("prefs_version", 10)
                     .apply()
             }
+        }
+        if (prefs.getInt("prefs_version", 0) < 11) {
+            // Migrate the single-POI scalar keys (poi_lat/poi_lon/poi_name/poi_subtitle)
+            // into a one-element waypoints list, plus an active_waypoint_id pointer.
+            val lat = prefs.getString("poi_lat", null)?.toDoubleOrNull()
+            val lon = prefs.getString("poi_lon", null)?.toDoubleOrNull()
+            val ed = prefs.edit()
+            if (lat != null && lon != null) {
+                val wp = Waypoint(
+                    id = UUID.randomUUID().toString(),
+                    lat = lat,
+                    lon = lon,
+                    name = prefs.getString("poi_name", null),
+                    subtitle = prefs.getString("poi_subtitle", null),
+                    source = WaypointSource.DROPPED_PIN,
+                )
+                ed.putString("waypoints", Json.encodeToString(listOf(wp)))
+                ed.putString("active_waypoint_id", wp.id)
+            }
+            ed.remove("poi_lat")
+                .remove("poi_lon")
+                .remove("poi_name")
+                .remove("poi_subtitle")
+                .putInt("prefs_version", PrefsDefaults.PREFS_VERSION)
+                .apply()
         }
     }
 
@@ -314,42 +341,36 @@ class PreferencesRepository(context: Context) {
             prefs.edit().putString("completed_tutorial_groups", value.joinToString(",")).apply()
         }
 
-    var poiPosition: Position?
+    var waypoints: List<Waypoint>
         get() {
-            val lat = prefs.getString("poi_lat", null)?.toDoubleOrNull()
-            val lon = prefs.getString("poi_lon", null)?.toDoubleOrNull()
-            return if (lat != null && lon != null) Position(latitude = lat, longitude = lon) else null
+            val json = prefs.getString("waypoints", null) ?: return emptyList()
+            return try {
+                Json.decodeFromString(json)
+            } catch (_: Exception) {
+                emptyList()
+            }
         }
         set(value) {
+            prefs.edit().putString("waypoints", Json.encodeToString(value)).apply()
+        }
+
+    var activeWaypointId: String?
+        get() = prefs.getString("active_waypoint_id", null)
+        set(value) {
             if (value != null) {
-                prefs.edit()
-                    .putString("poi_lat", value.latitude.toString())
-                    .putString("poi_lon", value.longitude.toString())
-                    .apply()
+                prefs.edit().putString("active_waypoint_id", value).apply()
             } else {
-                prefs.edit().remove("poi_lat").remove("poi_lon").apply()
+                prefs.edit().remove("active_waypoint_id").apply()
             }
         }
 
-    var poiName: String?
-        get() = prefs.getString("poi_name", null)
-        set(value) {
-            if (value != null) {
-                prefs.edit().putString("poi_name", value).apply()
-            } else {
-                prefs.edit().remove("poi_name").apply()
-            }
-        }
+    var autoAdvanceEnabled: Boolean
+        get() = prefs.getBoolean("auto_advance_enabled", PrefsDefaults.AUTO_ADVANCE_ENABLED)
+        set(value) = prefs.edit().putBoolean("auto_advance_enabled", value).apply()
 
-    var poiSubtitle: String?
-        get() = prefs.getString("poi_subtitle", null)
-        set(value) {
-            if (value != null) {
-                prefs.edit().putString("poi_subtitle", value).apply()
-            } else {
-                prefs.edit().remove("poi_subtitle").apply()
-            }
-        }
+    var autoAdvanceThresholdMeters: Int
+        get() = prefs.getInt("auto_advance_threshold_m", PrefsDefaults.AUTO_ADVANCE_THRESHOLD_M)
+        set(value) = prefs.edit().putInt("auto_advance_threshold_m", value).apply()
 
 
     var enabledPoiCategories: Set<String>
@@ -387,7 +408,8 @@ class PreferencesRepository(context: Context) {
             .remove("enabled_poi_categories")
             .remove("show_pois_on_map")
             .remove("poi_display_mode")
-            .remove("poi_lat").remove("poi_lon").remove("poi_name").remove("poi_subtitle")
+            .remove("waypoints").remove("active_waypoint_id")
+            .remove("auto_advance_enabled").remove("auto_advance_threshold_m")
             .remove("last_known_lat").remove("last_known_lon")
             .putBoolean("custom_light_auto_enabled", PrefsDefaults.CUSTOM_LIGHT_AUTO_ENABLED)
             .putBoolean("custom_dark_auto_enabled", PrefsDefaults.CUSTOM_DARK_AUTO_ENABLED)

@@ -150,10 +150,12 @@ object PrefsDefaults {
     const val WIND_ENABLED = true
     val WIND_SPEED_UNIT = WindSpeedUnit.KMH.name
     val TEMPERATURE_UNIT = TemperatureUnit.CELSIUS.name
-    const val PREFS_VERSION = 10
+    const val PREFS_VERSION = 11
     const val CUSTOM_LIGHT_AUTO_ENABLED = false
     const val CUSTOM_DARK_AUTO_ENABLED = false
     const val TERMS_VERSION = 1
+    const val AUTO_ADVANCE_ENABLED = true
+    const val AUTO_ADVANCE_THRESHOLD_M = 100
 }
 
 const val TERMS_AND_CONDITIONS_TEXT = """

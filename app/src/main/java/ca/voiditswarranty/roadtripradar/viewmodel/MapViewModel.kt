@@ -6,6 +6,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -22,6 +23,9 @@ import ca.voiditswarranty.roadtripradar.data.PostpassRepository
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.data.TileFetchResult
 import ca.voiditswarranty.roadtripradar.data.ViewBox
+import ca.voiditswarranty.roadtripradar.data.InsertPosition
+import ca.voiditswarranty.roadtripradar.data.Waypoint
+import ca.voiditswarranty.roadtripradar.data.WaypointSource
 import ca.voiditswarranty.roadtripradar.data.WeatherRepository
 import ca.voiditswarranty.roadtripradar.model.ChangelogRelease
 import ca.voiditswarranty.roadtripradar.model.MAX_POI_CATEGORIES
@@ -144,16 +148,33 @@ class MapViewModel(
         }
     }
 
-    // POI
-    var poiPosition by mutableStateOf(prefsRepo.poiPosition)
+    // Waypoints / route
+    val waypoints = mutableStateListOf<Waypoint>().apply { addAll(prefsRepo.waypoints) }
+    var activeWaypointId by mutableStateOf(prefsRepo.activeWaypointId)
         private set
-    var poiName by mutableStateOf(
-        prefsRepo.poiName
-            ?: if (prefsRepo.poiPosition != null) appContext.getString(R.string.dropped_pin_title) else null
-    )
+    var autoAdvanceEnabled by mutableStateOf(prefsRepo.autoAdvanceEnabled)
         private set
-    var poiSubtitle by mutableStateOf(prefsRepo.poiSubtitle)
+    var autoAdvanceThresholdMeters by mutableStateOf(prefsRepo.autoAdvanceThresholdMeters)
         private set
+
+    val activeIndex: Int?
+        get() = activeWaypointId?.let { id ->
+            waypoints.indexOfFirst { it.id == id }.takeIf { it >= 0 }
+        }
+    val activeWaypoint: Waypoint?
+        get() = activeIndex?.let { waypoints[it] }
+
+    /** Back-compat alias: the active waypoint's position. */
+    val poiPosition: Position?
+        get() = activeWaypoint?.position
+
+    /** Back-compat alias: the active waypoint's display name (or "Dropped Pin" when unnamed). */
+    val poiName: String?
+        get() = activeWaypoint?.let { it.name ?: appContext.getString(R.string.dropped_pin_title) }
+
+    /** Back-compat alias: the active waypoint's subtitle. */
+    val poiSubtitle: String?
+        get() = activeWaypoint?.subtitle
 
     // Nearby POIs — cell-based pipeline
     data class CachedCell(
@@ -252,6 +273,11 @@ class MapViewModel(
         private set
     var showPoiSearch by mutableStateOf(false)
         private set
+    var showRouteEditor by mutableStateOf(false)
+        private set
+
+    fun openRouteEditor() { showRouteEditor = true }
+    fun closeRouteEditor() { showRouteEditor = false }
     var showLegendDetail by mutableStateOf(false)
         private set
     var showWhatsNewChangelog by mutableStateOf(false)
@@ -818,7 +844,7 @@ class MapViewModel(
         hasCustomDark = customThemeRepo.hasCustomDark()
     }
 
-    // --- POI ---
+    // --- POI / waypoints ---
 
     fun setPoiFromLongPress(position: Position) {
         val info = TappedPoiInfo(
@@ -830,13 +856,6 @@ class MapViewModel(
         )
         showTappedPoi(info, TappedPoiOrigin.LongPress)
         triggerReverseGeocode(position)
-    }
-
-    fun setPoiFromSearch(position: Position, name: String) {
-        poiPosition = position
-        poiName = name
-        persistPoi()
-        showPoiSearch = false
     }
 
     fun selectSearchResult(result: SearchResult) {
@@ -872,24 +891,158 @@ class MapViewModel(
             if (current != null && current.position == position) {
                 tappedPoi = current.copy(subtitle = newSubtitle)
             }
-            if (poiPosition == position && address != null) {
-                poiSubtitle = newSubtitle
-                persistPoi()
+            if (address != null) {
+                updateActiveWaypointIf({ it.position == position }) { it.copy(subtitle = newSubtitle) }
             }
         }
     }
 
-    fun clearPoi() {
-        poiPosition = null
-        poiName = null
-        poiSubtitle = null
-        persistPoi()
+    fun clearRoute() {
+        waypoints.clear()
+        activeWaypointId = null
+        persistRoute()
     }
 
-    private fun persistPoi() {
-        prefsRepo.poiPosition = poiPosition
-        prefsRepo.poiName = poiName
-        prefsRepo.poiSubtitle = poiSubtitle
+    fun moveWaypoint(fromIndex: Int, toIndex: Int) {
+        if (fromIndex == toIndex) return
+        if (fromIndex !in waypoints.indices) return
+        val target = toIndex.coerceIn(0, waypoints.size - 1)
+        if (fromIndex == target) return
+        val wp = waypoints.removeAt(fromIndex)
+        waypoints.add(target, wp)
+        persistRoute()
+    }
+
+    fun addWaypoint(
+        position: Position,
+        name: String?,
+        subtitle: String?,
+        source: WaypointSource,
+        at: InsertPosition,
+        iconName: String? = null,
+    ): String {
+        val wp = Waypoint.create(
+            position = position,
+            name = name,
+            subtitle = subtitle,
+            source = source,
+            iconName = iconName,
+        )
+        when (at) {
+            InsertPosition.Start -> waypoints.add(0, wp)
+            InsertPosition.BeforeLast -> waypoints.add((waypoints.size - 1).coerceAtLeast(0), wp)
+            InsertPosition.End -> waypoints.add(wp)
+            is InsertPosition.Index -> waypoints.add(at.i.coerceIn(0, waypoints.size), wp)
+            is InsertPosition.ReplaceId -> {
+                val idx = waypoints.indexOfFirst { it.id == at.id }
+                if (idx >= 0) {
+                    val wasActive = activeWaypointId == at.id
+                    waypoints[idx] = wp
+                    if (wasActive) activeWaypointId = wp.id
+                } else {
+                    waypoints.add(wp)
+                }
+            }
+        }
+        if (activeWaypointId == null) activeWaypointId = wp.id
+        persistRoute()
+        return wp.id
+    }
+
+    fun setActiveWaypoint(id: String) {
+        if (waypoints.any { it.id == id }) {
+            activeWaypointId = id
+            persistRoute()
+        }
+    }
+
+    fun advanceActiveWaypoint() {
+        val idx = activeIndex ?: return
+        val next = waypoints.getOrNull(idx + 1) ?: return
+        setActiveWaypoint(next.id)
+    }
+
+    fun regressActiveWaypoint() {
+        val idx = activeIndex ?: return
+        val prev = waypoints.getOrNull(idx - 1) ?: return
+        setActiveWaypoint(prev.id)
+    }
+
+    fun updateAutoAdvanceEnabled(enabled: Boolean) {
+        autoAdvanceEnabled = enabled
+        prefsRepo.autoAdvanceEnabled = enabled
+    }
+
+    fun updateAutoAdvanceThreshold(meters: Int) {
+        autoAdvanceThresholdMeters = meters.coerceIn(25, 500)
+    }
+
+    fun saveAutoAdvanceThreshold() {
+        prefsRepo.autoAdvanceThresholdMeters = autoAdvanceThresholdMeters
+    }
+
+    /** Called from the map on each user-location update. Advances the active waypoint when within threshold. */
+    fun maybeAutoAdvance(userPos: Position) {
+        if (!autoAdvanceEnabled) return
+        val idx = activeIndex ?: return
+        if (idx >= waypoints.size - 1) return
+        val active = waypoints.getOrNull(idx) ?: return
+        val distMeters = distance(Point(userPos), Point(active.position)).inMeters
+        if (distMeters < autoAdvanceThresholdMeters) {
+            advanceActiveWaypoint()
+        }
+    }
+
+    /** Add the currently-tapped POI to the route at the requested position, then dismiss the popup. */
+    fun addWaypointFromTapped(at: InsertPosition) {
+        val poi = tappedPoi ?: return
+        val origin = tappedPoiOrigin
+        val source = when (origin) {
+            TappedPoiOrigin.LongPress -> WaypointSource.DROPPED_PIN
+            TappedPoiOrigin.Search -> WaypointSource.SEARCH
+            TappedPoiOrigin.NearbyPoi -> WaypointSource.NEARBY_PLACE
+            TappedPoiOrigin.NavigationTarget, null -> WaypointSource.DROPPED_PIN
+        }
+        val droppedPinTitle = appContext.getString(R.string.dropped_pin_title)
+        val storedName = poi.name.takeIf {
+            it.isNotBlank() && (source != WaypointSource.DROPPED_PIN || it != droppedPinTitle)
+        }
+        val storedIconName = poi.iconName.takeIf {
+            it.isNotBlank() && source == WaypointSource.NEARBY_PLACE
+        }
+        val newId = addWaypoint(
+            position = poi.position,
+            name = storedName,
+            subtitle = poi.subtitle.takeIf { it.isNotBlank() },
+            source = source,
+            iconName = storedIconName,
+            at = at,
+        )
+        if (at is InsertPosition.Start) {
+            setActiveWaypoint(newId)
+        }
+        tappedPoi = null
+        tappedPoiOrigin = null
+        if (origin == TappedPoiOrigin.Search) {
+            searchQuery = ""
+            searchResults = emptyList()
+        }
+    }
+
+    private inline fun updateActiveWaypointIf(
+        predicate: (Waypoint) -> Boolean,
+        transform: (Waypoint) -> Waypoint,
+    ) {
+        val idx = activeIndex ?: return
+        val current = waypoints[idx]
+        if (!predicate(current)) return
+        waypoints[idx] = transform(current)
+        persistRoute()
+    }
+
+    private fun persistRoute() {
+        prefsRepo.waypoints = waypoints.toList()
+        prefsRepo.activeWaypointId = activeWaypointId
     }
 
     // --- Nearby POIs (cell-based pipeline) ---
@@ -966,55 +1119,75 @@ class MapViewModel(
     fun openPoiCategoryPicker() { showPoiCategoryPicker = true }
     fun closePoiCategoryPicker() { showPoiCategoryPicker = false }
 
+    /** When [tappedPoi] reflects a specific waypoint marker, this holds its id. */
+    var tappedWaypointId by mutableStateOf<String?>(null)
+        private set
+
     fun showTappedPoi(info: TappedPoiInfo, origin: TappedPoiOrigin = TappedPoiOrigin.NearbyPoi) {
         tappedPoi = info
         tappedPoiOrigin = origin
+        tappedWaypointId = null
     }
 
     fun dismissTappedPoi() {
         tappedPoi = null
         tappedPoiOrigin = null
-    }
-
-    fun navigateToTappedPoi() {
-        val poi = tappedPoi ?: return
-        val origin = tappedPoiOrigin
-        poiSubtitle = poi.subtitle.takeIf { it.isNotBlank() }
-        setPoiFromSearch(poi.position, poi.name)
-        tappedPoi = null
-        tappedPoiOrigin = null
-        if (origin == TappedPoiOrigin.Search) {
-            searchQuery = ""
-            searchResults = emptyList()
-        }
+        tappedWaypointId = null
     }
 
     fun tappedPoiBackToSearch() {
         tappedPoi = null
         tappedPoiOrigin = null
+        tappedWaypointId = null
         showPoiSearch = true
     }
 
+    /** Open the navigation-target popup for the active waypoint, if any. */
     fun showNavigationTargetPopup() {
-        val pos = poiPosition ?: return
-        val cachedSubtitle = poiSubtitle?.takeIf { it.isNotBlank() }
-        val info = TappedPoiInfo(
-            name = poiName ?: appContext.getString(ca.voiditswarranty.roadtripradar.R.string.dropped_pin_title),
-            subtitle = cachedSubtitle ?: formatLatLng(pos),
+        val activeId = activeWaypointId ?: return
+        showWaypointPopup(activeId)
+    }
+
+    /** Open the navigation-target popup for a specific waypoint (e.g. when its marker is tapped). */
+    fun showWaypointPopup(waypointId: String) {
+        val idx = waypoints.indexOfFirst { it.id == waypointId }
+        if (idx < 0) return
+        val wp = waypoints[idx]
+        val cachedSubtitle = wp.subtitle?.takeIf { it.isNotBlank() }
+        val name = wp.name?.takeIf { it.isNotBlank() }
+        val displayName = if (name != null) {
+            appContext.getString(R.string.waypoint_numbered, idx + 1, name)
+        } else {
+            appContext.getString(R.string.waypoint_unnamed, idx + 1)
+        }
+        tappedPoi = TappedPoiInfo(
+            name = displayName,
+            subtitle = cachedSubtitle ?: formatLatLng(wp.position),
             categoryLabel = "",
-            iconName = "",
-            position = pos,
+            iconName = wp.iconName ?: "",
+            position = wp.position,
         )
-        showTappedPoi(info, TappedPoiOrigin.NavigationTarget)
+        tappedPoiOrigin = TappedPoiOrigin.NavigationTarget
+        tappedWaypointId = waypointId
         if (cachedSubtitle == null) {
-            triggerReverseGeocode(pos)
+            triggerReverseGeocode(wp.position)
         }
     }
 
+    fun removeWaypoint(id: String) {
+        val idx = waypoints.indexOfFirst { it.id == id }
+        if (idx < 0) return
+        waypoints.removeAt(idx)
+        if (activeWaypointId == id) {
+            activeWaypointId = waypoints.firstOrNull()?.id
+        }
+        persistRoute()
+    }
+
     fun removeNavigationTarget() {
-        clearPoi()
-        tappedPoi = null
-        tappedPoiOrigin = null
+        val id = tappedWaypointId
+        if (id != null) removeWaypoint(id)
+        dismissTappedPoi()
     }
 
     // --- Cell pipeline helpers ---
@@ -1329,9 +1502,10 @@ class MapViewModel(
         mapCenterOffsetLandscapeFraction = PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION
         isTrackingCamera = true
         isNorthUp = false
-        poiPosition = null
-        poiName = null
-        poiSubtitle = null
+        waypoints.clear()
+        activeWaypointId = null
+        autoAdvanceEnabled = PrefsDefaults.AUTO_ADVANCE_ENABLED
+        autoAdvanceThresholdMeters = PrefsDefaults.AUTO_ADVANCE_THRESHOLD_M
         enabledPoiCategories = emptySet()
         cellWorkerJob?.cancel()
         cellWorkerJob = null

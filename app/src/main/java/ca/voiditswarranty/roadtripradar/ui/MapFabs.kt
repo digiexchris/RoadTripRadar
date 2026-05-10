@@ -49,6 +49,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -255,8 +257,11 @@ fun BottomContent(
     aboveContent: @Composable () -> Unit,
     isLandscape: Boolean = false,
     scale: Float = 1f,
+    onZoomInLong: () -> Unit = {},
+    onZoomOutLong: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val haptics = LocalHapticFeedback.current
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -326,8 +331,11 @@ fun BottomContent(
                 }
             }
 
-            LargeFloatingActionButton(
-                onClick = onZoomOut,
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                tonalElevation = 6.dp,
+                shadowElevation = 6.dp,
                 modifier = fabBorderModifier
                     .size(buttonSize)
                     .graphicsLayer {
@@ -335,22 +343,36 @@ fun BottomContent(
                         scaleY = scale
                     }
                     .tutorialAnchor(TutorialAnchors.ZOOM_OUT),
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
-                Icon(
-                    imageVector = Icons.Default.Remove,
-                    contentDescription = stringResource(R.string.cd_zoom_out),
-                    modifier = Modifier.size(iconSize),
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .combinedClickable(
+                            onClick = onZoomOut,
+                            onLongClick = {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onZoomOutLong()
+                            },
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Remove,
+                        contentDescription = stringResource(R.string.cd_zoom_out),
+                        modifier = Modifier.size(iconSize),
+                    )
+                }
             }
 
             if (isLandscape) {
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            LargeFloatingActionButton(
-                onClick = onZoomIn,
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                tonalElevation = 6.dp,
+                shadowElevation = 6.dp,
                 modifier = fabBorderModifier
                     .size(buttonSize)
                     .graphicsLayer {
@@ -358,14 +380,25 @@ fun BottomContent(
                         scaleY = scale
                     }
                     .tutorialAnchor(TutorialAnchors.ZOOM_IN),
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.cd_zoom_in),
-                    modifier = Modifier.size(iconSize),
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .combinedClickable(
+                            onClick = onZoomIn,
+                            onLongClick = {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                onZoomInLong()
+                            },
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.cd_zoom_in),
+                        modifier = Modifier.size(iconSize),
+                    )
+                }
             }
 
             LargeFloatingActionButton(
