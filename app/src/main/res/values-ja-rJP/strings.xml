@@ -281,7 +281,7 @@
     <string name="style_auto">自動</string>
     <!-- Map loading status -->
     <string name="loading_areas">エリアを読み込み中</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">残り %1$d</string>
     <!-- Color editor categories -->
     <string name="color_category_background">背景 / 陸地</string>
     <string name="color_category_water">水域</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">選択したファイルを開けませんでした。</string>
     <string name="theme_import_error_read_failed">選択したファイルを読み取れませんでした。</string>
     <string name="theme_import_error_not_json">有効な JSON ではありません。</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">スタイルのバージョンが見つからないか、サポートされていません（想定: 8、実際: %1$s）。Maputnik から MapLibre GL スタイルをエクスポートしていることを確認してください。</string>
     <string name="theme_import_error_missing_layers">スタイルに必須の「layers」フィールドがありません。</string>
     <string name="theme_import_error_missing_sources">スタイルに必須の「sources」フィールドがありません。</string>
     <string name="theme_import_error_generic">インポートに失敗しました。</string>
