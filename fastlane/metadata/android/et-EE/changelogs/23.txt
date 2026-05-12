@@ -1,0 +1,3 @@
+Rakendusesisene muudatuste logi: vaata pärast uuendusi jaotist „Mis on uut“ ning täielikku ajalugu jaotisest Abi ja teave.
+Nüüd näed oma asukoha lähedal olevaid huvipunkte! Vaata järele menüüst Menüü->Kohad.
+Tegime menüü põhjalikult ümber, et asju oleks lihtsam leida ja kinnastega hõlpsam kasutada.
