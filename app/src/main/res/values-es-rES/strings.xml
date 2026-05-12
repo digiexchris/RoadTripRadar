@@ -281,7 +281,7 @@
     <string name="style_auto">Automático</string>
     <!-- Map loading status -->
     <string name="loading_areas">Cargando áreas</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">Quedan %1$d</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Fondo / Tierra</string>
     <string name="color_category_water">Agua</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">No se pudo abrir el archivo seleccionado.</string>
     <string name="theme_import_error_read_failed">No se pudo leer el archivo seleccionado.</string>
     <string name="theme_import_error_not_json">JSON no válido.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Versión de estilo faltante o no compatible (se esperaba la 8, se recibió %1$s). Asegúrate de exportar un estilo de MapLibre GL desde Maputnik.</string>
     <string name="theme_import_error_missing_layers">Al estilo le falta el campo obligatorio \'layers\'.</string>
     <string name="theme_import_error_missing_sources">Al estilo le falta el campo obligatorio \'sources\'.</string>
     <string name="theme_import_error_generic">La importación falló.</string>
