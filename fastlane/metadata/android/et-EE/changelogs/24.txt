@@ -1,0 +1,1 @@
+Kui olete funktsioonis Läheduses olevad kohad valinud mõne kategooria, kuvatakse need rakenduse käivitamisel automaatselt. Kui soovite selle käitumise keelata, saate selle välja lülitada menüüs Läheduses olevad kohad oleva lülitiga.
