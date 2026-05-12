@@ -281,7 +281,7 @@
     <string name="style_auto">Automaticky</string>
     <!-- Map loading status -->
     <string name="loading_areas">Načítání oblastí</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">Zbývá %1$d</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Pozadí / Země</string>
     <string name="color_category_water">Voda</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Vybraný soubor se nepodařilo otevřít.</string>
     <string name="theme_import_error_read_failed">Vybraný soubor se nepodařilo přečíst.</string>
     <string name="theme_import_error_not_json">Neplatný JSON.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Chybějící nebo nepodporovaná verze stylu (očekávána 8, získána %1$s). Ujistěte se, že exportujete styl MapLibre GL z Maputniku.</string>
     <string name="theme_import_error_missing_layers">Ve stylu chybí povinné pole „layers“.</string>
     <string name="theme_import_error_missing_sources">Ve stylu chybí povinné pole „sources“.</string>
     <string name="theme_import_error_generic">Import se nezdařil.</string>

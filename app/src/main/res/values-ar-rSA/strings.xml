@@ -281,7 +281,7 @@
     <string name="style_auto">تلقائي</string>
     <!-- Map loading status -->
     <string name="loading_areas">جارٍ تحميل المناطق</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">متبقٍ %1$d</string>
     <!-- Color editor categories -->
     <string name="color_category_background">الخلفية / اليابسة</string>
     <string name="color_category_water">الماء</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">تعذر فتح الملف المحدد.</string>
     <string name="theme_import_error_read_failed">تعذر قراءة الملف المحدد.</string>
     <string name="theme_import_error_not_json">ليس ملف JSON صالحًا.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">إصدار النمط مفقود أو غير مدعوم (المتوقَّع 8، والموجود %1$s). تأكد من تصدير نمط MapLibre GL من Maputnik.</string>
     <string name="theme_import_error_missing_layers">النمط يفتقد الحقل المطلوب \'layers\'.</string>
     <string name="theme_import_error_missing_sources">النمط يفتقد الحقل المطلوب \'sources\'.</string>
     <string name="theme_import_error_generic">فشل الاستيراد.</string>

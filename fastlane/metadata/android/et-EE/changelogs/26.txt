@@ -1,0 +1,2 @@
+Nüüd on olemas uus kaarditeema valija! Vaata seda menüüst -> Kaart -> Vali teema. Samuti on vaikimisi tumedat kaarti kohandatud nii, et väikesed teed ja rajad oleksid paremini nähtavad. Kui sulle meeldis vana versioon rohkem, on see endiselt saadaval.
+Nüüd on avakuval ilmaradari jaoks esituse/pausi/väljalülitamise nupp.

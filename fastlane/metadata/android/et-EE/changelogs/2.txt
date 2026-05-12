@@ -1,0 +1,5 @@
+- Ilmaradari paanide laadimise jõudlust parandati (eellaaditakse kõik kaadrid)
+- Kompassinupp lülitab nüüd põhjasuund üleval vaate ja eelmise suuna vahel
+- Uute paigalduste jaoks muudeti vaikimisi kaardistiiliks Color Dark
+- Lisati F-Droidi jaoks Fastlane’i metaandmed
+- Eemaldati foojay-resolveri plugin F-Droidiga ühilduvuse tagamiseks
