@@ -13,12 +13,14 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import ca.voiditswarranty.roadtripradar.data.Waypoint
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.PoiViewportChunks
 import ca.voiditswarranty.roadtripradar.model.RadarRingsData
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import com.caverock.androidsvg.SVG
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.maplibre.compose.expressions.dsl.asString
@@ -218,24 +220,65 @@ fun TappedPoiPreviewLayer(position: Position) {
 }
 
 @Composable
-fun PoiRouteLineLayer(
-    poiPosition: Position,
+fun WaypointRouteLineLayer(
+    waypoints: List<Waypoint>,
+    activeIndex: Int?,
     userPosition: Position,
 ) {
-    val poiLineData = remember(
-        userPosition.latitude, userPosition.longitude, poiPosition,
-    ) {
-        FeatureCollection(listOf(Feature(
-            geometry = LineString(listOf(userPosition, poiPosition)),
-            properties = buildJsonObject {},
-        )))
+    if (waypoints.isEmpty() || activeIndex == null) return
+
+    val pastFc = remember(waypoints.toList(), activeIndex, userPosition) {
+        val path = listOf(userPosition) + waypoints.map { it.position }
+        FeatureCollection((0 until activeIndex).map { i ->
+            Feature(
+                geometry = LineString(listOf(path[i], path[i + 1])),
+                properties = buildJsonObject {},
+            )
+        })
     }
-    val poiLineSource = rememberGeoJsonSource(
-        data = GeoJsonData.Features(poiLineData),
+    val activeFc = remember(waypoints.toList(), activeIndex, userPosition) {
+        val path = listOf(userPosition) + waypoints.map { it.position }
+        FeatureCollection(
+            if (activeIndex in waypoints.indices) listOf(
+                Feature(
+                    geometry = LineString(listOf(path[activeIndex], path[activeIndex + 1])),
+                    properties = buildJsonObject {},
+                ),
+            ) else emptyList(),
+        )
+    }
+    val futureFc = remember(waypoints.toList(), activeIndex, userPosition) {
+        val path = listOf(userPosition) + waypoints.map { it.position }
+        FeatureCollection((activeIndex + 1 until waypoints.size).map { i ->
+            Feature(
+                geometry = LineString(listOf(path[i], path[i + 1])),
+                properties = buildJsonObject {},
+            )
+        })
+    }
+
+    val pastSource = rememberGeoJsonSource(data = GeoJsonData.Features(pastFc))
+    val activeSource = rememberGeoJsonSource(data = GeoJsonData.Features(activeFc))
+    val futureSource = rememberGeoJsonSource(data = GeoJsonData.Features(futureFc))
+
+    LineLayer(
+        id = "waypoint-route-past",
+        source = pastSource,
+        color = const(Color.Gray),
+        width = const(3.dp),
+        opacity = const(0.4f),
     )
     LineLayer(
-        id = "poi-line",
-        source = poiLineSource,
+        id = "waypoint-route-future",
+        source = futureSource,
+        color = const(Color.Green),
+        width = const(2.5.dp),
+        opacity = const(0.5f),
+        dasharray = const(listOf(2, 3)),
+    )
+    LineLayer(
+        id = "waypoint-route-active",
+        source = activeSource,
         color = const(Color.Green),
         width = const(4.dp),
         opacity = const(0.8f),
@@ -243,44 +286,184 @@ fun PoiRouteLineLayer(
 }
 
 @Composable
-fun PoiMarkerLayer(
-    poiPosition: Position,
-    onClick: () -> Unit = {},
+fun WaypointMarkersLayer(
+    waypoints: List<Waypoint>,
+    activeWaypointId: String?,
+    onClick: (Waypoint) -> Unit = {},
 ) {
+    if (waypoints.isEmpty()) return
     val context = LocalContext.current
-    val poiPointData = remember(poiPosition) {
-        FeatureCollection(listOf(Feature(
-            geometry = Point(poiPosition),
-            properties = buildJsonObject {},
-        )))
-    }
-    val poiSource = rememberGeoJsonSource(
-        data = GeoJsonData.Features(poiPointData),
-    )
-    val markerBitmap = remember { loadMakiIcon(context, "marker") }
-    if (markerBitmap != null) {
-        SymbolLayer(
-            id = "poi-marker",
-            source = poiSource,
-            iconImage = image(markerBitmap),
-            iconSize = const(1.75f),
-            iconAllowOverlap = const(true),
-            iconIgnorePlacement = const(true),
-            onClick = {
-                onClick()
-                ClickResult.Consume
+
+    // --- Circle-style markers: waypoints without an iconName ---
+    val circleInactiveFeatures = remember(waypoints.toList(), activeWaypointId) {
+        FeatureCollection(
+            waypoints.mapIndexedNotNull { idx, wp ->
+                if (!wp.iconName.isNullOrBlank()) null
+                else if (wp.id == activeWaypointId) null
+                else Feature(
+                    geometry = Point(wp.position),
+                    properties = buildJsonObject {
+                        put("id", JsonPrimitive(wp.id))
+                        put("label", JsonPrimitive((idx + 1).toString()))
+                    },
+                )
             },
         )
-    } else {
+    }
+    val circleActiveFeatures = remember(waypoints.toList(), activeWaypointId) {
+        FeatureCollection(
+            waypoints.mapIndexedNotNull { idx, wp ->
+                if (!wp.iconName.isNullOrBlank()) null
+                else if (wp.id != activeWaypointId) null
+                else Feature(
+                    geometry = Point(wp.position),
+                    properties = buildJsonObject {
+                        put("id", JsonPrimitive(wp.id))
+                        put("label", JsonPrimitive((idx + 1).toString()))
+                    },
+                )
+            },
+        )
+    }
+    val circleInactiveSource = rememberGeoJsonSource(data = GeoJsonData.Features(circleInactiveFeatures))
+    val circleActiveSource = rememberGeoJsonSource(data = GeoJsonData.Features(circleActiveFeatures))
+
+    CircleLayer(
+        id = "waypoint-marker-inactive-bg",
+        source = circleInactiveSource,
+        radius = const(12.dp),
+        color = const(Color(0xFFE53935)),
+        strokeColor = const(Color.White),
+        strokeWidth = const(2.dp),
+        onClick = handleClick@{ clicked ->
+            val f = clicked.firstOrNull() ?: return@handleClick ClickResult.Pass
+            val id = f.properties?.get("id")?.jsonPrimitive?.content
+            val wp = waypoints.firstOrNull { it.id == id } ?: return@handleClick ClickResult.Pass
+            onClick(wp)
+            ClickResult.Consume
+        },
+    )
+    SymbolLayer(
+        id = "waypoint-marker-inactive-label",
+        source = circleInactiveSource,
+        textField = format(span(feature["label"].asString())),
+        textFont = const(listOf("Noto Sans Regular")),
+        textColor = const(Color.White),
+        textSize = const(0.9f.em),
+        textAllowOverlap = const(true),
+        textIgnorePlacement = const(true),
+    )
+
+    CircleLayer(
+        id = "waypoint-marker-active-bg",
+        source = circleActiveSource,
+        radius = const(14.dp),
+        color = const(Color(0xFFE53935)),
+        strokeColor = const(Color(0xFF2E7D32)),
+        strokeWidth = const(3.5.dp),
+        onClick = handleClick@{ clicked ->
+            val f = clicked.firstOrNull() ?: return@handleClick ClickResult.Pass
+            val id = f.properties?.get("id")?.jsonPrimitive?.content
+            val wp = waypoints.firstOrNull { it.id == id } ?: return@handleClick ClickResult.Pass
+            onClick(wp)
+            ClickResult.Consume
+        },
+    )
+    SymbolLayer(
+        id = "waypoint-marker-active-label",
+        source = circleActiveSource,
+        textField = format(span(feature["label"].asString())),
+        textFont = const(listOf("Noto Sans Regular")),
+        textColor = const(Color.White),
+        textSize = const(1.0f.em),
+        textAllowOverlap = const(true),
+        textIgnorePlacement = const(true),
+    )
+
+    // --- Icon-style markers: waypoints with a Maki iconName (NEARBY_PLACE source) ---
+    val iconNamesSet = remember(waypoints.toList()) {
+        waypoints.mapNotNull { it.iconName?.takeIf { name -> name.isNotBlank() } }.toSet()
+    }
+    val iconBitmaps = remember(iconNamesSet) {
+        iconNamesSet.associateWith { loadMakiIcon(context, it) }
+            .filterValues { it != null }
+            .mapValues { it.value!! }
+    }
+    if (iconBitmaps.isNotEmpty()) {
+        val iconFeatures = remember(waypoints.toList(), activeWaypointId) {
+            FeatureCollection(
+                waypoints.mapIndexedNotNull { idx, wp ->
+                    val name = wp.iconName?.takeIf { it.isNotBlank() }
+                        ?: return@mapIndexedNotNull null
+                    if (name !in iconBitmaps) return@mapIndexedNotNull null
+                    Feature(
+                        geometry = Point(wp.position),
+                        properties = buildJsonObject {
+                            put("id", JsonPrimitive(wp.id))
+                            put("label", JsonPrimitive((idx + 1).toString()))
+                            put("iconName", JsonPrimitive(name))
+                            put("active", JsonPrimitive(wp.id == activeWaypointId))
+                        },
+                    )
+                },
+            )
+        }
+        val activeIconRingFeatures = remember(waypoints.toList(), activeWaypointId) {
+            FeatureCollection(
+                waypoints.mapNotNull { wp ->
+                    if (wp.id != activeWaypointId) return@mapNotNull null
+                    val name = wp.iconName?.takeIf { it.isNotBlank() }
+                        ?: return@mapNotNull null
+                    if (name !in iconBitmaps) return@mapNotNull null
+                    Feature(
+                        geometry = Point(wp.position),
+                        properties = buildJsonObject {
+                            put("id", JsonPrimitive(wp.id))
+                        },
+                    )
+                },
+            )
+        }
+        val iconSource = rememberGeoJsonSource(data = GeoJsonData.Features(iconFeatures))
+        val activeIconRingSource = rememberGeoJsonSource(
+            data = GeoJsonData.Features(activeIconRingFeatures),
+        )
+        val iconExpr = switch(
+            input = feature["iconName"].asString(),
+            *iconBitmaps.map { (n, bmp) -> case(label = n, output = image(bmp)) }.toTypedArray(),
+            fallback = nil(),
+        )
+
         CircleLayer(
-            id = "poi-marker",
-            source = poiSource,
-            radius = const(12.dp),
-            color = const(Color.Red),
-            strokeColor = const(Color.White),
-            strokeWidth = const(2.dp),
-            onClick = {
-                onClick()
+            id = "waypoint-marker-icon-active-ring",
+            source = activeIconRingSource,
+            radius = const(22.dp),
+            color = const(Color.Transparent),
+            strokeColor = const(Color(0xFF2E7D32)),
+            strokeWidth = const(3.5.dp),
+        )
+
+        SymbolLayer(
+            id = "waypoint-marker-icons",
+            source = iconSource,
+            iconImage = iconExpr,
+            iconSize = const(1.6f),
+            iconAllowOverlap = const(true),
+            iconIgnorePlacement = const(true),
+            textField = format(span(feature["label"].asString())),
+            textFont = const(listOf("Noto Sans Regular")),
+            textColor = const(Color.White),
+            textHaloColor = const(Color(0xFFE53935)),
+            textHaloWidth = const(3.dp),
+            textSize = const(0.85f.em),
+            textOffset = offset(1.1f.em, -1.1f.em),
+            textAllowOverlap = const(true),
+            textIgnorePlacement = const(true),
+            onClick = handleClick@{ clicked ->
+                val f = clicked.firstOrNull() ?: return@handleClick ClickResult.Pass
+                val id = f.properties?.get("id")?.jsonPrimitive?.content
+                val wp = waypoints.firstOrNull { it.id == id } ?: return@handleClick ClickResult.Pass
+                onClick(wp)
                 ClickResult.Consume
             },
         )

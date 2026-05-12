@@ -201,6 +201,7 @@ fun MapScreen(
     val userPosition = locationState.location?.position
     LaunchedEffect(userPosition) {
         vm.setLocalWeatherAnchor(userPosition)
+        if (userPosition != null) vm.maybeAutoAdvance(userPosition)
     }
     val bearing = cameraState.position.bearing
     val ringsCenter = if (hasLocation && userPosition != null) userPosition else cameraState.position.target
@@ -297,9 +298,10 @@ fun MapScreen(
                     )
                 }
 
-                if (vm.poiPosition != null && userPosition != null) {
-                    PoiRouteLineLayer(
-                        poiPosition = vm.poiPosition!!,
+                if (userPosition != null) {
+                    WaypointRouteLineLayer(
+                        waypoints = vm.waypoints,
+                        activeIndex = vm.activeIndex,
                         userPosition = userPosition,
                     )
                 }
@@ -331,12 +333,11 @@ fun MapScreen(
                     },
                 )
 
-                if (vm.poiPosition != null) {
-                    PoiMarkerLayer(
-                        poiPosition = vm.poiPosition!!,
-                        onClick = { vm.showNavigationTargetPopup() },
-                    )
-                }
+                WaypointMarkersLayer(
+                    waypoints = vm.waypoints,
+                    activeWaypointId = vm.activeWaypointId,
+                    onClick = { wp -> vm.showWaypointPopup(wp.id) },
+                )
             }
             }
         }
@@ -450,6 +451,9 @@ fun MapScreen(
         // POI category picker
         PoiCategoryPicker(vm = vm)
 
+        // Route editor sheet
+        RouteEditorSheet(vm = vm)
+
         // Tapped POI info popup
         TappedPoiPopup(
             vm = vm,
@@ -467,6 +471,21 @@ fun MapScreen(
         LaunchedEffect(vm.showTerms, vm.showActionsDrawer) {
             if (!vm.showTerms && !vm.showActionsDrawer) {
                 vm.startTutorialIfNotCompleted(TutorialGroup.MAP)
+            }
+        }
+
+        LaunchedEffect(
+            vm.waypoints.isNotEmpty(),
+            vm.showTerms,
+            vm.showActionsDrawer,
+            vm.showRouteEditor,
+            vm.tappedPoi,
+        ) {
+            val chipVisible = vm.waypoints.isNotEmpty()
+            val obstructed = vm.showTerms || vm.showActionsDrawer ||
+                vm.showRouteEditor || vm.tappedPoi != null
+            if (chipVisible && !obstructed) {
+                vm.startTutorialIfNotCompleted(TutorialGroup.ROUTE_EDITOR)
             }
         }
 

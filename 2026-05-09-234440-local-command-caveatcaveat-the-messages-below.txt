@@ -1,0 +1,568 @@
+╭─── Claude Code v2.1.138 ─────────────────────────────────────────────────────╮
+│                                                    │ Tips for getting        │
+│                 Welcome back Chris!                │ started                 │
+│                                                    │ Run /init to create a … │
+│                       ▐▛███▜▌                      │ ─────────────────────── │
+│                      ▝▜█████▛▘                     │ What's new              │
+│                        ▘▘ ▝▝                       │ Internal fixes          │
+│ Opus 4.7 · API Usage Billing · Chris's Individual  │ [VSCode] Fixed extensi… │
+│ Organization                                       │ Added `CLAUDE_CODE_ENA… │
+│               ~/repos/RoadTripRadar2               │ /release-notes for more │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+❯ /model                                                                        
+  ⎿  Set model to Opus 4.7 (1M context) (default)
+
+❯ Help me plan a waypoint/route editor. I have found that I locate my           
+  destination on the map, set a point to that location, and then start          
+  backtracking back to my present location and drop a pin at the closest turn I 
+   need to make. The problem is the new pin overrides the old pin, so I get     
+  disoriented. I don't need automatic turn by turn navigation, but I do need a  
+  waypoint editor where I can start with my destination or start with my        
+  current location and add waypoints. I'm thinking that since the current       
+  system pops up a slideout when you long-tap on a location or tap on a Nearby  
+  Place, we can leverage that by doing something like where if it's the first   
+  waypoint, Leave it the way it is where it says Navigate To. If there is       
+  already a waypoint active, I need suggestions on how the user can decide      
+  wether to replace the current waypoint, or add the waypoint after or before   
+  another existing waypoint. Is there a common idiom for this kind of gps map   
+  route management?                                                             
+
+  Read 2 files, listed 2 directories (ctrl+o to expand)
+
+● Explore(Find waypoint/navigation slideout code)
+  ⎿  Done (22 tool uses · 41.6k tokens · 1m 0s)
+  (ctrl+o to expand)
+
+● Common idioms
+
+  Yes — there are well-trodden patterns:
+
+  - Google/Apple Maps: when a route is active, a tapped place's primary action
+  becomes "Add stop." Appended before the destination by default. Reordering
+  happens in a separate stops list with drag handles.
+  - Waze: same — single "Add stop" action, stops list for reorder.
+  - OsmAnd / Organic Maps (closest cousin to your app — power-user, no nagging):
+   the slideout shows multiple actions: "Set as destination", "Add as 
+  intermediate", "Set as start". They expose the position semantics directly
+  instead of hiding them behind a generic "add."
+
+  The OsmAnd pattern is the better fit for RoadTripRadar — you've already got a
+  non-mainstream audience that wants control, not a single magic button.
+
+  Recommendation tailored to your backtrack workflow
+
+  Your workflow (drop destination, then backtrack pinning each turn closer to
+  yourself) means each new pin should go right after your current location,
+  pushing previous pins toward the destination. So the slideout's primary action
+   wants to be "insert as next stop," not "append."
+
+  Suggested slideout states:
+
+  Existing waypoints: None
+  Slideout actions (top → bottom): Navigate to (current behavior, becomes
+    destination)
+  ────────────────────────────────────────
+  Existing waypoints: 1+
+  Slideout actions (top → bottom): Insert as next stop (primary) · Append before
+   
+    destination · Replace destination · overflow: Replace specific stop / Set as
+
+    start
+
+  "Insert as next stop" matches your backtracking pattern as the one-tap
+  default. "Append before destination" covers users who plan forward. "Replace
+  destination" is the explicit override for the
+  override-you-currently-get-by-accident.
+
+  Stops list / route editor
+
+  You'll also want a separate sheet — a stops list with drag-to-reorder, delete,
+   and rename — accessible from a small "3 stops • Destination Name" chip pinned
+   somewhere on the map (top bar, or above the speedometer-style HUD if you have
+   one). That's the escape hatch when the in-slideout actions aren't enough
+  (e.g., reordering after the fact, or removing a misplaced pin). This is also
+  where you persist the route — extend PreferencesRepository to store an ordered
+   List<Waypoint> instead of the four scalar poi_* keys, with single-waypoint as
+   the degenerate case.
+
+  What's worth deciding before planning
+
+  A few choices that shape the implementation:
+
+  1. Default primary action when a destination exists — "Insert as next stop"
+  (matches your workflow) vs. "Append before destination" (matches Google Maps
+  muscle memory). I'd pick the former since this is your app and your workflow
+  is the design target.
+  2. Max stops — soft limit (e.g., 25) or unbounded? Affects route line drawing
+  perf.
+  3. Per-stop labels — auto-named from POI/reverse-geocode, or prompt user, or
+  both?
+  4. Should the route line be a single multi-segment polyline through all stops,
+   or distinct segments with different styling (e.g., solid for next leg, dashed
+   for later legs)? The latter is nice on a wandering app.
+
+  Want me to turn this into an implementation plan once you've weighed in on
+  those?
+
+✻ Sautéed for 2m 36s
+
+❯ I agree the osm approach fits best. I would like to consider enough           
+  flexibility that the user could also add new stops after the last one if they 
+   wish, how should that work?                                                  
+
+● Two ways to handle "add past the destination"
+
+  The semantic question is whether "destination" is a structural slot or just a
+  label for the last stop:
+
+  A. Demoting model (OsmAnd / Apple Maps): destination is privileged. Choosing
+  "Set as new destination" pushes the new pin to the end of the list; the
+  previous destination demotes to an intermediate stop. Route becomes current → 
+  … → old-destination → new-pin.
+
+  B. Flat-list model (Google Maps): no privileged slot. The last stop is just
+  stops.last(). "Add stop" always appends; whichever pin happens to be last is
+  "the destination."
+
+  I'd recommend A for RoadTripRadar. Your users are deliberately picking a
+  destination first — that intent shouldn't be silently reshuffled by a tap on a
+   later pin. Making the demotion explicit ("Extend trip" / "Set as new
+  destination") preserves their mental model and keeps the override visible.
+
+  Slideout actions when waypoints exist
+
+  ┌─────────────────────────────────┐
+  │  POI name / address             │
+  │  ─────────────────────────────  │
+  │  ▶  Insert as next stop         │ ← primary; matches backtrack
+  │  ▶  Insert before destination   │ ← Google-Maps "add stop"
+  │  ▶  Extend trip past destination│ ← demotes old D to stop
+  │  …  More                        │
+  │      • Replace destination      │
+  │      • Replace specific stop ▸  │
+  │      • Set as start             │
+  └─────────────────────────────────┘
+
+  Three primary actions cover ~95% of intents; an overflow handles the rest.
+  Middle-insertions (between stop 2 and stop 3 of a 5-stop trip) live in the
+  stops-list editor, where dragging is more natural than picking from a menu.
+
+  Wording matters here
+
+  I'd avoid "Append" — it's vague about whether the old destination keeps its
+  status. Concrete labels keep the consequence visible:
+
+  - "Insert before destination" — old destination unchanged
+  - "Extend trip past destination" — old destination demoted
+  - "Replace destination" — old destination deleted
+
+  If "Extend trip past destination" feels too long, "Continue past destination"
+  is shorter and still unambiguous.
+
+  Optional: visual route strip
+
+  If three buttons feel cluttered, an alternative is a tiny vertical route
+  preview inside the slideout with + insert-points between every pair of stops,
+  including a + below the destination. Tap any + to drop the new pin there; tap
+  an existing chip to replace. Self-explanatory, no labels to argue over, but
+  more vertical space and more code. Worth considering only if the action-list
+  version starts feeling crowded once you build it.
+
+  Want me to draft an implementation plan around the action-list approach (model
+   1: demoting destination, three primary actions + overflow, separate
+  stops-list editor)?
+
+✻ Cooked for 51s
+
+❯ my users are not necessarily picking a destination first. They might be       
+  choosting the first waypoint in a longer list. How can we mix both semantics  
+  in a way that is not confusing? I think the concept of a destination doesn't  
+  really have any meaning other than the literal last of the list. Consider     
+  that in a feature feature I would like to add the ability to import gpx       
+  routes and waypoints. the demoting model does seem to make sense, maybe that  
+  is the way to go? They can choose to demote or append either before           
+  list.last() or add it before list.begin(), with the assumption that the       
+  current position isn't actually a waypoint in the list.                       
+
+● Agreed — flat list is the honest model, and it's much friendlier to GPX
+  import. "Destination" was always just a UX label for stops.last(), and
+  treating it that way keeps the data model uniform whether the route was
+  hand-built forward, hand-built backward, or imported.
+
+  Reframed actions (flat-list model)
+
+  The structural model: List<Waypoint>, current location is implicit and never
+  in the list. Three insert positions:
+
+  Position: Index 0
+  What it means: Right after current location, before list[0]
+  When it's the user's intent: Backtracking workflow; "this is the very next
+  turn
+    I'll make"
+  ────────────────────────────────────────
+  Position: Index size-1
+  What it means: Just before list.last()
+  When it's the user's intent: Google-Maps "add a stop on the way"
+  ────────────────────────────────────────
+  Position: Index size (append)
+  What it means: New last stop
+  When it's the user's intent: Extending the trip; previous last stop just
+    naturally becomes a non-last stop
+
+  No demotion as a distinct operation — appending is the demotion, and it falls
+  out of the list semantics for free. Same path also covers GPX import: each
+  imported point is just list.add(). No flag to set.
+
+  Slideout adapts to list length
+
+  Route state: Empty
+  Buttons: Add waypoint (single button, replaces today's "Navigate to")
+  ────────────────────────────────────────
+  Route state: 1 stop
+  Buttons: Insert before [name] · Add after [name] · overflow: Replace
+  ────────────────────────────────────────
+  Route state: 2+ stops
+  Buttons: Add to start · Insert before final stop · Add to end · overflow:
+    Replace last · Replace specific stop ▸
+
+  For 2+ stops you can append the named stop in secondary text under each label
+  (e.g., "Add to start" / "before Highway 5 turn") so the user sees what's
+  adjacent without having to count stops. Falls back gracefully to coords if
+  there's no name.
+
+  Wording cleanup that follows from this
+
+  Once you commit to the flat list, you'll want to remove "destination" from
+  user-facing strings everywhere it implies a special slot. Suggestions:
+
+  - Today's dropped_pin_title and the route-line resources → "Waypoint" or
+  "Stop"
+  - Stops chip on the map → "3 stops • [last stop name]" (last name as a
+  recognizability cue, not as a status)
+  - Internal field/SharedPrefs keys → rename poi_* to waypoints (a JSON array).
+  Single-waypoint state is just len == 1.
+
+  Implications worth flagging now
+
+  1. Migration: existing single-POI users get a one-time read of the four poi_*
+  keys → seed waypoints with one entry → delete old keys.
+  2. Route line drawing: today's PoiRouteLineLayer draws userPosition → 
+  poiPosition. New model: userPosition → waypoints[0] → waypoints[1] → … → 
+  waypoints.last(). Still a single LineString feature; just more coordinates.
+  3. GPX import (future): the importer can either replace the current list or
+  append to it. Worth a small "Import GPX" → "Replace existing route?" / "Append
+   to existing route?" prompt when there are existing stops. No new model
+  concepts needed.
+  4. "Replace last" vs. "Add to end": easy to mix up. Keep them in different
+  visual tiers (primary vs. overflow) and never side-by-side.
+
+  Want me to turn this into an implementation plan? I'd structure it as: (1)
+  data model + persistence migration, (2) slideout UI + dynamic actions, (3)
+  route line update, (4) stops-list editor sheet, (5) string/wording cleanup.
+  GPX import would be a separate follow-up.
+
+✻ Sautéed for 1m 11s
+
+❯ for manually placed pins currently, the name is just Dropped Pin. Lets use    
+  numbered waypoints for any that are not named (named would be created by      
+  searcing or the Nearby Places feature). Named ones should also be numbered as 
+   their position, in order to deduplicate two named places with the same name. 
+   Yes make an implementation plan, and ensure there is a way to edit the       
+  current route as a list somewhere, like you said drag and drop order, delete  
+  waypoint, etc. Also, no need for a "destination" label, we can just number    
+  each point when it's displayed on the map. We also need to consider the       
+  navigation widget. Right now it points towards the destination, we may need   
+  to have it automatically point to the next waypoint when the user gets within 
+   50 or 100 meters, configurable in map settings. We'll need a way to manually 
+   pick the next waypoint the navigation widget and nav line should point to.   
+  We should be able to turn off auto-go-to-next-waypoint if the user doesn't    
+  want that. Perhaps long pressing on the zoom buttons moves through the list?  
+  We need to ensure the tuturoal is updated for this new feature as well.       
+
+● Before I write the plan, let me look at the navigation widget, the tutorial
+  system, the zoom buttons, and the settings screen so the plan is concrete.
+
+● Explore(Find nav widget, zoom buttons, tutorial, settings)
+  ⎿  Done (21 tool uses · 39.0k tokens · 2m 19s)
+  (ctrl+o to expand)
+
+● Implementation Plan: Multi-Waypoint Route Editor
+
+  Data model
+
+  New Waypoint data class (e.g. data/Waypoint.kt):
+
+  data class Waypoint(
+      val id: String,            // UUID, stable across reorders
+      val position: Position,
+      val name: String?,         // null for manual drops; set from 
+  search/nearby
+      val subtitle: String?,
+      val source: WaypointSource // DROPPED_PIN, SEARCH, NEARBY_PLACE
+  )
+
+  - Display label is computed: "${index+1}" on the map marker; "${index+1}. 
+  ${name ?: stringRes(R.string.waypoint_unnamed)}" in lists/slideouts.
+  Renumbering happens automatically because the number is positional, not
+  stored.
+  - Stable id is critical so the active-waypoint pointer survives
+  inserts/deletes/reorders. Active waypoint is stored as an id, not an index.
+
+  Persistence (PreferencesRepository.kt:317-352)
+
+  Replace the four poi_* scalars with:
+  - waypoints — JSON-encoded List<Waypoint> (use kotlinx.serialization, already
+  pulled in or trivial to add — verify)
+  - active_waypoint_id — String?
+  - auto_advance_enabled — Boolean (default true)
+  - auto_advance_threshold_m — Int (default 100)
+
+  One-time migration: on first launch after upgrade, if waypoints is absent and
+  any poi_* key is present, seed a one-element list from the old values, set
+  active_waypoint_id to that waypoint, then delete the old keys. Add a single
+  migration call in PreferencesRepository's init block.
+
+  ViewModel (MapViewModel.kt)
+
+  Replace poiPosition / poiName / poiSubtitle (lines 148-152) with:
+  - waypoints: SnapshotStateList<Waypoint>
+  - activeWaypointId: String? — derived helpers activeIndex: Int?,
+  activeWaypoint: Waypoint?
+  - autoAdvanceEnabled: Boolean, autoAdvanceThresholdMeters: Int with the
+  existing update*() / save*() pattern
+
+  New ops:
+  - addWaypoint(position, name?, subtitle?, source, insertAt: InsertPosition)
+  where InsertPosition is START, BEFORE_LAST, END, or Index(i) / ReplaceId(id)
+  - removeWaypoint(id), moveWaypoint(fromIndex, toIndex), renameWaypoint(id, 
+  name), clearRoute()
+  - setActiveWaypoint(id), advanceActiveWaypoint(), regressActiveWaypoint()
+  - Auto-advance hook in the existing user-location update path: when
+  autoAdvanceEnabled and userPosition.distanceTo(activeWaypoint.position) < 
+  threshold and a next waypoint exists, advance. (No-op silently when at the
+  final waypoint — flag this as a question below.)
+
+  Slideout actions (TappedPoiPopup.kt:275-293)
+
+  Dynamic action set based on waypoints.size:
+
+  Size: 0
+  Primary actions: Add waypoint
+  Overflow: —
+  ────────────────────────────────────────
+  Size: 1
+  Primary actions: Insert before #1 · Add after #1
+  Overflow: Replace #1
+  ────────────────────────────────────────
+  Size: 2+
+  Primary actions: Add to start · Insert before final stop · Add to end
+  Overflow: Replace last · Replace specific stop ▸
+
+  Each label shows the adjacent waypoint name in secondary text where useful
+  ("Add to start" / "before #1 Tim Hortons").
+
+  Map markers and route line
+
+  Markers: extend the current POI marker layer to render one marker per
+  waypoint, with the index+1 as the label. Active waypoint marker styled
+  distinctly (e.g., filled vs. outline, or larger).
+
+  Route line (MapLayers.kt:221-243): replace the single-segment LineString with
+  two LineLayers on a shared GeoJSON source, distinguished by a leg feature
+  property:
+  - active leg = (prevAnchor → list[activeIndex]) where prevAnchor = 
+  userPosition if activeIndex == 0, else list[activeIndex-1]. Solid green, 4dp,
+  0.8 opacity (today's style).
+  - inactive legs = everything else. Thinner (2dp), dashed, lower opacity (0.5).
+   Both past and future legs share this style — keeps the rendering simple, and
+  "past" legs only appear when the user manually steps backward.
+
+  Stops-list editor
+
+  New RouteEditorSheet Composable, opened from a map-overlay chip ("N stops • #1
+   [first name]") placed near the existing top controls. Modal bottom sheet:
+
+  - Reorderable list (drag handle on each row). Use Compose's
+  Modifier.detectDragGestures or pull in sh.calvin.reorderable (small, MIT, ~50
+  KB) — flag this as a dependency choice.
+  - Each row: index badge (#1, #2…), name (or "Waypoint"), subtitle, "Active"
+  radio/check, delete button.
+  - Tap a row to recenter the map on it (no state change).
+  - Footer: "Clear route" button with confirm dialog.
+  - Renaming: tap-and-edit on the name field for power users; optional, can be a
+   follow-up.
+
+  Nav widget (NavWidget.kt:27-78, MapScreen.kt:215-217)
+
+  - Bearing source becomes activeWaypoint.position instead of poiPosition.
+  - Label: index + name ("#2 Tim Hortons", or "Waypoint 2" for unnamed).
+  - Add a small inline prev / next chevron control attached to the widget.
+  Disabled-state when at first/last. This is the visible, discoverable manual
+  override for the active waypoint.
+
+  Zoom-button long-press (MapFabs.kt:329-369)
+
+  Add onLongClick to both buttons via combinedClickable:
+  - Long-press zoom-in → advanceActiveWaypoint()
+  - Long-press zoom-out → regressActiveWaypoint()
+  - Light haptic feedback on activation.
+  - Tap behavior unchanged.
+
+  This is a power-user shortcut; the chevron pill on the nav widget is the
+  discoverable primary control.
+
+  Settings (MapDrawerSettingsContent.kt:56-146)
+
+  Add to the existing settings sheet, following the boolean/slider patterns
+  already there:
+  - "Auto-advance to next waypoint" — toggle (default on).
+  - "Advance when within" — slider or segmented choice with discrete stops: 25 m
+   / 50 m / 100 m / 200 m (default 100 m).
+
+  Both metric/imperial respecting (label "yards" if imperial, but keep storage
+  in meters).
+
+  Tutorial (TutorialModels.kt + TutorialAnchors.kt + strings.xml)
+
+  New anchors and steps:
+  - Route editor chip (new step in MAP group) — explains tapping the chip opens
+  the stops editor.
+  - Nav widget label/chevrons — update the existing nav-widget step text to talk
+   about "the active waypoint" and the chevrons; add a new step for the chevron
+  control if it has its own anchor.
+  - Long-press zoom — new step on each zoom button anchor (or one combined step)
+   explaining the power-user shortcut.
+
+  Replace any existing user-facing strings that reference "destination" with
+  neutral wording. Crowdin will pick up the new/changed tutorial_* keys on the
+  next sync; mark removed keys for deletion in crowdin.yml.
+
+  Strings to add (all values/strings.xml)
+
+  - waypoint_unnamed ("Waypoint")
+  - route_editor_chip_format ("%1$d stops")
+  - action_add_waypoint, action_add_to_start, action_insert_before_final,
+  action_add_to_end, action_replace_last, action_replace_specific,
+  action_set_active, action_clear_route
+  - settings_auto_advance_toggle, settings_auto_advance_threshold
+  - tutorial_route_editor_title / _body, tutorial_long_press_zoom_title / _body
+  - Update tutorial_nav_widget_* body to reference active waypoint instead of
+  destination
+
+  Suggested PR sequence
+
+  Each step lands independently and leaves the app in a working state:
+
+  1. Data model + persistence migration + single-waypoint behavior preserved.
+  Convert poi_* to List<Waypoint> of size 0 or 1 internally; UI still treats it
+  as the only stop. No user-visible change.
+  2. Multi-waypoint slideout actions + map markers with numbers. Users can build
+   a list, but route line still draws only to the active waypoint.
+  3. Multi-segment route line + active-waypoint nav widget + chevron control.
+  4. Stops-list editor sheet with drag-to-reorder, delete, clear.
+  5. Auto-advance + settings + long-press zoom.
+  6. Tutorial updates + string cleanup.
+
+  GPX import is a separate follow-up — once steps 1–4 are in, importing is just
+  waypoints.addAll(...).
+
+  Open questions before I start
+
+  1. Arrival feedback: when auto-advance brings the user to the final waypoint
+  and they enter the threshold, should we trigger anything (haptic, toast,
+  notification)? Or stay silent?
+  2. Reorderable library: pull in sh.calvin.reorderable (~50 KB, MIT) for the
+  drag-to-reorder list, or implement from scratch with detectDragGestures? The
+  library is meaningfully nicer; rolling our own is one less dependency.
+  3. Route-line styling for inactive legs: collapse past + future into a single
+  "inactive" style as proposed, or distinguish them (past legs faded gray,
+  future legs dashed green)? More distinction = more useful when the user
+  manually steps backward, but more layers to maintain.
+  4. Marker label format: just the number "2" on the marker, or number + first
+  letter / abbreviated name? Plain number is cleanest; flag this if you have a
+  preference.
+  5. Threshold units: store in meters internally and just relabel for imperial
+  users (yards), or actually offer different presets for imperial
+  (50/100/250/500 yd)?
+
+  Once you weigh in on those I'll start with PR #1 (data model + migration).
+  Want me to proceed?
+
+✻ Brewed for 3m 25s
+
+❯ 1: stay silent. 2: if we bring in a dependency, I want a high trust one,      
+  preferably one of the built in android sdk things. Tell me more about your    
+  suggested library and other alternatives. 3. past grey, future dashed, as you 
+   suggest. 4. just the number, unless the waypoint came from a Nearby Place,   
+  in which case use the corresponding icon. 5. store in meters interanally and  
+  convert for imperial users. Use a slider for the setting so its not discreet  
+  points, they can choose any integer from the range.                           
+
+● On the reorderable list dependency
+
+  There's no first-party Compose reorderable list. The honest landscape:
+
+  - androidx.recyclerview.widget.ItemTouchHelper — built into the SDK and
+  battle-tested, but it's a View-system helper. Using it from Compose means
+  wrapping a RecyclerView inside AndroidView, which means hand-bridging
+  adapters, view holders, and state. Lots of code, awkward, and you give up
+  Compose's recomposition model for that one screen. Not worth it for a stops
+  list.
+  - Compose Material3 / Foundation — neither has a ReorderableLazyColumn.
+  There's an open issue at AOSP asking for one. As of now, nothing built-in.
+  - sh.calvin.reorderable (Calvin Liang, MIT) — single contributor but actively
+  maintained (last release within the last few months at the time of writing),
+  small (~50 KB), Compose-native API (ReorderableItem wrapping LazyColumn
+  items). Used by a number of FOSS projects. Honest about its limits in the
+  README. Trust profile: small library, single maintainer, no
+  Anthropic/Google/JetBrains backing — same risk class as most Compose-ecosystem
+   tools right now.
+  - org.burnoutcrew.composereorderable — was the de-facto standard, last update
+  ~2022. Probably stale; I'd avoid.
+  - DIY in Compose — Modifier.pointerInput { detectDragGesturesAfterLongPress }
+  + LazyListState, tracking per-item offset and animating displaced items, plus
+  auto-scroll near edges. Realistically 200–300 lines for the polished version.
+  No new dependency, full control, and the surface area is contained because
+  waypoint lists are short (rarely >20 items).
+
+  Given your "prefer SDK / high trust" stance and the modest list size, I'd 
+  recommend DIY. The implementation isn't trivial but it's bounded, no
+  third-party trust required, and a stops list is a simple enough surface that
+  the polish ceiling matches what we'd want anyway. If during implementation it
+  grows hairier than expected (fast-drag jitter, edge auto-scroll), we can
+  switch to sh.calvin.reorderable as an isolated change — the call sites are
+  localized to one Composable.
+
+  Resolved decisions baked into the plan
+
+  - Auto-advance arrival: silent.
+  - Inactive route-line legs: past = solid grey faded, future = dashed green.
+  - Marker labels: number badge for DROPPED_PIN and SEARCH; Nearby Place icon
+  (reused from NearbyPoiLayers) for NEARBY_PLACE. Active waypoint gets a colored
+   ring/border on top of whichever base.
+  - Threshold setting: continuous integer slider in meters, displayed in meters
+  or yards depending on useMetric. Stored in meters always.
+  - Drag-to-reorder: DIY Compose, no dependency.
+
+  One remaining question
+
+  Slider range for auto-advance threshold. I suggest 25 m → 500 m (default 100
+  m). Rationale:
+  - 25 m floor: below this, consumer GPS jitter alone (~5–15 m typical)
+  regularly trips the threshold prematurely. Going lower invites bug reports.
+  - 500 m ceiling: above this it's no longer "close enough to advance" — it's
+  "advance when I'm anywhere in the neighborhood," which probably isn't useful.
+
+  OK with that range, or want it wider/narrower?
+
+  Once you answer I'll start on PR #1 (data model + persistence migration, no
+  user-visible change).
+
+✻ Crunched for 1m 10s
+
+❯ ok with that range for auto advance. Lets go with                             
+  androidx.recyclerview.widget.itemtouchhelper, it's likely future features     
+  will need similar functionality anyway. Is the plan saved as a file somewhere 
+   so it will persist between sessions if this one is interrupted?              
+

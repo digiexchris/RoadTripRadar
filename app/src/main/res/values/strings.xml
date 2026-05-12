@@ -41,7 +41,7 @@
     <string name="action_nearby_places">Nearby Places</string>
     <string name="action_clear_places">Clear Places</string>
     <string name="action_location_search">Location Search</string>
-    <string name="action_clear_target">Clear Target</string>
+    <string name="action_clear_target">Clear Route</string>
     <string name="action_track_bearing">Track Bearing</string>
     <string name="action_track_north">Track North</string>
     <string name="action_radar_on">Radar On</string>
@@ -95,7 +95,7 @@
     <string name="tutorial_map_compass_title">Compass</string>
     <string name="tutorial_map_compass_body">Tap once to lock the map to North up. Tap again to rotate the map to follow your bearing.</string>
     <string name="tutorial_map_drop_pin_title">Drop a Pin</string>
-    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to drop a pin and navigate toward it.</string>
+    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to add a waypoint. Choose where it goes in your route — start, before the final stop, or end.</string>
     <string name="tutorial_map_zoom_out_title">Zoom Out</string>
     <string name="tutorial_map_zoom_out_body">Tap to zoom out. You can also pinch the map with two fingers.</string>
     <string name="tutorial_map_zoom_in_title">Zoom In</string>
@@ -104,6 +104,30 @@
     <string name="tutorial_map_weather_body">Tap to play or pause the radar animation. Tap and hold to turn the radar off entirely.</string>
     <string name="tutorial_map_menu_title">Quick Actions Menu</string>
     <string name="tutorial_map_menu_body">Opens the quick actions drawer with settings, themes, and points of interest.</string>
+
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Map theme</string>
+    <string name="tutorial_map_setting_theme_body">Pick the map style. Open the theme selector to switch between built-in styles or import a custom one.</string>
+    <string name="tutorial_map_setting_units_title">Units</string>
+    <string name="tutorial_map_setting_units_body">Switch between metric (km, m) and imperial (miles, yards). Affects speed, distance, and waypoint thresholds.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Map center offset (portrait)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">How far down the screen the map is anchored when held vertically. Higher values leave more empty space at the top, useful when nav widgets crowd the bottom.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Map center offset (landscape)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Same idea as the portrait offset, applied when your phone is sideways.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Places icon opacity</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Fade nearby place icons in or out so they don\'t cover the map. 0%% hides them entirely.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Auto-advance</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">When on, the active waypoint advances automatically as you reach each stop. Turn off to step manually using the long-press shortcut on the zoom buttons.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Advance distance</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">How close you need to be to a waypoint for auto-advance to fire. Range 25–500 m.</string>
+
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Edit your route</string>
+    <string name="tutorial_route_nav_widget_body">Tap the nav widget to open the stops list. Drag to reorder, mark a stop active, remove waypoints, or clear the whole route.</string>
+    <string name="tutorial_route_long_press_out_title">Step back a waypoint</string>
+    <string name="tutorial_route_long_press_out_body">Long-press the – button to make the previous waypoint active. The nav widget points to whichever waypoint is active.</string>
+    <string name="tutorial_route_long_press_in_title">Advance to the next waypoint</string>
+    <string name="tutorial_route_long_press_in_body">Long-press the + button to make the next waypoint active. Auto-advance does this for you when you get close, but you can step manually any time. Toggle auto-advance and tune the distance threshold in Menu → Map.</string>
 
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Weather Radar</string>
@@ -218,12 +242,38 @@
     <string name="poi_count">%1$d of %2$d</string>
     <string name="action_search_visible_area">Search Visible Area</string>
 
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Auto-advance to next waypoint</string>
+    <string name="settings_auto_advance_threshold">Advance when within</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+
+    <!-- Route editor -->
+    <string name="route_editor_title">Route</string>
+    <string name="route_stop_count_plural">%1$d stops</string>
+    <string name="action_clear_route_confirm">Remove all waypoints?</string>
+    <string name="cd_drag_handle">Drag to reorder</string>
+    <string name="cd_set_active">Set as active</string>
+    <string name="cd_remove_waypoint">Remove waypoint</string>
+
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navigate Here</string>
+    <string name="action_insert_before">Insert before %1$s</string>
+    <string name="action_add_after">Add after %1$s</string>
+    <string name="action_add_to_start">Add to start</string>
+    <string name="action_insert_before_final">Insert before final stop</string>
+    <string name="action_add_to_end">Add to end</string>
+    <string name="action_replace_waypoint">Replace %1$s</string>
+    <string name="action_replace_last">Replace last stop</string>
+    <string name="action_more_options">More options</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Close</string>
 
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Direction to target location</string>
+    <string name="cd_prev_waypoint">Previous waypoint</string>
+    <string name="cd_next_waypoint">Next waypoint</string>
 
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">What\'s new</string>

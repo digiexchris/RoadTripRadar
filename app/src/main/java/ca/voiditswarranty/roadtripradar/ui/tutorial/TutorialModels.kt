@@ -13,6 +13,12 @@ enum class TutorialGroup {
 
     /** Quick-actions drawer main page; fires the first time the drawer is opened. */
     MENU_MAIN,
+
+    /** Route chip + waypoint long-press shortcuts; fires the first time the user has a route. */
+    ROUTE_EDITOR,
+
+    /** Map-settings page in the actions drawer; fires the first time that page is opened. */
+    MAP_SETTINGS,
 }
 
 /**
@@ -47,6 +53,16 @@ object TutorialAnchors {
     const val ZOOM_IN = "zoom_in"
     const val WEATHER_FAB = "weather_fab"
     const val MENU_FAB = "menu_fab"
+    const val NAV_WIDGET = "nav_widget"
+
+    // MAP_SETTINGS anchors are the controls in the Map sub-page of the actions drawer.
+    const val MAP_SETTING_THEME = "map_setting_theme"
+    const val MAP_SETTING_UNITS = "map_setting_units"
+    const val MAP_SETTING_CENTER_OFFSET_PORTRAIT = "map_setting_center_offset_portrait"
+    const val MAP_SETTING_CENTER_OFFSET_LANDSCAPE = "map_setting_center_offset_landscape"
+    const val MAP_SETTING_POI_OPACITY = "map_setting_poi_opacity"
+    const val MAP_SETTING_AUTO_ADVANCE_TOGGLE = "map_setting_auto_advance_toggle"
+    const val MAP_SETTING_AUTO_ADVANCE_THRESHOLD = "map_setting_auto_advance_threshold"
 
     // MENU_MAIN anchors are the primary drawer cells.
     const val MENU_WEATHER_TOGGLE = "menu_weather_toggle"
@@ -152,7 +168,67 @@ val MENU_MAIN_TUTORIAL_STEPS: List<TutorialStep> = listOf(
     ),
 )
 
+val ROUTE_EDITOR_TUTORIAL_STEPS: List<TutorialStep> = listOf(
+    TutorialStep(
+        anchorId = TutorialAnchors.NAV_WIDGET,
+        titleRes = R.string.tutorial_route_nav_widget_title,
+        bodyRes = R.string.tutorial_route_nav_widget_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.ZOOM_OUT,
+        titleRes = R.string.tutorial_route_long_press_out_title,
+        bodyRes = R.string.tutorial_route_long_press_out_body,
+        spotlightShape = SpotlightShape.CIRCLE,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.ZOOM_IN,
+        titleRes = R.string.tutorial_route_long_press_in_title,
+        bodyRes = R.string.tutorial_route_long_press_in_body,
+        spotlightShape = SpotlightShape.CIRCLE,
+    ),
+)
+
+val MAP_SETTINGS_TUTORIAL_STEPS: List<TutorialStep> = listOf(
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_THEME,
+        titleRes = R.string.tutorial_map_setting_theme_title,
+        bodyRes = R.string.tutorial_map_setting_theme_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_UNITS,
+        titleRes = R.string.tutorial_map_setting_units_title,
+        bodyRes = R.string.tutorial_map_setting_units_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_CENTER_OFFSET_PORTRAIT,
+        titleRes = R.string.tutorial_map_setting_center_offset_portrait_title,
+        bodyRes = R.string.tutorial_map_setting_center_offset_portrait_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_CENTER_OFFSET_LANDSCAPE,
+        titleRes = R.string.tutorial_map_setting_center_offset_landscape_title,
+        bodyRes = R.string.tutorial_map_setting_center_offset_landscape_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_POI_OPACITY,
+        titleRes = R.string.tutorial_map_setting_poi_opacity_title,
+        bodyRes = R.string.tutorial_map_setting_poi_opacity_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_AUTO_ADVANCE_TOGGLE,
+        titleRes = R.string.tutorial_map_setting_auto_advance_toggle_title,
+        bodyRes = R.string.tutorial_map_setting_auto_advance_toggle_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_AUTO_ADVANCE_THRESHOLD,
+        titleRes = R.string.tutorial_map_setting_auto_advance_threshold_title,
+        bodyRes = R.string.tutorial_map_setting_auto_advance_threshold_body,
+    ),
+)
+
 fun stepsFor(group: TutorialGroup): List<TutorialStep> = when (group) {
     TutorialGroup.MAP -> MAP_TUTORIAL_STEPS
     TutorialGroup.MENU_MAIN -> MENU_MAIN_TUTORIAL_STEPS
+    TutorialGroup.ROUTE_EDITOR -> ROUTE_EDITOR_TUTORIAL_STEPS
+    TutorialGroup.MAP_SETTINGS -> MAP_SETTINGS_TUTORIAL_STEPS
 }

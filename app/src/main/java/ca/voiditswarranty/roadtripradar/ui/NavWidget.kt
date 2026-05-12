@@ -32,6 +32,7 @@ fun NavWidget(
     navWidgetSize: Float,
     poiName: String?,
     useMetric: Boolean,
+    stopCount: Int? = null,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
 ) {
@@ -40,6 +41,8 @@ fun NavWidget(
     val distFontSize = (navWidgetSize * 0.35f).sp
     val showName = navWidgetSize >= 50f && poiName != null
     val nameFontSize = (navWidgetSize * 0.25f).sp
+    val showStopCount = navWidgetSize >= 50f && stopCount != null && stopCount > 0
+    val countFontSize = (navWidgetSize * 0.20f).sp
 
     Column(
         modifier = modifier
@@ -72,6 +75,13 @@ fun NavWidget(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.widthIn(max = (navWidgetSize * 2.5f).dp),
+            )
+        }
+        if (showStopCount) {
+            Text(
+                text = stringResource(R.string.route_stop_count_plural, stopCount!!),
+                fontSize = countFontSize,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

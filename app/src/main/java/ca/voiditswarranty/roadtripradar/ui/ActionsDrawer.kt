@@ -121,6 +121,7 @@ fun ActionsDrawer(
             drawerPage = ActionsDrawerPage.Main
             showQuitConfirm = false
             vm.cancelTutorial(TutorialGroup.MENU_MAIN)
+            vm.cancelTutorial(TutorialGroup.MAP_SETTINGS)
         }
     }
 
@@ -129,6 +130,11 @@ fun ActionsDrawer(
             vm.startTutorialIfNotCompleted(TutorialGroup.MENU_MAIN)
         } else if (drawerPage != ActionsDrawerPage.Main) {
             vm.cancelTutorial(TutorialGroup.MENU_MAIN)
+        }
+        if (vm.showActionsDrawer && drawerPage == ActionsDrawerPage.Map) {
+            vm.startTutorialIfNotCompleted(TutorialGroup.MAP_SETTINGS)
+        } else if (drawerPage != ActionsDrawerPage.Map) {
+            vm.cancelTutorial(TutorialGroup.MAP_SETTINGS)
         }
     }
 
@@ -238,9 +244,9 @@ fun ActionsDrawer(
                     DrawerAction(
                         label = stringResource(R.string.action_clear_target),
                         icon = Icons.Default.Close,
-                        enabled = vm.poiPosition != null,
+                        enabled = vm.waypoints.isNotEmpty(),
                         onClick = {
-                            vm.clearPoi()
+                            vm.clearRoute()
                             vm.closeActionsDrawer()
                         },
                     ),
