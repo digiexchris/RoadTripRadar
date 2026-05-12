@@ -1,0 +1,1 @@
+* Korralda paigutus ümber * Eemalda kasutajaliidesest liigsed nupud ja vii need tavaliste toimingute jaoks eraldi ülekatte alla * Lisa käivitamisel kiirabi * Vähenda kaardivaate liigset koormatust ja toimingute hulka * Ühtlusta horisontaalrežiim püstrežiimiga * Lisa puudutamisel avanev kiirtoimingute sahtel tavaliste toimingute jaoks kaardinuppude asemel
