@@ -1,0 +1,1 @@
+Muudeti esituse/pausi/väljalülitamise nuppu nii, et puudutusega saab vahetada esituse ja pausi vahel. Puuduta ja hoia all, et lülitada sisse- ja väljalülitatud oleku vahel..
