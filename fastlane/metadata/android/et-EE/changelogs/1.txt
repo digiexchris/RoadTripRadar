@@ -1,0 +1,13 @@
+RoadTripRadari esmane väljalase.
+
+- RainVieweri reaalajas animeeritud ilmaradari ülekate
+- Asimuudipõhine navigeerimine huvipunktideni
+- Huvipunktide otsing nime või kategooria järgi
+- Huvipunkti lisamine kaardile pika vajutusega
+- Kaugusringid teie asukoha ümber
+- Kiiruse kuvamine meetermõõdustikus või imperiaalühikutes
+- Kolm kaardistiili: Liberty, Dark, Color Dark
+- Kompassinupp suunalülitiga
+- Reguleeritav radari läbipaistvus
+- Kohandatav kasutajaliidese suurus
+- Ekraani alati sees hoidmise režiim

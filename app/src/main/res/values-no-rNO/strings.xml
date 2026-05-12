@@ -281,7 +281,7 @@
     <string name="style_auto">Auto</string>
     <!-- Map loading status -->
     <string name="loading_areas">Laster inn områder</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">%1$d gjenstår</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Bakgrunn / land</string>
     <string name="color_category_water">Vann</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Kunne ikke åpne den valgte filen.</string>
     <string name="theme_import_error_read_failed">Kunne ikke lese den valgte filen.</string>
     <string name="theme_import_error_not_json">Ikke gyldig JSON.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Manglende eller ikke-støttet stilversjon (forventet 8, fikk %1$s). Sørg for å eksportere en MapLibre GL-stil fra Maputnik.</string>
     <string name="theme_import_error_missing_layers">Stilen mangler det påkrevde feltet \'layers\'.</string>
     <string name="theme_import_error_missing_sources">Stilen mangler det påkrevde feltet \'sources\'.</string>
     <string name="theme_import_error_generic">Import mislyktes.</string>

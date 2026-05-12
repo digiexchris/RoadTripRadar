@@ -1,0 +1,11 @@
+RoadTripRadar on kaardirakendus, mis seab esikohale olukorrateadlikkuse ja ilmaolud. Reaalajas ilmaradari kujutised interaktiivsel kaardil aitavad sul ühe pilguga näha sademeid sinu liikumissuunal.
+
+Omadused:
+- Sinu asukoha keskmega kaugusringid, mis kohanduvad suumitasemega.
+- Navigeeri sihtkoha suuna järgi jäikade samm-sammuliste juhiste asemel. Ideaalne avastajatele ja neile, kellele meeldib uidata!
+- Reaalajas animeeritud ilmaradar RainViewerilt, reguleeritava läbipaistmatuse ja taasesituse juhtnuppudega. Ideaalne mootorratturitele, kes tahavad tormi vältimiseks marsruuti muuta või end ilmastikule vastavalt varustada.
+- Tuule kiirus ja suund
+- Temperatuur ja 1 tunni trend
+- Mitu kaardistiili: hele, tume, automaatne ja kummagi jaoks kohandatavad värvid.
+- Kiiruse näit meetermõõdustiku ja imperiaalühikutega ning reguleeritava fondisuurusega.
+- Avatud lähtekoodiga, ei mingit jälgimist, kontosid ega reklaame.

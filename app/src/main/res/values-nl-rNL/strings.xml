@@ -281,7 +281,7 @@
     <string name="style_auto">Automatisch</string>
     <!-- Map loading status -->
     <string name="loading_areas">Gebieden laden</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">Nog %1$d te gaan</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Achtergrond / Land</string>
     <string name="color_category_water">Water</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Kon het geselecteerde bestand niet openen.</string>
     <string name="theme_import_error_read_failed">Kon het geselecteerde bestand niet lezen.</string>
     <string name="theme_import_error_not_json">Geen geldige JSON.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Ontbrekende of niet-ondersteunde stijlversie (8 verwacht, %1$s gekregen). Zorg ervoor dat je een MapLibre GL-stijl exporteert vanuit Maputnik.</string>
     <string name="theme_import_error_missing_layers">In de stijl ontbreekt het vereiste veld \'layers\'.</string>
     <string name="theme_import_error_missing_sources">In de stijl ontbreekt het vereiste veld \'sources\'.</string>
     <string name="theme_import_error_generic">Importeren mislukt.</string>

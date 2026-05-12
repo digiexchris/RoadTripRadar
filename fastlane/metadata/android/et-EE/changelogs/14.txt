@@ -1,0 +1,1 @@
+Parandatud viga, mille tõttu ei lukustanud kompassinupp pärast kasutaja liikumist kaarti põhjasuunaga üles

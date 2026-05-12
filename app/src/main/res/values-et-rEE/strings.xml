@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common actions -->
+    <string name="action_close">Sulge</string>
+    <string name="action_cancel">Tühista</string>
+    <string name="action_quit">Välju</string>
+    <string name="action_reset">Lähtesta</string>
+    <string name="action_save">Salvesta</string>
+    <string name="action_delete">Kustuta</string>
+    <string name="action_share">Jaga</string>
+    <string name="action_ok">Sobib</string>
+    <string name="action_decline">Keeldu</string>
+    <string name="action_accept">Nõustu</string>
+    <string name="action_got_it">Sain aru</string>
+    <string name="action_back">Tagasi</string>
+    <!-- POI slideout -->
+    <string name="dropped_pin_title">Asetatud nööpnõel</string>
+    <string name="address_loading">Aadressi tuvastamine…</string>
+    <string name="action_remove_waypoint">Eemalda</string>
+    <string name="action_center_on_map">Keskenda kaardile</string>
+    <!-- Location permission dialog -->
+    <string name="permission_location_title">Asukoha luba on vajalik</string>
+    <string name="permission_location_body">Road Trip Radar vajab juurdepääsu sinu asukohale, et näidata kaardil, kus sa asud. Parima täpsuse jaoks on soovitatav täpne asukoht, kuid töötab ka ligikaudne asukoht. Jätkamiseks puuduta valikut \"Anna luba\" või rakendusest väljumiseks \"Välju\".</string>
+    <string name="permission_grant">Anna luba</string>
+    <string name="permission_location_denied_title">Asukoht on vajalik</string>
+    <string name="permission_location_denied_body">Road Trip Radar on loodud kuvama sinu ümbrust sõidu ajal, seega ei saa see ilma asukohale juurdepääsuta töötada. Rakendus sulgub nüüd. Võid lubada asukohajuurdepääsu süsteemi seadetes ja käivitada rakenduse uuesti.</string>
+    <!-- Terms overlay -->
+    <string name="terms_scroll_hint">Ülejäänu lugemiseks keri alla, seejärel saad nõustuda.</string>
+    <!-- Quit dialog -->
+    <string name="dialog_quit_title">Välju</string>
+    <string name="dialog_quit_message">Kas oled kindel, et soovid väljuda?</string>
+    <!-- Reset dialog -->
+    <string name="dialog_reset_title">Lähtesta vaikeväärtused</string>
+    <string name="dialog_reset_message">Kõik seaded lähtestatakse vaikeväärtustele.</string>
+    <!-- Actions drawer - main actions -->
+    <string name="action_nearby_places">Läheduses olevad kohad</string>
+    <string name="action_clear_places">Eemalda kohad</string>
+    <string name="action_location_search">Asukoha otsing</string>
+    <string name="action_clear_target">Eemalda sihtkoht</string>
+    <string name="action_track_bearing">Järgi suunda</string>
+    <string name="action_track_north">Põhi üleval</string>
+    <string name="action_radar_on">Radar sees</string>
+    <string name="action_radar_off">Radar väljas</string>
+    <!-- Actions drawer - toggle labels (stable; state shown by switch) -->
+    <string name="toggle_weather_radar">Ilmaradar</string>
+    <string name="toggle_north_up">Põhi üleval</string>
+    <string name="toggle_wind_temp">Tuul &amp; temp</string>
+    <string name="toggle_legend">Legend</string>
+    <string name="toggle_timeline">Ajajoon</string>
+    <!-- Actions drawer - sub menus -->
+    <string name="menu_map">Kaart</string>
+    <string name="menu_weather">Ilm</string>
+    <string name="menu_system">Süsteem</string>
+    <string name="menu_help">Abi</string>
+    <string name="menu_help_info">Abi &amp; teave</string>
+    <!-- Weather toggles -->
+    <string name="action_wind_temp_off">Tuul &amp; temp väljas</string>
+    <string name="action_wind_temp_on">Tuul &amp; temp sees</string>
+    <string name="action_hide_legend">Peida legend</string>
+    <string name="action_show_legend">Kuva legend</string>
+    <string name="action_hide_timeline">Peida ajajoon</string>
+    <string name="action_show_timeline">Kuva ajajoon</string>
+    <!-- Help page -->
+    <string name="help_documentation_info">Täielik dokumentatsioon ja juriidiline teave on saadaval allolevate nuppude kaudu.</string>
+    <string name="help_show_tutorial">Kuva juhend</string>
+    <string name="help_terms">Tingimused &amp; sätted</string>
+    <string name="help_radar_legend">Radari legend</string>
+    <string name="help_documentation">Dokumentatsioon</string>
+    <string name="help_privacy_policy">Privaatsuspoliitika</string>
+    <string name="help_changelog">Muudatuste logi</string>
+    <string name="version_label">Versioon %s</string>
+    <string name="debug_preview_whats_new">Uudiste eelvaade (silumine)</string>
+    <!-- Tutorial -->
+    <string name="tutorial_action_next">Järgmine</string>
+    <string name="tutorial_action_back">Tagasi</string>
+    <string name="tutorial_action_skip">Jäta vahele</string>
+    <string name="tutorial_action_done">Sain aru</string>
+    <string name="tutorial_step_progress">Samm %1$d / %2$d</string>
+    <!-- Tutorial: MAP group -->
+    <string name="tutorial_map_welcome_title">Tere tulemast rakendusse Road Trip Radar</string>
+    <string name="tutorial_map_welcome_body">Lühike ülevaade kaardi juhtnuppudest. Näpista suumimiseks, lohista kahe sõrmega üles või alla, et kaarti kallutada, ning pööra kahe sõrmega, et kaarti pöörata.</string>
+    <string name="tutorial_map_speed_title">Spidomeeter</string>
+    <string name="tutorial_map_speed_body">Sinu praegune kiirus, mida kuvatakse siis, kui GPS-signaal on olemas. Vaheta km/h ja mph vahel süsteemiseadete menüüs.</string>
+    <string name="tutorial_map_compass_title">Kompass</string>
+    <string name="tutorial_map_compass_body">Puuduta üks kord, et lukustada kaart asendisse, kus põhi on üleval. Puuduta uuesti, et kaart pöörduks sinu liikumissuuna järgi.</string>
+    <string name="tutorial_map_drop_pin_title">Aseta nööpnõel</string>
+    <string name="tutorial_map_drop_pin_body">Puuduta ja hoia suvalises kohas kaardil, et asetada nööpnõel ja navigeerida selle suunas.</string>
+    <string name="tutorial_map_zoom_out_title">Suumi välja</string>
+    <string name="tutorial_map_zoom_out_body">Puuduta suumimiseks välja. Võid kaarti ka kahe sõrmega kokku näpistada.</string>
+    <string name="tutorial_map_zoom_in_title">Suumi sisse</string>
+    <string name="tutorial_map_zoom_in_body">Puuduta suumimiseks sisse. Võid ka kaardil kahte sõrme teineteisest eemale liigutada.</string>
+    <string name="tutorial_map_weather_title">Ilmaradar</string>
+    <string name="tutorial_map_weather_body">Puuduta, et radari animatsioon käivitada või peatada. Puuduta ja hoia, et radar täielikult välja lülitada.</string>
+    <string name="tutorial_map_menu_title">Kiirtoimingute menüü</string>
+    <string name="tutorial_map_menu_body">Avab kiirtoimingute paneeli seadete, teemade ja huvipunktidega.</string>
+    <!-- Tutorial: MENU_MAIN group -->
+    <string name="tutorial_menu_weather_toggle_title">Ilmaradar</string>
+    <string name="tutorial_menu_weather_toggle_body">Lülita ilmaradari kiht sisse või välja.</string>
+    <string name="tutorial_menu_north_up_title">Põhi üleval</string>
+    <string name="tutorial_menu_north_up_body">Lukusta kaart nii, et põhi on alati üleval, või lase sel pöörduda sinu suuna järgi.</string>
+    <string name="tutorial_menu_nearby_places_title">Läheduses olevad kohad</string>
+    <string name="tutorial_menu_nearby_places_body">Vali, milliseid huvipunktide kategooriaid (kütus, toit, majutus jne) kaardile laadida.</string>
+    <string name="tutorial_menu_location_search_title">Asukoha otsing</string>
+    <string name="tutorial_menu_location_search_body">Otsi aadressi või koha nime nähtava kaardiala piires.</string>
+    <string name="tutorial_menu_submenu_map_title">Kaardi alammenüü</string>
+    <string name="tutorial_menu_submenu_map_body">Vali kaardi teema ja kohanda kaardiga seotud seadeid, näiteks keskme nihet.</string>
+    <string name="tutorial_menu_submenu_weather_title">Ilma alammenüü</string>
+    <string name="tutorial_menu_submenu_weather_body">Lülita tuule/temperatuuri vidin, radari legend ja ajajoon sisse või välja ning kohanda radari läbipaistmatust ja ühikuid.</string>
+    <string name="tutorial_menu_submenu_system_title">Süsteemi alammenüü</string>
+    <string name="tutorial_menu_submenu_system_body">Muuda keelt, vidinate suurusi, ühikuid, ekraani käitumist ja lähtesta vaikeväärtused.</string>
+    <string name="tutorial_menu_submenu_help_title">Abi &amp; teave</string>
+    <string name="tutorial_menu_submenu_help_body">Leia dokumentatsioon, tingimused, muudatuste logi ja esita see juhend uuesti.</string>
+    <!-- MapFabs -->
+    <string name="fab_recenter">Keskenda uuesti</string>
+    <string name="fab_retry_failed">Proovi nurjunuid uuesti</string>
+    <string name="cd_recenter_location">Keskenda uuesti asukohale</string>
+    <string name="cd_gps_fix_acquired">GPS-signaal saadud</string>
+    <string name="cd_waiting_gps_fix">Ootan GPS-signaali</string>
+    <string name="cd_zoom_out">Suumi välja</string>
+    <string name="cd_zoom_in">Suumi sisse</string>
+    <string name="cd_quick_actions">Kiirtoimingud</string>
+    <string name="cd_weather_off">Ilmaradar väljas</string>
+    <string name="cd_weather_pause">Peata radar</string>
+    <string name="cd_weather_play">Käivita radar</string>
+    <string name="cd_no_network">Võrguühendus puudub</string>
+    <string name="cd_wifi">WiFi</string>
+    <string name="cd_cellular">Mobiilivõrk</string>
+    <string name="cd_unknown_network">Tundmatu võrk</string>
+    <!-- Weather settings -->
+    <string name="settings_weather_radar_opacity">Ilmaradari läbipaistmatus</string>
+    <string name="settings_wind_speed_units">Tuulekiiruse ühikud</string>
+    <string name="settings_temperature_units">Temperatuuri ühikud</string>
+    <string name="settings_weather_widget_size">Ilmavidina suurus</string>
+    <string name="unit_kmh">km/h</string>
+    <string name="unit_mph">mph</string>
+    <string name="unit_knots">kn</string>
+    <string name="unit_celsius">°C</string>
+    <string name="unit_fahrenheit">°F</string>
+    <string name="unit_kelvin">K</string>
+    <!-- Map settings -->
+    <string name="settings_speed_distance_units">Kiiruse/kauguse ühikud</string>
+    <string name="settings_metric">Meetermõõdustik</string>
+    <string name="settings_imperial">Briti mõõdustik</string>
+    <string name="settings_map_center_offset_portrait">Kaardi keskme nihe (portree)</string>
+    <string name="settings_map_center_offset_landscape">Kaardi keskme nihe (rõhtpaigutus)</string>
+    <string name="settings_places_icon_opacity">Kohtade ikooni läbipaistmatus</string>
+    <string name="theme_current">Teema: %s</string>
+    <string name="action_choose_theme">Vali teema</string>
+    <!-- System settings -->
+    <string name="settings_display">Kuva</string>
+    <string name="settings_status_icon_opacity">Olekuikooni läbipaistmatus</string>
+    <string name="settings_speedometer_size">Spidomeetri suurus</string>
+    <string name="settings_compass_size">Kompassi suurus</string>
+    <string name="settings_nav_widget_size">Navividina suurus</string>
+    <string name="settings_misc">Muu</string>
+    <string name="settings_keep_screen_on">Hoia ekraan sees</string>
+    <string name="settings_language">Keel</string>
+    <string name="language_system_default">Süsteemi vaikeseade</string>
+    <!-- Theme selector -->
+    <string name="theme_map_theme">Kaardi teema</string>
+    <string name="theme_auto">Automaatne</string>
+    <string name="theme_customize_maputnik">Kohanda Maputnikus</string>
+    <string name="theme_overwrite_custom_light">Kirjuta kohandatud hele üle</string>
+    <string name="theme_use_as_custom_light_base">Kasuta kohandatud heleda alusena</string>
+    <string name="theme_overwrite_custom_dark">Kirjuta kohandatud tume üle</string>
+    <string name="theme_use_as_custom_dark_base">Kasuta kohandatud tumeda alusena</string>
+    <string name="theme_use_in_auto_mode">Kasuta automaatrežiimis</string>
+    <string name="theme_action_edit">Muuda</string>
+    <string name="theme_action_save">Salvesta</string>
+    <string name="theme_action_maputnik">Maputnik</string>
+    <string name="theme_action_share">Jaga</string>
+    <string name="theme_action_delete">Kustuta</string>
+    <string name="cd_edit_colors">Muuda värve</string>
+    <string name="cd_save_json_downloads">Salvesta JSON allalaadimistesse</string>
+    <string name="cd_open_maputnik">Ava Maputnik</string>
+    <string name="cd_delete_custom_theme">Kustuta kohandatud teema</string>
+    <string name="theme_invalid_file">Vigane teemafail</string>
+    <string name="theme_saved_to_downloads">Salvestatud kausta Downloads/%s</string>
+    <string name="theme_save_failed">Salvestamine nurjus</string>
+    <string name="theme_export">Ekspordi teema</string>
+    <!-- Color editor -->
+    <string name="color_editor_create_title">Loo %s teema</string>
+    <string name="color_editor_no_theme">%1$s teemat veel ei ole. Kas luua see teema %2$s põhjal? Võid ka teemavalijast JSON-faili importida.</string>
+    <string name="color_editor_create_from">Loo teemast %s</string>
+    <string name="color_editor_edit_colors">Muuda värve: %s</string>
+    <string name="color_editor_preview">Eelvaade</string>
+    <string name="color_editor_hex">Hex</string>
+    <string name="cd_collapse">Ahenda</string>
+    <string name="cd_expand">Laienda</string>
+    <!-- POI search dialog -->
+    <string name="search_location_title">Otsi asukohta</string>
+    <string name="search_within_visible">Otsing nähtava kaardiala piires</string>
+    <string name="search_address_placeholder">Aadress või koha nimi</string>
+    <string name="search_searching">Otsin…</string>
+    <!-- POI category picker -->
+    <string name="poi_autoload_title">Laadi lähedalasuvad kohad automaatselt</string>
+    <string name="poi_autoload_description">Alusta lähedalasuvate kohtade laadimist rakenduse käivitumisel</string>
+    <string name="poi_count">%1$d / %2$d</string>
+    <string name="action_search_visible_area">Otsi nähtavalt alalt</string>
+    <!-- Tapped POI popup -->
+    <string name="action_navigate_here">Navigeeri siia</string>
+    <string name="cd_close">Sulge</string>
+    <!-- Nav widget -->
+    <string name="cd_direction_to_target">Suund sihtasukoha poole</string>
+    <!-- Changelog sheets -->
+    <string name="changelog_whats_new">Mis on uut</string>
+    <string name="changelog_title">Muudatuste logi</string>
+    <string name="changelog_no_entries">Muudatuste logi kirjeid pole.</string>
+    <!-- Weather legend -->
+    <string name="legend_overcast">Lauspilvisus</string>
+    <string name="legend_drizzle">Uduvihm</string>
+    <string name="legend_rain_light">Vihm?</string>
+    <string name="legend_rain_moderate">Vihm.</string>
+    <string name="legend_rain_heavy">Vihm!!</string>
+    <string name="legend_hail_light">Rahe?</string>
+    <string name="legend_hail_moderate">Rahe.</string>
+    <string name="legend_hail_heavy">Rahe!!</string>
+    <string name="legend_snow_light">Lumi?</string>
+    <string name="legend_snow_moderate">Lumi.</string>
+    <string name="legend_snow_heavy">Lumi!!</string>
+    <!-- Legend detail sheet -->
+    <string name="legend_detail_title">Radari legend</string>
+    <string name="legend_detail_label">Silt</string>
+    <string name="legend_detail_dbz">dBZ</string>
+    <string name="legend_detail_mmh">mm/h</string>
+    <string name="legend_detail_rain">Vihm</string>
+    <string name="legend_detail_hail">Rahe</string>
+    <string name="legend_detail_snow">Lumi</string>
+    <string name="legend_detail_overcast">Lauspilvisus</string>
+    <string name="legend_detail_drizzle">Uduvihm</string>
+    <string name="legend_detail_light_rain">Nõrk vihm</string>
+    <string name="legend_detail_moderate_rain">Mõõdukas vihm</string>
+    <string name="legend_detail_showers">Hoovihmad</string>
+    <string name="legend_detail_small_hail">Võimalik väike rahe või jäitev vihm</string>
+    <string name="legend_detail_hail_possible">Rahe võimalik</string>
+    <string name="legend_detail_hail_likely">Rahe tõenäoline</string>
+    <string name="legend_detail_light_snow">Nõrk lumesadu</string>
+    <string name="legend_detail_moderate_snow">Mõõdukas lumesadu</string>
+    <string name="legend_detail_heavy_snow">Tugev lumesadu</string>
+    <!-- Speed readout -->
+    <string name="speed_unit_kmh">km/h</string>
+    <string name="speed_unit_mph">mph</string>
+    <!-- Weather widget -->
+    <string name="cd_wind_direction">Tuule suund</string>
+    <!-- POI category labels -->
+    <string name="poi_gas_station">Tankla</string>
+    <string name="poi_ev_charging">Elektriauto laadimine</string>
+    <string name="poi_restaurant">Restoran</string>
+    <string name="poi_fast_food">Kiirtoit</string>
+    <string name="poi_cafe">Kohvik / kohv</string>
+    <string name="poi_bar">Baar / pubi</string>
+    <string name="poi_supermarket">Supermarket</string>
+    <string name="poi_convenience">Lähikauplus</string>
+    <string name="poi_pharmacy">Apteek</string>
+    <string name="poi_hospital">Haigla</string>
+    <string name="poi_hotel">Hotell</string>
+    <string name="poi_motel">Motell</string>
+    <string name="poi_campsite">Kämping</string>
+    <string name="poi_parking">Parkla</string>
+    <string name="poi_rest_area">Puhkeala</string>
+    <string name="poi_atm">Pangaautomaat</string>
+    <string name="poi_bank">Pank</string>
+    <string name="poi_post_office">Postkontor</string>
+    <string name="poi_car_repair">Autoremont</string>
+    <string name="poi_car_wash">Autopesula</string>
+    <string name="poi_laundry">Pesumaja</string>
+    <string name="poi_toilets">Tualetid</string>
+    <string name="poi_police">Politsei</string>
+    <string name="poi_fire_station">Tuletõrjejaam</string>
+    <string name="poi_library">Raamatukogu</string>
+    <string name="poi_park">Park</string>
+    <string name="poi_viewpoint">Vaatepunkt</string>
+    <string name="poi_museum">Muuseum</string>
+    <string name="poi_tourist_info">Turismiinfo</string>
+    <!-- Map style display names -->
+    <string name="style_liberty">Liberty</string>
+    <string name="style_dark">Tume</string>
+    <string name="style_dark_small_roads">Tume (väikesed teed)</string>
+    <string name="style_custom_light">Kohandatud hele</string>
+    <string name="style_custom_dark">Kohandatud tume</string>
+    <string name="style_auto">Automaatne</string>
+    <!-- Map loading status -->
+    <string name="loading_areas">Alade laadimine</string>
+    <string name="loading_cells_remaining">%1$d jäänud</string>
+    <!-- Color editor categories -->
+    <string name="color_category_background">Taust / maa</string>
+    <string name="color_category_water">Vesi</string>
+    <string name="color_category_parks">Pargid &amp; haljastus</string>
+    <string name="color_category_buildings">Hooned</string>
+    <string name="color_category_road_motorway">Kiirtee / maantee</string>
+    <string name="color_category_road_motorway_casing">Kiirtee ääris</string>
+    <string name="color_category_road_trunk_primary">Magistraal- &amp; põhimaanteed</string>
+    <string name="color_category_road_secondary_tertiary">Teisejärgulised &amp; kolmanda järgu teed</string>
+    <string name="color_category_road_minor">Väiksemad teed</string>
+    <string name="color_category_road_service_track">Teenindusteed &amp; rajad</string>
+    <string name="color_category_road_service_track_casing">Teenindusteede &amp; radade ääris</string>
+    <string name="color_category_road_path_pedestrian">Rajad &amp; jalakäijad</string>
+    <string name="color_category_label_text">Sildid (tekst)</string>
+    <string name="color_category_label_halo">Sildid (halo)</string>
+    <!-- Custom theme import errors -->
+    <string name="theme_import_error_open_failed">Valitud faili ei saanud avada.</string>
+    <string name="theme_import_error_read_failed">Valitud faili ei saanud lugeda.</string>
+    <string name="theme_import_error_not_json">Pole kehtiv JSON.</string>
+    <string name="theme_import_error_unsupported_version">Stiiliversioon puudub või pole toetatud (oodati 8, saadi %1$s). Veendu, et ekspordid Maputnikust MapLibre GL-i stiili.</string>
+    <string name="theme_import_error_missing_layers">Stiilil puudub nõutav väli \'layers\'.</string>
+    <string name="theme_import_error_missing_sources">Stiilil puudub nõutav väli \'sources\'.</string>
+    <string name="theme_import_error_generic">Import nurjus.</string>
+</resources>

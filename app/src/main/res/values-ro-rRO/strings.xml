@@ -281,7 +281,7 @@
     <string name="style_auto">Automat</string>
     <!-- Map loading status -->
     <string name="loading_areas">Se încarcă zonele</string>
-    <string name="loading_cells_remaining">%1$d remaining</string>
+    <string name="loading_cells_remaining">Au rămas %1$d</string>
     <!-- Color editor categories -->
     <string name="color_category_background">Fundal / Teren</string>
     <string name="color_category_water">Apă</string>
@@ -301,7 +301,7 @@
     <string name="theme_import_error_open_failed">Nu s-a putut deschide fișierul selectat.</string>
     <string name="theme_import_error_read_failed">Nu s-a putut citi fișierul selectat.</string>
     <string name="theme_import_error_not_json">JSON nevalid.</string>
-    <string name="theme_import_error_unsupported_version">Missing or unsupported style version (expected 8, got %1$s). Make sure you export a MapLibre GL style from Maputnik.</string>
+    <string name="theme_import_error_unsupported_version">Versiune de stil lipsă sau neacceptată (se aștepta 8, s-a primit %1$s). Asigură-te că exporți un stil MapLibre GL din Maputnik.</string>
     <string name="theme_import_error_missing_layers">Stilului îi lipsește câmpul obligatoriu \'layers\'.</string>
     <string name="theme_import_error_missing_sources">Stilului îi lipsește câmpul obligatoriu \'sources\'.</string>
     <string name="theme_import_error_generic">Importul a eșuat.</string>
