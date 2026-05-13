@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Plaatsen in de buurt</string>
     <string name="action_clear_places">Plaatsen wissen</string>
     <string name="action_location_search">Locatie zoeken</string>
-    <string name="action_clear_target">Doel wissen</string>
+    <string name="action_clear_target">Wis route</string>
     <string name="action_track_bearing">Koers volgen</string>
     <string name="action_track_north">Noord boven</string>
     <string name="action_radar_on">Radar aan</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompas</string>
     <string name="tutorial_map_compass_body">Tik één keer om de kaart vast te zetten met het noorden boven. Tik nogmaals om de kaart te draaien zodat die je rijrichting volgt.</string>
     <string name="tutorial_map_drop_pin_title">Pin neerzetten</string>
-    <string name="tutorial_map_drop_pin_body">Tik op een willekeurige plek op de kaart en houd vast om een pin neer te zetten en ernaartoe te navigeren.</string>
+    <string name="tutorial_map_drop_pin_body">Tik en houd vast op de kaart om een waypoint toe te voegen. Kies waar het in je route heen gaat - start voor de laatste halte of eindigd.</string>
     <string name="tutorial_map_zoom_out_title">Uitzoomen</string>
     <string name="tutorial_map_zoom_out_body">Tik om uit te zoomen. Je kunt ook met twee vingers op de kaart knijpen.</string>
     <string name="tutorial_map_zoom_in_title">Inzoomen</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Tik om de radaranimatie af te spelen of te pauzeren. Tik en houd vast om de radar volledig uit te schakelen.</string>
     <string name="tutorial_map_menu_title">Menu Snelle acties</string>
     <string name="tutorial_map_menu_body">Opent het paneel met snelle acties met instellingen, thema\'s en interessante locaties.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Map thema</string>
+    <string name="tutorial_map_setting_theme_body">Kies de kaart-stijl. Open de thema selector om te schakelen tussen ingebouwde stijlen of een aangepaste te importeren.</string>
+    <string name="tutorial_map_setting_units_title">Eenheden</string>
+    <string name="tutorial_map_setting_units_body">Schakelaar tussen metrisch (km, m) en imperiaal (miles, yards). Heeft invloed op snelheid, afstand en waypoint drempels.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Kaart center offset (staand)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Hoe ver het scherm verticaal wordt vastgehouden, is de kaart verankerd. Hogere waarden laten meer lege ruimte bovenaan, handig wanneer nav widgets de bodem overslaan.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Kaart center offset (liggend)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Hetzelfde idee als de portrait offset wordt toegepast wanneer de telefoon zijwaarts is.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Plaatsen pictogram ondoorzichtigheid</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Vervaag plaatsiconen in of buiten, zodat ze niet de kaart bedekken. 0%% verbergt ze volledig.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Automatisch optrekken</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Wanneer ingeschakeld, wordt het actieve waypoint automatisch verbeterd wanneer je elke stop bereikt. Schakel dit uit om handmatig te handelen met behulp van de langdruk-sneltoets op de zoomknoppen.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Vooraf afstand</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Hoe dicht je moet zijn bij een waypoint om automatisch vooruit te schieten. Bereik 25-500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Route bewerken</string>
+    <string name="tutorial_route_nav_widget_body">Tik op de nav-widget om de stoplijst te openen. Sleep om te rangschikken, een stop actief, verwijder waypoints of wis de hele route.</string>
+    <string name="tutorial_route_long_press_out_title">Stap een waypoint terug</string>
+    <string name="tutorial_route_long_press_out_body">Druk lang op de – knop om het vorige waypoint actief te maken. De nav widget wijst naar welk waypoint actief is.</string>
+    <string name="tutorial_route_long_press_in_title">Verdergaan naar het volgende waypoint</string>
+    <string name="tutorial_route_long_press_in_body">Druk lang op de + knop om het volgende waypoint actief te maken. Auto-Voorwaarts doet dit voor je als je dichtbij komt, maar je kunt op elk moment handmatig een stap zetten. Schakelen tussen automatisch opschieten en aanpassen van de afstand drempel in het menu → Kaart.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Weerradar</string>
     <string name="tutorial_menu_weather_toggle_body">Schakel de weerradarlaag in of uit.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Begin met het laden van plaatsen in de buurt wanneer de app start</string>
     <string name="poi_count">%1$d van %2$d</string>
     <string name="action_search_visible_area">Zichtbaar gebied doorzoeken</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Automatisch naar volgend waypoint gaan</string>
+    <string name="settings_auto_advance_threshold">Voortgang wanneer binnen</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Route</string>
+    <string name="route_stop_count_plural">%1$d haltes</string>
+    <string name="action_clear_route_confirm">Alle waypoints verwijderen?</string>
+    <string name="cd_drag_handle">Sleep om te rangschikken</string>
+    <string name="cd_set_active">Instellen als actief</string>
+    <string name="cd_remove_waypoint">Waypoint verwijderen</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Hierheen navigeren</string>
+    <string name="action_insert_before">Invoegen voor %1$s</string>
+    <string name="action_add_after">Voeg toe na %1$s</string>
+    <string name="action_add_to_start">Aan begin toevoegen</string>
+    <string name="action_insert_before_final">Invoegen voor laatste stop</string>
+    <string name="action_add_to_end">Aan einde toevoegen</string>
+    <string name="action_replace_waypoint">Replace %1$s</string>
+    <string name="action_replace_last">Vervang laatste stop</string>
+    <string name="action_more_options">Meer opties</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Sluiten</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Richting naar doellocatie</string>
+    <string name="cd_prev_waypoint">Vorige waypoint</string>
+    <string name="cd_next_waypoint">Volgende waypoint</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Wat is er nieuw</string>
     <string name="changelog_title">Wijzigingslog</string>
