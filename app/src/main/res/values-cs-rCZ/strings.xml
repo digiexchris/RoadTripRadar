@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Místa v okolí</string>
     <string name="action_clear_places">Vymazat místa</string>
     <string name="action_location_search">Hledání polohy</string>
-    <string name="action_clear_target">Vymazat cíl</string>
+    <string name="action_clear_target">Vymazat trasu</string>
     <string name="action_track_bearing">Sledovat směr</string>
     <string name="action_track_north">Sledovat sever</string>
     <string name="action_radar_on">Radar zapnut</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompas</string>
     <string name="tutorial_map_compass_body">Klepnutím jednou uzamknete mapu se severem nahoře. Klepněte znovu a mapa se bude otáčet podle vašeho směru jízdy.</string>
     <string name="tutorial_map_drop_pin_title">Přidat špendlík</string>
-    <string name="tutorial_map_drop_pin_body">Klepněte a podržte kdekoli na mapě, aby se umístil špendlík a zahájila se navigace k němu.</string>
+    <string name="tutorial_map_drop_pin_body">Klepněte a podržte kdekoli na mapě pro přidání trasového bodu. Vyberte si, kam jde na vaší cestě - začněte, před konečným zastavením, nebo končíte.</string>
     <string name="tutorial_map_zoom_out_title">Oddálit</string>
     <string name="tutorial_map_zoom_out_body">Klepnutím oddálíte. Můžete také sevřít mapu dvěma prsty.</string>
     <string name="tutorial_map_zoom_in_title">Přiblížit</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Klepnutím přehrajete nebo pozastavíte animaci radaru. Klepnutím a podržením radar úplně vypnete.</string>
     <string name="tutorial_map_menu_title">Nabídka rychlých akcí</string>
     <string name="tutorial_map_menu_body">Otevře panel rychlých akcí s nastavením, motivy a body zájmu.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Téma mapy</string>
+    <string name="tutorial_map_setting_theme_body">Vyberte styl mapy. Otevřete výběr motivu pro přepínání mezi vestavěnými styly nebo importujte vlastní styl.</string>
+    <string name="tutorial_map_setting_units_title">Jednotky</string>
+    <string name="tutorial_map_setting_units_body">Přepínání mezi metrickými (km, m) a imperiálními (mílemi. Ovlivňuje rychlost, vzdálenost a prahy trasových bodů.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Odsazení středu mapy (na výšku)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Jak daleko dolů je mapa ukotvena, když je držena vertikálně. Vyšší hodnoty ponechávají prázdné místo nahoře, užitečné když nav widgety dole korunují.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Odsazení středu mapy (na šířku)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Stejný nápad jako posun na výšku, aplikován v případě, že je váš telefon postranní.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Neprůhlednost ikony míst</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Postupné zeslabení ikon v blízkosti mapy, takže nepokrývají mapu. 0%% je zcela skryjí.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Automatický zákrok</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Pokud je zapnuto, aktivní trasový bod se postupuje automaticky při každém zastavení. Vypněte pro krok ručně pomocí dlouhého stisku klávesy zoom.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Pokročilá vzdálenost</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Jak blízko musíte být na trasový bod pro automatický oheň. Rozsah 25–500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Upravit trasu</string>
+    <string name="tutorial_route_nav_widget_body">Klepnutím na nav widget otevřete seznam stop. Přetažením změníte pořadí, označte stop aktivní, odstraňte body trasy nebo vymažte celou trasu.</string>
+    <string name="tutorial_route_long_press_out_title">Přejít zpět k trasovému bodu</string>
+    <string name="tutorial_route_long_press_out_body">Dlouhým stiskem tlačítka - můžete aktivovat předchozí trasový bod. Nav widget míří na libovolný bod trasy.</string>
+    <string name="tutorial_route_long_press_in_title">Posun k dalšímu trasovému bodu</string>
+    <string name="tutorial_route_long_press_in_body">Dlouze stiskněte tlačítko + pro aktivaci dalšího trasového bodu. Automatický posun vám to udělá, když se dostanete blízko, ale můžete kdykoliv udělat krok ručně. Přepnout automatický pohyb a doladit práh vzdálenosti v Menu → Mapa.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Meteoradar</string>
     <string name="tutorial_menu_weather_toggle_body">Zapne nebo vypne vrstvu meteoradaru.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Začít načítat místa v okolí při spuštění aplikace</string>
     <string name="poi_count">%1$d z %2$d</string>
     <string name="action_search_visible_area">Prohledat viditelnou oblast</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Automatický posun na další trasový bod</string>
+    <string name="settings_auto_advance_threshold">Pokročit v rámci</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Trasa</string>
+    <string name="route_stop_count_plural">%1$d zastávek</string>
+    <string name="action_clear_route_confirm">Odstranit všechny trasové body?</string>
+    <string name="cd_drag_handle">Přetažením změnit pořadí</string>
+    <string name="cd_set_active">Nastavit jako aktivní</string>
+    <string name="cd_remove_waypoint">Odstranit trasový bod</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navigovat sem</string>
+    <string name="action_insert_before">Vložit před %1$s</string>
+    <string name="action_add_after">Přidat po %1$s</string>
+    <string name="action_add_to_start">Přidat do začátku</string>
+    <string name="action_insert_before_final">Vložit před konečnou zastávkou</string>
+    <string name="action_add_to_end">Přidat do konce</string>
+    <string name="action_replace_waypoint">Nahradit %1$s</string>
+    <string name="action_replace_last">Nahradit poslední zastávku</string>
+    <string name="action_more_options">Další možnosti</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Zavřít</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Směr k cílové poloze</string>
+    <string name="cd_prev_waypoint">Předchozí trasový bod</string>
+    <string name="cd_next_waypoint">Další trasový bod</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Co je nového</string>
     <string name="changelog_title">Přehled změn</string>
