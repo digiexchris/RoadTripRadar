@@ -1,2 +1,2 @@
 Adaugă suport pentru navigarea înapoi în toate meniurile, în loc să existe doar un buton de închidere.
-Permite afișarea panoului glisant cu informații despre punctul de trecere atunci când atingi punctul de trecere țintă curent și dacă atingi widgetul de navigare.
+Permite afișarea slideout-ului de informații cu privire la punct atunci când atingeți punctul țintă curent și când atingeți widget-ul de navigare.
