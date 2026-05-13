@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Locuri din apropiere</string>
     <string name="action_clear_places">Șterge locurile</string>
     <string name="action_location_search">Căutare locație</string>
-    <string name="action_clear_target">Șterge ținta</string>
+    <string name="action_clear_target">Curăță ruta</string>
     <string name="action_track_bearing">Urmărește direcția de deplasare</string>
     <string name="action_track_north">Urmărește nordul</string>
     <string name="action_radar_on">Radar pornit</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Busolă</string>
     <string name="tutorial_map_compass_body">Atinge o dată pentru a fixa harta cu nordul în sus. Atinge din nou pentru a roti harta astfel încât să urmeze direcția ta de deplasare.</string>
     <string name="tutorial_map_drop_pin_title">Plasează un pin</string>
-    <string name="tutorial_map_drop_pin_body">Atinge și ține apăsat oriunde pe hartă pentru a plasa un pin și a naviga spre el.</string>
+    <string name="tutorial_map_drop_pin_body">Atingeți și țineți apăsat oriunde pe hartă pentru a adăuga un punct. Alege unde merge pe ruta ta - pornește, înainte de oprirea finală, sau sfârșit.</string>
     <string name="tutorial_map_zoom_out_title">Micșorează</string>
     <string name="tutorial_map_zoom_out_body">Atinge pentru a micșora. De asemenea, poți apropia două degete pe hartă.</string>
     <string name="tutorial_map_zoom_in_title">Mărește</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Atinge pentru a porni sau pune pe pauză animația radarului. Atinge și ține apăsat pentru a opri complet radarul.</string>
     <string name="tutorial_map_menu_title">Meniul de acțiuni rapide</string>
     <string name="tutorial_map_menu_body">Deschide panoul de acțiuni rapide cu setări, teme și puncte de interes.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Temă hartă</string>
+    <string name="tutorial_map_setting_theme_body">Alegeți stilul hărții. Deschideți selectorul de teme pentru a comuta între stilurile încorporate sau pentru a importa unul personalizat.</string>
+    <string name="tutorial_map_setting_units_title">Unități</string>
+    <string name="tutorial_map_setting_units_body">Comutarea între măsurători (km, m) și imperiale (mile, șantiere). Afectează viteza, distanța și pragurile de punct de plecare.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Decalaj centru hartă (portret)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Cât de departe ecranul harta este ancorată când este ținută vertical. Valorile mai mari lasă mai mult spațiu gol în partea de sus, folositor când nav widget-uri se ascunde în partea de jos.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Deplasare centru hartă (peisaj)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Aceeași idee ca și portretul offset, aplicată când telefonul se află în lateral.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Plasează opacitatea pictogramei</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Ascundeți pictogramele din apropiere pentru a nu acoperi harta. 0%% le ascunde în întregime.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Avansare automată</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Când este pornit, punctul activ avansează automat pe măsură ce ajungeți la fiecare oprire. Opriți pentru a păși manual folosind butonul de micșorare a butoanelor pentru apăsare lungă.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Distanță avansată</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Cât de aproape trebuie să fiți la punctul de trecere pentru a trece automat la foc. Range 25-500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Editează ruta</string>
+    <string name="tutorial_route_nav_widget_body">Apăsați widget-ul nav pentru a deschide lista de opriri. Trageți pentru a reordona, marcați o oprire activă, eliminați punctele de trecere sau ștergeți întregul rută.</string>
+    <string name="tutorial_route_long_press_out_title">Pas înapoi un punct</string>
+    <string name="tutorial_route_long_press_out_body">Apăsați lung butonul - pentru a activa punctul de referință. Widget-ul nav arată către oricare dintre punctele de trecere este activ.</string>
+    <string name="tutorial_route_long_press_in_title">Avansează până la următorul punct</string>
+    <string name="tutorial_route_long_press_in_body">Apăsați lung butonul + pentru a activa următorul punct. Progresul automat face acest lucru pentru tine atunci când te apropii dar poți face pas manual oricând. Comută avansarea automată și reglează pragul de distanță în Meniu → Hărțuri.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Radar meteo</string>
     <string name="tutorial_menu_weather_toggle_body">Activează sau dezactivează suprapunerea radarului meteo.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Începe încărcarea locurilor din apropiere când pornește aplicația</string>
     <string name="poi_count">%1$d din %2$d</string>
     <string name="action_search_visible_area">Caută în zona vizibilă</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Avansare automată la următorul punct</string>
+    <string name="settings_auto_advance_threshold">Avansează când în</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Ruta</string>
+    <string name="route_stop_count_plural">Oprește %1$d</string>
+    <string name="action_clear_route_confirm">Eliminați toate punctele?</string>
+    <string name="cd_drag_handle">Trageți pentru a reordona</string>
+    <string name="cd_set_active">Setează ca activ</string>
+    <string name="cd_remove_waypoint">Elimină punctul</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navighează aici</string>
+    <string name="action_insert_before">Inserare înainte de %1$s</string>
+    <string name="action_add_after">Adaugă după %1$s</string>
+    <string name="action_add_to_start">Adaugă la început</string>
+    <string name="action_insert_before_final">Introduceți înainte de oprirea finală</string>
+    <string name="action_add_to_end">Adaugă la sfârșit</string>
+    <string name="action_replace_waypoint">Înlocuiește %1$s</string>
+    <string name="action_replace_last">Înlocuiește ultima oprire</string>
+    <string name="action_more_options">Mai multe opțiuni</string>
+    <string name="waypoint_unnamed">Punct %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Închide</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Direcția către locația țintă</string>
+    <string name="cd_prev_waypoint">Punctul anterior</string>
+    <string name="cd_next_waypoint">Următorul punct</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Noutăți</string>
     <string name="changelog_title">Jurnalul modificărilor</string>
