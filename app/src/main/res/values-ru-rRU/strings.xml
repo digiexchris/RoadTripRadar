@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Места рядом</string>
     <string name="action_clear_places">Очистить места</string>
     <string name="action_location_search">Поиск места</string>
-    <string name="action_clear_target">Очистить цель</string>
+    <string name="action_clear_target">Очистить маршрут</string>
     <string name="action_track_bearing">По курсу</string>
     <string name="action_track_north">Север сверху</string>
     <string name="action_radar_on">Радар включён</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Компас</string>
     <string name="tutorial_map_compass_body">Нажмите один раз, чтобы зафиксировать карту в режиме \"Север сверху\". Нажмите ещё раз, чтобы карта поворачивалась по направлению вашего движения.</string>
     <string name="tutorial_map_drop_pin_title">Поставить метку</string>
-    <string name="tutorial_map_drop_pin_body">Нажмите и удерживайте в любом месте карты, чтобы поставить метку и начать навигацию к ней.</string>
+    <string name="tutorial_map_drop_pin_body">Нажмите и удерживайте в любом месте на карте, чтобы добавить точку. Выберите, куда идет маршрут — начать, перед окончанием остановки, или закончить.</string>
     <string name="tutorial_map_zoom_out_title">Уменьшить</string>
     <string name="tutorial_map_zoom_out_body">Нажмите, чтобы уменьшить масштаб. Вы также можете свести два пальца на карте.</string>
     <string name="tutorial_map_zoom_in_title">Увеличить</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Нажмите, чтобы запустить или остановить анимацию радара. Нажмите и удерживайте, чтобы полностью выключить радар.</string>
     <string name="tutorial_map_menu_title">Меню быстрых действий</string>
     <string name="tutorial_map_menu_body">Открывает панель быстрых действий с настройками, темами и точками интереса.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Тема карты</string>
+    <string name="tutorial_map_setting_theme_body">Выберите стиль карты. Откройте выбор темы для переключения между встроенными стилями или импортируйте пользовательский.</string>
+    <string name="tutorial_map_setting_units_title">Единицы измерения</string>
+    <string name="tutorial_map_setting_units_body">Переключение между метрическими (км, м) и имперскими (мили, дворы). Влияет на скорость, расстояние и дальние пороги.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Смещение центра карты (портрет)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Как далеко вниз экран карта закрепляется при удерживании вертикально. Чем выше значение, тем больше пробел на вершине, тем полезно когда наввс виджеты толпу вниз.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Смещение центра карты (ландшафт)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Такая же идея, как и портретное смещение, применяемое, когда ваш телефон боковый.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Непрозрачность значка Места</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Поместите иконки поблизости, чтобы они не покрывали карту. 0%% скрывает их полностью.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Автопереход</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Когда активная точка продвигается автоматически, когда вы достигаете каждой остановки. Отключите для ручного перехода с помощью долгого нажатия на кнопках масштабирования.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Дальнейшее расстояние</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Насколько близко вы должны быть к путевой точке для автоматического движения к огню. Радиус 25–500 м.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Редактировать маршрут</string>
+    <string name="tutorial_route_nav_widget_body">Коснитесь виджета, чтобы открыть список остановок. Перетащите, чтобы упорядочить, отметить остановку активной, удалить точки или очистить весь маршрут.</string>
+    <string name="tutorial_route_long_press_out_title">Шаг назад путевая точка</string>
+    <string name="tutorial_route_long_press_out_body">Долгое нажатие - кнопка, чтобы сделать предыдущую точку активной. Наимень-виджет указывает на любую из путевых точек.</string>
+    <string name="tutorial_route_long_press_in_title">Перейти к следующей точке</string>
+    <string name="tutorial_route_long_press_in_body">Долгое нажатие кнопки +, чтобы активировать следующую точку. Автопереход делает это для вас, когда вы закроете, но вы можете сделать шаг вручную в любое время. Включите автопереход и настройте порог расстояния в меню → Карта.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Погодный радар</string>
     <string name="tutorial_menu_weather_toggle_body">Включает или выключает наложение погодного радара.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Начинать загрузку ближайших мест при запуске приложения</string>
     <string name="poi_count">%1$d из %2$d</string>
     <string name="action_search_visible_area">Искать в видимой области</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Автопереход к следующей точке</string>
+    <string name="settings_auto_advance_threshold">Продвижение в течение</string>
+    <string name="threshold_meters_format">%1$d м</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Маршрут</string>
+    <string name="route_stop_count_plural">%1$d останавливает</string>
+    <string name="action_clear_route_confirm">Удалить все точки?</string>
+    <string name="cd_drag_handle">Перетащите для изменения порядка</string>
+    <string name="cd_set_active">Сделать активным</string>
+    <string name="cd_remove_waypoint">Удалить точку</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Проложить маршрут сюда</string>
+    <string name="action_insert_before">Вставить перед %1$s</string>
+    <string name="action_add_after">Добавить после %1$s</string>
+    <string name="action_add_to_start">Добавить в начало</string>
+    <string name="action_insert_before_final">Вставить перед конечной остановкой</string>
+    <string name="action_add_to_end">Добавить в конец</string>
+    <string name="action_replace_waypoint">Заменить %1$s</string>
+    <string name="action_replace_last">Заменить последнюю остановку</string>
+    <string name="action_more_options">Больше опций</string>
+    <string name="waypoint_unnamed">Путевая точка %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Закрыть</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Направление к целевому местоположению</string>
+    <string name="cd_prev_waypoint">Предыдущая точка</string>
+    <string name="cd_next_waypoint">Следующая точка</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Что нового</string>
     <string name="changelog_title">Список изменений</string>
