@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Miejsca w pobliżu</string>
     <string name="action_clear_places">Wyczyść miejsca</string>
     <string name="action_location_search">Wyszukiwanie lokalizacji</string>
-    <string name="action_clear_target">Wyczyść cel</string>
+    <string name="action_clear_target">Wyczyść drogę</string>
     <string name="action_track_bearing">Śledź kierunek</string>
     <string name="action_track_north">Śledź północ</string>
     <string name="action_radar_on">Radar wł.</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompas</string>
     <string name="tutorial_map_compass_body">Dotknij raz, aby zablokować mapę z północą u góry. Dotknij ponownie, aby obrócić mapę zgodnie z kierunkiem jazdy.</string>
     <string name="tutorial_map_drop_pin_title">Upuść pinezkę</string>
-    <string name="tutorial_map_drop_pin_body">Dotknij i przytrzymaj w dowolnym miejscu na mapie, aby upuścić pinezkę i nawigować w jej kierunku.</string>
+    <string name="tutorial_map_drop_pin_body">Dotknij i przytrzymaj gdziekolwiek na mapie, aby dodać punkt drogi. Wybierz, gdzie znajduje się trasa — rozpocznij się przed ostatnim przystankiem lub zakończeniem.</string>
     <string name="tutorial_map_zoom_out_title">Pomniejsz</string>
     <string name="tutorial_map_zoom_out_body">Dotknij, aby pomniejszyć. Możesz też uszczypnąć mapę dwoma palcami.</string>
     <string name="tutorial_map_zoom_in_title">Powiększ</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Dotknij, aby odtworzyć lub wstrzymać animację radaru. Dotknij i przytrzymaj, aby całkowicie wyłączyć radar.</string>
     <string name="tutorial_map_menu_title">Menu szybkich działań</string>
     <string name="tutorial_map_menu_body">Otwiera panel szybkich działań z ustawieniami, motywami i punktami zainteresowania.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Motyw mapy</string>
+    <string name="tutorial_map_setting_theme_body">Wybierz styl mapy. Otwórz selektor motywu, aby przełączać się pomiędzy wbudowanymi stylami lub importować niestandardowe.</string>
+    <string name="tutorial_map_setting_units_title">Jednostki</string>
+    <string name="tutorial_map_setting_units_body">Przełącz się między metryczną (km, m) i imperialną (mile, yardy). Ma wpływ na prędkość, odległość i progi punktu drogi.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Przesunięcie środka mapy (pionowe)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Jak daleko na ekranie mapa jest zakotwiczona, gdy jest ustawiona pionowo. Wyższe wartości pozostawiają więcej pustego miejsca na górze, przydatne, gdy widżety nawigacyjne tłumi dół.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Przesunięcie środka mapy (poziomo)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Ten sam pomysł co offset portretowy, zastosowany, gdy telefon jest na boku.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Przezroczystość ikon</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Zanikanie ikony w pobliżu lub poza nią nie pokrywa mapy. 0%% całkowicie je ukrywa.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Automatyczne przenoszenie</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Po włączeniu aktywny punkt drogi rozwija się automatycznie, gdy osiągniesz każdy przystanek. Wyłącz ręcznie za pomocą długiego przytrzymania skrótu na przyciskach powiększenia.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Odległość awansu</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Jak blisko musisz być do punktu drogi, aby automatycznie przejść do ognia. Zakres 25–500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Edytuj trasę</string>
+    <string name="tutorial_route_nav_widget_body">Dotknij widżetu nawigacyjnego, aby otworzyć listę zatrzymań. Przeciągnij, aby zmienić kolejność, oznaczyć stan zatrzymania, usunąć punkty drogi lub wyczyścić całą trasę.</string>
+    <string name="tutorial_route_long_press_out_title">Krok wstecz punkt nawigacyjny</string>
+    <string name="tutorial_route_long_press_out_body">Przytrzymaj przycisk - aby poprzedni punkt nawigacyjny był aktywny. Widżet nav wskazuje dowolny punkt nawigacyjny.</string>
+    <string name="tutorial_route_long_press_in_title">Przejdź do następnego punktu trasy</string>
+    <string name="tutorial_route_long_press_in_body">Naciśnij i przytrzymaj przycisk +, aby następny punkt nawigacyjny był aktywny. Auto-postęp robi to dla Ciebie, gdy się zamkniesz, ale możesz wykonać ręcznie w każdej chwili. Przełącz auto-zaawansowanie i dostosuj próg odległości w menu → Mapa.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Radar pogodowy</string>
     <string name="tutorial_menu_weather_toggle_body">Włącz lub wyłącz nakładkę radaru pogodowego.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Rozpocznij ładowanie miejsc w pobliżu przy uruchomieniu aplikacji</string>
     <string name="poi_count">%1$d z %2$d</string>
     <string name="action_search_visible_area">Przeszukaj widoczny obszar</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Automatyczne przejście do następnego punktu nawigacyjnego</string>
+    <string name="settings_auto_advance_threshold">Postęp gdy w ciągu</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Trasa</string>
+    <string name="route_stop_count_plural">%1$d przystanki</string>
+    <string name="action_clear_route_confirm">Usunąć wszystkie punkty drogi?</string>
+    <string name="cd_drag_handle">Przeciągnij, aby zmienić kolejność</string>
+    <string name="cd_set_active">Ustaw jako aktywny</string>
+    <string name="cd_remove_waypoint">Usuń punkt nawigacyjny</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Nawiguj tutaj</string>
+    <string name="action_insert_before">Wstaw przed %1$s</string>
+    <string name="action_add_after">Dodaj za %1$s</string>
+    <string name="action_add_to_start">Dodaj do początku</string>
+    <string name="action_insert_before_final">Wstaw przed ostatecznym zatrzymaniem</string>
+    <string name="action_add_to_end">Dodaj do końca</string>
+    <string name="action_replace_waypoint">Zamień %1$s</string>
+    <string name="action_replace_last">Zamień ostatni przystanek</string>
+    <string name="action_more_options">Więcej opcji</string>
+    <string name="waypoint_unnamed">Punkt drogi %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Zamknij</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Kierunek do lokalizacji docelowej</string>
+    <string name="cd_prev_waypoint">Poprzedni punkt trasy</string>
+    <string name="cd_next_waypoint">Następny punkt nawigacyjny</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Co nowego</string>
     <string name="changelog_title">Dziennik zmian</string>
