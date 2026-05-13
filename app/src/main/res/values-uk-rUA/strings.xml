@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Місця поруч</string>
     <string name="action_clear_places">Очистити місця</string>
     <string name="action_location_search">Пошук місця</string>
-    <string name="action_clear_target">Очистити ціль</string>
+    <string name="action_clear_target">Очистити маршрут</string>
     <string name="action_track_bearing">Орієнтація за курсом</string>
     <string name="action_track_north">Орієнтація на північ</string>
     <string name="action_radar_on">Радар увімкнено</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Компас</string>
     <string name="tutorial_map_compass_body">Торкніться один раз, щоб зафіксувати карту з орієнтацією на північ угорі. Торкніться ще раз, щоб карта оберталася відповідно до вашого курсу.</string>
     <string name="tutorial_map_drop_pin_title">Поставити мітку</string>
-    <string name="tutorial_map_drop_pin_body">Торкніться й утримуйте будь-де на карті, щоб поставити мітку й прокласти маршрут до неї.</string>
+    <string name="tutorial_map_drop_pin_body">Торкніться та втримайте будь-де на карті щоб додати точку. Оберіть, куди він йде в маршруті - почати, до останньої зупинки або до кінця.</string>
     <string name="tutorial_map_zoom_out_title">Зменшити масштаб</string>
     <string name="tutorial_map_zoom_out_body">Торкніться, щоб зменшити масштаб. Ви також можете звести два пальці на карті.</string>
     <string name="tutorial_map_zoom_in_title">Збільшити масштаб</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Торкніться, щоб запустити або призупинити анімацію радара. Торкніться й утримуйте, щоб повністю вимкнути радар.</string>
     <string name="tutorial_map_menu_title">Меню швидких дій</string>
     <string name="tutorial_map_menu_body">Відкриває панель швидких дій із налаштуваннями, темами та цікавими місцями.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Тема мапи</string>
+    <string name="tutorial_map_setting_theme_body">Виберіть стиль карти. Відкрийте селектор теми для перемикання між вбудованими стилями або імпортуйте власний.</string>
+    <string name="tutorial_map_setting_units_title">Одиниці виміру</string>
+    <string name="tutorial_map_setting_units_body">Перемикання між метрикою (км, м) і імперським (милями, ярдами). Вражає на швидкість, відстань і пороги шляхових точок.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Зсув центру карти (портретна)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Наскільки далеко по екрану затухає мапа вертикально. Більш високі значення залишають більше вільного місця угорі, корисними при натовпі віджетів.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Зсув центру карти (альбомна)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Та сама ідея, як і портрет, що застосовується, коли телефон знаходиться в стороні.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Прозорість значка</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Затухання поруч розміщують іконки або щоб не покривати карту. 0%% приховує їх повністю.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Автоматичне розширення</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Якщо увімкнено, прогрес активної точки відбувається автоматично, коли ви досягаєте кожної зупинки. Вимкніть цей крок вручну, використовуючи довгу клавішу збільшення.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Додаткова відстань</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Наскільки закрити точку, що буде автоматично наближатися до запалювання вогню.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Редагувати маршрут</string>
+    <string name="tutorial_route_nav_widget_body">Торкніться віджета nav для відкриття списку зупинок. Перетягніть для зміни порядку, позначте пункт зупинити, вилучити точки або очистити весь маршрут.</string>
+    <string name="tutorial_route_long_press_out_title">Крок назад до точки</string>
+    <string name="tutorial_route_long_press_out_body">Тривале натискання кнопки - щоб зробити попередню точку активною. Навувальний віджет вказує на те, яка точка активна.</string>
+    <string name="tutorial_route_long_press_in_title">Перейти до наступної точки</string>
+    <string name="tutorial_route_long_press_in_body">Тривале натискання кнопки +, щоб зробити наступну точку активною. Функція автоматичного переходу робить це для вас, коли ви закриваєтесь, але можете завжди робити зміни вручну в будь-який час. Перемикання автоматичного просування і налаштування відстані в меню → Маш.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Метеорадар</string>
     <string name="tutorial_menu_weather_toggle_body">Увімкніть або вимкніть шар метеорадара.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Починати завантаження місць поруч під час запуску застосунку</string>
     <string name="poi_count">%1$d з %2$d</string>
     <string name="action_search_visible_area">Шукати у видимій області</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Автоматичне переходу до наступної точки</string>
+    <string name="settings_auto_advance_threshold">Покращується коли протягом</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Рейс</string>
+    <string name="route_stop_count_plural">%1$d stops</string>
+    <string name="action_clear_route_confirm">Видалити всі точки?</string>
+    <string name="cd_drag_handle">Перетягніть для зміни порядку</string>
+    <string name="cd_set_active">Встановити як активну</string>
+    <string name="cd_remove_waypoint">Видалити точку</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Прокласти маршрут сюди</string>
+    <string name="action_insert_before">Вставити до %1$s</string>
+    <string name="action_add_after">Додати після %1$s</string>
+    <string name="action_add_to_start">Додати до початку</string>
+    <string name="action_insert_before_final">Вставити до кінця</string>
+    <string name="action_add_to_end">Додати до кінця</string>
+    <string name="action_replace_waypoint">Replace %1$s</string>
+    <string name="action_replace_last">Замінити останню зупинку</string>
+    <string name="action_more_options">Більше опцій</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Закрити</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Напрямок до цільового місцезнаходження</string>
+    <string name="cd_prev_waypoint">Попередня точка</string>
+    <string name="cd_next_waypoint">Наступна точка</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Що нового</string>
     <string name="changelog_title">Журнал змін</string>
