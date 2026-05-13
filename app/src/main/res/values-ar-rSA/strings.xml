@@ -36,7 +36,7 @@
     <string name="action_nearby_places">أماكن قريبة</string>
     <string name="action_clear_places">مسح الأماكن</string>
     <string name="action_location_search">البحث عن موقع</string>
-    <string name="action_clear_target">مسح الوجهة</string>
+    <string name="action_clear_target">مسح المسار</string>
     <string name="action_track_bearing">تتبّع الاتجاه</string>
     <string name="action_track_north">تتبّع الشمال</string>
     <string name="action_radar_on">الرادار قيد التشغيل</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">البوصلة</string>
     <string name="tutorial_map_compass_body">اضغط مرة واحدة لقفل الخريطة بحيث يكون الشمال للأعلى. اضغط مرة أخرى لتدوير الخريطة بحيث تتبع اتجاهك.</string>
     <string name="tutorial_map_drop_pin_title">إسقاط دبوس</string>
-    <string name="tutorial_map_drop_pin_body">اضغط مطولًا في أي مكان على الخريطة لإسقاط دبوس والتنقل نحوه.</string>
+    <string name="tutorial_map_drop_pin_body">اضغط مطولاً في أي مكان على الخريطة لإضافة نقطة طريق. اختر موضعها في مسارك — في البداية، قبل التوقف الأخير، أو في النهاية.</string>
     <string name="tutorial_map_zoom_out_title">تصغير</string>
     <string name="tutorial_map_zoom_out_body">اضغط للتصغير. يمكنك أيضًا ضم إصبعين على الخريطة.</string>
     <string name="tutorial_map_zoom_in_title">تكبير</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">اضغط لتشغيل أو إيقاف مؤقت لتحريك الرادار. اضغط مطولًا لإيقاف الرادار تمامًا.</string>
     <string name="tutorial_map_menu_title">قائمة الإجراءات السريعة</string>
     <string name="tutorial_map_menu_body">تفتح درج الإجراءات السريعة الذي يحتوي على الإعدادات والسمات ونقاط الاهتمام.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">نمط الخريطة</string>
+    <string name="tutorial_map_setting_theme_body">اختر نمط الخريطة. افتح محدد السمات للتبديل بين الأنماط المضمنة أو استيراد نمط مخصص.</string>
+    <string name="tutorial_map_setting_units_title">الوحدات</string>
+    <string name="tutorial_map_setting_units_body">التبديل بين المتر (الكيلومتر) والإمبراطورية (الأميال، المسارات). يؤثر على السرعة والمسافة وعتبات نقطة الطريق.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">إزاحة وسط الخريطة (عمودي)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">إلى أي مدى تقع الخريطة في أسفل الشاشة عندما تكون مربوطة عمودياً. القيم الأعلى تترك مساحة فارغة أكثر في الأعلى، مفيدة عندما يحشد عنصر واجهة الناف الأسفل.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">إزاحة وسط الخريطة (أفقي)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">نفس الفكرة كمعادلة عمودية، تطبق عندما يكون هاتفك جانبياً.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">شفافية أيقونة الأماكن</string>
+    <string name="tutorial_map_setting_poi_opacity_body">تتلاشى الأيقونات الموجودة في المكان القريب أو خارجه بحيث لا تغطي الخريطة. 0%% يخفيها بالكامل.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">سلف تلقائي</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">عند التفعيل، يتطور الإحداثيات النشطة تلقائياً عند وصولك إلى كل توقف. قم بإيقاف التشغيل للخطوة يدويًا باستخدام الاختصار بالضغط المطول على أزرار التكبير.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">المسافة المتقدمة</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">كم يجب أن تكون قريباً من نقطة الطريق للتقدم التلقائي إلى الحريق. مدى 25–500 متر.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">تعديل المسار الخاص بك</string>
+    <string name="tutorial_route_nav_widget_body">اضغط على عنصر واجهة المستخدم لفتح قائمة التوقف. اسحب لإعادة الترتيب، وضع علامة على التوقف، إزالة إحداثيات الطريق، أو مسح المسار بأكمله.</string>
+    <string name="tutorial_route_long_press_out_title">خطوة إلى الوراء</string>
+    <string name="tutorial_route_long_press_out_body">اضغط لفترة طويلة على الزر - لجعل إحداثيات الطريق السابقة نشطة. ويدجت Nv يشير إلى أي إحداثية طريق نشطة.</string>
+    <string name="tutorial_route_long_press_in_title">التقدم إلى الإحداثيات التالية</string>
+    <string name="tutorial_route_long_press_in_body">اضغط مطولاً على الزر + لجعل إحداثيات الطريق التالية نشطة. السلفة التلقائية تفعل ذلك لك عندما تقترب، ولكن يمكنك الخطوة يدوياً في أي وقت. تبديل التقدم التلقائي وضبط عتبة المسافة في القائمة → الخريطة.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">رادار الطقس</string>
     <string name="tutorial_menu_weather_toggle_body">شغّل أو أوقف طبقة رادار الطقس.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">ابدأ تحميل الأماكن القريبة عند تشغيل التطبيق</string>
     <string name="poi_count">%1$d من %2$d</string>
     <string name="action_search_visible_area">البحث في المنطقة الظاهرة</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">التقدم التلقائي إلى الإحداثية التالية</string>
+    <string name="settings_auto_advance_threshold">تقدم عند داخل</string>
+    <string name="threshold_meters_format">%1$d دقيقة</string>
+    <string name="threshold_yards_format">%1$d سنة</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">الطريق</string>
+    <string name="route_stop_count_plural">%1$d stops</string>
+    <string name="action_clear_route_confirm">إزالة جميع نقاط الطريق؟</string>
+    <string name="cd_drag_handle">اسحب لإعادة الترتيب</string>
+    <string name="cd_set_active">تعيين كنشط</string>
+    <string name="cd_remove_waypoint">إزالة إحداثية الطريق</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">التنقل إلى هنا</string>
+    <string name="action_insert_before">إدراج قبل %1$s</string>
+    <string name="action_add_after">إضافة بعد %1$s</string>
+    <string name="action_add_to_start">إضافة للبدء</string>
+    <string name="action_insert_before_final">إدراج قبل التوقف النهائي</string>
+    <string name="action_add_to_end">إضافة إلى النهاية</string>
+    <string name="action_replace_waypoint">استبدال %1$s</string>
+    <string name="action_replace_last">استبدال آخر إيقاف</string>
+    <string name="action_more_options">المزيد من الخيارات</string>
+    <string name="waypoint_unnamed">إحداثية الطريق %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">إغلاق</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">الاتجاه إلى الموقع المستهدف</string>
+    <string name="cd_prev_waypoint">إحداثيات سابقة</string>
+    <string name="cd_next_waypoint">الإحداثيات التالية</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">ما الجديد</string>
     <string name="changelog_title">سجل التغييرات</string>
