@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Lähellä olevat paikat</string>
     <string name="action_clear_places">Tyhjennä paikat</string>
     <string name="action_location_search">Sijaintihaku</string>
-    <string name="action_clear_target">Tyhjennä kohde</string>
+    <string name="action_clear_target">Tyhjennä Reitti</string>
     <string name="action_track_bearing">Seuraa suuntaa</string>
     <string name="action_track_north">Seuraa pohjoista</string>
     <string name="action_radar_on">Tutka päällä</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompassi</string>
     <string name="tutorial_map_compass_body">Napauta kerran lukitaksesi kartan pohjoinen ylhäällä -tilaan. Napauta uudelleen, niin kartta kääntyy kulkusuuntasi mukaan.</string>
     <string name="tutorial_map_drop_pin_title">Lisää neula</string>
-    <string name="tutorial_map_drop_pin_body">Lisää neula kartalle ja navigoi sitä kohti napauttamalla mitä tahansa kohtaa kartalla pitkään.</string>
+    <string name="tutorial_map_drop_pin_body">Napauta ja pidä kiinni mihin tahansa kartalla lisätäksesi reittipisteen. Valitse mihin se menee reitilläsi — aloita ennen lopullista pysähdystä tai loppuu.</string>
     <string name="tutorial_map_zoom_out_title">Loitonna</string>
     <string name="tutorial_map_zoom_out_body">Napauta loitontaaksesi. Voit myös nipistää karttaa kahdella sormella.</string>
     <string name="tutorial_map_zoom_in_title">Lähennä</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Napauta toistaaksesi tai keskeyttääksesi tutkakuvan animaation. Pidä painettuna poistaaksesi tutkan kokonaan käytöstä.</string>
     <string name="tutorial_map_menu_title">Pikatoiminnot-valikko</string>
     <string name="tutorial_map_menu_body">Avaa pikatoimintopaneelin, jossa ovat asetukset, teemat ja kiinnostavat kohteet.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Kartta teema</string>
+    <string name="tutorial_map_setting_theme_body">Valitse karttatyyli. Avaa teeman valitsin vaihtaaksesi sisäänrakennetuista tyyleistä tai tuodaksesi mukautetun tyylin.</string>
+    <string name="tutorial_map_setting_units_title">Yksiköt</string>
+    <string name="tutorial_map_setting_units_body">Vaihtaa metrisen (km, m) ja keisarillisen (mailia, mitat). Vaikuttaa nopeuteen, etäisyyteen ja reittipistekynnyksiin.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Kartan keskustan siirtymä (pysty)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Kuinka kauas ruutua kartta on ankkuroitu, kun sitä pidetään pystysuunnassa. Korkeammat arvot jättävät enemmän tyhjää tilaa yläreunassa, hyödyllinen kun nav widgetit väsyttävät alareunan.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Kartan keskustan siirtymä (maisema)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Sama idea kuin muotokuva offset, käytetään kun puhelin on sivusuunnassa.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Paikkojen kuvakkeen läpinäkyvyys</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Häivytä lähistöllä olevat kuvakkeet sisään tai ulos, joten ne eivät peitä karttaa. 0%% piilottaa ne kokonaan.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Automaattinen Edistäminen</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Kun olet päällä, aktiivinen reittipiste etenee automaattisesti jokaisen pysähdyksen kohdalla. Ota pois päältä astua manuaalisesti painamalla zoomauspainikkeita pitkään pikanäppäimeen.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Edullinen etäisyys</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Kuinka lähellä sinun täytyy olla reittipiste, jossa auto-advance ampua. Vaihteluväli 25–500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Muokkaa reittiäsi</string>
+    <string name="tutorial_route_nav_widget_body">Napauta nav-widgettiä avataksesi pysähdysluettelon. Vedä uudelleenjärjestykseen, merkitse pysähdys aktiiviseksi, poista reittipisteet tai tyhjennä koko reitti.</string>
+    <string name="tutorial_route_long_press_out_title">Astu reittipiste takaisin</string>
+    <string name="tutorial_route_long_press_out_body">Paina pitkään – nappia saadaksesi edellisen reittipisteen aktivoitumaan. Nav widget pisteitä kummallekin reittipisteelle on aktiivinen.</string>
+    <string name="tutorial_route_long_press_in_title">Siirry seuraavaan reittipisteeseen</string>
+    <string name="tutorial_route_long_press_in_body">Paina pitkään + -painiketta saadaksesi seuraavan reittipisteen käyttöön. Automaattinen edistyminen tekee tämän sinulle, kun tulet lähelle, mutta voit astua manuaalisesti milloin tahansa. Vaihda automaattisesti etukäteen ja viritä etäisyysrajaa valikossa → Kartta.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Säätutka</string>
     <string name="tutorial_menu_weather_toggle_body">Laita säätutkapeite käyttöön tai pois käytöstä.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Aloita lähellä olevien paikkojen lataaminen sovelluksen käynnistyessä</string>
     <string name="poi_count">%1$d / %2$d</string>
     <string name="action_search_visible_area">Hae näkyvältä alueelta</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Siirry automaattisesti seuraavaan reittipisteeseen</string>
+    <string name="settings_auto_advance_threshold">Etukäteen kun sisällä</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Reitti</string>
+    <string name="route_stop_count_plural">%1$d pysähdystä</string>
+    <string name="action_clear_route_confirm">Poistetaanko kaikki reittipisteet?</string>
+    <string name="cd_drag_handle">Vedä järjestääksesi uudelleen</string>
+    <string name="cd_set_active">Aseta aktiiviseksi</string>
+    <string name="cd_remove_waypoint">Poista reittipiste</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navigoi tänne</string>
+    <string name="action_insert_before">Lisää ennen %1$s</string>
+    <string name="action_add_after">Lisää %1$s jälkeen</string>
+    <string name="action_add_to_start">Lisää alkuun</string>
+    <string name="action_insert_before_final">Lisää ennen lopullista pysähdystä</string>
+    <string name="action_add_to_end">Lisää loppuun</string>
+    <string name="action_replace_waypoint">Korvaa %1$s</string>
+    <string name="action_replace_last">Korvaa viimeinen pysäkki</string>
+    <string name="action_more_options">Lisää vaihtoehtoja</string>
+    <string name="waypoint_unnamed">Reittipiste %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Sulje</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Suunta kohdesijaintiin</string>
+    <string name="cd_prev_waypoint">Edellinen reittipiste</string>
+    <string name="cd_next_waypoint">Seuraava reittipiste</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Mitä uutta</string>
     <string name="changelog_title">Muutosloki</string>
