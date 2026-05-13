@@ -1,2 +1,2 @@
 Przywrócono obsługę nawigacji wstecz we wszystkich menu zamiast samego przycisku zamykania.
-Zezwolono na wyświetlanie wysuwanego panelu informacji o punkcie trasy po stuknięciu bieżącego docelowego punktu trasy oraz po stuknięciu widżetu nawigacji.
+Pozwól na wyświetlanie informacji o punkcie nawigacyjnym po naciśnięciu aktualnego punktu docelowego i po naciśnięciu widżetu nawigacyjnego.
