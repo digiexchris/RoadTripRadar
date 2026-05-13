@@ -1,2 +1,2 @@
 Legg til støtte for tilbake-navigasjon i alle menyer i stedet for å bare ha en lukkeknapp.
-Tillat at informasjonsfeltet for veipunkt vises når du trykker på ditt nåværende målveipunkt, og hvis du trykker på navigasjonswidgeten.
+Tillat at info om veipunktet skal vises når du trykker på gjeldende veipunkt, og når du trykker på navigasjonswidgeten.
