@@ -1,0 +1,1 @@
+Added basic route management with multiple waypoints! Check it out next time you navigate to something! If you have a navigation point active, try adding another. You'll get the option to add it to your route or replace the existing nav point.
