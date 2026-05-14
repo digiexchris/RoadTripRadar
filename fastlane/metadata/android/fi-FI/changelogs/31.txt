@@ -1,2 +1,2 @@
 Lisää takaisin navigoinnin tuki kaikkiin valikkoihin sen sijaan, että niissä olisi vain sulkemispainike.
-Salli reittipisteen tietopaneelin tulla näkyviin, kun napautat nykyistä kohdereittipistettäsi ja kun napautat navigointiwidgetiä.
+Salli reittipisteen tietojen liukuminen näkyä, kun napautat nykyistä kohdereittipistettä ja kun napautat navigointiwidgetiä.

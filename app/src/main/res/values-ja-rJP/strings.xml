@@ -36,7 +36,7 @@
     <string name="action_nearby_places">周辺スポット</string>
     <string name="action_clear_places">スポットをクリア</string>
     <string name="action_location_search">場所を検索</string>
-    <string name="action_clear_target">目的地をクリア</string>
+    <string name="action_clear_target">ルートをクリア</string>
     <string name="action_track_bearing">進行方向に追従</string>
     <string name="action_track_north">北向きに固定</string>
     <string name="action_radar_on">レーダー オン</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">コンパス</string>
     <string name="tutorial_map_compass_body">タップすると、マップを北が上になるように固定します。もう一度タップすると、進行方向に合わせてマップが回転します。</string>
     <string name="tutorial_map_drop_pin_title">ピンをドロップ</string>
-    <string name="tutorial_map_drop_pin_body">マップ上の任意の場所を長押しすると、ピンをドロップしてその場所へナビゲートできます。</string>
+    <string name="tutorial_map_drop_pin_body">マップ上の任意の場所を長押しすると、ウェイポイントを追加できます。 ルート内の行き先を選択します — 最終停止の前に開始するか、終了する前に開始します。</string>
     <string name="tutorial_map_zoom_out_title">ズームアウト</string>
     <string name="tutorial_map_zoom_out_body">タップして縮小します。マップ上で2本の指をつまむ操作でも縮小できます。</string>
     <string name="tutorial_map_zoom_in_title">ズームイン</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">タップしてレーダーアニメーションを再生または一時停止します。長押しすると、レーダーを完全にオフにします。</string>
     <string name="tutorial_map_menu_title">クイックアクションメニュー</string>
     <string name="tutorial_map_menu_body">設定、テーマ、周辺スポットを含むクイックアクションドロワーを開きます。</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">地図のテーマ</string>
+    <string name="tutorial_map_setting_theme_body">マップスタイルを選択します。テーマセレクターを開いて組み込みスタイルを切り替えるか、カスタムスタイルをインポートします。</string>
+    <string name="tutorial_map_setting_units_title">単位</string>
+    <string name="tutorial_map_setting_units_body">メトリック（km、m）とインペリアル（マイル、ヤード）を切り替えます。速度、距離、およびウェイポイントのしきい値に影響します。</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">地図中心オフセット (縦向き)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">地図が垂直方向に固定されたときにどのくらい画面の下にあるか。 値が大きいほど、上部に空白が多くなります。navウィジェットが下部に群がっている場合に便利です。</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">地図中心オフセット (横向き)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">ポートレートオフセットと同じアイデアは、携帯電話が横向きにあるときに適用されます。</string>
+    <string name="tutorial_map_setting_poi_opacity_title">場所アイコンの不透明度</string>
+    <string name="tutorial_map_setting_poi_opacity_body">マップをカバーしないように、近くの場所のアイコンをフェードアウトします。0%% 完全に非表示にします。</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">自動前進（自動前進）</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">オンの場合、アクティブなウェイポイントは各ストップに達すると自動的に進みます。ズームボタンの長押しショートカットを使用して手動でステップオフにします。</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">高度な距離</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">射撃に向けて自動進撃のウェイポイントまで行く必要があります。25～500mの距離です。</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">ルートを編集</string>
+    <string name="tutorial_route_nav_widget_body">停止リストを開くにはナビウィジェットをタップします。ドラッグして並べ替え、停止をマーク、ウェイポイントを削除、またはルート全体を削除します。</string>
+    <string name="tutorial_route_long_press_out_title">ウェイポイントを戻してください</string>
+    <string name="tutorial_route_long_press_out_body">format@@0 ボタンを長押しすると、前のウェイポイントがアクティブになります。ナビウィジェットがアクティブになっているウェイポイントをポイントします。</string>
+    <string name="tutorial_route_long_press_in_title">次のウェイポイントに進む</string>
+    <string name="tutorial_route_long_press_in_body">+ ボタンを長押しすると、次のウェイポイントがアクティブになります。 近づくと自動前進はこれを行いますが、いつでも手動でステップできます。 メニュー→マップで自動進めを切り替え、距離しきい値を調整します。</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">天気レーダー</string>
     <string name="tutorial_menu_weather_toggle_body">天気レーダーのオーバーレイをオンまたはオフにします。</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">アプリ起動時に周辺スポットの読み込みを開始する</string>
     <string name="poi_count">%1$d / %2$d</string>
     <string name="action_search_visible_area">表示範囲を検索</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">次のウェイポイントに自動で進みます</string>
+    <string name="settings_auto_advance_threshold">次の場合に進めます。</string>
+    <string name="threshold_meters_format">%1$d 分</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">ルート</string>
+    <string name="route_stop_count_plural">%1$d 停止</string>
+    <string name="action_clear_route_confirm">すべてのウェイポイントを削除しますか？</string>
+    <string name="cd_drag_handle">ドラッグして並べ替え</string>
+    <string name="cd_set_active">アクティブに設定</string>
+    <string name="cd_remove_waypoint">ウェイポイントを削除</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">ここへ移動</string>
+    <string name="action_insert_before">%1$s の前に挿入</string>
+    <string name="action_add_after">%1$s の後に追加</string>
+    <string name="action_add_to_start">最初に追加</string>
+    <string name="action_insert_before_final">最終停止の前に挿入</string>
+    <string name="action_add_to_end">最後に追加</string>
+    <string name="action_replace_waypoint">%1$s を置き換え</string>
+    <string name="action_replace_last">最後の停止を置き換え</string>
+    <string name="action_more_options">その他のオプション</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">閉じる</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">目的地の方向</string>
+    <string name="cd_prev_waypoint">前のウェイポイント</string>
+    <string name="cd_next_waypoint">次のウェイポイント</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">新機能</string>
     <string name="changelog_title">変更履歴</string>

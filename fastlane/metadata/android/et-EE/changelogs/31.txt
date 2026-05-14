@@ -1,2 +1,2 @@
 Lisa kõikidesse menüüdesse tagasi navigeerimise tugi, selle asemel et oleks ainult sulgemisnupp.
-Luba teekonnapunkti teabe väljalibistataval paneelil avaneda, kui puudutad oma praegu valitud sihtteekonnapunkti või navigeerimisvidinat.
+Allow the waypoint info slideout to appear when you tap your current target waypoint and when you tap the navigation widget.

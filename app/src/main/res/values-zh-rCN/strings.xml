@@ -36,7 +36,7 @@
     <string name="action_nearby_places">附近地点</string>
     <string name="action_clear_places">清除地点</string>
     <string name="action_location_search">位置搜索</string>
-    <string name="action_clear_target">清除目标</string>
+    <string name="action_clear_target">清除路由</string>
     <string name="action_track_bearing">跟随航向</string>
     <string name="action_track_north">朝北固定</string>
     <string name="action_radar_on">雷达开启</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">指南针</string>
     <string name="tutorial_map_compass_body">点击一次可将地图锁定为北向上。再次点击可旋转地图，使其跟随您的行进方向。</string>
     <string name="tutorial_map_drop_pin_title">放置图钉</string>
-    <string name="tutorial_map_drop_pin_body">在地图任意位置长按即可放置图钉并导航前往。</string>
+    <string name="tutorial_map_drop_pin_body">点击并按住地图上的任何位置添加航点。 选择它在您的路由中的位置 — — 在最后停止之前或结束。</string>
     <string name="tutorial_map_zoom_out_title">缩小</string>
     <string name="tutorial_map_zoom_out_body">点击可缩小。您也可以在地图上双指捏合。</string>
     <string name="tutorial_map_zoom_in_title">放大</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">点击可播放或暂停雷达动画。长按可完全关闭雷达。</string>
     <string name="tutorial_map_menu_title">快捷操作菜单</string>
     <string name="tutorial_map_menu_body">打开快捷操作抽屉，其中包含设置、主题和兴趣点。</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">地图主题</string>
+    <string name="tutorial_map_setting_theme_body">选择地图样式。打开主题选择器以切换内置样式或导入自定义样式。</string>
+    <string name="tutorial_map_setting_units_title">单位</string>
+    <string name="tutorial_map_setting_units_body">切换公分(千米)和帝国(英里、院子)之间。影响速度、距离和航点阈值。</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">地图中心偏移(竖屏)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">垂直保持地图在屏幕下方多远。 更高的值在顶部留下更多的空空间，当nav 小部件排在底部时有用。</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">地图中心偏移(横屏)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">与您的手机正在旁边时所覆盖的画面相同的想法。</string>
+    <string name="tutorial_map_setting_poi_opacity_title">位置图标不透明度</string>
+    <string name="tutorial_map_setting_poi_opacity_body">淡出附近的图标以便不覆盖地图。0%% 完全隐藏它们。</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">自动推送</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">开启时，当您到达每个停止时，激活的航点会自动前进。关闭以手动步动缩放按钮上的快捷键。</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">前进距离</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">你需要到一个自动前进的航点来多么接近。距离25-500 米。</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">编辑您的路由</string>
+    <string name="tutorial_route_nav_widget_body">点击nav小部件打开停止列表。拖动以重新排序、标记停止激活、移除航点或清除整个航线。</string>
+    <string name="tutorial_route_long_press_out_title">向后退航点</string>
+    <string name="tutorial_route_long_press_out_body">长按-按钮使上一个航点处于活动状态。nav 小部件指向任何航点处于活动状态。</string>
+    <string name="tutorial_route_long_press_in_title">前进到下一个航点</string>
+    <string name="tutorial_route_long_press_in_body">长按+按钮使下一个航点生效。 当您关闭时自动前进，但您可以随时手动前进。 切换自动前进并调整菜单中的距离阈值 -> Map。</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">天气雷达</string>
     <string name="tutorial_menu_weather_toggle_body">打开或关闭天气雷达叠加层。</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">应用启动时开始加载附近地点</string>
     <string name="poi_count">%1$d / %2$d</string>
     <string name="action_search_visible_area">搜索可见区域</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">自动前进到下一个航点</string>
+    <string name="settings_auto_advance_threshold">前进时间内</string>
+    <string name="threshold_meters_format">%1$d 米</string>
+    <string name="threshold_yards_format">%1$d 年</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">路由</string>
+    <string name="route_stop_count_plural">%1$d 停止</string>
+    <string name="action_clear_route_confirm">删除所有航点？</string>
+    <string name="cd_drag_handle">拖动以重新排序</string>
+    <string name="cd_set_active">设置为活动的</string>
+    <string name="cd_remove_waypoint">删除航点</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">导航到这里</string>
+    <string name="action_insert_before">在 %1$s 之前插入</string>
+    <string name="action_add_after">在 %1$s 之后添加</string>
+    <string name="action_add_to_start">添加到开始</string>
+    <string name="action_insert_before_final">在最后停止前插入</string>
+    <string name="action_add_to_end">添加到结束</string>
+    <string name="action_replace_waypoint">替换 %1$s</string>
+    <string name="action_replace_last">替换最后停止</string>
+    <string name="action_more_options">更多选项</string>
+    <string name="waypoint_unnamed">航点 %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">关闭</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">指向目标位置的方向</string>
+    <string name="cd_prev_waypoint">上一个航点</string>
+    <string name="cd_next_waypoint">下一个航点</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">新增内容</string>
     <string name="changelog_title">更新日志</string>

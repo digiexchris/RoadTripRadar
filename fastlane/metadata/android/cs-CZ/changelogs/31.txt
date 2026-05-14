@@ -1,2 +1,2 @@
 Přidána podpora navigace zpět do všech nabídek namísto pouhého tlačítka zavřít.
-Povoleno zobrazení postranního panelu s informacemi o trasovém bodu po klepnutí na aktuální cílový trasový bod a po klepnutí na navigační widget.
+Povolit zobrazení informací o trasovém bodu při klepnutí na aktuální cílový bod a při klepnutí na navigační widget.

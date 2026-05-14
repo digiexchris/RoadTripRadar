@@ -1,2 +1,2 @@
 Adicionar suporte de navegação de volta a todos os menus, em vez de ter apenas um botão de fechar.
-Permitir que o painel deslizante de informações do ponto de passagem seja exibido quando você tocar no seu ponto de passagem de destino atual e quando tocar no widget de navegação.
+Permitir que a informação do waypoint do waypoint apareça quando você tocar no ponto de passagem do destino atual e quando tocar no widget de navegação.

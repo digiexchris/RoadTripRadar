@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Platser i närheten</string>
     <string name="action_clear_places">Rensa platser</string>
     <string name="action_location_search">Platssökning</string>
-    <string name="action_clear_target">Rensa mål</string>
+    <string name="action_clear_target">Rensa rutt</string>
     <string name="action_track_bearing">Följ bäring</string>
     <string name="action_track_north">Följ norr</string>
     <string name="action_radar_on">Radar på</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompass</string>
     <string name="tutorial_map_compass_body">Tryck en gång för att låsa kartan med norr uppåt. Tryck igen för att rotera kartan så att den följer din färdriktning.</string>
     <string name="tutorial_map_drop_pin_title">Släpp en nål</string>
-    <string name="tutorial_map_drop_pin_body">Tryck och håll var som helst på kartan för att släppa en nål och navigera mot den.</string>
+    <string name="tutorial_map_drop_pin_body">Tryck och håll ned var som helst på kartan för att lägga till en waypoint. Välj vart den går i din rutt – starta, innan slutstoppet eller avsluta.</string>
     <string name="tutorial_map_zoom_out_title">Zooma ut</string>
     <string name="tutorial_map_zoom_out_body">Tryck för att zooma ut. Du kan också nypa på kartan med två fingrar.</string>
     <string name="tutorial_map_zoom_in_title">Zooma in</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Tryck för att spela upp eller pausa radaranimationen. Tryck och håll för att stänga av radarn helt.</string>
     <string name="tutorial_map_menu_title">Meny för snabbanwe handlingar</string>
     <string name="tutorial_map_menu_body">Öppnar lådan för snabbåtgärder med inställningar, teman och intressanta platser.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Karta tema</string>
+    <string name="tutorial_map_setting_theme_body">Välj kartstil. Öppna temat väljare för att växla mellan inbyggda stilar eller importera en anpassad.</string>
+    <string name="tutorial_map_setting_units_title">Enheter</string>
+    <string name="tutorial_map_setting_units_body">Växla mellan metriska (km, m) och kejserliga (miles, yards). Påverkar hastighet, distans och waypoint trösklar.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Karta mittförskjutning (porträtt)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Hur långt ner på skärmen är kartan förankrad när den hålls vertikalt. Högre värden lämnar mer tomt utrymme på toppen, användbart när nav widgets publiken botten.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Karta centrum offset (landskap)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Samma idé som porträttförskjutning, tillämpas när telefonen är i sidled.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Plats ikonen opacitet</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Tona närliggande platsikoner in eller ut så att de inte täcker kartan. 0%% döljer dem helt.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Auto-förskott</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">När den aktiva waypointen aktiveras avancerar den automatiskt när du når varje stopp. Stäng av för att kliva manuellt med långtryckta genvägar på zoomknapparna.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Avancera avstånd</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Hur nära du behöver vara till en waypoint för auto-förskott till brand. Räckvidd 25–500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Redigera din rutt</string>
+    <string name="tutorial_route_nav_widget_body">Tryck på navigeringswidgeten för att öppna stopplistan. Dra för att ändra ordning, markera ett stopp aktivt, ta bort waypoints eller rensa hela rutten.</string>
+    <string name="tutorial_route_long_press_out_title">Steg tillbaka en waypoint</string>
+    <string name="tutorial_route_long_press_out_body">Lång-tryck på knappen – för att göra föregående waypoint aktiv. Nav widget punkter till vilken waypoint som är aktiv.</string>
+    <string name="tutorial_route_long_press_in_title">Vidarebefordra till nästa waypoint</string>
+    <string name="tutorial_route_long_press_in_body">Långtryck på +-knappen för att göra nästa waypoint aktiv. Auto-förskott gör detta för dig när du kommer nära, men du kan kliva manuellt när som helst. Växla auto-förskott och justera tröskeln för distans i Meny → Karta.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Väderradar</string>
     <string name="tutorial_menu_weather_toggle_body">Slå på eller av väderradaröverlägget.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Börja ladda platser i närheten när appen startar</string>
     <string name="poi_count">%1$d av %2$d</string>
     <string name="action_search_visible_area">Sök i synligt område</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Automatiskt avancera till nästa waypoint</string>
+    <string name="settings_auto_advance_threshold">Avancera när du är inom</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Rutt</string>
+    <string name="route_stop_count_plural">%1$d stopp</string>
+    <string name="action_clear_route_confirm">Ta bort alla waypoints?</string>
+    <string name="cd_drag_handle">Dra för att ordna om</string>
+    <string name="cd_set_active">Ange som aktiv</string>
+    <string name="cd_remove_waypoint">Ta bort waypoint</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navigera hit</string>
+    <string name="action_insert_before">Infoga före %1$s</string>
+    <string name="action_add_after">Lägg till efter %1$s</string>
+    <string name="action_add_to_start">Lägg till i början</string>
+    <string name="action_insert_before_final">Infoga innan slutligt stopp</string>
+    <string name="action_add_to_end">Lägg till i slutet</string>
+    <string name="action_replace_waypoint">Ersätt %1$s</string>
+    <string name="action_replace_last">Ersätt senaste stopp</string>
+    <string name="action_more_options">Fler alternativ</string>
+    <string name="waypoint_unnamed">Vägpunkt %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Stäng</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Riktning till målplats</string>
+    <string name="cd_prev_waypoint">Föregående waypoint</string>
+    <string name="cd_next_waypoint">Nästa waypoint</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Nyheter</string>
     <string name="changelog_title">Ändringslogg</string>

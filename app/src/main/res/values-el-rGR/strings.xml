@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Κοντινά μέρη</string>
     <string name="action_clear_places">Εκκαθάριση μερών</string>
     <string name="action_location_search">Αναζήτηση τοποθεσίας</string>
-    <string name="action_clear_target">Εκκαθάριση στόχου</string>
+    <string name="action_clear_target">Εκκαθάριση Διαδρομής</string>
     <string name="action_track_bearing">Παρακολούθηση πορείας</string>
     <string name="action_track_north">Παρακολούθηση βορρά</string>
     <string name="action_radar_on">Ραντάρ ενεργό</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Πυξίδα</string>
     <string name="tutorial_map_compass_body">Πατήστε μία φορά για να κλειδώσετε τον χάρτη με τον Βορρά προς τα πάνω. Πατήστε ξανά για να περιστρέφεται ο χάρτης σύμφωνα με την πορεία σας.</string>
     <string name="tutorial_map_drop_pin_title">Τοποθέτηση πινέζας</string>
-    <string name="tutorial_map_drop_pin_body">Πατήστε παρατεταμένα οπουδήποτε στον χάρτη για να τοποθετήσετε μια πινέζα και να πλοηγηθείτε προς αυτήν.</string>
+    <string name="tutorial_map_drop_pin_body">Πατήστε παρατεταμένα οπουδήποτε στο χάρτη για να προσθέσετε ένα σημείο. Επιλέξτε πού πηγαίνει στη διαδρομή σας - ξεκινήσετε, πριν από την τελική στάση ή τελειώσετε.</string>
     <string name="tutorial_map_zoom_out_title">Σμίκρυνση</string>
     <string name="tutorial_map_zoom_out_body">Πατήστε για σμίκρυνση. Μπορείτε επίσης να τσιμπήσετε τον χάρτη με δύο δάχτυλα.</string>
     <string name="tutorial_map_zoom_in_title">Μεγέθυνση</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Πατήστε για αναπαραγωγή ή παύση της κίνησης του ραντάρ. Πατήστε παρατεταμένα για να απενεργοποιήσετε εντελώς το ραντάρ.</string>
     <string name="tutorial_map_menu_title">Μενού γρήγορων ενεργειών</string>
     <string name="tutorial_map_menu_body">Ανοίγει το συρτάρι γρήγορων ενεργειών με ρυθμίσεις, θέματα και σημεία ενδιαφέροντος.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Θέμα χάρτη</string>
+    <string name="tutorial_map_setting_theme_body">Επιλέξτε το στυλ χάρτη. Ανοίξτε τον επιλογέα θέματος για εναλλαγή μεταξύ ενσωματωμένων στυλ ή εισαγωγή ενός προσαρμοσμένου.</string>
+    <string name="tutorial_map_setting_units_title">Μονάδες</string>
+    <string name="tutorial_map_setting_units_body">Εναλλαγή μεταξύ μετρικών (km, m) και αυτοκρατορικών (μίλια, γιάρδες). Επηρεάζει την ταχύτητα, την απόσταση και τα όρια σημείου διαδρομής.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Μετατόπιση κέντρου χάρτη (πορτραίτο)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Πόσο μακριά βρίσκεται η οθόνη, ο χάρτης είναι αγκυροβολημένος όταν κρατιέται κάθετα. Υψηλότερες τιμές αφήνουν περισσότερο κενό χώρο στην κορυφή, χρήσιμο όταν nav widgets γεμίζουν το κάτω μέρος.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Μετατόπιση κέντρου χάρτη (οριζόντια)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Ίδια ιδέα όπως το πορτρέτο offset, που εφαρμόζεται όταν το τηλέφωνό σας είναι στο πλάι.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Αδιαφάνεια εικονιδίου τοποθεσιών</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Fade nearby place icons in or out so they don\'t cover the map. 0%% hides them entirely.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Αυτόματη Προώθηση</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Όταν είναι ενεργοποιημένο, το ενεργό σημείο κινείται αυτόματα καθώς φτάνετε σε κάθε στάση. Απενεργοποιήστε το για να κάνετε χειροκίνητη χρήση της συντόμευσης παρατεταμένου πατήματος στα κουμπιά εστίασης.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Εκ των προτέρων απόσταση</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Πόσο κοντά θα πρέπει να είναι σε ένα σημείο για την αυτόματη πρόοδο στη φωτιά.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Επεξεργαστείτε τη διαδρομή σας</string>
+    <string name="tutorial_route_nav_widget_body">Πατήστε το γραφικό στοιχείο nav για να ανοίξετε τη λίστα στάσεων. Σύρετε για αναδιάταξη, σημειώστε μια ενεργή στάση, αφαιρέστε σημεία, ή καθαρίστε ολόκληρη τη διαδρομή.</string>
+    <string name="tutorial_route_long_press_out_title">Βάλτε πίσω ένα σημείο</string>
+    <string name="tutorial_route_long_press_out_body">Πατήστε παρατεταμένα το κουμπί – για να κάνετε το προηγούμενο σημείο ενεργό. Τα σημεία nav widget σε οποιοδήποτε σημείο είναι ενεργό.</string>
+    <string name="tutorial_route_long_press_in_title">Προχωρήστε στο επόμενο σημείο</string>
+    <string name="tutorial_route_long_press_in_body">Πιέστε παρατεταμένα το κουμπί + για να ενεργοποιήσετε το επόμενο σημείο. Αυτόματη προώθηση το κάνει αυτό για εσάς όταν πλησιάζετε, αλλά μπορείτε να κάνετε χειροκίνητα οποιαδήποτε στιγμή. Εναλλαγή αυτόματης προόδου και ρύθμιση του ορίου απόστασης στο Μενού → Χάρτη.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Ραντάρ καιρού</string>
     <string name="tutorial_menu_weather_toggle_body">Ενεργοποιήστε ή απενεργοποιήστε το επίπεδο επικάλυψης του ραντάρ καιρού.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Έναρξη φόρτωσης κοντινών μερών κατά την εκκίνηση της εφαρμογής</string>
     <string name="poi_count">%1$d από %2$d</string>
     <string name="action_search_visible_area">Αναζήτηση στην ορατή περιοχή</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Αυτόματη προώθηση στο επόμενο σημείο</string>
+    <string name="settings_auto_advance_threshold">Προκαταβολή όταν είναι μέσα</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Διαδρομή</string>
+    <string name="route_stop_count_plural">%1$d σταματάει</string>
+    <string name="action_clear_route_confirm">Αφαίρεση όλων των σημείων διαδρομής?</string>
+    <string name="cd_drag_handle">Σύρετε για αναδιάταξη</string>
+    <string name="cd_set_active">Ορισμός ως ενεργός</string>
+    <string name="cd_remove_waypoint">Αφαίρεση σημείου</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Πλοήγηση εδώ</string>
+    <string name="action_insert_before">Εισαγωγή πριν από %1$s</string>
+    <string name="action_add_after">Προσθήκη μετά από %1$s</string>
+    <string name="action_add_to_start">Προσθήκη στην αρχή</string>
+    <string name="action_insert_before_final">Εισαγωγή πριν την τελική διακοπή</string>
+    <string name="action_add_to_end">Προσθήκη στο τέλος</string>
+    <string name="action_replace_waypoint">Αντικατάσταση %1$s</string>
+    <string name="action_replace_last">Αντικατάσταση τελευταίας διακοπής</string>
+    <string name="action_more_options">Περισσότερες επιλογές</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Κλείσιμο</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Κατεύθυνση προς την τοποθεσία στόχο</string>
+    <string name="cd_prev_waypoint">Προηγούμενο σημείο διαδρομής</string>
+    <string name="cd_next_waypoint">Επόμενο σημείο διαδρομής</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Τι νέο υπάρχει</string>
     <string name="changelog_title">Αρχείο αλλαγών</string>

@@ -1,2 +1,2 @@
 Unterstützung für die Zurück-Navigation in allen Menüs hinzufügen, anstatt nur eine Schaltfläche zum Schließen zu haben.
-Zulassen, dass die Waypoint-Info-Seitenleiste angezeigt wird, wenn Sie auf Ihren aktuellen Ziel-Waypoint tippen und wenn Sie auf das Navigations-Widget tippen.
+Lassen Sie den Wegpunkt-Info-Slideout erscheinen, wenn Sie auf Ihren aktuellen Wegpunkt tippen und wenn Sie auf das Navigations-Widget tippen.

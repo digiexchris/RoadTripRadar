@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Läheduses olevad kohad</string>
     <string name="action_clear_places">Eemalda kohad</string>
     <string name="action_location_search">Asukoha otsing</string>
-    <string name="action_clear_target">Eemalda sihtkoht</string>
+    <string name="action_clear_target">Clear Route</string>
     <string name="action_track_bearing">Järgi suunda</string>
     <string name="action_track_north">Põhi üleval</string>
     <string name="action_radar_on">Radar sees</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompass</string>
     <string name="tutorial_map_compass_body">Puuduta üks kord, et lukustada kaart asendisse, kus põhi on üleval. Puuduta uuesti, et kaart pöörduks sinu liikumissuuna järgi.</string>
     <string name="tutorial_map_drop_pin_title">Aseta nööpnõel</string>
-    <string name="tutorial_map_drop_pin_body">Puuduta ja hoia suvalises kohas kaardil, et asetada nööpnõel ja navigeerida selle suunas.</string>
+    <string name="tutorial_map_drop_pin_body">Tap and hold anywhere on the map to add a waypoint. Choose where it goes in your route — start, before the final stop, or end.</string>
     <string name="tutorial_map_zoom_out_title">Suumi välja</string>
     <string name="tutorial_map_zoom_out_body">Puuduta suumimiseks välja. Võid kaarti ka kahe sõrmega kokku näpistada.</string>
     <string name="tutorial_map_zoom_in_title">Suumi sisse</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Puuduta, et radari animatsioon käivitada või peatada. Puuduta ja hoia, et radar täielikult välja lülitada.</string>
     <string name="tutorial_map_menu_title">Kiirtoimingute menüü</string>
     <string name="tutorial_map_menu_body">Avab kiirtoimingute paneeli seadete, teemade ja huvipunktidega.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Map theme</string>
+    <string name="tutorial_map_setting_theme_body">Pick the map style. Open the theme selector to switch between built-in styles or import a custom one.</string>
+    <string name="tutorial_map_setting_units_title">Units</string>
+    <string name="tutorial_map_setting_units_body">Switch between metric (km, m) and imperial (miles, yards). Affects speed, distance, and waypoint thresholds.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Map center offset (portrait)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">How far down the screen the map is anchored when held vertically. Higher values leave more empty space at the top, useful when nav widgets crowd the bottom.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Map center offset (landscape)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Same idea as the portrait offset, applied when your phone is sideways.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Places icon opacity</string>
+    <string name="tutorial_map_setting_poi_opacity_body">Fade nearby place icons in or out so they don\'t cover the map. 0%% hides them entirely.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Auto-advance</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">When on, the active waypoint advances automatically as you reach each stop. Turn off to step manually using the long-press shortcut on the zoom buttons.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Advance distance</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">How close you need to be to a waypoint for auto-advance to fire. Range 25–500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Edit your route</string>
+    <string name="tutorial_route_nav_widget_body">Tap the nav widget to open the stops list. Drag to reorder, mark a stop active, remove waypoints, or clear the whole route.</string>
+    <string name="tutorial_route_long_press_out_title">Step back a waypoint</string>
+    <string name="tutorial_route_long_press_out_body">Long-press the – button to make the previous waypoint active. The nav widget points to whichever waypoint is active.</string>
+    <string name="tutorial_route_long_press_in_title">Advance to the next waypoint</string>
+    <string name="tutorial_route_long_press_in_body">Long-press the + button to make the next waypoint active. Auto-advance does this for you when you get close, but you can step manually any time. Toggle auto-advance and tune the distance threshold in Menu → Map.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Ilmaradar</string>
     <string name="tutorial_menu_weather_toggle_body">Lülita ilmaradari kiht sisse või välja.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Alusta lähedalasuvate kohtade laadimist rakenduse käivitumisel</string>
     <string name="poi_count">%1$d / %2$d</string>
     <string name="action_search_visible_area">Otsi nähtavalt alalt</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Auto-advance to next waypoint</string>
+    <string name="settings_auto_advance_threshold">Advance when within</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Route</string>
+    <string name="route_stop_count_plural">%1$d stops</string>
+    <string name="action_clear_route_confirm">Remove all waypoints?</string>
+    <string name="cd_drag_handle">Drag to reorder</string>
+    <string name="cd_set_active">Set as active</string>
+    <string name="cd_remove_waypoint">Remove waypoint</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Navigeeri siia</string>
+    <string name="action_insert_before">Insert before %1$s</string>
+    <string name="action_add_after">Add after %1$s</string>
+    <string name="action_add_to_start">Add to start</string>
+    <string name="action_insert_before_final">Insert before final stop</string>
+    <string name="action_add_to_end">Add to end</string>
+    <string name="action_replace_waypoint">Replace %1$s</string>
+    <string name="action_replace_last">Replace last stop</string>
+    <string name="action_more_options">More options</string>
+    <string name="waypoint_unnamed">Waypoint %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Sulge</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Suund sihtasukoha poole</string>
+    <string name="cd_prev_waypoint">Previous waypoint</string>
+    <string name="cd_next_waypoint">Next waypoint</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Mis on uut</string>
     <string name="changelog_title">Muudatuste logi</string>

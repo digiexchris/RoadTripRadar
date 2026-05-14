@@ -36,7 +36,7 @@
     <string name="action_nearby_places">Orte in der Nähe</string>
     <string name="action_clear_places">Orte löschen</string>
     <string name="action_location_search">Standortsuche</string>
-    <string name="action_clear_target">Ziel löschen</string>
+    <string name="action_clear_target">Route löschen</string>
     <string name="action_track_bearing">An Fahrtrichtung ausrichten</string>
     <string name="action_track_north">Nach Norden ausrichten</string>
     <string name="action_radar_on">Radar an</string>
@@ -84,7 +84,7 @@
     <string name="tutorial_map_compass_title">Kompass</string>
     <string name="tutorial_map_compass_body">Einmal tippen, um die Karte nach Norden auszurichten. Erneut tippen, um die Karte entsprechend Ihrer Fahrtrichtung zu drehen.</string>
     <string name="tutorial_map_drop_pin_title">Pin setzen</string>
-    <string name="tutorial_map_drop_pin_body">Irgendwo auf der Karte tippen und halten, um einen Pin zu setzen und dorthin zu navigieren.</string>
+    <string name="tutorial_map_drop_pin_body">Tippe und halte irgendwo auf der Karte, um einen Wegpunkt hinzuzufügen. Wählen Sie aus, wohin es in Ihrer Route geht — starten Sie vor der Endstation oder beenden Sie die Strecke.</string>
     <string name="tutorial_map_zoom_out_title">Herauszoomen</string>
     <string name="tutorial_map_zoom_out_body">Tippen zum Herauszoomen. Sie können die Karte auch mit zwei Fingern zusammenziehen.</string>
     <string name="tutorial_map_zoom_in_title">Hineinzoomen</string>
@@ -93,6 +93,28 @@
     <string name="tutorial_map_weather_body">Tippen, um die Radaranimation abzuspielen oder anzuhalten. Tippen und halten, um das Radar vollständig auszuschalten.</string>
     <string name="tutorial_map_menu_title">Schnellaktionen-Menü</string>
     <string name="tutorial_map_menu_body">Öffnet die Schnellaktionen-Schublade mit Einstellungen, Designs und Sonderzielen.</string>
+    <!-- Tutorial: MAP_SETTINGS group -->
+    <string name="tutorial_map_setting_theme_title">Kartenthema</string>
+    <string name="tutorial_map_setting_theme_body">Wählen Sie den Kartenstil. Öffnen Sie den Design-Selektor, um zwischen eingebauten Stilen zu wechseln oder einen benutzerdefinierten zu importieren.</string>
+    <string name="tutorial_map_setting_units_title">Einheiten</string>
+    <string name="tutorial_map_setting_units_body">Wechseln Sie zwischen Metrik (km, m) und Imperial (Meilen, Werft). Beeinflusst Sie Geschwindigkeit, Distanz und Wegpunkt.</string>
+    <string name="tutorial_map_setting_center_offset_portrait_title">Kartenmittelversatz (Hochformat)</string>
+    <string name="tutorial_map_setting_center_offset_portrait_body">Wie weit unten der Bildschirm ist die Karte vertikal verankert. Höhere Werte lassen mehr Leerzeichen an der oberen Stelle, nützlich wenn nav Widgets die untere Menge überfüllen.</string>
+    <string name="tutorial_map_setting_center_offset_landscape_title">Kartenmittelversatz (Querformat)</string>
+    <string name="tutorial_map_setting_center_offset_landscape_body">Gleiche Idee wie der Porträt-Offset, der angewendet wird, wenn Ihr Telefon seitlich ist.</string>
+    <string name="tutorial_map_setting_poi_opacity_title">Orte Deckkraft des Symbols</string>
+    <string name="tutorial_map_setting_poi_opacity_body">In der Nähe befindliche Ortssymbole ein- oder ausblenden, damit sie die Karte nicht bedecken. 0%% versteckt sie vollständig.</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_title">Automatisch vorwärts</string>
+    <string name="tutorial_map_setting_auto_advance_toggle_body">Wenn aktiviert, schreitet der aktive Wegpunkt automatisch voran, während Sie jeden Stop erreichen. Schalten Sie aus, um manuell zu gehen, indem Sie die Tastenkombination auf den Zoomtasten drücken.</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_title">Vorwärts Distanz</string>
+    <string name="tutorial_map_setting_auto_advance_threshold_body">Wie nah muss man sich an einem Wegpunkt befinden, um automatisch vorwärts zum Feuern zu gelangen. Reichweite 25–500 m.</string>
+    <!-- Tutorial: ROUTE_EDITOR group -->
+    <string name="tutorial_route_nav_widget_title">Route bearbeiten</string>
+    <string name="tutorial_route_nav_widget_body">Tippe auf das nav Widget, um die Stopp-Liste zu öffnen. Ziehe zum Nachsetzen, markiere einen Stop aktiv, entferne Wegpunkte oder leere die ganze Strecke.</string>
+    <string name="tutorial_route_long_press_out_title">Wegpunkt zurücksetzen</string>
+    <string name="tutorial_route_long_press_out_body">Drücken Sie den - Knopf, um den vorherigen Wegpunkt aktiv zu machen. Das nav Widget zeigt an, welcher Wegpunkt aktiv ist.</string>
+    <string name="tutorial_route_long_press_in_title">Weiter zum nächsten Wegpunkt</string>
+    <string name="tutorial_route_long_press_in_body">Drücken Sie lange die + Taste, um den nächsten Wegpunkt aktiv zu machen. Automatischer Fortschritt tut dies für Sie, wenn Sie nahe kommen, aber Sie können jederzeit manuell einspringen. Automatisch vorwärts schalten und den Abstand unter Menü → Karte einstellen.</string>
     <!-- Tutorial: MENU_MAIN group -->
     <string name="tutorial_menu_weather_toggle_title">Wetterradar</string>
     <string name="tutorial_menu_weather_toggle_body">Die Wetterradar-Überlagerung ein- oder ausschalten.</string>
@@ -197,11 +219,35 @@
     <string name="poi_autoload_description">Beim Start der App automatisch nahegelegene Orte laden</string>
     <string name="poi_count">%1$d von %2$d</string>
     <string name="action_search_visible_area">Sichtbaren Bereich durchsuchen</string>
+    <!-- Auto-advance -->
+    <string name="settings_auto_advance_toggle">Automatisch zum nächsten Wegpunkt springen</string>
+    <string name="settings_auto_advance_threshold">Vorwärts, wenn innerhalb</string>
+    <string name="threshold_meters_format">%1$d m</string>
+    <string name="threshold_yards_format">%1$d yd</string>
+    <!-- Route editor -->
+    <string name="route_editor_title">Route</string>
+    <string name="route_stop_count_plural">%1$d Stopps</string>
+    <string name="action_clear_route_confirm">Alle Wegpunkte entfernen?</string>
+    <string name="cd_drag_handle">Ziehen um neu zu ordnen</string>
+    <string name="cd_set_active">Als aktiv festlegen</string>
+    <string name="cd_remove_waypoint">Wegpunkt entfernen</string>
     <!-- Tapped POI popup -->
     <string name="action_navigate_here">Hierhin navigieren</string>
+    <string name="action_insert_before">Vor %1$s einfügen</string>
+    <string name="action_add_after">Nach %1$s hinzufügen</string>
+    <string name="action_add_to_start">Zum Start hinzufügen</string>
+    <string name="action_insert_before_final">Vor Ende einfügen</string>
+    <string name="action_add_to_end">Zum Ende hinzufügen</string>
+    <string name="action_replace_waypoint">Ersetzen %1$s</string>
+    <string name="action_replace_last">Letzten Stopp ersetzen</string>
+    <string name="action_more_options">Weitere Optionen</string>
+    <string name="waypoint_unnamed">Wegpunkt %1$d</string>
+    <string name="waypoint_numbered">#%1$d %2$s</string>
     <string name="cd_close">Schließen</string>
     <!-- Nav widget -->
     <string name="cd_direction_to_target">Richtung zum Zielort</string>
+    <string name="cd_prev_waypoint">Vorheriger Wegpunkt</string>
+    <string name="cd_next_waypoint">Nächster Wegpunkt</string>
     <!-- Changelog sheets -->
     <string name="changelog_whats_new">Neuerungen</string>
     <string name="changelog_title">Änderungsprotokoll</string>
