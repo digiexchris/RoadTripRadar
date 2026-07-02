@@ -1,6 +1,7 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +89,8 @@ fun WeatherWidget(
     val iconSize = weatherWidgetSize.dp
     val distFontSize = (weatherWidgetSize * 0.35f).sp
     val nameFontSize = (weatherWidgetSize * 0.25f).sp
-    val windIconSize = (weatherWidgetSize * 0.4f).dp
+    val windIconSize = (weatherWidgetSize * 0.5f).dp
+    val windBadgeSize = (weatherWidgetSize * 0.62f).dp
     Column(
         modifier = modifier
             .background(
@@ -131,12 +134,20 @@ fun WeatherWidget(
                         .rotate(windArrowRotationDeg),
                     tint = MaterialTheme.colorScheme.primary,
                 )
-                Icon(
-                    imageVector = Icons.Default.Air,
-                    contentDescription = null,
-                    modifier = Modifier.size(windIconSize),
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(windBadgeSize)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Air,
+                        contentDescription = null,
+                        modifier = Modifier.size(windIconSize),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
             Text(
                 text = "${windValue(snapshot.windSpeedKmh, windSpeedUnit)}↑${windValue(snapshot.windGustsKmh, windSpeedUnit)}",

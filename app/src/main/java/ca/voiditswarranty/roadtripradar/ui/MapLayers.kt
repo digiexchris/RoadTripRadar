@@ -229,7 +229,10 @@ fun WaypointRouteLineLayer(
 
     val pastFc = remember(waypoints.toList(), activeIndex, userPosition) {
         val path = listOf(userPosition) + waypoints.map { it.position }
-        FeatureCollection((0 until activeIndex).map { i ->
+        // Legs between already-visited waypoints. Starts at 1 (not 0) so the
+        // user→first-waypoint approach is never drawn as a static past leg —
+        // the live approach to the active target is drawn by activeFc instead.
+        FeatureCollection((1 until activeIndex).map { i ->
             Feature(
                 geometry = LineString(listOf(path[i], path[i + 1])),
                 properties = buildJsonObject {},
@@ -241,7 +244,10 @@ fun WaypointRouteLineLayer(
         FeatureCollection(
             if (activeIndex in waypoints.indices) listOf(
                 Feature(
-                    geometry = LineString(listOf(path[activeIndex], path[activeIndex + 1])),
+                    // From the user's live position to the active target (not the
+                    // planned leg between waypoints), so the approach line advances
+                    // as the active waypoint advances.
+                    geometry = LineString(listOf(path[0], path[activeIndex + 1])),
                     properties = buildJsonObject {},
                 ),
             ) else emptyList(),
@@ -280,8 +286,9 @@ fun WaypointRouteLineLayer(
         id = "waypoint-route-active",
         source = activeSource,
         color = const(Color.Green),
-        width = const(4.dp),
-        opacity = const(0.8f),
+        width = const(5.dp),
+        opacity = const(0.95f),
+        dasharray = const(listOf(4, 3)),
     )
 }
 

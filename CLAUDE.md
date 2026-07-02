@@ -70,7 +70,7 @@ Single-module Android app (Kotlin, Jetpack Compose) using MVVM without a DI fram
 
 ## Changelog System
 
-User-facing release notes are authored in `app/src/main/assets/changelog.json`. Between releases, the top entry has `"versionName": "next"` — append bullets to its `items` array. The CI release workflow stamps it with the real version, generates Fastlane changelogs, and creates the GitHub Release. After a release, insert a new `"next"` entry at `releases[0]` before adding more bullets.
+User-facing release notes are authored in `app/src/main/assets/changelog.json`. Between releases, the top entry has `"versionName": "next"` — append bullets to its `items` array. The CI release workflow stamps it with the real version, generates Fastlane changelogs, and creates the GitHub Release. After a release, insert a new `"next"` entry at `releases[0]` before adding more bullets. A `next` entry uses the placeholder shape `{"versionName": "next", "versionCode": 99, "showInApp": true, "items": [...]}` — the CI release workflow overwrites `versionName` and `versionCode` with the real values when stamping the release.
 
 ## Reproducible Builds
 
