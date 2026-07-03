@@ -288,6 +288,8 @@
     <string name="speed_unit_mph">mph</string>
     <!-- Weather widget -->
     <string name="cd_wind_direction">Wind direction</string>
+    <string name="weather_unavailable">Weather unavailable</string>
+    <string name="cd_weather_unavailable">Weather unavailable</string>
     <!-- POI category labels -->
     <string name="poi_gas_station">Gas Station</string>
     <string name="poi_ev_charging">EV Charging</string>

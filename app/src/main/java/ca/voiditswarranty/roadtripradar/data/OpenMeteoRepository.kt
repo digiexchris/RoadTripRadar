@@ -34,7 +34,7 @@ class OpenMeteoRepository(
             try {
                 val q = "latitude=$latitude&longitude=$longitude" +
                     "&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m" +
-                    "&hourly=temperature_2m&past_hours=3&forecast_hours=1" +
+                    "&hourly=temperature_2m&forecast_hours=2" +
                     "&timezone=auto&wind_speed_unit=kmh"
                 val jsonStr = URL("$baseUrl/forecast?$q").readText()
                 val root = Json.parseToJsonElement(jsonStr).jsonObject
@@ -54,7 +54,7 @@ class OpenMeteoRepository(
                 val zoneId = root["timezone"]?.jsonPrimitive?.content?.let { id ->
                     runCatching { ZoneId.of(id) }.getOrNull()
                 } ?: ZoneOffset.UTC
-                val tempTrend = computeTrendPastHour(
+                val tempTrend = computeTrendNextHour(
                     currentTempCelsius = temp,
                     currentTimeIso = currentTimeStr,
                     zoneId = zoneId,
@@ -78,11 +78,12 @@ class OpenMeteoRepository(
 }
 
 /**
- * Trend = current temperature minus hourly [temperature_2m] for the clock hour immediately before
- * the current hour (local timezone from the API). Uses hourly `time` + `past_hours` per Open-Meteo
- * forecast API (https://open-meteo.com/en/docs).
+ * Trend = hourly [temperature_2m] for the clock hour immediately after the current hour minus the
+ * current temperature (local timezone from the API). Positive = forecast to warm over the next
+ * hour, negative = forecast to cool. Uses hourly `time` + `forecast_hours` per Open-Meteo forecast
+ * API (https://open-meteo.com/en/docs).
  */
-private fun computeTrendPastHour(
+private fun computeTrendNextHour(
     currentTempCelsius: Double,
     currentTimeIso: String?,
     zoneId: ZoneId,
@@ -94,17 +95,17 @@ private fun computeTrendPastHour(
     if (times.isEmpty()) return null
 
     val nowZ = parseOpenMeteoTimeToZoned(currentTimeIso, zoneId) ?: return null
-    val prevHourStart = nowZ.truncatedTo(ChronoUnit.HOURS).minusHours(1)
-    val prevEpoch = prevHourStart.toInstant().epochSecond
+    val nextHourStart = nowZ.truncatedTo(ChronoUnit.HOURS).plusHours(1)
+    val nextEpoch = nextHourStart.toInstant().epochSecond
 
     val n = minOf(times.size, temps.size)
     for (i in 0 until n) {
         val tStr = times[i].jsonPrimitive.content
         val z = parseOpenMeteoTimeToZoned(tStr, zoneId) ?: continue
         val slotStart = z.truncatedTo(ChronoUnit.HOURS)
-        if (slotStart.toInstant().epochSecond == prevEpoch) {
-            val pastTemp = temps[i].jsonPrimitive.content.toDoubleOrNull() ?: return null
-            return currentTempCelsius - pastTemp
+        if (slotStart.toInstant().epochSecond == nextEpoch) {
+            val nextTemp = temps[i].jsonPrimitive.content.toDoubleOrNull() ?: return null
+            return nextTemp - currentTempCelsius
         }
     }
     return null

@@ -227,14 +227,15 @@ fun WaypointRouteLineLayer(
 ) {
     if (waypoints.isEmpty() || activeIndex == null) return
 
-    val pastFc = remember(waypoints.toList(), activeIndex, userPosition) {
-        val path = listOf(userPosition) + waypoints.map { it.position }
-        // Legs between already-visited waypoints. Starts at 1 (not 0) so the
-        // user→first-waypoint approach is never drawn as a static past leg —
-        // the live approach to the active target is drawn by activeFc instead.
-        FeatureCollection((1 until activeIndex).map { i ->
+    // All legs between consecutive waypoints, drawn as the inactive dashed green
+    // route. This deliberately includes the leg from the previous waypoint to the
+    // active target, so the planned segment stays visible (as a dashed line)
+    // underneath the live solid user→target approach drawn by activeFc — it no
+    // longer disappears once you've passed the previous waypoint.
+    val inactiveFc = remember(waypoints.toList()) {
+        FeatureCollection((0 until waypoints.size - 1).map { i ->
             Feature(
-                geometry = LineString(listOf(path[i], path[i + 1])),
+                geometry = LineString(listOf(waypoints[i].position, waypoints[i + 1].position)),
                 properties = buildJsonObject {},
             )
         })
@@ -253,33 +254,16 @@ fun WaypointRouteLineLayer(
             ) else emptyList(),
         )
     }
-    val futureFc = remember(waypoints.toList(), activeIndex, userPosition) {
-        val path = listOf(userPosition) + waypoints.map { it.position }
-        FeatureCollection((activeIndex + 1 until waypoints.size).map { i ->
-            Feature(
-                geometry = LineString(listOf(path[i], path[i + 1])),
-                properties = buildJsonObject {},
-            )
-        })
-    }
 
-    val pastSource = rememberGeoJsonSource(data = GeoJsonData.Features(pastFc))
+    val inactiveSource = rememberGeoJsonSource(data = GeoJsonData.Features(inactiveFc))
     val activeSource = rememberGeoJsonSource(data = GeoJsonData.Features(activeFc))
-    val futureSource = rememberGeoJsonSource(data = GeoJsonData.Features(futureFc))
 
     LineLayer(
-        id = "waypoint-route-past",
-        source = pastSource,
-        color = const(Color.Gray),
-        width = const(3.dp),
-        opacity = const(0.4f),
-    )
-    LineLayer(
-        id = "waypoint-route-future",
-        source = futureSource,
+        id = "waypoint-route-inactive",
+        source = inactiveSource,
         color = const(Color.Green),
-        width = const(2.5.dp),
-        opacity = const(0.5f),
+        width = const(5.dp),
+        opacity = const(0.6f),
         dasharray = const(listOf(2, 3)),
     )
     LineLayer(
@@ -288,7 +272,6 @@ fun WaypointRouteLineLayer(
         color = const(Color.Green),
         width = const(5.dp),
         opacity = const(0.95f),
-        dasharray = const(listOf(4, 3)),
     )
 }
 

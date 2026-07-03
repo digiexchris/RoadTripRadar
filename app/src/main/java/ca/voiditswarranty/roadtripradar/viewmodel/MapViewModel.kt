@@ -251,6 +251,11 @@ class MapViewModel(
         const val RADAR_POLL_MS = 60_000L
         const val LOCAL_WEATHER_SUCCESS_MS = 600_000L
         const val LOCAL_WEATHER_RETRY_MS = 60_000L
+        // Aggressive retry used while no weather has been received yet. Once a
+        // snapshot arrives it is kept across failures, so openMeteoSnapshot == null
+        // means "never succeeded" — we retry fast until then and fall back to the
+        // regular success/retry cadence above afterwards.
+        const val LOCAL_WEATHER_FAST_RETRY_MS = 15_000L
     }
 
     data class TappedPoiInfo(
@@ -446,6 +451,9 @@ class MapViewModel(
             while (true) {
                 val pos = localWeatherAnchor
                 if (pos == null) {
+                    // No location fix yet. Wait briefly so the first fetch is
+                    // responsive once a fix arrives — this is waiting on the GPS
+                    // anchor, not retrying a failed fetch.
                     delay(2_000L)
                     continue
                 }
@@ -455,7 +463,11 @@ class MapViewModel(
                         delay(LOCAL_WEATHER_SUCCESS_MS)
                     }
                     .onFailure {
-                        delay(LOCAL_WEATHER_RETRY_MS)
+                        // Retry aggressively (every 15s) until we've ever received
+                        // weather; after that, fall back to the regular retry cadence.
+                        // openMeteoSnapshot is kept across failures, so null here
+                        // means we have never succeeded.
+                        delay(if (openMeteoSnapshot == null) LOCAL_WEATHER_FAST_RETRY_MS else LOCAL_WEATHER_RETRY_MS)
                     }
             }
         }

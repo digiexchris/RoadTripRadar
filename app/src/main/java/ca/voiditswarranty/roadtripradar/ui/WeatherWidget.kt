@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -89,8 +90,8 @@ fun WeatherWidget(
     val iconSize = weatherWidgetSize.dp
     val distFontSize = (weatherWidgetSize * 0.35f).sp
     val nameFontSize = (weatherWidgetSize * 0.25f).sp
-    val windIconSize = (weatherWidgetSize * 0.5f).dp
-    val windBadgeSize = (weatherWidgetSize * 0.62f).dp
+    val windIconSize = (weatherWidgetSize * 0.27f).dp
+    val windBadgeSize = (weatherWidgetSize * 0.34f).dp
     Column(
         modifier = modifier
             .background(
@@ -164,13 +165,24 @@ fun WeatherWidget(
                 textAlign = TextAlign.Center,
             )
         } else {
-            Text(
-                text = "—",
-                fontSize = distFontSize,
-                lineHeight = distFontSize,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                textAlign = TextAlign.Center,
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CloudOff,
+                    contentDescription = stringResource(R.string.cd_weather_unavailable),
+                    modifier = Modifier.size(windIconSize),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = stringResource(R.string.weather_unavailable),
+                    fontSize = nameFontSize,
+                    lineHeight = nameFontSize,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
