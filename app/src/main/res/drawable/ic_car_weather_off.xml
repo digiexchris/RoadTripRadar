@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Cloud with a slash, for the "weather unavailable" state. -->
+    <path
+        android:pathData="M4,20 L20,4"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M8,18 q-3,0 -3,-3 q0,-2.5 2.7,-2.95 q0.3,-3 3.3,-3 q2.7,0 3.3,2.4"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.15" />
+</vector>

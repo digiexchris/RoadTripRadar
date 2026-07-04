@@ -42,6 +42,7 @@ import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialGroup
 import ca.voiditswarranty.roadtripradar.ui.tutorial.stepsFor
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -50,6 +51,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
+import java.util.concurrent.atomic.AtomicInteger
 import org.maplibre.spatialk.geojson.BoundingBox
 import org.maplibre.spatialk.geojson.Feature
 import org.maplibre.spatialk.geojson.FeatureCollection
@@ -67,8 +69,36 @@ class MapViewModel(
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
     val postpassRepo: PostpassRepository = PostpassRepository(appContext),
+    /**
+     * Optional externally-supplied [CoroutineScope]. When null (the phone Activity
+     * path), polling/launch run on [viewModelScope] and are cancelled when the
+     * Activity destroys the ViewModel. When supplied (the Android Auto path via
+     * [ca.voiditswarranty.roadtripradar.car.CarViewModelHolder]), they run on an
+     * app-scoped supervisor scope so they survive Activity destruction while the
+     * car Session is alive.
+     */
+    private val externalScope: CoroutineScope? = null,
 ) : ViewModel() {
+    private val vmScope: CoroutineScope = externalScope ?: viewModelScope
     private val geocodingRepo: GeocodingRepository = GeocodingRepository()
+
+    // --- Refresh bus for Android Auto car screens ---
+    // Car App Library screens are not Jetpack Compose; they rebuild their Template
+    // in onGetTemplate(). Car Screens register a listener that calls invalidate() on
+    // the car host's main executor, so the car UI reflects VM state changes. The
+    // phone UI keeps reacting via Compose snapshot and ignores this bus. Listeners
+    // are invoked on whatever thread the mutation ran on (often Dispatchers.IO), so
+    // registrants must dispatch to the main executor themselves.
+    private val refreshListeners = java.util.concurrent.CopyOnWriteArrayList<(MapViewModel) -> Unit>()
+    fun addRefreshListener(listener: (MapViewModel) -> Unit) {
+        refreshListeners.add(listener)
+    }
+    fun removeRefreshListener(listener: (MapViewModel) -> Unit) {
+        refreshListeners.remove(listener)
+    }
+    private fun notifyRefresh() {
+        refreshListeners.forEach { runCatching { it(this) } }
+    }
 
     // Weather
     var weatherMode by mutableStateOf(prefsRepo.weatherMode)
@@ -108,6 +138,12 @@ class MapViewModel(
     var temperatureUnit by mutableStateOf(prefsRepo.temperatureUnit)
         private set
     var poiIconOpacity by mutableStateOf(prefsRepo.poiIconOpacity)
+        private set
+    var mapStyle by mutableStateOf(
+        try { prefsRepo.mapStyle } catch (_: IllegalArgumentException) {
+            PreferencesRepository.defaultMapStyleFor(appContext)
+        }
+    )
         private set
     var keepScreenOn by mutableStateOf(prefsRepo.keepScreenOn)
         private set
@@ -348,14 +384,61 @@ class MapViewModel(
     private var searchJob: Job? = null
     private var cellWorkerJob: Job? = null
 
+    /**
+     * Ref-count of "active" surfaces (the phone Activity while resumed, plus each live
+     * Android Auto car [androidx.car.app.Session]). The weather/radar/animation polling
+     * loops only run while at least one surface is active — see [reconcilePolling]. This
+     * keeps the app-scoped singleton ViewModel from polling forever in the background
+     * after the phone app is closed and no car is connected.
+     */
+    private val activeSurfaces = AtomicInteger(0)
+
+    /** Called by a surface when it comes to the foreground / is created. */
+    fun onSurfaceActive() {
+        if (activeSurfaces.getAndIncrement() == 0) reconcilePolling()
+    }
+
+    /** Called by a surface when it goes to the background / is destroyed. */
+    fun onSurfaceInactive() {
+        // Clamp at 0 so a stray inactive call (e.g. onStop without a matching onResume)
+        // can't drive the count negative and starve a future surface.
+        while (true) {
+            val cur = activeSurfaces.get()
+            if (cur <= 0) return
+            if (activeSurfaces.compareAndSet(cur, cur - 1)) {
+                if (cur - 1 == 0) reconcilePolling()
+                return
+            }
+        }
+    }
+
+    /**
+     * Declaratively starts/stops the long-running polling jobs to match the current
+     * state: a job runs iff at least one surface is active AND its condition holds
+     * (radar needs [weatherActive]; animation needs [isWeatherPlaying]; local weather
+     * runs whenever any surface is active). Idempotent — safe to call on every state
+     * change.
+     */
+    private fun reconcilePolling() {
+        val active = activeSurfaces.get() > 0
+        // Local weather polling: run iff a surface is active.
+        if (active) startLocalWeatherPolling()
+        else { localWeatherPollJob?.cancel(); localWeatherPollJob = null }
+        // Radar polling: run iff active and weather is on.
+        if (active && weatherActive) startWeatherPollingIfActive()
+        else { weatherPollingJob?.cancel(); weatherPollingJob = null }
+        // Radar animation: run iff active and playing.
+        if (active && isWeatherPlaying) startWeatherAnimationIfPlaying()
+        else { weatherAnimationJob?.cancel(); weatherAnimationJob = null }
+    }
+
     init {
         if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
             showTerms = true
             termsNeedAcceptance = true
         }
-        startWeatherPollingIfActive()
-        startWeatherAnimationIfPlaying()
-        startLocalWeatherPolling()
+        // Polling is started lazily by the first surface to become active
+        // (see [onSurfaceActive] / [reconcilePolling]).
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
 
@@ -376,8 +459,8 @@ class MapViewModel(
         if (mode != WeatherMode.PLAYING) {
             currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
         }
-        startWeatherPollingIfActive()
-        startWeatherAnimationIfPlaying()
+        reconcilePolling()
+        notifyRefresh()
     }
 
     fun cycleWeatherMode() {
@@ -413,15 +496,18 @@ class MapViewModel(
     fun updateShowLegend(show: Boolean) {
         showLegend = show
         prefsRepo.showLegend = show
+        notifyRefresh()
     }
 
     fun updateShowTimeline(show: Boolean) {
         showTimeline = show
         prefsRepo.showTimeline = show
+        notifyRefresh()
     }
 
     fun updateRadarOpacity(opacity: Float) {
         radarOpacity = opacity
+        notifyRefresh()
     }
 
     fun saveRadarOpacity() {
@@ -429,9 +515,9 @@ class MapViewModel(
     }
 
     private fun startWeatherPollingIfActive() {
-        weatherPollingJob?.cancel()
         if (!weatherActive) return
-        weatherPollingJob = viewModelScope.launch {
+        if (weatherPollingJob?.isActive == true) return
+        weatherPollingJob = vmScope.launch {
             while (true) {
                 val data = weatherRepo.fetchFrames(lastGenerated)
                 if (data != null) {
@@ -446,8 +532,8 @@ class MapViewModel(
     }
 
     private fun startLocalWeatherPolling() {
-        localWeatherPollJob?.cancel()
-        localWeatherPollJob = viewModelScope.launch {
+        if (localWeatherPollJob?.isActive == true) return
+        localWeatherPollJob = vmScope.launch {
             while (true) {
                 val pos = localWeatherAnchor
                 if (pos == null) {
@@ -460,6 +546,7 @@ class MapViewModel(
                 openMeteoRepo.fetchCurrent(pos.latitude, pos.longitude)
                     .onSuccess { snap ->
                         openMeteoSnapshot = snap
+                        notifyRefresh()
                         delay(LOCAL_WEATHER_SUCCESS_MS)
                     }
                     .onFailure {
@@ -474,9 +561,9 @@ class MapViewModel(
     }
 
     private fun startWeatherAnimationIfPlaying() {
-        weatherAnimationJob?.cancel()
         if (weatherMode != WeatherMode.PLAYING) return
-        weatherAnimationJob = viewModelScope.launch {
+        if (weatherAnimationJob?.isActive == true) return
+        weatherAnimationJob = vmScope.launch {
             while (true) {
                 delay(500)
                 if (radarFramePaths.isNotEmpty()) {
@@ -491,6 +578,7 @@ class MapViewModel(
     fun updateUseMetric(metric: Boolean) {
         useMetric = metric
         prefsRepo.useMetric = metric
+        notifyRefresh()
     }
 
     fun updateSpeedSize(size: Float) {
@@ -528,16 +616,19 @@ class MapViewModel(
     fun updateWindEnabled(on: Boolean) {
         windEnabled = on
         prefsRepo.windEnabled = on
+        notifyRefresh()
     }
 
     fun updateWindSpeedUnit(unit: WindSpeedUnit) {
         windSpeedUnit = unit
         prefsRepo.windSpeedUnit = unit
+        notifyRefresh()
     }
 
     fun updateTemperatureUnit(unit: TemperatureUnit) {
         temperatureUnit = unit
         prefsRepo.temperatureUnit = unit
+        notifyRefresh()
     }
 
     fun updatePoiIconOpacity(opacity: Float) {
@@ -551,6 +642,13 @@ class MapViewModel(
     fun updateKeepScreenOn(on: Boolean) {
         keepScreenOn = on
         prefsRepo.keepScreenOn = on
+        notifyRefresh()
+    }
+
+    fun updateMapStyle(style: MapStyle) {
+        mapStyle = style
+        prefsRepo.mapStyle = style
+        notifyRefresh()
     }
 
     fun updateAutostartPoiLoadingOnLaunch(on: Boolean) {
@@ -608,6 +706,10 @@ class MapViewModel(
     fun saveLastKnownPosition(pos: Position) {
         prefsRepo.lastKnownPosition = pos
     }
+
+    /** Last known device position (persisted by the phone surface). Read by the car map. */
+    val lastKnownPosition: Position?
+        get() = prefsRepo.lastKnownPosition
 
     fun openActionsDrawer() { showActionsDrawer = true }
     fun closeActionsDrawer() { showActionsDrawer = false }
@@ -790,7 +892,7 @@ class MapViewModel(
     }
 
     fun importCustomTheme(uri: android.net.Uri, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(Dispatchers.IO) {
             try {
                 customThemeRepo.importTheme(uri, target)
                 withContext(Dispatchers.Main) {
@@ -820,7 +922,7 @@ class MapViewModel(
 
     /** Creates a custom theme by copying a bundled [source] asset into the [target] custom slot. */
     fun initCustomThemeFromAsset(source: MapStyle, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(Dispatchers.IO) {
             customThemeRepo.initFromAsset(source, target, appContext.assets)
             withContext(Dispatchers.Main) {
                 refreshCustomThemeState()
@@ -832,7 +934,7 @@ class MapViewModel(
 
     /** Downloads a built-in remote style JSON and saves it to a custom slot. */
     fun initCustomThemeFromUrl(url: String, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(Dispatchers.IO) {
             try {
                 val body = java.net.URL(url).readText()
                 customThemeRepo.writeThemeJson(target, body)
@@ -892,7 +994,7 @@ class MapViewModel(
         if (tappedPoi?.position == position) {
             tappedPoi = tappedPoi?.copy(subtitle = "$loadingSuffix\n${formatLatLng(position)}")
         }
-        viewModelScope.launch {
+        vmScope.launch {
             val address = geocodingRepo.reverseGeocode(position.latitude, position.longitude)
             val newSubtitle = if (address != null) {
                 "$address\n${formatLatLng(position)}"
@@ -913,6 +1015,7 @@ class MapViewModel(
         waypoints.clear()
         activeWaypointId = null
         persistRoute()
+        notifyRefresh()
     }
 
     fun moveWaypoint(fromIndex: Int, toIndex: Int) {
@@ -923,6 +1026,7 @@ class MapViewModel(
         val wp = waypoints.removeAt(fromIndex)
         waypoints.add(target, wp)
         persistRoute()
+        notifyRefresh()
     }
 
     fun addWaypoint(
@@ -958,6 +1062,7 @@ class MapViewModel(
         }
         if (activeWaypointId == null) activeWaypointId = wp.id
         persistRoute()
+        notifyRefresh()
         return wp.id
     }
 
@@ -965,6 +1070,7 @@ class MapViewModel(
         if (waypoints.any { it.id == id }) {
             activeWaypointId = id
             persistRoute()
+            notifyRefresh()
         }
     }
 
@@ -983,10 +1089,12 @@ class MapViewModel(
     fun updateAutoAdvanceEnabled(enabled: Boolean) {
         autoAdvanceEnabled = enabled
         prefsRepo.autoAdvanceEnabled = enabled
+        notifyRefresh()
     }
 
     fun updateAutoAdvanceThreshold(meters: Int) {
         autoAdvanceThresholdMeters = meters.coerceIn(25, 500)
+        notifyRefresh()
     }
 
     fun saveAutoAdvanceThreshold() {
@@ -1039,6 +1147,7 @@ class MapViewModel(
             searchQuery = ""
             searchResults = emptyList()
         }
+        notifyRefresh()
     }
 
     private inline fun updateActiveWaypointIf(
@@ -1082,6 +1191,7 @@ class MapViewModel(
                 updateCellCounters()
             }
         }
+        notifyRefresh()
     }
 
     fun searchVisibleArea() {
@@ -1111,6 +1221,7 @@ class MapViewModel(
         enqueueCells(missingCells, cameraTarget)
         startCellWorker()
         poiCategoriesVersion++
+        notifyRefresh()
     }
 
     fun clearNearbyPois() {
@@ -1126,6 +1237,7 @@ class MapViewModel(
         poiPipelineActive = false
         poiCategoriesVersion++
         updateCellCounters()
+        notifyRefresh()
     }
 
     fun openPoiCategoryPicker() { showPoiCategoryPicker = true }
@@ -1194,12 +1306,14 @@ class MapViewModel(
             activeWaypointId = waypoints.firstOrNull()?.id
         }
         persistRoute()
+        notifyRefresh()
     }
 
     fun removeNavigationTarget() {
         val id = tappedWaypointId
         if (id != null) removeWaypoint(id)
         dismissTappedPoi()
+        notifyRefresh()
     }
 
     // --- Cell pipeline helpers ---
@@ -1207,6 +1321,7 @@ class MapViewModel(
     private fun rebuildMergedFeatures() {
         val allFeatures = cellCache.values.flatMap { it.features }
         nearbyPoiFeatures = FeatureCollection(allFeatures)
+        notifyRefresh()
         if (cellCache.isEmpty()) {
             poiFetchRegion = null
         } else {
@@ -1279,7 +1394,7 @@ class MapViewModel(
 
     private fun startCellWorker() {
         if (cellWorkerJob?.isActive == true) return
-        cellWorkerJob = viewModelScope.launch {
+        cellWorkerJob = vmScope.launch {
             for (signal in workSignal) {
                 cellWorkerLoop()
             }
@@ -1370,6 +1485,7 @@ class MapViewModel(
         if (cells.isEmpty()) return
         val cam = pendingCameraInfo ?: return
         enqueueCells(cells, Position(latitude = cam.lat, longitude = cam.lon))
+        notifyRefresh()
     }
 
     /**
@@ -1433,9 +1549,10 @@ class MapViewModel(
         searchJob?.cancel()
         if (searchQuery.length < 2) {
             searchResults = emptyList()
+            notifyRefresh()
             return
         }
-        searchJob = viewModelScope.launch {
+        searchJob = vmScope.launch {
             isSearching = true
             delay(300L)
             val cam = pendingCameraInfo ?: return@launch
@@ -1448,6 +1565,7 @@ class MapViewModel(
                 userPosition = userPositionForSearch,
             )
             isSearching = false
+            notifyRefresh()
         }
     }
 
@@ -1536,8 +1654,8 @@ class MapViewModel(
         prefsRepo.resetToDefaults(systemDefault)
         showResetConfirm = false
         showActionsDrawer = false
-        startWeatherPollingIfActive()
-        startWeatherAnimationIfPlaying()
+        reconcilePolling()
+        notifyRefresh()
     }
 
     // --- Zoom ---

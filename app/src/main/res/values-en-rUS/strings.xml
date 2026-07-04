@@ -286,10 +286,44 @@
     <!-- Speed readout -->
     <string name="speed_unit_kmh">km/h</string>
     <string name="speed_unit_mph">mph</string>
+    <!-- Wind speed units (shared by phone widget + Android Auto) -->
+    <string name="wind_unit_kmh">km/h</string>
+    <string name="wind_unit_mph">mph</string>
+    <string name="wind_unit_kn">kn</string>
     <!-- Weather widget -->
     <string name="cd_wind_direction">Wind direction</string>
-    <string name="weather_unavailable">Weather unavailable</string>
+    <string name="weather_unavailable">Weather\nUnavailable</string>
     <string name="cd_weather_unavailable">Weather unavailable</string>
+    <!-- WMO weather interpretation codes (Open-Meteo weather_code) -->
+    <string name="wmo_0">Clear sky</string>
+    <string name="wmo_1">Mainly clear</string>
+    <string name="wmo_2">Partly cloudy</string>
+    <string name="wmo_3">Overcast</string>
+    <string name="wmo_45">Fog</string>
+    <string name="wmo_48">Depositing rime fog</string>
+    <string name="wmo_51">Light drizzle</string>
+    <string name="wmo_53">Moderate drizzle</string>
+    <string name="wmo_55">Dense drizzle</string>
+    <string name="wmo_56">Light freezing drizzle</string>
+    <string name="wmo_57">Dense freezing drizzle</string>
+    <string name="wmo_61">Slight rain</string>
+    <string name="wmo_63">Moderate rain</string>
+    <string name="wmo_65">Heavy rain</string>
+    <string name="wmo_66">Light freezing rain</string>
+    <string name="wmo_67">Heavy freezing rain</string>
+    <string name="wmo_71">Slight snow</string>
+    <string name="wmo_73">Moderate snow</string>
+    <string name="wmo_75">Heavy snow</string>
+    <string name="wmo_77">Snow grains</string>
+    <string name="wmo_80">Slight rain showers</string>
+    <string name="wmo_81">Moderate rain showers</string>
+    <string name="wmo_82">Violent rain showers</string>
+    <string name="wmo_85">Slight snow showers</string>
+    <string name="wmo_86">Heavy snow showers</string>
+    <string name="wmo_95">Thunderstorm</string>
+    <string name="wmo_96">Thunderstorm with slight hail</string>
+    <string name="wmo_99">Thunderstorm with heavy hail</string>
+    <string name="wmo_unknown">Unknown</string>
     <!-- POI category labels -->
     <string name="poi_gas_station">Gas Station</string>
     <string name="poi_ev_charging">EV Charging</string>
@@ -353,4 +387,72 @@
     <string name="theme_import_error_missing_layers">Style is missing the required \'layers\' field.</string>
     <string name="theme_import_error_missing_sources">Style is missing the required \'sources\' field.</string>
     <string name="theme_import_error_generic">Import failed.</string>
+
+    <!-- Android Auto (car) UI -->
+    <string name="car_home_title">RoadTripRadar</string>
+    <string name="car_home_trend">Trend</string>
+    <string name="car_home_radar">Radar</string>
+    <string name="car_weather_no_data">Weather unavailable</string>
+    <string name="car_route_empty">No waypoints</string>
+    <string name="car_action_play">Play</string>
+    <string name="car_action_pause">Pause</string>
+    <string name="car_action_advance">Next</string>
+    <string name="car_action_regress">Prev</string>
+    <string name="car_action_settings">Settings</string>
+    <string name="car_action_pois">Places</string>
+    <string name="car_action_search">Search</string>
+    <string name="car_action_menu">Menu</string>
+    <string name="car_action_recenter">Recenter</string>
+    <string name="car_action_radar_off">Turn radar off</string>
+    <string name="car_radar_off">Off</string>
+    <string name="car_radar_on">On</string>
+    <string name="car_radar_playing">Playing</string>
+
+    <string name="car_weather_title">Weather</string>
+    <string name="car_weather_radar_mode">Radar mode</string>
+    <string name="car_weather_wind_arrow">Wind arrow</string>
+    <string name="car_weather_legend">Legend</string>
+    <string name="car_weather_timeline">Timeline</string>
+    <string name="car_weather_opacity">Radar opacity</string>
+    <string name="car_weather_wind_unit">Wind unit</string>
+    <string name="car_weather_temp_unit">Temperature unit</string>
+
+    <string name="car_poi_title">Places</string>
+    <string name="car_poi_status">Status</string>
+    <string name="car_poi_max_reached">(max 5)</string>
+    <string name="car_poi_search">Search area</string>
+    <string name="car_poi_clear">Clear</string>
+    <string name="car_poi_retry">Retry failed</string>
+    <string name="car_poi_loading">Loading… (%1$d found)</string>
+    <string name="car_poi_failed">Some areas failed (%1$d found)</string>
+    <string name="car_poi_ready">Ready (%1$d found)</string>
+    <string name="car_poi_no_map">Open the map on your phone first</string>
+    <string name="car_poi_idle">Idle (%1$d found)</string>
+
+    <string name="car_search_title">Search</string>
+    <string name="car_search_hint">Search for a place</string>
+    <string name="car_search_no_results">No results</string>
+    <string name="car_search_add_start">Add as start</string>
+    <string name="car_search_add_before_active">Add before active</string>
+    <string name="car_search_add_end">Add to end</string>
+    <string name="car_search_replace_active">Replace active</string>
+
+    <string name="car_route_title">Route</string>
+    <string name="car_route_clear">Clear route</string>
+    <string name="car_route_active_badge">▶ </string>
+    <string name="car_route_move_up">Move up</string>
+    <string name="car_route_remove">Remove</string>
+
+    <string name="car_settings_title">Settings</string>
+    <string name="car_settings_metric">Metric units</string>
+    <string name="car_settings_wind_unit">Wind unit</string>
+    <string name="car_settings_temp_unit">Temperature unit</string>
+    <string name="car_settings_map_style">Map style</string>
+    <string name="car_settings_keep_screen_on">Keep screen on</string>
+    <string name="car_settings_auto_advance">Auto-advance waypoints</string>
+    <string name="car_settings_threshold">Auto-advance distance</string>
+    <string name="car_settings_reset">Reset to defaults</string>
+    <string name="car_settings_reset_confirm">Reset all settings and clear the route?</string>
+    <string name="car_terms_not_accepted">Terms not accepted</string>
+    <string name="car_terms_message">Please open RoadTripRadar on your phone and accept the Terms &amp; Conditions before using it on the car.</string>
 </resources>

@@ -16,6 +16,7 @@ spatialKTurf = "0.6.1"
 androidsvg = "1.4"
 kotlinxSerializationJson = "1.7.3"
 recyclerview = "1.4.0"
+carApp = "1.7.0"
 
 [libraries]
 maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibreCompose" }
@@ -28,6 +29,9 @@ kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-t
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+androidx-car-app = { group = "androidx.car.app", name = "app", version.ref = "carApp" }
+androidx-car-app-projected = { group = "androidx.car.app", name = "app-projected", version.ref = "carApp" }
+androidx-car-app-testing = { group = "androidx.car.app", name = "app-testing", version.ref = "carApp" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

@@ -28,55 +28,10 @@ import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
-import java.util.Locale
+import androidx.compose.ui.platform.LocalContext
 
-private fun formatTemp(celsius: Double, unit: TemperatureUnit): String {
-    val value = when (unit) {
-        TemperatureUnit.CELSIUS -> celsius
-        TemperatureUnit.FAHRENHEIT -> celsius * 9.0 / 5.0 + 32
-        TemperatureUnit.KELVIN -> celsius + 273.15
-    }
-    val rounded = kotlin.math.round(value).toInt()
-    return when (unit) {
-        TemperatureUnit.CELSIUS -> "$rounded°C"
-        TemperatureUnit.FAHRENHEIT -> "$rounded°F"
-        TemperatureUnit.KELVIN -> "$rounded K"
-    }
-}
-
-private fun formatTrend(deltaCelsius: Double, unit: TemperatureUnit): String {
-    val converted = when (unit) {
-        TemperatureUnit.CELSIUS -> deltaCelsius
-        TemperatureUnit.FAHRENHEIT -> deltaCelsius * 9.0 / 5.0
-        TemperatureUnit.KELVIN -> deltaCelsius
-    }
-    val rounded = kotlin.math.round(converted * 10.0) / 10.0
-    val sign = when {
-        rounded > 0 -> "+"
-        rounded < 0 -> "-"
-        else -> ""
-    }
-    val mag = kotlin.math.abs(rounded)
-    val num = String.format(Locale.US, "%.1f", mag)
-    val suffix = when (unit) {
-        TemperatureUnit.CELSIUS -> "°"
-        TemperatureUnit.FAHRENHEIT -> "°"
-        TemperatureUnit.KELVIN -> ""
-    }
-    return "$sign$num$suffix/h"
-}
-
-private fun windValue(kmh: Double, unit: WindSpeedUnit): Int = when (unit) {
-    WindSpeedUnit.KMH -> kmh.toInt()
-    WindSpeedUnit.MPH -> (kmh * 0.621371).toInt()
-    WindSpeedUnit.KNOTS -> (kmh * 0.539957).toInt()
-}
-
-private fun windUnitLabel(unit: WindSpeedUnit): String = when (unit) {
-    WindSpeedUnit.KMH -> "km/h"
-    WindSpeedUnit.MPH -> "mph"
-    WindSpeedUnit.KNOTS -> "kn"
-}
+// formatTemp / formatTrend / windValue / windUnitLabel live in WeatherFormat.kt
+// (shared with the Android Auto car screens).
 
 @Composable
 fun WeatherWidget(
@@ -92,6 +47,7 @@ fun WeatherWidget(
     val nameFontSize = (weatherWidgetSize * 0.25f).sp
     val windIconSize = (weatherWidgetSize * 0.27f).dp
     val windBadgeSize = (weatherWidgetSize * 0.34f).dp
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .background(
@@ -158,7 +114,7 @@ fun WeatherWidget(
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = windUnitLabel(windSpeedUnit),
+                text = windUnitLabel(context, windSpeedUnit),
                 fontSize = nameFontSize,
                 lineHeight = nameFontSize,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

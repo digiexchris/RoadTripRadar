@@ -6,6 +6,17 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!-- Android Auto map surface. POI-category apps render their own map via
+         MapWithContentTemplate, which requires the car surface + map-template permissions.
+         Use MAP_TEMPLATES (NOT NAVIGATION_TEMPLATES) since this app does not provide
+         turn-by-turn navigation; declaring both is rejected at review. -->
+    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />
+
+    <!-- Android Auto: project to a car head unit. The app advertises it can run
+         on automotive hardware but is not required to (primary surface is phone). -->
+    <uses-feature android:name="android.hardware.type.automotive" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:localeConfig="@xml/locales_config"
@@ -37,6 +48,36 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <!-- Android Auto (projected). Non-navigation POI-category app; the car UI
+             is built from Car App Library templates (not the phone MapScreen). The
+             service class name is relative to the namespace, so the debug
+             applicationIdSuffix ".debug" does not affect resolution. -->
+        <service
+            android:name=".car.RoadTripRadarCarAppService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.POI" />
+            </intent-filter>
+        </service>
+
+        <!-- Required by the Car App Library host: declares the minimum Car API level this
+             app targets. AppInfo.retrieveMinCarAppApiLevel reads this from ApplicationInfo
+             .metaData (the <application> tag), NOT ServiceInfo.metaData, so it must live
+             here as a direct child of <application> — putting it inside <service> causes
+             "Min API level not declared in manifest" at bind time. -->
+        <!-- MapWithContentTemplate (the self-rendered map template available to POI/Weather
+             apps) requires Car API level 7+. -->
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="7" />
+
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
     </application>
 
 </manifest>
