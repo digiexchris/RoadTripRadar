@@ -10,11 +10,11 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Toggle
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
+import ca.voiditswarranty.roadtripradar.car.nextCycle
 import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
-import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
-import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
-import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
+import ca.voiditswarranty.roadtripradar.ui.tempUnitSymbol
+import ca.voiditswarranty.roadtripradar.ui.windUnitLabel
 
 /**
  * Settings: units, map style, keep-screen-on, auto-advance. Reset is parked-only and
@@ -58,16 +58,16 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
             addItem(
                 Row.Builder()
                     .setTitle(carContext.getString(R.string.car_settings_wind_unit))
-                    .addText(windUnitLabel())
-                    .setOnClickListener { vm.updateWindSpeedUnit(vm.windSpeedUnit.next()) }
+                    .addText(windUnitLabel(carContext, vm.windSpeedUnit))
+                    .setOnClickListener { vm.updateWindSpeedUnit(vm.windSpeedUnit.nextCycle()) }
                     .build()
             )
 
             addItem(
                 Row.Builder()
                     .setTitle(carContext.getString(R.string.car_settings_temp_unit))
-                    .addText(tempUnitLabel())
-                    .setOnClickListener { vm.updateTemperatureUnit(vm.temperatureUnit.next()) }
+                    .addText(tempUnitSymbol(vm.temperatureUnit))
+                    .setOnClickListener { vm.updateTemperatureUnit(vm.temperatureUnit.nextCycle()) }
                     .build()
             )
 
@@ -75,7 +75,7 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
                 Row.Builder()
                     .setTitle(carContext.getString(R.string.car_settings_map_style))
                     .addText(carContext.getString(vm.mapStyle.displayNameRes))
-                    .setOnClickListener { vm.updateMapStyle(vm.mapStyle.next()) }
+                    .setOnClickListener { vm.updateMapStyle(vm.mapStyle.nextCycle()) }
                     .build()
             )
 
@@ -129,37 +129,10 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
             .build()
     }
 
-    private fun windUnitLabel(): String = when (vm.windSpeedUnit) {
-        WindSpeedUnit.KMH -> carContext.getString(R.string.wind_unit_kmh)
-        WindSpeedUnit.MPH -> carContext.getString(R.string.wind_unit_mph)
-        WindSpeedUnit.KNOTS -> carContext.getString(R.string.wind_unit_kn)
-    }
-
-    private fun tempUnitLabel(): String = when (vm.temperatureUnit) {
-        TemperatureUnit.CELSIUS -> "°C"
-        TemperatureUnit.FAHRENHEIT -> "°F"
-        TemperatureUnit.KELVIN -> "K"
-    }
-
     private fun nextThreshold(current: Int): Int {
         val presets = listOf(25, 50, 100, 200, 500)
         val idx = presets.indexOf(current).takeIf { it >= 0 } ?: 2
         return presets[(idx + 1) % presets.size]
-    }
-
-    private fun WindSpeedUnit.next(): WindSpeedUnit {
-        val all = WindSpeedUnit.entries
-        return all[(all.indexOf(this) + 1) % all.size]
-    }
-
-    private fun TemperatureUnit.next(): TemperatureUnit {
-        val all = TemperatureUnit.entries
-        return all[(all.indexOf(this) + 1) % all.size]
-    }
-
-    private fun MapStyle.next(): MapStyle {
-        val all = MapStyle.entries
-        return all[(all.indexOf(this) + 1) % all.size]
     }
 }
 

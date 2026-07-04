@@ -60,3 +60,40 @@ internal fun windUnitLabel(context: Context, unit: WindSpeedUnit): String = when
     WindSpeedUnit.MPH -> context.getString(R.string.wind_unit_mph)
     WindSpeedUnit.KNOTS -> context.getString(R.string.wind_unit_kn)
 }
+
+/** The symbol for a temperature unit (°C / °F / K), used by the car settings/weather unit pickers. */
+internal fun tempUnitSymbol(unit: TemperatureUnit): String = when (unit) {
+    TemperatureUnit.CELSIUS -> "°C"
+    TemperatureUnit.FAHRENHEIT -> "°F"
+    TemperatureUnit.KELVIN -> "K"
+}
+
+/**
+ * Rotation in degrees for a wind-direction arrow that should point where the wind is going *to*
+ * (the bearing it comes *from* + 180°), corrected for the map's current [cameraBearing] so the
+ * arrow stays oriented relative to the map as it rotates. Shared by the phone `WeatherWidget`
+ * (the car surface now renders wind direction as compass text via [compassDirectionLabel]
+ * instead of an arrow).
+ */
+internal fun windArrowRotationDeg(windDirectionDeg: Number, cameraBearing: Number): Float =
+    (windDirectionDeg.toDouble() + 180.0 - cameraBearing.toDouble()).toFloat()
+
+/**
+ * The 16-point compass label for a bearing in degrees (N, NNE, NE, … NNW). Used for the wind
+ * direction on the car weather content pane, where the wind arrow is rendered as text instead of
+ * a rotated glyph. [bearingDeg] is the meteorological "from" direction (e.g. 0° → N, a wind from
+ * the north), matching `OpenMeteoSnapshot.windDirectionDeg` — so the label reads as the standard
+ * "wind from X" direction.
+ */
+private val COMPASS_RES = intArrayOf(
+    R.string.compass_n, R.string.compass_nne, R.string.compass_ne, R.string.compass_ene,
+    R.string.compass_e, R.string.compass_ese, R.string.compass_se, R.string.compass_sse,
+    R.string.compass_s, R.string.compass_ssw, R.string.compass_sw, R.string.compass_wsw,
+    R.string.compass_w, R.string.compass_wnw, R.string.compass_nw, R.string.compass_nnw,
+)
+
+internal fun compassDirectionLabel(context: Context, bearingDeg: Number): String {
+    val deg = ((bearingDeg.toDouble() % 360.0) + 360.0) % 360.0
+    val sector = ((deg / 22.5) + 0.5).toInt() % 16
+    return context.getString(COMPASS_RES[sector])
+}

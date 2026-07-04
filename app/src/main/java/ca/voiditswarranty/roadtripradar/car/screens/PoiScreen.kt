@@ -8,7 +8,6 @@ import androidx.car.app.model.CarColor
 import androidx.car.app.model.GridItem
 import androidx.car.app.model.GridTemplate
 import androidx.car.app.model.ItemList
-import androidx.car.app.model.ParkedOnlyOnClickListener
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
 import ca.voiditswarranty.roadtripradar.car.MakiIcons
@@ -21,8 +20,12 @@ import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
  * icon. Categories beyond the cap are shown grayed with "(max 5)" and are non-tappable.
  * Toggling re-runs the pipeline against the phone's current map camera.
  *
- * Action strip: Search area (parked-only, needs the phone map camera), Clear (parked-only),
- * Retry failed (driving-ok), and a Search button. Pipeline status is shown in the title.
+ * The action strip holds a single Search action (push the place-search screen). The POI-pipeline
+ * utilities — Search area, Clear, Retry failed — live on the HomeScreen menu instead, because
+ * `GridTemplate.setActionStrip` validates against `ACTIONS_CONSTRAINTS_SIMPLE` (max 2 actions,
+ * max 1 with a custom title), so the four controls the POI screen originally packed into the
+ * strip threw `IllegalArgumentException` at build time and crashed on tap. Pipeline status is
+ * shown in the title.
  */
 class PoiScreen(carContext: CarContext) : BaseCarScreen(
     carContext,
@@ -66,30 +69,6 @@ class PoiScreen(carContext: CarContext) : BaseCarScreen(
             .setHeaderAction(Action.BACK)
             .setActionStrip(
                 ActionStrip.Builder()
-                    .addAction(
-                        Action.Builder()
-                            .setTitle(carContext.getString(R.string.car_poi_search))
-                            .setOnClickListener(
-                                ParkedOnlyOnClickListener.create { vm.searchVisibleArea() }
-                            )
-                            .setEnabled(vm.pendingCameraInfo != null)
-                            .build()
-                    )
-                    .addAction(
-                        Action.Builder()
-                            .setTitle(carContext.getString(R.string.car_poi_clear))
-                            .setOnClickListener(
-                                ParkedOnlyOnClickListener.create { vm.clearNearbyPois() }
-                            )
-                            .build()
-                    )
-                    .addAction(
-                        Action.Builder()
-                            .setTitle(carContext.getString(R.string.car_poi_retry))
-                            .setOnClickListener { vm.retryFailedCells() }
-                            .setEnabled(vm.hasFailedCells)
-                            .build()
-                    )
                     .addAction(
                         Action.Builder()
                             .setTitle(carContext.getString(R.string.car_action_search))

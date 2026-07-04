@@ -51,6 +51,17 @@ fun MapStyle.isDarkForAppTheme(context: Context): Boolean =
         else -> true
     }
 
+/**
+ * Dark/light for the app chrome using an explicit night flag — for the car surface, where the
+ * system configuration may not reflect the car host's actual day/night state (use
+ * [androidx.car.app.CarContext.isDarkMode]).
+ */
+fun MapStyle.isDarkForAppTheme(context: Context, night: Boolean): Boolean =
+    when (resolveToConcrete(context, night)) {
+        MapStyle.LIBERTY, MapStyle.CUSTOM_LIGHT -> false
+        else -> true
+    }
+
 private fun isNightMode(context: Context): Boolean =
     (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
         Configuration.UI_MODE_NIGHT_YES

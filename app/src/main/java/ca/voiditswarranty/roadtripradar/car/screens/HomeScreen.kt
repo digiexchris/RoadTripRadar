@@ -4,10 +4,11 @@ import androidx.car.app.CarContext
 import androidx.car.app.model.Action
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
+import androidx.car.app.model.ParkedOnlyOnClickListener
 import androidx.car.app.model.Row
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
-import ca.voiditswarranty.roadtripradar.model.WeatherMode
+import ca.voiditswarranty.roadtripradar.car.radarModeLabel
 import ca.voiditswarranty.roadtripradar.model.WmoWeatherCodes
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
 import ca.voiditswarranty.roadtripradar.ui.formatTemp
@@ -21,15 +22,17 @@ import org.maplibre.spatialk.units.extensions.inDegrees
 import kotlin.math.roundToInt
 
 /**
- * Root car screen: a hub of navigable rows for the four feature groups (weather, route,
- * POIs, settings) plus a radar status row. Pushed from the map's Menu action; the BACK header
- * action pops back to the map.
+ * Root car screen: a hub of rows for the four feature groups (weather, route, POIs, settings)
+ * plus a radar status row and the POI-pipeline utilities (Search area / Clear / Retry failed).
+ * Pushed from the map's Menu action; the BACK header action pops back to the map.
  *
  * Implemented as a [ListTemplate] rather than a PaneTemplate: PaneTemplate's action strip
  * (ACTIONS_CONSTRAINTS_SIMPLE) allows only one custom-titled action, and its pane action list
  * only two — too few for a 4-section hub. ListTemplate holds many tap-to-navigate rows (rows
- * are not title-constrained). The radar play/pause control lives on the map screen's toolbar,
- * not here. Waypoint advance/regress controls live on [RouteScreen], where they belong.
+ * are not title-constrained) and rows may also carry action listeners (the POI-pipeline rows
+ * perform an action rather than navigating). The radar play/pause control lives on the map
+ * screen's toolbar, not here. Waypoint advance/regress controls live on [RouteScreen], where
+ * they belong.
  */
 class HomeScreen(carContext: CarContext) : BaseCarScreen(
     carContext,
@@ -94,7 +97,7 @@ class HomeScreen(carContext: CarContext) : BaseCarScreen(
             addItem(
                 Row.Builder()
                     .setTitle(carContext.getString(R.string.car_home_radar))
-                    .addText(radarStatusText())
+                    .addText(radarModeLabel(carContext, vm.weatherMode))
                     .setOnClickListener { push(WeatherScreen(carContext)) }
                     .build()
             )
@@ -106,6 +109,33 @@ class HomeScreen(carContext: CarContext) : BaseCarScreen(
                     .setOnClickListener { push(PoiScreen(carContext)) }
                     .build()
             )
+
+            // POI-pipeline utilities. These live on the menu (not the POI grid's action strip)
+            // because GridTemplate's action strip is constrained to one custom-titled action —
+            // see PoiScreen. Search area + Clear are parked-only (they re-run/erase the pipeline
+            // against the phone's current map camera); Retry failed only appears when something
+            // actually failed.
+            addItem(
+                Row.Builder()
+                    .setTitle(carContext.getString(R.string.car_poi_search))
+                    .setOnClickListener(ParkedOnlyOnClickListener.create { vm.searchVisibleArea() })
+                    .setEnabled(vm.pendingCameraInfo != null)
+                    .build()
+            )
+            addItem(
+                Row.Builder()
+                    .setTitle(carContext.getString(R.string.car_poi_clear))
+                    .setOnClickListener(ParkedOnlyOnClickListener.create { vm.clearNearbyPois() })
+                    .build()
+            )
+            if (vm.hasFailedCells) {
+                addItem(
+                    Row.Builder()
+                        .setTitle(carContext.getString(R.string.car_poi_retry))
+                        .setOnClickListener { vm.retryFailedCells() }
+                        .build()
+                )
+            }
 
             // Settings row
             addItem(
@@ -121,11 +151,5 @@ class HomeScreen(carContext: CarContext) : BaseCarScreen(
             .setTitle(carContext.getString(R.string.car_home_title))
             .setHeaderAction(Action.BACK)
             .build()
-    }
-
-    private fun radarStatusText(): String = when (vm.weatherMode) {
-        WeatherMode.OFF -> carContext.getString(R.string.car_radar_off)
-        WeatherMode.ON -> carContext.getString(R.string.car_radar_on)
-        WeatherMode.PLAYING -> carContext.getString(R.string.car_radar_playing)
     }
 }

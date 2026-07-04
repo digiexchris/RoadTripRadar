@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Route overlay card drawn on the car map surface, mirroring the phone NavWidget: a bearing
+  arrow pointing toward the active waypoint, the distance to it, the waypoint name, and the
+  stop count. The whole card is hidden (View.GONE) by CarRouteWidget when there is no active
+  waypoint — matching the phone, which only shows NavWidget when an active waypoint exists.
+  The arrow rotation and colors are applied programmatically by CarRouteWidget.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/car_route_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@drawable/car_weather_widget_bg"
+    android:backgroundTint="#00000000"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
+
+    <ImageView
+        android:id="@+id/car_route_arrow"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_car_wind_arrow"
+        android:contentDescription="@string/cd_direction_to_target" />
+
+    <TextView
+        android:id="@+id/car_route_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textSize="28sp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/car_route_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="220dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="20sp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/car_route_stops"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="18sp"
+        android:gravity="center" />
+</LinearLayout>

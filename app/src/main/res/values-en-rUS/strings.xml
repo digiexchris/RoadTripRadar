@@ -290,6 +290,24 @@
     <string name="wind_unit_kmh">km/h</string>
     <string name="wind_unit_mph">mph</string>
     <string name="wind_unit_kn">kn</string>
+
+    <!-- 16-point compass directions (wind-from direction on the car weather pane) -->
+    <string name="compass_n">N</string>
+    <string name="compass_nne">NNE</string>
+    <string name="compass_ne">NE</string>
+    <string name="compass_ene">ENE</string>
+    <string name="compass_e">E</string>
+    <string name="compass_ese">ESE</string>
+    <string name="compass_se">SE</string>
+    <string name="compass_sse">SSE</string>
+    <string name="compass_s">S</string>
+    <string name="compass_ssw">SSW</string>
+    <string name="compass_sw">SW</string>
+    <string name="compass_wsw">WSW</string>
+    <string name="compass_w">W</string>
+    <string name="compass_wnw">WNW</string>
+    <string name="compass_nw">NW</string>
+    <string name="compass_nnw">NNW</string>
     <!-- Weather widget -->
     <string name="cd_wind_direction">Wind direction</string>
     <string name="weather_unavailable">Weather\nUnavailable</string>
@@ -393,6 +411,8 @@
     <string name="car_home_trend">Trend</string>
     <string name="car_home_radar">Radar</string>
     <string name="car_weather_no_data">Weather unavailable</string>
+    <!-- Wind row on the car weather content pane: "Wind NNE" (wind-from compass direction). -->
+    <string name="car_weather_wind_dir">Wind %1$s</string>
     <string name="car_route_empty">No waypoints</string>
     <string name="car_action_play">Play</string>
     <string name="car_action_pause">Pause</string>

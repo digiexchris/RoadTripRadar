@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+    <!-- Pause bars, mirroring the phone's Icons.Default.Pause. -->
+    <path
+        android:pathData="M6,5 L10,5 L10,19 L6,19 Z"
+        android:fillColor="#FFFFFFFF" />
+    <path
+        android:pathData="M14,5 L18,5 L18,19 L14,19 Z"
+        android:fillColor="#FFFFFFFF" />
+</vector>

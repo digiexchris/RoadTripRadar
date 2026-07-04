@@ -9,12 +9,12 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Toggle
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
-import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
-import ca.voiditswarranty.roadtripradar.model.WeatherMode
-import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
+import ca.voiditswarranty.roadtripradar.car.nextCycle
+import ca.voiditswarranty.roadtripradar.car.radarModeLabel
 import ca.voiditswarranty.roadtripradar.model.WmoWeatherCodes
 import ca.voiditswarranty.roadtripradar.ui.formatTemp
 import ca.voiditswarranty.roadtripradar.ui.formatTrend
+import ca.voiditswarranty.roadtripradar.ui.tempUnitSymbol
 import ca.voiditswarranty.roadtripradar.ui.windUnitLabel
 import ca.voiditswarranty.roadtripradar.ui.windValue
 import kotlin.math.abs
@@ -55,7 +55,7 @@ class WeatherScreen(carContext: CarContext) : BaseCarScreen(
                 )
             }
 
-            addItem(cycleRow(R.string.car_weather_radar_mode, radarModeText()) { vm.cycleWeatherMode() })
+            addItem(cycleRow(R.string.car_weather_radar_mode, radarModeLabel(carContext, vm.weatherMode)) { vm.cycleWeatherMode() })
 
             addItem(
                 Row.Builder()
@@ -83,12 +83,12 @@ class WeatherScreen(carContext: CarContext) : BaseCarScreen(
             )
             addItem(
                 cycleRow(R.string.car_weather_wind_unit, windUnitLabel(carContext, vm.windSpeedUnit)) {
-                    vm.updateWindSpeedUnit(vm.windSpeedUnit.next())
+                    vm.updateWindSpeedUnit(vm.windSpeedUnit.nextCycle())
                 }
             )
             addItem(
-                cycleRow(R.string.car_weather_temp_unit, tempUnitLabel()) {
-                    vm.updateTemperatureUnit(vm.temperatureUnit.next())
+                cycleRow(R.string.car_weather_temp_unit, tempUnitSymbol(vm.temperatureUnit)) {
+                    vm.updateTemperatureUnit(vm.temperatureUnit.nextCycle())
                 }
             )
             addItem(
@@ -119,31 +119,9 @@ class WeatherScreen(carContext: CarContext) : BaseCarScreen(
             .setOnClickListener { onClick() }
             .build()
 
-    private fun radarModeText(): String = when (vm.weatherMode) {
-        WeatherMode.OFF -> carContext.getString(R.string.car_radar_off)
-        WeatherMode.ON -> carContext.getString(R.string.car_radar_on)
-        WeatherMode.PLAYING -> carContext.getString(R.string.car_radar_playing)
-    }
-
-    private fun tempUnitLabel(): String = when (vm.temperatureUnit) {
-        TemperatureUnit.CELSIUS -> "°C"
-        TemperatureUnit.FAHRENHEIT -> "°F"
-        TemperatureUnit.KELVIN -> "K"
-    }
-
     private fun nextOpacity(current: Float): Float {
         val presets = listOf(0f, 0.25f, 0.5f, 0.75f, 1f)
         val idx = presets.indexOfFirst { abs(it - current) < 0.01f }
         return presets[(idx + 1) % presets.size]
-    }
-
-    private fun WindSpeedUnit.next(): WindSpeedUnit {
-        val all = WindSpeedUnit.entries
-        return all[(all.indexOf(this) + 1) % all.size]
-    }
-
-    private fun TemperatureUnit.next(): TemperatureUnit {
-        val all = TemperatureUnit.entries
-        return all[(all.indexOf(this) + 1) % all.size]
     }
 }

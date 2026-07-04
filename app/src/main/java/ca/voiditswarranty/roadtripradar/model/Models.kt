@@ -128,6 +128,9 @@ data class NearbyPoi(
 
 object PrefsDefaults {
     const val ZOOM_LEVEL = 9.0f
+    // The car surface keeps its own zoom, independent of the phone (a driver typically runs the
+    // car map more zoomed-in than the phone). Default matches the car's INITIAL_ZOOM.
+    const val CAR_ZOOM_LEVEL = 14.0f
     const val MAP_CENTER_OFFSET_FRACTION = 0.30f
     const val MAP_CENTER_OFFSET_PORTRAIT_FRACTION = 0.30f
     const val MAP_CENTER_OFFSET_LANDSCAPE_FRACTION = 0.30f

@@ -78,7 +78,7 @@ fun WeatherWidget(
                 )
             }
             val windArrowRotationDeg =
-                (snapshot.windDirectionDeg + 180.0 - cameraBearing).toFloat()
+                windArrowRotationDeg(snapshot.windDirectionDeg, cameraBearing)
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.size(iconSize),

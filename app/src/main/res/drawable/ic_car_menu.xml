@@ -2,21 +2,22 @@
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24">
-    <!-- Wind/air glyph for the badge center. -->
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+    <!-- Hamburger menu, mirroring the phone's Icons.Default.Menu. -->
     <path
-        android:pathData="M3,7 L14,7"
-        android:strokeColor="#FFFFFF"
+        android:pathData="M3,6 L21,6"
+        android:strokeColor="#FFFFFFFF"
         android:strokeWidth="2"
         android:strokeLineCap="round" />
     <path
-        android:pathData="M3,12 L18,12"
-        android:strokeColor="#FFFFFF"
+        android:pathData="M3,12 L21,12"
+        android:strokeColor="#FFFFFFFF"
         android:strokeWidth="2"
         android:strokeLineCap="round" />
     <path
-        android:pathData="M3,17 L11,17 q2,0 2,-2"
-        android:strokeColor="#FFFFFF"
+        android:pathData="M3,18 L21,18"
+        android:strokeColor="#FFFFFFFF"
         android:strokeWidth="2"
         android:strokeLineCap="round" />
 </vector>

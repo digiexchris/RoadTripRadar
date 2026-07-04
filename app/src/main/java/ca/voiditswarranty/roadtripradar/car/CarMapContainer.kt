@@ -9,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.car.app.CarContext
-import ca.voiditswarranty.roadtripradar.data.Waypoint
+import ca.voiditswarranty.roadtripradar.data.RainViewer
+import ca.voiditswarranty.roadtripradar.data.activeRouteLeg
+import ca.voiditswarranty.roadtripradar.data.inactiveRouteLegs
 import ca.voiditswarranty.roadtripradar.data.resolveToConcrete
 import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
@@ -29,13 +31,16 @@ import org.maplibre.android.style.layers.PropertyFactory.circleStrokeColor
 import org.maplibre.android.style.layers.PropertyFactory.circleStrokeWidth
 import org.maplibre.android.style.layers.PropertyFactory.lineCap
 import org.maplibre.android.style.layers.PropertyFactory.lineColor
+import org.maplibre.android.style.layers.PropertyFactory.lineDasharray
 import org.maplibre.android.style.layers.PropertyFactory.lineJoin
+import org.maplibre.android.style.layers.PropertyFactory.lineOpacity
 import org.maplibre.android.style.layers.PropertyFactory.lineWidth
 import org.maplibre.android.style.layers.PropertyFactory.rasterOpacity
 import org.maplibre.android.style.layers.RasterLayer
 import org.maplibre.android.style.sources.GeoJsonSource
 import org.maplibre.android.style.sources.RasterSource
 import org.maplibre.android.style.sources.TileSet
+import org.maplibre.spatialk.geojson.LineString
 import org.maplibre.spatialk.geojson.Position
 import kotlin.math.abs
 import kotlin.math.ln
@@ -108,7 +113,7 @@ class CarMapContainer(
         uiHandler.post { refreshFromVm() }
     }
 
-    private var weatherWidget: CarWeatherWidget? = null
+    private var routeWidget: CarRouteWidget? = null
 
     init {
         vm.addRefreshListener(refreshListener)
@@ -128,9 +133,15 @@ class CarMapContainer(
                     style = loaded
                     setupOverlays(loaded)
                     startPositionPolling()
-                    // Keep the wind arrow oriented to the map bearing as the user pans/zooms.
-                    map.addOnCameraMoveListener { weatherWidget?.update(map.cameraPosition.bearing) }
-                    map.addOnCameraIdleListener { weatherWidget?.update(map.cameraPosition.bearing) }
+                    // Keep the route arrow oriented to the map bearing as the user pans/zooms.
+                    map.addOnCameraMoveListener { routeWidget?.update(map.cameraPosition.bearing) }
+                    map.addOnCameraIdleListener {
+                        routeWidget?.update(map.cameraPosition.bearing)
+                        // Persist the car zoom so it survives app exit/restart, mirroring the
+                        // phone (vm.onZoomChanged -> prefsRepo.zoomLevel) but on the car's own
+                        // key so the two surfaces keep independent zoom levels.
+                        persistCarZoom(map.cameraPosition.zoom)
+                    }
                     refreshFromVm()
                     // Center on the current position immediately so the map opens on the user,
                     // not a world view (the camera otherwise stays at the default).
@@ -140,9 +151,11 @@ class CarMapContainer(
         }
         mapViewInstance = mapView
 
-        // The map fills the surface; the weather card floats at the top-end, like the phone.
-        val widget = CarWeatherWidget(carContext, vm)
-        weatherWidget = widget
+        // The map fills the surface; the route card floats at the center-end (mirroring the
+        // phone NavWidget, which sits at the top of the map overlay). Weather lives in the
+        // MapWithContentTemplate content pane (see CarMapScreen), not on the surface.
+        val widget = CarRouteWidget(carContext, vm)
+        routeWidget = widget
         return FrameLayout(carContext).apply {
             addView(
                 mapView,
@@ -156,7 +169,7 @@ class CarMapContainer(
                 FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT,
-                    Gravity.TOP or Gravity.END,
+                    Gravity.CENTER_VERTICAL or Gravity.END,
                 ),
             )
         }
@@ -183,7 +196,7 @@ class CarMapContainer(
     fun recenter() {
         val pos = currentPosition() ?: return
         val map = mapLibreMapInstance ?: return
-        val zoom = map.cameraPosition.zoom.takeIf { it > 0 } ?: INITIAL_ZOOM
+        val zoom = map.cameraPosition.zoom.takeIf { it > 0 } ?: savedCarZoom()
         centerOn(pos, zoom)
     }
 
@@ -200,8 +213,18 @@ class CarMapContainer(
     private fun centerOnCurrentPosition() {
         val pos = currentPosition() ?: return
         val map = mapLibreMapInstance ?: return
-        val zoom = map.cameraPosition.zoom.takeIf { it > 0 } ?: INITIAL_ZOOM
+        // Fall back to the last persisted car zoom (not a hard-coded constant) so the map reopens
+        // at the zoom the user left it, independent of the phone's saved zoom.
+        val zoom = map.cameraPosition.zoom.takeIf { it > 0 } ?: savedCarZoom()
         centerOn(pos, zoom)
+    }
+
+    /** The persisted car-surface zoom (defaults to [PrefsDefaults.CAR_ZOOM_LEVEL] when never set). */
+    private fun savedCarZoom(): Double = vm.prefsRepo.carZoomLevel.toDouble()
+
+    /** Persist the current car zoom so it survives app exit/restart (separate from the phone). */
+    private fun persistCarZoom(zoom: Double) {
+        if (zoom > 0) vm.prefsRepo.carZoomLevel = zoom.toFloat()
     }
 
     /** The phone-computed position from the VM (live when the phone surface is active, else persisted). */
@@ -234,12 +257,27 @@ class CarMapContainer(
     }
 
     private fun setupOverlays(style: Style) {
-        // Route line (drawn below the puck).
-        style.addSource(GeoJsonSource(ROUTE_SOURCE_ID, EMPTY_FEATURE_COLLECTION))
+        // Route, drawn as two layers mirroring the phone (ui.MapLayers.WaypointRouteLineLayer):
+        // the dashed planned legs between consecutive waypoints, then the solid live approach
+        // leg from the user's position to the active target on top. Both share the same green;
+        // geometry comes from the shared `data.RouteGeometry` builders.
+        style.addSource(GeoJsonSource(ROUTE_INACTIVE_SOURCE_ID, EMPTY_FEATURE_COLLECTION))
         style.addLayer(
-            LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID).withProperties(
-                lineColor(0xFF2E7D32.toInt()),
-                lineWidth(6f),
+            LineLayer(ROUTE_INACTIVE_LAYER_ID, ROUTE_INACTIVE_SOURCE_ID).withProperties(
+                lineColor(ROUTE_COLOR),
+                lineWidth(ROUTE_WIDTH),
+                lineOpacity(INACTIVE_OPACITY),
+                lineCap("round"),
+                lineJoin("round"),
+                lineDasharray(INACTIVE_DASH),
+            )
+        )
+        style.addSource(GeoJsonSource(ROUTE_ACTIVE_SOURCE_ID, EMPTY_FEATURE_COLLECTION))
+        style.addLayer(
+            LineLayer(ROUTE_ACTIVE_LAYER_ID, ROUTE_ACTIVE_SOURCE_ID).withProperties(
+                lineColor(ROUTE_COLOR),
+                lineWidth(ROUTE_WIDTH),
+                lineOpacity(ACTIVE_OPACITY),
                 lineCap("round"),
                 lineJoin("round"),
             )
@@ -268,7 +306,7 @@ class CarMapContainer(
         updateRadar(style)
         updateRoute(style)
         updatePuck(style)
-        weatherWidget?.update(bearing)
+        routeWidget?.update(bearing)
     }
 
     private fun updateRadar(style: Style) {
@@ -282,15 +320,16 @@ class CarMapContainer(
             paths.forEachIndexed { i, path ->
                 val sourceId = "car-radar-$i"
                 val layerId = "car-radar-layer-$i"
-                // maxZoom = 7 mirrors the phone: RainViewer only serves up to z7, so cap the
-                // tile set and let MapLibre overzoom the z7 tile instead of requesting z>7
-                // (which RainViewer rejects with "zoom level not supported").
-                val tileSet = TileSet("rainviewer-$i", rainviewerUrl(path)).apply { setMaxZoom(RADAR_MAX_ZOOM) }
-                style.addSource(RasterSource(sourceId, tileSet, RADAR_TILE_SIZE))
+                // maxZoom mirrors the phone (shared RainViewer.MAX_ZOOM): RainViewer only serves
+                // up to z7, so cap the tile set and let MapLibre overzoom the z7 tile instead of
+                // requesting z>7 (which RainViewer rejects with "zoom level not supported").
+                val tileSet = TileSet("rainviewer-$i", RainViewer.tileUrl(path))
+                    .apply { setMaxZoom(RainViewer.MAX_ZOOM.toFloat()) }
+                style.addSource(RasterSource(sourceId, tileSet, RainViewer.TILE_SIZE_PX))
                 // Below the route line so the route/puck stay visible above the radar.
                 style.addLayerBelow(
                     RasterLayer(layerId, sourceId).withProperties(rasterOpacity(0f)),
-                    ROUTE_LAYER_ID,
+                    ROUTE_INACTIVE_LAYER_ID,
                 )
                 radarSourceIds.add(sourceId)
                 radarLayerIds.add(layerId)
@@ -347,7 +386,18 @@ class CarMapContainer(
     }
 
     private fun updateRoute(style: Style) {
-        (style.getSource(ROUTE_SOURCE_ID) as? GeoJsonSource)?.setGeoJson(routeGeoJson(vm.waypoints))
+        val waypoints = vm.waypoints
+        val userPos = currentPosition()
+        // Geometry is shared with the phone via `data.RouteGeometry`: dashed planned legs between
+        // consecutive waypoints, plus the solid live approach leg from the user to the active
+        // target (previously the car drew only a single line through the waypoints and dropped
+        // the approach leg — a regression of the phone's active-route behavior).
+        val inactive = inactiveRouteLegs(waypoints)
+        val active = userPos?.let { activeRouteLeg(waypoints, vm.activeIndex, it) }
+        (style.getSource(ROUTE_INACTIVE_SOURCE_ID) as? GeoJsonSource)
+            ?.setGeoJson(lineStringsGeoJson(inactive))
+        (style.getSource(ROUTE_ACTIVE_SOURCE_ID) as? GeoJsonSource)
+            ?.setGeoJson(lineStringGeoJson(active))
     }
 
     private fun updatePuck(style: Style) {
@@ -391,7 +441,7 @@ class CarMapContainer(
         animRunning = false
         animHandler.removeCallbacks(animRunnable)
         stopPositionPolling()
-        weatherWidget = null
+        routeWidget = null
         mapLibreMapInstance = null
         style = null
         mapViewInstance?.run {
@@ -434,29 +484,39 @@ class CarMapContainer(
         }
     }
 
-    private fun rainviewerUrl(path: String): String =
-        "https://tilecache.rainviewer.com$path/512/{z}/{x}/{y}/2/1_1.png"
-
-    private fun routeGeoJson(waypoints: List<Waypoint>): String {
-        if (waypoints.size < 2) return EMPTY_FEATURE_COLLECTION
-        val coords = waypoints.joinToString(",") {
-            "[${it.position.longitude},${it.position.latitude}]"
-        }
-        return """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coords]}}]}"""
-    }
-
     private fun pointGeoJson(pos: Position): String =
         """{"type":"Feature","geometry":{"type":"Point","coordinates":[${pos.longitude},${pos.latitude}]}}"""
 
+    /** Serialize a list of route legs (the dashed planned legs) to a GeoJSON FeatureCollection. */
+    private fun lineStringsGeoJson(legs: List<LineString>): String {
+        if (legs.isEmpty()) return EMPTY_FEATURE_COLLECTION
+        val features = legs.joinToString(",") { leg ->
+            val coords = leg.coordinates.joinToString(",") { "[${it.longitude},${it.latitude}]" }
+            """{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coords]}}"""
+        }
+        return """{"type":"FeatureCollection","features":[$features]}"""
+    }
+
+    /** Serialize a single route leg (the solid approach leg) to a GeoJSON FeatureCollection. */
+    private fun lineStringGeoJson(leg: LineString?): String {
+        if (leg == null) return EMPTY_FEATURE_COLLECTION
+        val coords = leg.coordinates.joinToString(",") { "[${it.longitude},${it.latitude}]" }
+        return """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coords]}}]}"""
+    }
+
     companion object {
-        private const val INITIAL_ZOOM = 14.0
         private const val POSITION_POLL_MS = 2000L
         private const val MOVEMENT_DEG_THRESHOLD = 0.0001 // ~11 m per poll; above = driving-paced
         private const val ANIM_INTERVAL_MS = 500L
-        private const val RADAR_MAX_ZOOM = 7f
-        private const val RADAR_TILE_SIZE = 512
-        private const val ROUTE_SOURCE_ID = "car-route"
-        private const val ROUTE_LAYER_ID = "car-route-layer"
+        private const val ROUTE_COLOR = 0xFF2E7D32.toInt()
+        private const val ROUTE_WIDTH = 6f
+        private const val ACTIVE_OPACITY = 0.95f
+        private const val INACTIVE_OPACITY = 0.6f
+        private val INACTIVE_DASH = arrayOf(2f, 3f)
+        private const val ROUTE_INACTIVE_SOURCE_ID = "car-route-inactive"
+        private const val ROUTE_INACTIVE_LAYER_ID = "car-route-inactive-layer"
+        private const val ROUTE_ACTIVE_SOURCE_ID = "car-route-active"
+        private const val ROUTE_ACTIVE_LAYER_ID = "car-route-active-layer"
         private const val PUCK_SOURCE_ID = "car-puck"
         private const val PUCK_LAYER_ID = "car-puck-layer"
         private const val EMPTY_FEATURE_COLLECTION = """{"type":"FeatureCollection","features":[]}"""

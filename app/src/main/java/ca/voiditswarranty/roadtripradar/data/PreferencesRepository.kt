@@ -201,6 +201,12 @@ class PreferencesRepository(context: Context) {
         get() = prefs.getFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
         set(value) = prefs.edit().putFloat("zoom_level", value).apply()
 
+    // Separate zoom for the Android Auto car surface, so the phone and car keep independent zoom
+    // levels across app exit/restart (the phone persists on `zoom_level` above).
+    var carZoomLevel: Float
+        get() = prefs.getFloat("car_zoom_level", PrefsDefaults.CAR_ZOOM_LEVEL)
+        set(value) = prefs.edit().putFloat("car_zoom_level", value).apply()
+
     var mapCenterOffsetPortraitFraction: Float
         get() = if (prefs.contains("map_center_offset_portrait_fraction")) {
             prefs.getFloat(
@@ -403,6 +409,7 @@ class PreferencesRepository(context: Context) {
             .putBoolean("use_gps", PrefsDefaults.USE_GPS)
             .putFloat("gps_icon_opacity", PrefsDefaults.GPS_ICON_OPACITY)
             .putFloat("zoom_level", PrefsDefaults.ZOOM_LEVEL)
+            .putFloat("car_zoom_level", PrefsDefaults.CAR_ZOOM_LEVEL)
             .putFloat("map_center_offset_portrait_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
             .putFloat("map_center_offset_landscape_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
             .remove("enabled_poi_categories")
