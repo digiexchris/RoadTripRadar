@@ -366,6 +366,84 @@ screens already build that structure), no implementation change needed for most
 tests. The exception is `BaseCarScreen` where the test may surface a real bug
 (e.g. listener registered on a non-main thread, or not unregistered on destroy).
 
+## Lessons learned during Phase 1-2 (carry forward into Phase 3-4)
+
+These are infra gotchas that bit during Phase 2 and need to be remembered for the
+rest of the retrofit. Future phases should expect them.
+
+**Robolectric SDK pin: `@Config(sdk = [33])`.** Robolectric 4.16.1's
+`ConnectivityManager` shadow does **not** implement
+`registerDefaultNetworkCallback` on the project's `compileSdk` (36). The real
+`MapViewModel.init` registers a default network callback (for the
+wind-conditions polling retry), which throws `NoSuchMethodError` on SDK 36. SDK
+33 is well-supported by Robolectric 4.16.1 and exercises the same widget code
+paths. Every Robolectric test that constructs a `MapViewModel` must include
+`@Config(sdk = [33])` on the test class.
+
+**`isIncludeAndroidResources = true` is required in `testOptions`.** The project
+ships with no `android.testOptions.unitTests` block, and AGP 9's default does
+not pull the merged Android resources into the JVM unit-test classpath on its
+own. Without it, tests run in `org.robolectric.default`, `getString` throws
+`Resources$NotFoundException`, and `LayoutInflater.inflate` can't resolve layout
+IDs. The following is required in `app/build.gradle.kts`:
+
+```kotlin
+testOptions {
+    unitTests {
+        isIncludeAndroidResources = true
+    }
+}
+```
+
+This was added in the Phase 2 commit and is required for every Phase 3-4 test
+that inflates a layout or reads a string resource.
+
+**`MapViewModel` private setters + `internal` test seam.** Many `MapViewModel`
+state properties (`activeWaypointId`, `mapStyle`, `windEnabled`,
+`openMeteoSnapshot`, etc.) are `var x by mutableStateOf(...) private set` with
+no public setter. Some have public `update*` methods (e.g. `updateWindEnabled`,
+`setActiveWaypoint`); others do not (e.g. `openMeteoSnapshot` — the production
+code sets it from inside the polling loop). Tests that need to set such state
+have three options, in order of preference:
+
+1. **Use the public `update*` / `set*` method** if one exists (e.g.
+   `vm.setActiveWaypoint(id)`, `vm.updateMapStyle(style)`, `vm.updateWindEnabled(on)`).
+2. **Add an `internal` test-only setter** visible to the test sourceset (e.g.
+   `internal fun setOpenMeteoSnapshotForTest(snap: OpenMeteoSnapshot?)`). Name
+   it `*ForTest` and document it as test-only. The test sourceset shares the
+   module with `main`, so `internal` works.
+3. **Reframe the test** if the state is genuinely unreadable from outside
+   (e.g. the `noUserPosition_hidesRoot` test was deleted in Phase 2 because
+   `PreferencesRepository.lastKnownPosition` defaults to Ottawa coordinates
+   rather than `null`, so the "no user position" branch is unreachable in
+   production — testing it would lie about the contract).
+
+Do not reach for reflection.
+
+**Construct real `MapViewModel`, do not mock.** mockk is not a project
+dependency. The pattern is: build a real `MapViewModel` with a real
+`PreferencesRepository` from Robolectric's `SharedPreferences`, set the
+required state via public methods (or the `*ForTest` seam), construct the
+widget, call `update(bearing)`, and assert on the inflated views. This is the
+same pattern `CarRangeRingLabelsTest` already uses.
+
+**`MapViewModel` reads `lastKnownPosition` from `PreferencesRepository`, not
+from a `null`-default.** `lastKnownPosition` returns
+`Position(45.4215, -75.6972)` (Ottawa) when no value is set — those are
+`PrefsDefaults.LAST_KNOWN_LAT/LON`, not zero. Tests that want "no user
+position" need to either (a) set `userPositionForSearch` directly (which
+takes precedence), or (b) clear the underlying prefs keys via
+`prefs.prefs.edit().remove("last_known_lat").remove("last_known_lon").apply()`.
+
+**Car widget palette constants are exposed as companion-object `@JvmField`.**
+The refactor for testability moved all color literals from inline magic
+numbers in `applyColors` to `companion object` constants (e.g.
+`CarRouteWidget.darkBackground`, `CarRouteWidget.lightArrowTint`). Tests pin
+to the constants so they reference the source of truth rather than duplicating
+the literals. The widgets still re-theme via a new `setDark(dark: Boolean)`
+method (mirroring the existing `CarRangeRingLabels.setDark`); the
+`initialIsDark` constructor param is read once at construction.
+
 ## Critical files
 
 - **Modified:** `app/src/main/java/ca/voiditswarranty/roadtripradar/car/CarMapContainer.kt`
