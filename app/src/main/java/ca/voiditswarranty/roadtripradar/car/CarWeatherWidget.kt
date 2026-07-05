@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.car
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.car.app.CarContext
 import ca.voiditswarranty.roadtripradar.R
-import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
 import ca.voiditswarranty.roadtripradar.ui.formatTemp
 import ca.voiditswarranty.roadtripradar.ui.formatTrend
 import ca.voiditswarranty.roadtripradar.ui.windArrowRotationDeg
@@ -26,19 +25,24 @@ import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
  * ([MapViewModel.windEnabled]), matching the phone.
  *
  * Drawn with plain Android Views (not Compose) because the car surface lives on a
- * [android.app.Presentation] backed by a virtual display whose context is a [CarContext], where
- * hosting a ComposeView would need non-Activity lifecycle/saved-state wiring. Native views are
- * deterministic here and keep the car surface self-contained.
+ * [android.app.Presentation] backed by a virtual display whose context is a [CarContext]-derived
+ * [Context], where hosting a ComposeView would need non-Activity lifecycle/saved-state wiring.
+ * Native views are deterministic here and keep the car surface self-contained.
  *
- * Colors follow the *resolved* map style's dark/light (via [MapStyle.isDarkForAppTheme], shared
- * with [CarRouteWidget]) so the card always reads against the map behind it; the wind arrow
- * rotation tracks the native map's camera bearing via [CarMapContainer]'s camera listeners, which
- * call [update] on move/idle. The rotation math reuses the shared [windArrowRotationDeg] so the
- * car arrow matches the phone arrow exactly.
+ * Colors follow the *resolved* map style's dark/light so the card always reads against the map
+ * behind it; the wind arrow rotation tracks the native map's camera bearing via
+ * [CarMapContainer]'s camera listeners, which call [update] on move/idle. The rotation math
+ * reuses the shared [windArrowRotationDeg] so the car arrow matches the phone arrow exactly.
+ *
+ * The [isDark] flag is supplied by [CarMapContainer], which already computes it from the
+ * resolved map style and the host [androidx.car.app.CarContext.isDarkMode] state. The widget
+ * itself only needs a [Context] for resource/layout access (no `CarContext` API is touched),
+ * which keeps it unit-testable under Robolectric.
  */
 class CarWeatherWidget(
-    private val carContext: CarContext,
+    private val context: Context,
     private val vm: MapViewModel,
+    initialIsDark: Boolean,
 ) {
     val view: View
 
@@ -55,8 +59,10 @@ class CarWeatherWidget(
     private val offIcon: ImageView
     private val offText: TextView
 
+    private var isDark: Boolean = initialIsDark
+
     init {
-        view = LayoutInflater.from(carContext).inflate(R.layout.car_weather_widget, null)
+        view = LayoutInflater.from(context).inflate(R.layout.car_weather_widget, null)
         root = view.findViewById(R.id.car_weather_root)
         contentGroup = view.findViewById(R.id.car_weather_content)
         unavailableGroup = view.findViewById(R.id.car_weather_unavailable)
@@ -72,6 +78,16 @@ class CarWeatherWidget(
     }
 
     /**
+     * Update the theme flag. [CarMapContainer] calls this on style reload (the underlying
+     * `MapViewModel.mapStyle` may have changed). No-op when the value is unchanged — callers
+     * can invoke this on every style reload without paying for repeated re-themes.
+     */
+    fun setDark(dark: Boolean) {
+        if (isDark == dark) return
+        isDark = dark
+    }
+
+    /**
      * Re-render from the VM. [cameraBearingDegrees] is the native map's current bearing, used to
      * keep the wind arrow oriented relative to the map (the phone gets this from Compose map
      * state). Safe to call on the main thread from the refresh listener and camera listeners.
@@ -82,8 +98,7 @@ class CarWeatherWidget(
             return
         }
         root.visibility = View.VISIBLE
-        val dark = vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
-        applyColors(dark)
+        applyColors(isDark)
 
         val snap = vm.openMeteoSnapshot
         if (snap != null) {
@@ -92,7 +107,7 @@ class CarWeatherWidget(
             tempText.text = formatTemp(snap.temperatureCelsius, vm.temperatureUnit)
             trendText.text = snap.tempTrendCelsius?.let { formatTrend(it, vm.temperatureUnit) } ?: "—/h"
             windSpeedText.text = "${windValue(snap.windSpeedKmh, vm.windSpeedUnit)}↑${windValue(snap.windGustsKmh, vm.windSpeedUnit)}"
-            windUnitText.text = windUnitLabel(carContext, vm.windSpeedUnit)
+            windUnitText.text = windUnitLabel(context, vm.windSpeedUnit)
             // Wind direction is where it comes FROM; the arrow points where it goes TO, corrected
             // for the map bearing so it stays oriented as the map rotates. Shared with the phone.
             arrow.rotation = windArrowRotationDeg(snap.windDirectionDeg, cameraBearingDegrees)
@@ -103,36 +118,50 @@ class CarWeatherWidget(
     }
 
     private fun applyColors(dark: Boolean) {
-        val bg: Int
-        val textMain: Int
-        val textSecondary: Int
-        val arrowTint: Int
-        val badgeBg: Int
-        val airTint: Int
         if (dark) {
-            bg = 0xB3000000.toInt()
-            textMain = 0xFFFFFFFF.toInt()
-            textSecondary = 0xB3FFFFFF.toInt()
-            arrowTint = 0xFF90CAF9.toInt()
-            badgeBg = 0xE6000000.toInt()
-            airTint = 0xFFFFFFFF.toInt()
+            root.backgroundTintList = ColorStateList.valueOf(darkBackground)
+            tempText.setTextColor(darkTextMain)
+            windSpeedText.setTextColor(darkTextMain)
+            trendText.setTextColor(darkTextSecondary)
+            windUnitText.setTextColor(darkTextSecondary)
+            offText.setTextColor(darkTextSecondary)
+            arrow.imageTintList = ColorStateList.valueOf(darkArrowTint)
+            airIcon.imageTintList = ColorStateList.valueOf(darkAirTint)
+            offIcon.imageTintList = ColorStateList.valueOf(darkTextSecondary)
+            badge.backgroundTintList = ColorStateList.valueOf(darkBadgeBg)
         } else {
-            bg = 0xCCFFFFFF.toInt()
-            textMain = 0xFF212121.toInt()
-            textSecondary = 0xFF616161.toInt()
-            arrowTint = 0xFF1565C0.toInt()
-            badgeBg = 0xE6FFFFFF.toInt()
-            airTint = 0xFF212121.toInt()
+            root.backgroundTintList = ColorStateList.valueOf(lightBackground)
+            tempText.setTextColor(lightTextMain)
+            windSpeedText.setTextColor(lightTextMain)
+            trendText.setTextColor(lightTextSecondary)
+            windUnitText.setTextColor(lightTextSecondary)
+            offText.setTextColor(lightTextSecondary)
+            arrow.imageTintList = ColorStateList.valueOf(lightArrowTint)
+            airIcon.imageTintList = ColorStateList.valueOf(lightAirTint)
+            offIcon.imageTintList = ColorStateList.valueOf(lightTextSecondary)
+            badge.backgroundTintList = ColorStateList.valueOf(lightBadgeBg)
         }
-        root.backgroundTintList = ColorStateList.valueOf(bg)
-        tempText.setTextColor(textMain)
-        windSpeedText.setTextColor(textMain)
-        trendText.setTextColor(textSecondary)
-        windUnitText.setTextColor(textSecondary)
-        offText.setTextColor(textSecondary)
-        arrow.imageTintList = ColorStateList.valueOf(arrowTint)
-        airIcon.imageTintList = ColorStateList.valueOf(airTint)
-        offIcon.imageTintList = ColorStateList.valueOf(textSecondary)
-        badge.backgroundTintList = ColorStateList.valueOf(badgeBg)
+    }
+
+    companion object {
+        // Dark palette — drawn on top of a dark map. Background is 70% black, the
+        // "air" badge is 90% black so the air icon reads strongly against it, text
+        // is high-contrast white, arrow is a soft light blue.
+        @JvmField val darkBackground: Int = 0xB3000000.toInt()
+        @JvmField val darkTextMain: Int = 0xFFFFFFFF.toInt()
+        @JvmField val darkTextSecondary: Int = 0xB3FFFFFF.toInt()
+        @JvmField val darkArrowTint: Int = 0xFF90CAF9.toInt()
+        @JvmField val darkBadgeBg: Int = 0xE6000000.toInt()
+        @JvmField val darkAirTint: Int = 0xFFFFFFFF.toInt()
+
+        // Light palette — drawn on top of a light map. Background is 80% white,
+        // the "air" badge is 90% white so the air icon reads strongly, primary
+        // text is near-black, secondary is mid-grey, arrow is a saturated dark blue.
+        @JvmField val lightBackground: Int = 0xCCFFFFFF.toInt()
+        @JvmField val lightTextMain: Int = 0xFF212121.toInt()
+        @JvmField val lightTextSecondary: Int = 0xFF616161.toInt()
+        @JvmField val lightArrowTint: Int = 0xFF1565C0.toInt()
+        @JvmField val lightBadgeBg: Int = 0xE6FFFFFF.toInt()
+        @JvmField val lightAirTint: Int = 0xFF212121.toInt()
     }
 }

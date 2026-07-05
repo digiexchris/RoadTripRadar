@@ -48,7 +48,6 @@ import org.maplibre.android.style.layers.RasterLayer
 import org.maplibre.android.style.sources.GeoJsonSource
 import org.maplibre.android.style.sources.RasterSource
 import org.maplibre.android.style.sources.TileSet
-import org.maplibre.spatialk.geojson.LineString
 import org.maplibre.spatialk.geojson.Position
 import kotlin.math.abs
 import kotlin.math.ln
@@ -197,15 +196,15 @@ class CarMapContainer(
         // the whole map shrinks to fit the visible region in split (instead of being cropped by
         // the media panel). The non-rendered area is, by definition, occluded by host chrome / the
         // media panel, so there's no visible blank strip. See [setVisibleArea].
-        val route = CarRouteWidget(carContext, vm)
+        val isDarkInitial = vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
+        val route = CarRouteWidget(carContext, vm, initialIsDark = isDarkInitial)
         routeWidget = route
-        val weather = CarWeatherWidget(carContext, vm)
+        val weather = CarWeatherWidget(carContext, vm, initialIsDark = isDarkInitial)
         weatherWidget = weather
         // Initial label colors match the resolved style so the first frame is already readable
         // (no flash of black-on-white on a dark map). `reloadStyleIfNeeded` calls setDark() on
         // subsequent style changes; the constructor default would only be visible in the brief
         // pre-style-load window.
-        val isDarkInitial = vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
         val labels = CarRangeRingLabels(carContext, vm, isDark = isDarkInitial)
         rangeRingLabels = labels
         val host = FrameLayout(carContext).apply {
@@ -336,16 +335,16 @@ class CarMapContainer(
      * hasn't been laid out yet (height = 0) OR the fraction is exactly 0.5 (natural center).
      * Mirrors the phone's [ca.voiditswarranty.roadtripradar.ui.MapScreen] formula so the same
      * fraction produces the same visual offset on both surfaces.
+     *
+     * The math itself is the pure helper [carOffsetPadding]; this wrapper supplies the
+     * instance-bound inputs (map host height + the user's pref).
      */
     private fun carOffsetPadding(): Pair<Double, Double>? {
         val height = mapHost?.height ?: 0
-        if (height <= 0) return null
-        val fraction = vm.prefsRepo.mapCenterOffsetCarFraction.coerceIn(0f, 1f)
-        if (fraction == 0.5f) return null
-        val desiredBottomOffset = height.toDouble() * fraction.toDouble()
-        val top = (height - 2 * desiredBottomOffset).coerceAtLeast(0.0)
-        val bottom = (2 * desiredBottomOffset - height).coerceAtLeast(0.0)
-        return top to bottom
+        return carOffsetPadding(
+            mapHostHeight = height,
+            fraction = vm.prefsRepo.mapCenterOffsetCarFraction,
+        )
     }
 
     /**
@@ -429,9 +428,10 @@ class CarMapContainer(
             // widget survives the style swap (it's a regular View, not a MapLibre layer), so it
             // needs an explicit re-theme call here. `setDark` short-circuits if the value
             // didn't change, so this is cheap on every reload.
-            rangeRingLabels?.setDark(
-                vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
-            )
+            val darkNow = vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
+            rangeRingLabels?.setDark(darkNow)
+            routeWidget?.setDark(darkNow)
+            weatherWidget?.setDark(darkNow)
             refreshFromVm()
         }
     }
@@ -548,9 +548,15 @@ class CarMapContainer(
         // While driving (or when the radar is paused), pin to the latest frame — SA-1 forbids
         // animated content in a moving vehicle, and "paused" on the phone shows lastIndex.
         // While parked with the radar playing, follow the car-local animation playhead.
-        val displayIndex = if (paths.isEmpty()) 0
-            else if (driving || vm.weatherMode == WeatherMode.ON) paths.lastIndex
-            else carFrameIndex
+        // The display-index selection is the pure helper [carRadarDisplayIndex] (extracted
+        // for testability); the for-loop below still owns the per-layer opacity update
+        // because that's the MapLibre-coupled part.
+        val displayIndex = carRadarDisplayIndex(
+            pathCount = paths.size,
+            driving = driving,
+            mode = vm.weatherMode,
+            carFrameIndex = carFrameIndex,
+        )
         paths.forEachIndexed { i, _ ->
             val layer = style.getLayer("car-radar-layer-$i") as? RasterLayer ?: return@forEachIndexed
             val opacity = if (show && i == displayIndex) vm.radarOpacity else 0f
@@ -622,9 +628,8 @@ class CarMapContainer(
         val map = mapLibreMapInstance ?: return
         val pos = currentPosition() ?: return
         val zoom = map.cameraPosition.zoom
-        val zoomBracketChanged = lastZoomForRangeRings == null ||
-            rangeRingsZoomBracket(lastZoomForRangeRings!!) != rangeRingsZoomBracket(zoom)
-        if (pos == rangeRingsCenter && !zoomBracketChanged) return
+        if (!shouldRebuildRings(currentCenter = pos, lastCenter = rangeRingsCenter,
+                currentZoom = zoom, lastZoom = lastZoomForRangeRings)) return
         val distances = ringDistancesForZoom(zoom)
         val bearing = map.cameraPosition.bearing
         val data = buildRadarRingsData(pos, distances, bearing, vm.useMetric)
@@ -684,7 +689,7 @@ class CarMapContainer(
                 // Rough movement check (~0.0001° ≈ 11 m). Above this over one poll interval is
                 // driving-paced; below it (parked, or GPS jitter) follows the play/pause button.
                 val moved = abs(pos.latitude - last.latitude) + abs(pos.longitude - last.longitude)
-                driving = moved > MOVEMENT_DEG_THRESHOLD
+                driving = isDriving(moved)
             }
             lastPollPos = pos
         }
@@ -743,30 +748,11 @@ class CarMapContainer(
         }
     }
 
-    private fun pointGeoJson(pos: Position): String =
-        """{"type":"Feature","geometry":{"type":"Point","coordinates":[${pos.longitude},${pos.latitude}]}}"""
-
-    /** Serialize a list of route legs (the dashed planned legs) to a GeoJSON FeatureCollection. */
-    private fun lineStringsGeoJson(legs: List<LineString>): String {
-        if (legs.isEmpty()) return EMPTY_FEATURE_COLLECTION
-        val features = legs.joinToString(",") { leg ->
-            val coords = leg.coordinates.joinToString(",") { "[${it.longitude},${it.latitude}]" }
-            """{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coords]}}"""
-        }
-        return """{"type":"FeatureCollection","features":[$features]}"""
-    }
-
-    /** Serialize a single route leg (the solid approach leg) to a GeoJSON FeatureCollection. */
-    private fun lineStringGeoJson(leg: LineString?): String {
-        if (leg == null) return EMPTY_FEATURE_COLLECTION
-        val coords = leg.coordinates.joinToString(",") { "[${it.longitude},${it.latitude}]" }
-        return """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coords]}}]}"""
-    }
-
     companion object {
         private const val LOG_TAG = "CarMapContainer"
         private const val POSITION_POLL_MS = 2000L
-        private const val MOVEMENT_DEG_THRESHOLD = 0.0001 // ~11 m per poll; above = driving-paced
+        // MOVEMENT_DEG_THRESHOLD (~11 m per poll) lives in CarMapContainerLogic so the pure
+        // isDriving() helper can default to it; both surfaces read the same constant.
         private const val ANIM_INTERVAL_MS = 500L
         private const val ROUTE_COLOR = 0xFF2E7D32.toInt()
         private const val ROUTE_WIDTH = 6f

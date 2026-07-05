@@ -120,6 +120,18 @@ class MapViewModel(
     var openMeteoSnapshot by mutableStateOf<OpenMeteoSnapshot?>(null)
         private set
 
+    /**
+     * Test-visible setter for [openMeteoSnapshot]. The production path sets the
+     * snapshot from inside [startLocalWeatherPolling] (via the polling loop's
+     * `onSuccess`); tests that need a non-null snapshot without running the
+     * network poll call this directly. `internal` so it's only visible to the
+     * same module (including the test sourceset).
+     */
+    internal fun setOpenMeteoSnapshotForTest(snap: OpenMeteoSnapshot?) {
+        openMeteoSnapshot = snap
+        notifyRefresh()
+    }
+
     // Settings
     var useMetric by mutableStateOf(prefsRepo.useMetric)
         private set

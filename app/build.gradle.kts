@@ -46,6 +46,16 @@ android {
         buildConfig = true
         resValues = true
     }
+    // Pull the merged Android resources (the manifest's @string references and the
+    // car widget XML layouts) into the JVM unit-test classpath so Robolectric tests
+    // can inflate layouts, resolve string resources, and read the app manifest.
+    // Without this the unit tests run in `org.robolectric.default` and resource
+    // lookups fail.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 
 }
 
