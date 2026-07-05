@@ -6,12 +6,15 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!-- Android Auto map surface. POI-category apps render their own map via
-         MapWithContentTemplate, which requires the car surface + map-template permissions.
-         Use MAP_TEMPLATES (NOT NAVIGATION_TEMPLATES) since this app does not provide
-         turn-by-turn navigation; declaring both is rejected at review. -->
+    <!-- Android Auto map surface. The car UI is a TabTemplate whose map tab embeds a
+         NavigationTemplate rendering our own MapLibre map on the car surface. That requires
+         the car surface + navigation-template permissions. Use NAVIGATION_TEMPLATES (NOT
+         MAP_TEMPLATES) since the map tab is a NavigationTemplate; declaring both is rejected
+         at review. The Navigation category's NF-1 turn-by-turn gate is intentionally not yet
+         satisfied (no turn-by-turn engine) — declared for dev/testing, to revisit before
+         release. -->
     <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
-    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />
+    <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
 
     <!-- Android Auto: project to a car head unit. The app advertises it can run
          on automotive hardware but is not required to (primary surface is phone). -->
@@ -49,10 +52,12 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- Android Auto (projected). Non-navigation POI-category app; the car UI
-             is built from Car App Library templates (not the phone MapScreen). The
-             service class name is relative to the namespace, so the debug
-             applicationIdSuffix ".debug" does not affect resolution. -->
+        <!-- Android Auto (projected). The car UI is built from Car App Library templates
+             (not the phone MapScreen): a TabTemplate with a NavigationTemplate map tab plus a
+             menu tab. The app advertises all three categories it serves — Navigation (the map
+             tab), Weather (the weather overlay/pane), and POI (the places search/grid). The
+             service class name is relative to the namespace, so the debug applicationIdSuffix
+             ".debug" does not affect resolution. -->
         <service
             android:name=".car.RoadTripRadarCarAppService"
             android:exported="true"
@@ -60,6 +65,8 @@
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.NAVIGATION" />
+                <category android:name="androidx.car.app.category.WEATHER" />
                 <category android:name="androidx.car.app.category.POI" />
             </intent-filter>
         </service>
@@ -69,8 +76,8 @@
              .metaData (the <application> tag), NOT ServiceInfo.metaData, so it must live
              here as a direct child of <application> — putting it inside <service> causes
              "Min API level not declared in manifest" at bind time. -->
-        <!-- MapWithContentTemplate (the self-rendered map template available to POI/Weather
-             apps) requires Car API level 7+. -->
+        <!-- TabTemplate + NavigationTemplate (the self-rendered map tab) require Car API
+             level 7+. -->
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
             android:value="7" />

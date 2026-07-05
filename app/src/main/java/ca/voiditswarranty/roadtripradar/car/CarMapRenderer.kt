@@ -57,6 +57,7 @@ class CarMapRenderer(
 
     override fun onSurfaceAvailable(surfaceContainer: SurfaceContainer) {
         this.surfaceContainer = surfaceContainer
+        Log.i(LOG_TAG, "onSurfaceAvailable: ${surfaceContainer.width}x${surfaceContainer.height} @ ${surfaceContainer.dpi}dpi")
         // If the surface is recreated (e.g. config change), tear down the previous presentation
         // before building a fresh one.
         teardownPresentation()
@@ -70,15 +71,32 @@ class CarMapRenderer(
                 0,
             ).also { virtualDisplay = it }
         Presentation(carContext, display.display).also { presentation = it }
-            .apply {
-                setContentView(mapContainer.setupMap())
-                show()
-            }
+            .apply { setContentView(mapContainer.setupMap()) }
+            .show()
     }
 
     override fun onSurfaceDestroyed(surfaceContainer: SurfaceContainer) {
+        Log.i(LOG_TAG, "onSurfaceDestroyed")
         this.surfaceContainer = null
         teardownPresentation()
+    }
+
+    override fun onVisibleAreaChanged(visibleArea: android.graphics.Rect) {
+        // The host's action-strip buttons reserve a top inset in the visible-area rect in
+        // full-screen, which would push the map down below them. But the host composites our
+        // surface into that top area too (the map fills it once the buttons auto-hide), so we
+        // render across the FULL surface height and let the buttons overlay the top of the map.
+        // We still honor the horizontal bounds so the map shrinks into the split region beside
+        // the media panel (where the occluded right part is genuinely not ours to draw on).
+        val sc = surfaceContainer
+        val effective = if (sc != null && sc.height > 0) {
+            android.graphics.Rect(visibleArea.left, 0, visibleArea.right, sc.height)
+        } else visibleArea
+        mapContainer.setVisibleArea(effective)
+    }
+
+    override fun onStableAreaChanged(stableArea: android.graphics.Rect) {
+        Log.d(LOG_TAG, "onStableAreaChanged: $stableArea")
     }
 
     override fun onScroll(distanceX: Float, distanceY: Float) {

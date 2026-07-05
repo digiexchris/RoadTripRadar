@@ -2,8 +2,10 @@ package ca.voiditswarranty.roadtripradar.car
 
 import android.graphics.Paint
 import android.graphics.PointF
+import android.graphics.Rect
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -114,6 +116,14 @@ class CarMapContainer(
     }
 
     private var routeWidget: CarRouteWidget? = null
+    private var weatherWidget: CarWeatherWidget? = null
+
+    /**
+     * The FrameLayout holding the MapView + overlay cards, sized/positioned to the host's current
+     * visible-area rect (see [setVisibleArea]). Null until [setupMap] runs.
+     */
+    private var mapHost: FrameLayout? = null
+    private var latestVisibleArea: Rect? = null
 
     init {
         vm.addRefreshListener(refreshListener)
@@ -131,12 +141,20 @@ class CarMapContainer(
                 lastStyleUri = uri
                 map.setStyle(Style.Builder().fromUri(uri)) { loaded ->
                     style = loaded
+                    Log.i(LOG_TAG, "style loaded: $uri")
                     setupOverlays(loaded)
                     startPositionPolling()
-                    // Keep the route arrow oriented to the map bearing as the user pans/zooms.
-                    map.addOnCameraMoveListener { routeWidget?.update(map.cameraPosition.bearing) }
+                    // Keep the route arrow and the wind arrow oriented to the map bearing as the
+                    // user pans/zooms (both rotate relative to the camera).
+                    map.addOnCameraMoveListener {
+                        val bearing = map.cameraPosition.bearing
+                        routeWidget?.update(bearing)
+                        weatherWidget?.update(bearing)
+                    }
                     map.addOnCameraIdleListener {
-                        routeWidget?.update(map.cameraPosition.bearing)
+                        val bearing = map.cameraPosition.bearing
+                        routeWidget?.update(bearing)
+                        weatherWidget?.update(bearing)
                         // Persist the car zoom so it survives app exit/restart, mirroring the
                         // phone (vm.onZoomChanged -> prefsRepo.zoomLevel) but on the car's own
                         // key so the two surfaces keep independent zoom levels.
@@ -151,12 +169,18 @@ class CarMapContainer(
         }
         mapViewInstance = mapView
 
-        // The map fills the surface; the route card floats at the center-end (mirroring the
-        // phone NavWidget, which sits at the top of the map overlay). Weather lives in the
-        // MapWithContentTemplate content pane (see CarMapScreen), not on the surface.
-        val widget = CarRouteWidget(carContext, vm)
-        routeWidget = widget
-        return FrameLayout(carContext).apply {
+        // The map and its two overlay cards (route center-left, weather right) live inside a host
+        // FrameLayout sized/positioned to the current visible-area rect. The host composites our
+        // full 800x400 surface at full-screen scale and overlays the media panel / host chrome on
+        // the parts OUTSIDE the visible-area rect — so by rendering the map only into that rect,
+        // the whole map shrinks to fit the visible region in split (instead of being cropped by
+        // the media panel). The non-rendered area is, by definition, occluded by host chrome / the
+        // media panel, so there's no visible blank strip. See [setVisibleArea].
+        val route = CarRouteWidget(carContext, vm)
+        routeWidget = route
+        val weather = CarWeatherWidget(carContext, vm)
+        weatherWidget = weather
+        val host = FrameLayout(carContext).apply {
             addView(
                 mapView,
                 FrameLayout.LayoutParams(
@@ -165,7 +189,15 @@ class CarMapContainer(
                 ),
             )
             addView(
-                widget.view,
+                route.view,
+                FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.CENTER_VERTICAL or Gravity.START,
+                ),
+            )
+            addView(
+                weather.view,
                 FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -173,6 +205,42 @@ class CarMapContainer(
                 ),
             )
         }
+        mapHost = host
+        return FrameLayout(carContext).apply {
+            addView(host, mapHostLayoutParams())
+        }
+    }
+
+    /**
+     * Layout params for the map host: the current visible-area rect (width × height at its
+     * top-left offset), or MATCH_PARENT when no visible area has been reported yet (so the map
+     * fills the surface until the first [onVisibleAreaChanged]).
+     */
+    private fun mapHostLayoutParams(): FrameLayout.LayoutParams {
+        val rect = latestVisibleArea
+        return if (rect != null && rect.width() > 0 && rect.height() > 0) {
+            FrameLayout.LayoutParams(rect.width(), rect.height(), Gravity.TOP or Gravity.START)
+                .apply { leftMargin = rect.left; topMargin = rect.top }
+        } else {
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+            )
+        }
+    }
+
+    /**
+     * Size/position the map (and its overlay cards) to the host's visible-area rect, received via
+     * [CarMapRenderer.onVisibleAreaChanged]. No-op if the rect is unchanged. The MapView re-lays
+     * out and MapLibre re-renders at the new size, keeping the camera centered so the puck stays
+     * centered in the visible region.
+     */
+    fun setVisibleArea(rect: Rect) {
+        if (rect == latestVisibleArea) return
+        latestVisibleArea = rect
+        val host = mapHost ?: return
+        host.layoutParams = mapHostLayoutParams()
+        host.requestLayout()
     }
 
     /** Pan gesture forwarded from the host's [androidx.car.app.SurfaceCallback]. */
@@ -216,6 +284,7 @@ class CarMapContainer(
         // Fall back to the last persisted car zoom (not a hard-coded constant) so the map reopens
         // at the zoom the user left it, independent of the phone's saved zoom.
         val zoom = map.cameraPosition.zoom.takeIf { it > 0 } ?: savedCarZoom()
+        Log.i(LOG_TAG, "centerOnCurrentPosition: ${pos.latitude},${pos.longitude} zoom=$zoom")
         centerOn(pos, zoom)
     }
 
@@ -307,6 +376,7 @@ class CarMapContainer(
         updateRoute(style)
         updatePuck(style)
         routeWidget?.update(bearing)
+        weatherWidget?.update(bearing)
     }
 
     private fun updateRadar(style: Style) {
@@ -442,6 +512,7 @@ class CarMapContainer(
         animHandler.removeCallbacks(animRunnable)
         stopPositionPolling()
         routeWidget = null
+        weatherWidget = null
         mapLibreMapInstance = null
         style = null
         mapViewInstance?.run {
@@ -471,15 +542,13 @@ class CarMapContainer(
     }
 
     private fun createMapView(): MapView {
-        // textureMode(true) makes the MapView render via a TextureView instead of a GLSurfaceView.
-        // This is the MapLibre Android Auto sample's approach and is needed on the car's virtual
-        // display: a SurfaceView's surface composites unreliably relative to sibling views there,
-        // which would hide the weather widget overlay. TextureView renders in the normal view
-        // hierarchy so the widget composites on top. (Not vector-vs-raster — it's the render
-        // surface type; the documented perf penalty is acceptable for a weather/radar map.)
+        // Match the MapLibre Android Auto sample: a default (GLSurfaceView-backed) MapView with a
+        // hardware layer type. The route/weather widget overlays are FrameLayout siblings added
+        // after the MapView, so they draw on top of the GLSurfaceView's punched hole — the sample
+        // layers a TextView the same way and it composites fine.
         val options = runCatching { MapLibreMapOptions.createFromAttributes(carContext) }
             .getOrNull() ?: @Suppress("DEPRECATION") MapLibreMapOptions()
-        return MapView(carContext, options.textureMode(true)).apply {
+        return MapView(carContext, options).apply {
             setLayerType(View.LAYER_TYPE_HARDWARE, Paint())
         }
     }
@@ -505,6 +574,7 @@ class CarMapContainer(
     }
 
     companion object {
+        private const val LOG_TAG = "CarMapContainer"
         private const val POSITION_POLL_MS = 2000L
         private const val MOVEMENT_DEG_THRESHOLD = 0.0001 // ~11 m per poll; above = driving-paced
         private const val ANIM_INTERVAL_MS = 500L

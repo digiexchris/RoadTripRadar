@@ -410,6 +410,9 @@
     <string name="car_home_title">RoadTripRadar</string>
     <string name="car_home_trend">Trend</string>
     <string name="car_home_radar">Radar</string>
+    <!-- Tab titles on the car root TabTemplate. -->
+    <string name="car_tab_map">Map</string>
+    <string name="car_tab_menu">Menu</string>
     <string name="car_weather_no_data">Weather unavailable</string>
     <!-- Wind row on the car weather content pane: "Wind NNE" (wind-from compass direction). -->
     <string name="car_weather_wind_dir">Wind %1$s</string>

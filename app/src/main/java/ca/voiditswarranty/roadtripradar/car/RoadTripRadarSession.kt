@@ -5,7 +5,7 @@ import androidx.car.app.Screen
 import androidx.car.app.Session
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import ca.voiditswarranty.roadtripradar.car.screens.CarMapScreen
+import ca.voiditswarranty.roadtripradar.car.screens.CarNavMapScreen
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 /**
@@ -19,11 +19,16 @@ import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
  * surface is active.
  *
  * On a car configuration change (e.g. day → night) the root map screen is asked to reload its
- * style so the base map follows the car's day/night mode (MR-1).
+ * map style so the base map follows the car's day/night mode (MR-1).
+ *
+ * NOTE: the root is currently [CarNavMapScreen] (a plain root [androidx.car.app.navigation.model.
+ * NavigationTemplate]) as a diagnostic to test whether the split→full-screen surface blanking is
+ * caused by embedding the NavigationTemplate in a TabTemplate. The tabbed [ca.voiditswarranty.
+ * roadtripradar.car.screens.CarTabScreen] is retained but unused meanwhile.
  */
 class RoadTripRadarSession : Session() {
     private var countedActive = false
-    private var carMapScreen: CarMapScreen? = null
+    private var carMapScreen: CarNavMapScreen? = null
 
     private val vm: MapViewModel
         get() = CarViewModelHolder.ensureInitialized(carContext.applicationContext)
@@ -36,7 +41,7 @@ class RoadTripRadarSession : Session() {
                 if (event == Lifecycle.Event.ON_DESTROY) vm.onSurfaceInactive()
             })
         }
-        return CarMapScreen(carContext).also { carMapScreen = it }
+        return CarNavMapScreen(carContext).also { carMapScreen = it }
     }
 
     override fun onCarConfigurationChanged(configuration: android.content.res.Configuration) {
