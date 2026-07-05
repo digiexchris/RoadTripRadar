@@ -132,6 +132,99 @@ class MapViewModel(
         notifyRefresh()
     }
 
+    /**
+     * Test seam for setting [failedCellBounds] without running the full POI
+     * pipeline. The production code writes the field from inside the
+     * `permanentlyFailedCells` synchronized block when a cell exhausts retries.
+     * Tests that need to assert the menu hub's "Retry failed" row appears use
+     * this to populate the list directly. `internal` so it's only visible to
+     * the same module (including the test sourceset).
+     */
+    internal fun setFailedCellBoundsForTest(bounds: List<org.maplibre.spatialk.geojson.BoundingBox>) {
+        failedCellBounds = bounds
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [enabledPoiCategories] without going through
+     * [togglePoiCategory] (which has the cap-enforcement and pipeline-rerun
+     * side effects). Tests that need a particular enabled-set state — e.g.
+     * for the PoiScreen grid's enabled / at-cap branches — use this to
+     * populate the set directly. `internal` so it's only visible to the same
+     * module (including the test sourceset).
+     */
+    internal fun setEnabledPoiCategoriesForTest(categories: Set<String>) {
+        enabledPoiCategories = categories
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [poiPipelineActive] without running the pipeline.
+     * The PoiScreen status text branches on this (and on
+     * [hasFailedCells] / [isLoadingPois]) — tests that need a particular
+     * pipeline-state branch use this to flip the flag directly.
+     */
+    internal fun setPoiPipelineActiveForTest(active: Boolean) {
+        poiPipelineActive = active
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [cellsRemaining] (which drives [isLoadingPois]).
+     * Tests that need a particular loading-state branch use this to set the
+     * counter directly.
+     */
+    internal fun setCellsRemainingForTest(remaining: Int) {
+        cellsRemaining = remaining
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [nearbyPoiFeatures] without going through the
+     * pipeline. Tests that need to assert a non-empty FeatureCollection in
+     * the PoiScreen status text use this to populate it directly.
+     */
+    internal fun setNearbyPoiFeaturesForTest(
+        features: org.maplibre.spatialk.geojson.FeatureCollection<
+            org.maplibre.spatialk.geojson.Point,
+            kotlinx.serialization.json.JsonObject,
+        >,
+    ) {
+        nearbyPoiFeatures = features
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [searchQuery] without going through the
+     * debounce-then-fetch pipeline. Tests that need a particular query
+     * string in the Search screen's no-results / searching state machine use
+     * this to set it directly.
+     */
+    internal fun setSearchQueryForTest(query: String) {
+        searchQuery = query
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [searchResults] without running the geocoding
+     * network call. Tests that need the Search screen to render a particular
+     * set of result rows use this to populate the list directly.
+     */
+    internal fun setSearchResultsForTest(results: List<ca.voiditswarranty.roadtripradar.model.SearchResult>) {
+        searchResults = results
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [isSearching] without going through the
+     * debounce-then-fetch pipeline. Tests that need the Search screen's
+     * loading-state branch use this to flip the flag directly.
+     */
+    internal fun setIsSearchingForTest(searching: Boolean) {
+        isSearching = searching
+        notifyRefresh()
+    }
+
     // Settings
     var useMetric by mutableStateOf(prefsRepo.useMetric)
         private set
