@@ -14,11 +14,17 @@ import androidx.car.app.CarContext
 import ca.voiditswarranty.roadtripradar.data.RainViewer
 import ca.voiditswarranty.roadtripradar.data.activeRouteLeg
 import ca.voiditswarranty.roadtripradar.data.inactiveRouteLegs
+import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
 import ca.voiditswarranty.roadtripradar.data.resolveToConcrete
 import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
+import ca.voiditswarranty.roadtripradar.model.RadarRingsData
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
+import ca.voiditswarranty.roadtripradar.model.buildRadarRingsData
+import ca.voiditswarranty.roadtripradar.model.ringDistancesForZoom
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
+import kotlinx.serialization.json.jsonPrimitive
 import org.maplibre.android.MapLibre
+import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
@@ -117,6 +123,17 @@ class CarMapContainer(
 
     private var routeWidget: CarRouteWidget? = null
     private var weatherWidget: CarWeatherWidget? = null
+    private var rangeRingLabels: CarRangeRingLabels? = null
+
+    /**
+     * Current range-ring geometry + label positions, set by [updateRangeRings] on bracket
+     * change. Cached so that pure camera-move ticks (pan/rotate) can re-project the labels
+     * without rebuilding the rings, and so the camera-idle handler can detect when the
+     * underlying data has actually changed vs. just shifted on screen.
+     */
+    private var rangeRingsData: RadarRingsData? = null
+    private var rangeRingsCenter: Position? = null
+    private var lastZoomForRangeRings: Double? = null
 
     /**
      * The FrameLayout holding the MapView + overlay cards, sized/positioned to the host's current
@@ -145,16 +162,20 @@ class CarMapContainer(
                     setupOverlays(loaded)
                     startPositionPolling()
                     // Keep the route arrow and the wind arrow oriented to the map bearing as the
-                    // user pans/zooms (both rotate relative to the camera).
+                    // user pans/zooms (both rotate relative to the camera). Also re-project the
+                    // range-ring label TextViews — the label points on the ring don't change,
+                    // but their screen positions do as the map pans/rotates.
                     map.addOnCameraMoveListener {
                         val bearing = map.cameraPosition.bearing
                         routeWidget?.update(bearing)
                         weatherWidget?.update(bearing)
+                        updateRangeRingLabels()
                     }
                     map.addOnCameraIdleListener {
                         val bearing = map.cameraPosition.bearing
                         routeWidget?.update(bearing)
                         weatherWidget?.update(bearing)
+                        updateRangeRingLabels()
                         // Persist the car zoom so it survives app exit/restart, mirroring the
                         // phone (vm.onZoomChanged -> prefsRepo.zoomLevel) but on the car's own
                         // key so the two surfaces keep independent zoom levels.
@@ -180,6 +201,13 @@ class CarMapContainer(
         routeWidget = route
         val weather = CarWeatherWidget(carContext, vm)
         weatherWidget = weather
+        // Initial label colors match the resolved style so the first frame is already readable
+        // (no flash of black-on-white on a dark map). `reloadStyleIfNeeded` calls setDark() on
+        // subsequent style changes; the constructor default would only be visible in the brief
+        // pre-style-load window.
+        val isDarkInitial = vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
+        val labels = CarRangeRingLabels(carContext, vm, isDark = isDarkInitial)
+        rangeRingLabels = labels
         val host = FrameLayout(carContext).apply {
             addView(
                 mapView,
@@ -202,6 +230,18 @@ class CarMapContainer(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     Gravity.CENTER_VERTICAL or Gravity.END,
+                ),
+            )
+            // Range-ring labels: positioned via x/y in updateRangeRingLabels() on every
+            // camera move. The widget itself is anchored at (0, 0) in the host and spans
+            // the full host size so the label TextViews can use host-pixel coordinates
+            // directly. Sits on top of the MapView and the route/weather cards so the
+            // labels are never obscured.
+            addView(
+                labels,
+                FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                 ),
             )
         }
@@ -233,7 +273,8 @@ class CarMapContainer(
      * Size/position the map (and its overlay cards) to the host's visible-area rect, received via
      * [CarMapRenderer.onVisibleAreaChanged]. No-op if the rect is unchanged. The MapView re-lays
      * out and MapLibre re-renders at the new size, keeping the camera centered so the puck stays
-     * centered in the visible region.
+     * centered in the visible region. Also re-projects the range-ring labels against the new
+     * pixel coordinate system (the host's pixel space has shifted).
      */
     fun setVisibleArea(rect: Rect) {
         if (rect == latestVisibleArea) return
@@ -241,6 +282,9 @@ class CarMapContainer(
         val host = mapHost ?: return
         host.layoutParams = mapHostLayoutParams()
         host.requestLayout()
+        // The MapView's pixel coordinate system has shifted with the relayout — re-project the
+        // label points to their new screen positions. The ring geometry itself is unchanged.
+        updateRangeRingLabels()
     }
 
     /** Pan gesture forwarded from the host's [androidx.car.app.SurfaceCallback]. */
@@ -268,10 +312,66 @@ class CarMapContainer(
         centerOn(pos, zoom)
     }
 
-    /** Instantly center the map on [pos] at [zoom]. */
+    /**
+     * Instantly center the map on [pos] at [zoom], applying the user-configurable
+     * [PrefsDefaults.MAP_CENTER_OFFSET_CAR_FRACTION] so the user appears at that fraction from
+     * the bottom of the visible area — mirroring the phone's portrait/landscape offset slider.
+     * Padding is in pixels (CameraPosition padding is in map-view pixels); at fraction ≤ 0.5 we
+     * add top padding to push the puck down, at > 0.5 we add bottom padding to push it up. No
+     * padding at exactly 0.5 (the natural center).
+     */
     private fun centerOn(pos: Position, zoom: Double) {
         val map = mapLibreMapInstance ?: return
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(pos.latitude, pos.longitude), zoom))
+        val builder = CameraPosition.Builder()
+            .target(LatLng(pos.latitude, pos.longitude))
+            .zoom(zoom)
+        carOffsetPadding()?.let { (top, bottom) -> builder.padding(0.0, top, 0.0, bottom) }
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(builder.build()))
+    }
+
+    /**
+     * Top + bottom padding (in map-view pixels) implied by the current
+     * [ca.voiditswarranty.roadtripradar.model.PrefsDefaults.MAP_CENTER_OFFSET_CAR_FRACTION] and
+     * the map host's current height. Returns null when no padding should be applied: the host
+     * hasn't been laid out yet (height = 0) OR the fraction is exactly 0.5 (natural center).
+     * Mirrors the phone's [ca.voiditswarranty.roadtripradar.ui.MapScreen] formula so the same
+     * fraction produces the same visual offset on both surfaces.
+     */
+    private fun carOffsetPadding(): Pair<Double, Double>? {
+        val height = mapHost?.height ?: 0
+        if (height <= 0) return null
+        val fraction = vm.prefsRepo.mapCenterOffsetCarFraction.coerceIn(0f, 1f)
+        if (fraction == 0.5f) return null
+        val desiredBottomOffset = height.toDouble() * fraction.toDouble()
+        val top = (height - 2 * desiredBottomOffset).coerceAtLeast(0.0)
+        val bottom = (2 * desiredBottomOffset - height).coerceAtLeast(0.0)
+        return top to bottom
+    }
+
+    /**
+     * Re-apply the current car-offset padding to the live camera without changing target/zoom/
+     * bearing/tilt. Called from [refreshFromVm] so a phone-side slider change takes effect
+     * live on the car surface (the slider's `onValueChangeFinished` saves the pref, which
+     * triggers a refresh-bus notification). No-op when the host isn't laid out, the fraction
+     * is 0.5, or the new padding is identical to the camera's current padding.
+     */
+    private fun applyCarOffsetPadding() {
+        val map = mapLibreMapInstance ?: return
+        val (top, bottom) = carOffsetPadding() ?: return
+        val current = map.cameraPosition
+        val currentPadding = current.padding
+        // CameraPosition padding is [left, top, right, bottom]; compare indices 1 and 3.
+        if (currentPadding != null &&
+            currentPadding.getOrNull(1) == top &&
+            currentPadding.getOrNull(3) == bottom
+        ) return
+        map.moveCamera(
+            CameraUpdateFactory.newCameraPosition(
+                CameraPosition.Builder(current)
+                    .padding(0.0, top, 0.0, bottom)
+                    .build(),
+            ),
+        )
     }
 
     /**
@@ -313,19 +413,48 @@ class CarMapContainer(
         // also guards overlay updates during the async load window: without it, a refresh firing
         // mid-reload would try to re-add radar sources to the *old* Style (whose ids we just
         // cleared from the bookkeeping but which still holds them), throwing "source already
-        // exists".
+        // exists". Same reasoning applies to the range rings — reset their cached geometry
+        // (bracket, center, data) so the next refresh rebuilds them against the new style.
         style = null
         radarSourceIds.clear()
         radarLayerIds.clear()
         builtRadarKey = emptyList()
+        rangeRingsData = null
+        rangeRingsCenter = null
+        lastZoomForRangeRings = null
         map.setStyle(Style.Builder().fromUri(uri)) { loaded ->
             style = loaded
             setupOverlays(loaded)
+            // setupOverlays resolves the new theme for the ring line color. The label TextView
+            // widget survives the style swap (it's a regular View, not a MapLibre layer), so it
+            // needs an explicit re-theme call here. `setDark` short-circuits if the value
+            // didn't change, so this is cheap on every reload.
+            rangeRingLabels?.setDark(
+                vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
+            )
             refreshFromVm()
         }
     }
 
     private fun setupOverlays(style: Style) {
+        // Range rings, added first so we can place subsequent layers ABOVE them with addLayerAbove.
+        // The rings themselves sit BELOW the route so the route line is never obscured by a ring.
+        // Mirrors the phone's "rings below route" intent (ui/MapLayers.kt:RadarRingsLayers).
+        // Ring color is theme-aware (light gray on dark, black on light) so the rings stay
+        // visible on the current base map. The exact ARGB values come from carRingColor() and
+        // match the phone's Compose `Color.LightGray`/`Color.Black` constants.
+        val isDark = vm.mapStyle.isDarkForAppTheme(carContext, carContext.isDarkMode())
+        style.addSource(GeoJsonSource(RANGE_RINGS_SOURCE_ID, EMPTY_FEATURE_COLLECTION))
+        style.addLayer(
+            LineLayer(RANGE_RINGS_LAYER_ID, RANGE_RINGS_SOURCE_ID).withProperties(
+                lineColor(carRingColor(isDark)),
+                lineWidth(RANGE_RING_WIDTH),
+                lineOpacity(RANGE_RING_OPACITY),
+                lineCap("round"),
+                lineJoin("round"),
+                lineDasharray(RANGE_RING_DASH),
+            )
+        )
         // Route, drawn as two layers mirroring the phone (ui.MapLayers.WaypointRouteLineLayer):
         // the dashed planned legs between consecutive waypoints, then the solid live approach
         // leg from the user's position to the active target on top. Both share the same green;
@@ -369,14 +498,22 @@ class CarMapContainer(
         // up a new style URI (or an AUTO resolution flip from a day/night change) before refreshing
         // overlays. Cheap no-op when the URI is unchanged.
         reloadStyleIfNeeded()
+        // Re-apply the user-configurable car center-offset padding. The VM fires a refresh whenever
+        // the phone's slider saves a new value, so this propagates slider changes live to the car
+        // surface. Runs before the style-early-return because the padding update only needs the
+        // camera + map host — not the loaded style — and we want a slider change in the brief
+        // pre-style-load window to take effect too.
+        applyCarOffsetPadding()
         val style = this.style ?: return
         val bearing = mapLibreMapInstance?.cameraPosition?.bearing ?: 0.0
         reconcileAnimation()
         updateRadar(style)
+        updateRangeRings(style)
         updateRoute(style)
         updatePuck(style)
         routeWidget?.update(bearing)
         weatherWidget?.update(bearing)
+        updateRangeRingLabels()
     }
 
     private fun updateRadar(style: Style) {
@@ -476,6 +613,54 @@ class CarMapContainer(
     }
 
     /**
+     * Rebuild the range-ring geometry if the user has moved to a new center OR the zoom has
+     * crossed a ring-distance boundary. A no-op when both are still the same as the cached
+     * data — the labels still need re-projection (that's [updateRangeRingLabels]) but the
+     * ring geometry itself hasn't changed.
+     */
+    private fun updateRangeRings(style: Style) {
+        val map = mapLibreMapInstance ?: return
+        val pos = currentPosition() ?: return
+        val zoom = map.cameraPosition.zoom
+        val zoomBracketChanged = lastZoomForRangeRings == null ||
+            rangeRingsZoomBracket(lastZoomForRangeRings!!) != rangeRingsZoomBracket(zoom)
+        if (pos == rangeRingsCenter && !zoomBracketChanged) return
+        val distances = ringDistancesForZoom(zoom)
+        val bearing = map.cameraPosition.bearing
+        val data = buildRadarRingsData(pos, distances, bearing, vm.useMetric)
+        rangeRingsData = data
+        rangeRingsCenter = pos
+        lastZoomForRangeRings = zoom
+        (style.getSource(RANGE_RINGS_SOURCE_ID) as? GeoJsonSource)
+            ?.setGeoJson(serializeRingsFeatures(data.ringsFeatures))
+    }
+
+    /**
+     * Re-project each ring's 12-o'clock label point to screen pixels and hand the list to the
+     * TextView overlay. Called on every camera move (the label points on the ring don't change
+     * when the user pans, but their screen positions do), and on visible-area changes (the
+     * MapView's pixel coordinate system shifts on layout). Reads from the cached
+     * [rangeRingsData] — no work to do if [updateRangeRings] hasn't run yet.
+     */
+    private fun updateRangeRingLabels() {
+        val data = rangeRingsData ?: return
+        val map = mapLibreMapInstance ?: return
+        val widget = rangeRingLabels ?: return
+        val projection = map.projection
+        val items = data.labelsFeatures.features.map { feature ->
+            val pos = feature.geometry.coordinates
+            // GeoJSON uses [lon, lat] order; native Projection.toScreenLocation takes
+            // LatLng(lat, lon) — flipped. (Same conversion as `centerOn`.)
+            val screen = projection.toScreenLocation(LatLng(pos.latitude, pos.longitude))
+            CarRangeRingLabels.LabelItem(
+                screenPoint = screen,
+                text = feature.properties?.get("label")?.jsonPrimitive?.content ?: "",
+            )
+        }
+        widget.updateLabels(items)
+    }
+
+    /**
      * Start a light poll that re-pulls the phone-computed position from the VM so the puck tracks,
      * and derives "driving" from position movement for the SA-1 radar freeze. The phone surface
      * updates [MapViewModel.userPositionForSearch] live (via maplibre-compose); this just observes
@@ -513,6 +698,11 @@ class CarMapContainer(
         stopPositionPolling()
         routeWidget = null
         weatherWidget = null
+        rangeRingLabels?.dispose()
+        rangeRingLabels = null
+        rangeRingsData = null
+        rangeRingsCenter = null
+        lastZoomForRangeRings = null
         mapLibreMapInstance = null
         style = null
         mapViewInstance?.run {
@@ -589,6 +779,14 @@ class CarMapContainer(
         private const val ROUTE_ACTIVE_LAYER_ID = "car-route-active-layer"
         private const val PUCK_SOURCE_ID = "car-puck"
         private const val PUCK_LAYER_ID = "car-puck-layer"
+        // Range rings (mirrors the phone's ui/MapLayers.RadarRingsLayers). Line width/opacity/
+        // dash are fixed; color is theme-aware — set per-load by setupOverlays via
+        // carRingColor(isDark), re-derived on each style change in reloadStyleIfNeeded.
+        private const val RANGE_RINGS_SOURCE_ID = "car-range-rings"
+        private const val RANGE_RINGS_LAYER_ID = "car-range-rings-layer"
+        private const val RANGE_RING_WIDTH = 3.5f
+        private const val RANGE_RING_OPACITY = 0.7f
+        private val RANGE_RING_DASH = arrayOf(4f, 3f)
         private const val EMPTY_FEATURE_COLLECTION = """{"type":"FeatureCollection","features":[]}"""
     }
 }

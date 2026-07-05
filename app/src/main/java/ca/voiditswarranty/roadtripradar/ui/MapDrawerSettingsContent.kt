@@ -137,6 +137,28 @@ fun MapDrawerSettingsContent(
         }
 
         Column(
+            modifier = Modifier.tutorialAnchor(TutorialAnchors.MAP_SETTING_CENTER_OFFSET_CAR),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(stringResource(R.string.settings_map_center_offset_car), style = MaterialTheme.typography.titleSmall)
+                Text(
+                    "${(vm.mapCenterOffsetCarFraction * 100).toInt()}%",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            GloveFriendlySlider(
+                value = vm.mapCenterOffsetCarFraction,
+                onValueChange = { vm.updateMapCenterOffsetCarFraction(it) },
+                onValueChangeFinished = { vm.saveMapCenterOffsetCarFraction() },
+                valueRange = 0f..1f,
+            )
+        }
+
+        Column(
             modifier = Modifier.tutorialAnchor(TutorialAnchors.MAP_SETTING_POI_OPACITY),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {

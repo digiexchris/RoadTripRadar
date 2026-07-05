@@ -60,6 +60,7 @@ object TutorialAnchors {
     const val MAP_SETTING_UNITS = "map_setting_units"
     const val MAP_SETTING_CENTER_OFFSET_PORTRAIT = "map_setting_center_offset_portrait"
     const val MAP_SETTING_CENTER_OFFSET_LANDSCAPE = "map_setting_center_offset_landscape"
+    const val MAP_SETTING_CENTER_OFFSET_CAR = "map_setting_center_offset_car"
     const val MAP_SETTING_POI_OPACITY = "map_setting_poi_opacity"
     const val MAP_SETTING_AUTO_ADVANCE_TOGGLE = "map_setting_auto_advance_toggle"
     const val MAP_SETTING_AUTO_ADVANCE_THRESHOLD = "map_setting_auto_advance_threshold"
@@ -208,6 +209,11 @@ val MAP_SETTINGS_TUTORIAL_STEPS: List<TutorialStep> = listOf(
         anchorId = TutorialAnchors.MAP_SETTING_CENTER_OFFSET_LANDSCAPE,
         titleRes = R.string.tutorial_map_setting_center_offset_landscape_title,
         bodyRes = R.string.tutorial_map_setting_center_offset_landscape_body,
+    ),
+    TutorialStep(
+        anchorId = TutorialAnchors.MAP_SETTING_CENTER_OFFSET_CAR,
+        titleRes = R.string.tutorial_map_setting_center_offset_car_title,
+        bodyRes = R.string.tutorial_map_setting_center_offset_car_body,
     ),
     TutorialStep(
         anchorId = TutorialAnchors.MAP_SETTING_POI_OPACITY,

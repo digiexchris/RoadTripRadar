@@ -114,6 +114,8 @@
     <string name="tutorial_map_setting_center_offset_portrait_body">How far down the screen the map is anchored when held vertically. Higher values leave more empty space at the top, useful when nav widgets crowd the bottom.</string>
     <string name="tutorial_map_setting_center_offset_landscape_title">Map center offset (landscape)</string>
     <string name="tutorial_map_setting_center_offset_landscape_body">Same idea as the portrait offset, applied when your phone is sideways.</string>
+    <string name="tutorial_map_setting_center_offset_car_title">Map center offset (car)</string>
+    <string name="tutorial_map_setting_center_offset_car_body">How far down the screen the map is anchored when displayed on an Android Auto head unit. Independent from the phone\'s portrait and landscape offsets, so you can tune each surface for its viewport.</string>
     <string name="tutorial_map_setting_poi_opacity_title">Places icon opacity</string>
     <string name="tutorial_map_setting_poi_opacity_body">Fade nearby place icons in or out so they don\'t cover the map. 0%% hides them entirely.</string>
     <string name="tutorial_map_setting_auto_advance_toggle_title">Auto-advance</string>
@@ -182,6 +184,7 @@
     <string name="settings_imperial">Imperial</string>
     <string name="settings_map_center_offset_portrait">Map Center Offset (Portrait)</string>
     <string name="settings_map_center_offset_landscape">Map Center Offset (Landscape)</string>
+    <string name="settings_map_center_offset_car">Map Center Offset (Car)</string>
     <string name="settings_places_icon_opacity">Places Icon Opacity</string>
     <string name="theme_current">Theme: %s</string>
     <string name="action_choose_theme">Choose Theme</string>

@@ -134,6 +134,10 @@ object PrefsDefaults {
     const val MAP_CENTER_OFFSET_FRACTION = 0.30f
     const val MAP_CENTER_OFFSET_PORTRAIT_FRACTION = 0.30f
     const val MAP_CENTER_OFFSET_LANDSCAPE_FRACTION = 0.30f
+    // The car surface keeps its own user-location center offset, independent of the phone's
+    // portrait/landscape settings. 0.25 keeps the puck in the lower quarter of the visible area
+    // — a touch below the phone's 0.30 default to keep more road visible ahead.
+    const val MAP_CENTER_OFFSET_CAR_FRACTION = 0.25f
     const val RADAR_OPACITY = 0.6f
     const val USE_METRIC = true
     const val WEATHER_MODE = "ON"

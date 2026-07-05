@@ -231,6 +231,15 @@ class PreferencesRepository(context: Context) {
         }
         set(value) = prefs.edit().putFloat("map_center_offset_landscape_fraction", value).apply()
 
+    // The car surface keeps its own user-location center offset, independent of the phone's
+    // portrait/landscape settings. No legacy key to fall back from (the car is new).
+    var mapCenterOffsetCarFraction: Float
+        get() = prefs.getFloat(
+            "map_center_offset_car_fraction",
+            PrefsDefaults.MAP_CENTER_OFFSET_CAR_FRACTION,
+        )
+        set(value) = prefs.edit().putFloat("map_center_offset_car_fraction", value).apply()
+
     var weatherMode: WeatherMode
         get() {
             val saved = prefs.getString("weather_mode", null)
@@ -412,6 +421,7 @@ class PreferencesRepository(context: Context) {
             .putFloat("car_zoom_level", PrefsDefaults.CAR_ZOOM_LEVEL)
             .putFloat("map_center_offset_portrait_fraction", PrefsDefaults.MAP_CENTER_OFFSET_PORTRAIT_FRACTION)
             .putFloat("map_center_offset_landscape_fraction", PrefsDefaults.MAP_CENTER_OFFSET_LANDSCAPE_FRACTION)
+            .putFloat("map_center_offset_car_fraction", PrefsDefaults.MAP_CENTER_OFFSET_CAR_FRACTION)
             .remove("enabled_poi_categories")
             .remove("show_pois_on_map")
             .remove("poi_display_mode")

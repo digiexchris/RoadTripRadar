@@ -157,6 +157,8 @@ class MapViewModel(
         private set
     var mapCenterOffsetLandscapeFraction by mutableStateOf(prefsRepo.mapCenterOffsetLandscapeFraction)
         private set
+    var mapCenterOffsetCarFraction by mutableStateOf(prefsRepo.mapCenterOffsetCarFraction)
+        private set
 
     // Network
     var networkStatus by mutableStateOf(NetworkStatus())
@@ -701,6 +703,15 @@ class MapViewModel(
 
     fun saveMapCenterOffsetLandscapeFraction() {
         prefsRepo.mapCenterOffsetLandscapeFraction = mapCenterOffsetLandscapeFraction
+    }
+
+    fun updateMapCenterOffsetCarFraction(value: Float) {
+        mapCenterOffsetCarFraction = value
+    }
+
+    fun saveMapCenterOffsetCarFraction() {
+        prefsRepo.mapCenterOffsetCarFraction = mapCenterOffsetCarFraction
+        notifyRefresh()
     }
 
     fun saveLastKnownPosition(pos: Position) {
