@@ -25,13 +25,32 @@ fun MapStyle.resolveToConcrete(context: Context, night: Boolean): MapStyle {
     if (this != MapStyle.AUTO) return this
     val prefsRepo = PreferencesRepository(context)
     val customRepo = CustomThemeRepository(context)
-    return if (night) {
-        if (prefsRepo.customDarkAutoEnabled && customRepo.hasCustomDark()) MapStyle.CUSTOM_DARK
-        else MapStyle.COLOR_DARK
-    } else {
-        if (prefsRepo.customLightAutoEnabled && customRepo.hasCustomLight()) MapStyle.CUSTOM_LIGHT
-        else MapStyle.LIBERTY
-    }
+    return resolveAuto(
+        night = night,
+        customLightAutoEnabled = prefsRepo.customLightAutoEnabled,
+        customDarkAutoEnabled = prefsRepo.customDarkAutoEnabled,
+        hasCustomLight = customRepo.hasCustomLight(),
+        hasCustomDark = customRepo.hasCustomDark(),
+    )
+}
+
+/**
+ * Pure decision function for the AUTO → concrete collapse. Extracted from
+ * [resolveToConcrete] so the 4-quadrant truth table can be unit-tested without standing up
+ * [PreferencesRepository] and [CustomThemeRepository]. Not part of the public API.
+ */
+internal fun resolveAuto(
+    night: Boolean,
+    customLightAutoEnabled: Boolean,
+    customDarkAutoEnabled: Boolean,
+    hasCustomLight: Boolean,
+    hasCustomDark: Boolean,
+): MapStyle = if (night) {
+    if (customDarkAutoEnabled && hasCustomDark) MapStyle.CUSTOM_DARK
+    else MapStyle.COLOR_DARK
+} else {
+    if (customLightAutoEnabled && hasCustomLight) MapStyle.CUSTOM_LIGHT
+    else MapStyle.LIBERTY
 }
 
 fun MapStyle.resolvedStyleUri(context: Context): String {
