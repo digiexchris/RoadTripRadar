@@ -320,18 +320,6 @@ class MapViewModel(
         get() = activeWaypoint?.subtitle
 
     // Nearby POIs — cell-based pipeline
-    data class CachedCell(
-        val cellId: String,
-        val features: List<Feature<Point, JsonObject>>,
-        val fetchedAtMs: Long,
-        val bounds: BoundingBox,
-    )
-
-    private data class PendingCell(
-        val cell: PoiGridCell,
-        val retryCount: Int = 0,
-    )
-
     private val cellCache = mutableMapOf<String, CachedCell>()
     private val pendingCells = mutableListOf<PendingCell>()
     private val inFlightCells = mutableSetOf<String>()
@@ -571,21 +559,11 @@ class MapViewModel(
     }
 
     fun cycleWeatherMode() {
-        val next = when (weatherMode) {
-            WeatherMode.OFF -> WeatherMode.PLAYING
-            WeatherMode.PLAYING -> WeatherMode.ON
-            WeatherMode.ON -> WeatherMode.OFF
-        }
-        updateWeatherMode(next)
+        updateWeatherMode(nextWeatherModeOnCycle(weatherMode))
     }
 
     fun toggleWeatherPlayPause() {
-        val next = when (weatherMode) {
-            WeatherMode.OFF -> WeatherMode.PLAYING
-            WeatherMode.PLAYING -> WeatherMode.ON
-            WeatherMode.ON -> WeatherMode.PLAYING
-        }
-        updateWeatherMode(next)
+        updateWeatherMode(nextWeatherModeOnPlayPauseToggle(weatherMode))
     }
 
     fun turnOffWeather() {
@@ -593,11 +571,7 @@ class MapViewModel(
     }
 
     fun toggleWeatherOnOff() {
-        if (weatherActive) {
-            updateWeatherMode(WeatherMode.OFF)
-        } else {
-            updateWeatherMode(WeatherMode.PLAYING)
-        }
+        updateWeatherMode(nextWeatherModeOnOnOffToggle(weatherActive))
     }
 
     fun updateShowLegend(show: Boolean) {
@@ -849,7 +823,7 @@ class MapViewModel(
         }
         if (current <= last) return
         val newReleases = ChangelogRepository.releasesNewSince(bundle, last, current)
-        if (newReleases.isEmpty()) {
+        if (!shouldShowWhatsNew(lastSeenCode = last, currentVersionCode = current, newReleaseCount = newReleases.size)) {
             prefsRepo.setLastSeenChangelogVersionCode(current)
             return
         }
@@ -924,19 +898,21 @@ class MapViewModel(
     fun tutorialNext() {
         val group = tutorialActiveGroup ?: return
         val steps = stepsFor(group)
-        val next = tutorialStepIndex + 1
-        if (next >= steps.size) {
-            markTutorialGroupCompleted(group)
-            tutorialActiveGroup = null
-            tutorialStepIndex = 0
-        } else {
-            tutorialStepIndex = next
+        when (val next = nextTutorialStep(currentIndex = tutorialStepIndex, stepCount = steps.size)) {
+            is TutorialEnd.End -> {
+                markTutorialGroupCompleted(group)
+                tutorialActiveGroup = null
+                tutorialStepIndex = 0
+            }
+            is Int -> {
+                tutorialStepIndex = next
+            }
         }
     }
 
     fun tutorialBack() {
         if (tutorialActiveGroup == null) return
-        tutorialStepIndex = (tutorialStepIndex - 1).coerceAtLeast(0)
+        tutorialStepIndex = previousTutorialStep(tutorialStepIndex)
     }
 
     fun skipTutorial() {
@@ -1002,8 +978,8 @@ class MapViewModel(
         refreshCustomThemeState()
         // If the deleted theme was active, fall back to built-in equivalent
         if (currentStyle == style) {
-            val fallback = if (style == MapStyle.CUSTOM_LIGHT) MapStyle.LIBERTY else MapStyle.COLOR_DARK
-            onStyleChange(fallback)
+            val fallback = customThemeFallback(style)
+            if (fallback != null) onStyleChange(fallback)
         }
     }
 
@@ -1102,9 +1078,6 @@ class MapViewModel(
         )
     }
 
-    private fun formatLatLng(position: Position): String =
-        "%.5f, %.5f".format(position.latitude, position.longitude)
-
     private fun triggerReverseGeocode(position: Position) {
         val loadingSuffix = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.address_loading)
         if (tappedPoi?.position == position) {
@@ -1161,10 +1134,6 @@ class MapViewModel(
             iconName = iconName,
         )
         when (at) {
-            InsertPosition.Start -> waypoints.add(0, wp)
-            InsertPosition.BeforeLast -> waypoints.add((waypoints.size - 1).coerceAtLeast(0), wp)
-            InsertPosition.End -> waypoints.add(wp)
-            is InsertPosition.Index -> waypoints.add(at.i.coerceIn(0, waypoints.size), wp)
             is InsertPosition.ReplaceId -> {
                 val idx = waypoints.indexOfFirst { it.id == at.id }
                 if (idx >= 0) {
@@ -1174,6 +1143,15 @@ class MapViewModel(
                 } else {
                     waypoints.add(wp)
                 }
+            }
+            else -> {
+                val insertIdx = addWaypointIndex(
+                    currentSize = waypoints.size,
+                    at = at,
+                    activeWaypointId = activeWaypointId,
+                    findById = { id -> waypoints.indexOfFirst { it.id == id } },
+                )
+                waypoints.add(insertIdx, wp)
             }
         }
         if (activeWaypointId == null) activeWaypointId = wp.id
@@ -1219,14 +1197,18 @@ class MapViewModel(
 
     /** Called from the map on each user-location update. Advances the active waypoint when within threshold. */
     fun maybeAutoAdvance(userPos: Position) {
-        if (!autoAdvanceEnabled) return
         val idx = activeIndex ?: return
-        if (idx >= waypoints.size - 1) return
         val active = waypoints.getOrNull(idx) ?: return
         val distMeters = distance(Point(userPos), Point(active.position)).inMeters
-        if (distMeters < autoAdvanceThresholdMeters) {
-            advanceActiveWaypoint()
-        }
+        val next = maybeAutoAdvanceNextIndex(
+            autoAdvanceEnabled = autoAdvanceEnabled,
+            activeIndex = activeIndex,
+            totalWaypoints = waypoints.size,
+            distanceMeters = distMeters,
+            thresholdMeters = autoAdvanceThresholdMeters,
+        ) ?: return
+        val nextWp = waypoints.getOrNull(next) ?: return
+        setActiveWaypoint(nextWp.id)
     }
 
     /** Add the currently-tapped POI to the route at the requested position, then dismiss the popup. */
@@ -1435,37 +1417,21 @@ class MapViewModel(
     // --- Cell pipeline helpers ---
 
     private fun rebuildMergedFeatures() {
-        val allFeatures = cellCache.values.flatMap { it.features }
-        nearbyPoiFeatures = FeatureCollection(allFeatures)
+        val snapshot = synchronized(cellCache) { cellCache.toMap() }
+        val result = ca.voiditswarranty.roadtripradar.viewmodel.rebuildMergedFeatures(snapshot)
+        nearbyPoiFeatures = FeatureCollection(result.features)
+        poiFetchRegion = result.region
         notifyRefresh()
-        if (cellCache.isEmpty()) {
-            poiFetchRegion = null
-        } else {
-            var minLat = Double.MAX_VALUE
-            var maxLat = -Double.MAX_VALUE
-            var minLon = Double.MAX_VALUE
-            var maxLon = -Double.MAX_VALUE
-            for (cell in cellCache.values) {
-                val sw = cell.bounds.southwest
-                val ne = cell.bounds.northeast
-                minLat = min(minLat, sw.latitude)
-                maxLat = max(maxLat, ne.latitude)
-                minLon = min(minLon, sw.longitude)
-                maxLon = max(maxLon, ne.longitude)
-            }
-            poiFetchRegion = BoundingBox(
-                southwest = Position(latitude = minLat, longitude = minLon),
-                northeast = Position(latitude = maxLat, longitude = maxLon),
-            )
-        }
     }
 
     /** Drops cached cells that do not intersect the current POI load plate (padded viewport, max 350 km side). */
     private fun evictCachedCellsOutsideLoadPlate(loadPlate: BoundingBox) {
         val toRemove = synchronized(cellCache) {
-            cellCache.entries
-                .filter { (_, cached) -> !PoiViewportChunks.boundingBoxesIntersect(cached.bounds, loadPlate) }
-                .map { it.key }
+            evictableCachedCellIds(
+                cache = cellCache,
+                loadPlate = loadPlate,
+                intersects = PoiViewportChunks::boundingBoxesIntersect,
+            )
         }
         if (toRemove.isNotEmpty()) {
             synchronized(cellCache) { for (key in toRemove) cellCache.remove(key) }
@@ -1481,13 +1447,20 @@ class MapViewModel(
     }
 
     private fun enqueueCells(cells: List<PoiGridCell>, cameraCenter: Position) {
-        synchronized(pendingCells) {
-            for (cell in cells) {
-                if (cellCache.containsKey(cell.id)) continue
-                if (synchronized(inFlightCells) { inFlightCells.contains(cell.id) }) continue
-                if (pendingCells.any { it.cell.id == cell.id }) continue
-                if (synchronized(permanentlyFailedCells) { permanentlyFailedCells.any { it.id == cell.id } }) continue
-                pendingCells.add(PendingCell(cell))
+        val cachedIds = synchronized(cellCache) { cellCache.keys.toSet() }
+        val inFlightIds = synchronized(inFlightCells) { inFlightCells.toSet() }
+        val pendingIds = synchronized(pendingCells) { pendingCells.map { it.cell.id }.toSet() }
+        val failedIds = synchronized(permanentlyFailedCells) { permanentlyFailedCells.map { it.id }.toSet() }
+        val toEnqueue = cellsToEnqueue(
+            cells = cells,
+            cachedIds = cachedIds,
+            inFlightIds = inFlightIds,
+            pendingIds = pendingIds,
+            failedIds = failedIds,
+        )
+        if (toEnqueue.isNotEmpty()) {
+            synchronized(pendingCells) {
+                for (cell in toEnqueue) pendingCells.add(PendingCell(cell))
             }
         }
         reprioritizePendingCells(cameraCenter)
@@ -1568,7 +1541,7 @@ class MapViewModel(
             }
             is TileFetchResult.ServerError -> {
                 android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} server error: ${result.message}")
-                delay(min(1000L * (1 shl pending.retryCount), MAX_INTER_CELL_DELAY_MS))
+                delay(retryDelayMs(pending.retryCount))
                 reEnqueueIfRetriable(pending)
             }
             is TileFetchResult.Failed -> {
@@ -1624,11 +1597,18 @@ class MapViewModel(
 
         if (!networkStatus.connected) return
 
-        val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate).filter { cell ->
-            !cellCache.containsKey(cell.id)
-                && synchronized(inFlightCells) { !inFlightCells.contains(cell.id) }
-                && synchronized(pendingCells) { pendingCells.none { it.cell.id == cell.id } }
-                && synchronized(permanentlyFailedCells) { permanentlyFailedCells.none { it.id == cell.id } }
+        val missingCells = run {
+            val cachedIds = synchronized(cellCache) { cellCache.keys.toSet() }
+            val inFlightIds = synchronized(inFlightCells) { inFlightCells.toSet() }
+            val pendingIds = synchronized(pendingCells) { pendingCells.map { it.cell.id }.toSet() }
+            val failedIds = synchronized(permanentlyFailedCells) { permanentlyFailedCells.map { it.id }.toSet() }
+            cellsToEnqueue(
+                cells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate),
+                cachedIds = cachedIds,
+                inFlightIds = inFlightIds,
+                pendingIds = pendingIds,
+                failedIds = failedIds,
+            )
         }
         if (missingCells.isNotEmpty()) {
             android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells to enqueue")
@@ -1712,16 +1692,10 @@ class MapViewModel(
         poiMapVisibleBounds
             ?: PoiViewportChunks.approximateViewportBounds(lat, lon, zoom, screenWidthDp, screenHeightDp)
 
-    private fun computeViewBox(lat: Double, lon: Double, zoom: Double): ViewBox {
-        val latDelta = 360.0 / Math.pow(2.0, zoom) * 0.5
-        val lonDelta = latDelta / Math.cos(Math.toRadians(lat))
-        return ViewBox(
-            west = lon - lonDelta,
-            south = lat - latDelta,
-            east = lon + lonDelta,
-            north = lat + latDelta,
+    private fun computeViewBox(lat: Double, lon: Double, zoom: Double): ViewBox =
+        ca.voiditswarranty.roadtripradar.viewmodel.computeViewBox(
+            lat = lat, lon = lon, zoom = zoom, screenWidthDp = screenWidthDp, screenHeightDp = screenHeightDp,
         )
-    }
 
     // --- Reset ---
 
