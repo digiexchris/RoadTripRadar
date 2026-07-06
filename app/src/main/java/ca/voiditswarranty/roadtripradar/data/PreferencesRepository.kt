@@ -41,7 +41,14 @@ class PreferencesRepository(
         migrate()
     }
 
-    private fun migrate() {
+    /**
+     * Walks the migration chain from whatever `prefs_version` is currently stamped
+     * (or 0 on a fresh install) up to [PrefsDefaults.PREFS_VERSION]. Each step is
+     * gated on the version it owns, so the chain is safe to re-run after every
+     * startup. `internal` so tests can pin the chain end-to-end without going
+     * through the constructor.
+     */
+    internal fun migrate() {
         val v0 = prefs
         migrateV0ToV1(v0)
         migrateV1ToV2(v0)

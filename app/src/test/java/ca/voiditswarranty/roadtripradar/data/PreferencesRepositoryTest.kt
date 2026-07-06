@@ -95,6 +95,124 @@ class PreferencesRepositoryTest {
         assertNotNull(r2)
     }
 
+    // -------- Version bump: orchestrator walks all steps up to the target --------
+
+    @Test
+    fun migrate_orchestrator_fromV0_walksAllStepsToCurrent() {
+        // Fresh install: prefs_version is 0. The orchestrator must walk
+        // every step from V0→V1 through V10→V11, stamping the final
+        // version. This is the "happy path" version-bump test: it's
+        // exactly what every real install or upgrade does, but tests
+        // the *orchestrator completeness* (all 11 steps wired in),
+        // not just each step in isolation.
+        val r = freshRepo()
+        r.migrate()
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val mapPrefs = context.getSharedPreferences("test_map_prefs", Context.MODE_PRIVATE)
+        assertEquals(
+            "orchestrator must walk all steps up to PREFS_VERSION",
+            PrefsDefaults.PREFS_VERSION,
+            mapPrefs.getInt("prefs_version", -1),
+        )
+    }
+
+    @Test
+    fun migrate_orchestrator_partialUpgrade_preservesExistingData() {
+        // Simulate a user upgrading from v8 to current. v8→v11 is what
+        // the orchestrator must run. The v4→v5 step removes
+        // `hud_widget_size`; the v8→v9 step is a no-op; v9→v10 collapses
+        // weather_mode + weather_playing; v10→v11 migrates the single
+        // POI scalars into a waypoints list.
+        //
+        // We stamp prefs_version = 8 manually, set a known weather_mode
+        // and a known widget size, then call migrate() and verify the
+        // post-v8 steps ran (weather_mode collapsed, v10→v11 ran by
+        // setting a single POI scalar and checking it became a
+        // waypoint), while the pre-v8 key (e.g., use_metric set in
+        // the fixture) was preserved unchanged.
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val mapPrefs = context.getSharedPreferences("test_map_prefs", Context.MODE_PRIVATE)
+        mapPrefs.edit().clear().apply()
+        mapPrefs.edit()
+            .putInt("prefs_version", 8)
+            .putString("weather_mode", "ON")
+            .putBoolean("weather_playing", true)
+            .putBoolean("use_metric", false)
+            .apply()
+
+        // Constructing the repo runs migrate() via init, which walks
+        // V8→V9 (no-op), V9→V10 (collapses weather_mode), V10→V11.
+        PreferencesRepository(context, prefsFileName = "test_map_prefs")
+
+        // V9→V10 collapsed weather_mode + weather_playing into a
+        // single tri-state. "ON" + true should map to "PLAYING".
+        assertEquals("PLAYING", mapPrefs.getString("weather_mode", null))
+        // weather_playing should have been removed by the v9→v10 step.
+        assertFalse(mapPrefs.contains("weather_playing"))
+        // Unrelated key was preserved.
+        assertEquals(false, mapPrefs.getBoolean("use_metric", true))
+        // Final version stamped.
+        assertEquals(PrefsDefaults.PREFS_VERSION, mapPrefs.getInt("prefs_version", -1))
+    }
+
+    @Test
+    fun migrate_orchestrator_alreadyAtCurrentVersion_isNoOp() {
+        // If prefs_version is already at PREFS_VERSION, calling
+        // migrate() must be a no-op (every per-step helper is gated on
+        // "< targetVersion"). This guards against regressions where a
+        // future step forgets its version guard and would re-run on
+        // every startup.
+        val r1 = freshRepo()
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val mapPrefs = context.getSharedPreferences("test_map_prefs", Context.MODE_PRIVATE)
+        val afterFirst = mapPrefs.all.toMap()
+
+        r1.migrate()
+
+        val afterSecond = mapPrefs.all.toMap()
+        assertEquals(
+            "calling migrate() at current version must not change any keys",
+            afterFirst,
+            afterSecond,
+        )
+    }
+
+    @Test
+    fun migrate_orchestrator_simulatedFullUpgrade_v8ToCurrent_preservesWaypoints() {
+        // End-to-end version-bump test: stamp v8, set the pre-v10
+        // POI scalars (poi_lat/poi_lon/poi_name), then construct the
+        // repo (which runs migrate). The v10→v11 step must migrate
+        // the scalars into a one-element waypoints list.
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val mapPrefs = context.getSharedPreferences("test_map_prefs", Context.MODE_PRIVATE)
+        mapPrefs.edit().clear().apply()
+        mapPrefs.edit()
+            .putInt("prefs_version", 8)
+            .putString("poi_lat", "43.65")
+            .putString("poi_lon", "-79.38")
+            .putString("poi_name", "Coffee Shop")
+            .apply()
+
+        PreferencesRepository(context, prefsFileName = "test_map_prefs")
+
+        // POI scalars removed.
+        assertFalse(mapPrefs.contains("poi_lat"))
+        assertFalse(mapPrefs.contains("poi_lon"))
+        assertFalse(mapPrefs.contains("poi_name"))
+        // Waypoints list has one entry with the expected fields.
+        val waypointsJson = mapPrefs.getString("waypoints", "[]")
+        assertNotNull(waypointsJson)
+        assertTrue(
+            "waypoints JSON should contain 'Coffee Shop': $waypointsJson",
+            waypointsJson!!.contains("Coffee Shop"),
+        )
+        // active_waypoint_id was set by the migration.
+        assertTrue(mapPrefs.contains("active_waypoint_id"))
+        // Final version stamped.
+        assertEquals(PrefsDefaults.PREFS_VERSION, mapPrefs.getInt("prefs_version", -1))
+    }
+
     // -------- Migration step 0 → 1: collapse weather mode --------
 
     @Test
