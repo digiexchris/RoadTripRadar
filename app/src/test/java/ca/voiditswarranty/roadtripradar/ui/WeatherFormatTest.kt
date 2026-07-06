@@ -32,4 +32,49 @@ class WeatherFormatTest {
         assertEquals(6, windValue(10.0, WindSpeedUnit.MPH))    // 10*0.621371 = 6.21 -> 6
         assertEquals(5, windValue(10.0, WindSpeedUnit.KNOTS))  // 10*0.539957 = 5.39 -> 5
     }
+
+    @Test
+    fun tempUnitSymbol_celsius_returnsDegreeC() {
+        assertEquals("°C", tempUnitSymbol(TemperatureUnit.CELSIUS))
+    }
+
+    @Test
+    fun tempUnitSymbol_fahrenheit_returnsDegreeF() {
+        assertEquals("°F", tempUnitSymbol(TemperatureUnit.FAHRENHEIT))
+    }
+
+    @Test
+    fun tempUnitSymbol_kelvin_returnsK() {
+        assertEquals("K", tempUnitSymbol(TemperatureUnit.KELVIN))
+    }
+
+    @Test
+    fun windArrowRotation_knownWindKnownBearing_returnsDeltaPlus180() {
+        // North wind (0°) + 180° = 180° (pointing south), then minus camera bearing.
+        // bearing 0 (north-up): rotation = 180°
+        assertEquals(180.0f, windArrowRotationDeg(0.0, 0.0), 0.0001f)
+        // East wind (90°) + 180° = 270°, minus bearing 90° = 180°
+        assertEquals(180.0f, windArrowRotationDeg(90.0, 90.0), 0.0001f)
+    }
+
+    @Test
+    fun windArrowRotation_unrotatedMap_pointingSouth() {
+        // A north wind on a north-up map should produce an arrow that points
+        // down (180°), regardless of cardinal direction.
+        assertEquals(180.0f, windArrowRotationDeg(0.0, 0.0), 0.0001f)
+    }
+
+    @Test
+    fun windArrowRotation_bearingCompensates() {
+        // Wind from west (270°) becomes "going east" (90°), minus bearing 90°
+        // (map rotated 90° clockwise) → 0° (or 360° before mod). The function
+        // does NOT wrap; the result is exactly 360°.
+        assertEquals(360.0f, windArrowRotationDeg(270.0, 90.0), 0.0001f)
+    }
+
+    @Test
+    fun windArrowRotation_acceptsIntInputs() {
+        // The function signature takes Number, so Int inputs are also valid.
+        assertEquals(180.0f, windArrowRotationDeg(0, 0), 0.0001f)
+    }
 }

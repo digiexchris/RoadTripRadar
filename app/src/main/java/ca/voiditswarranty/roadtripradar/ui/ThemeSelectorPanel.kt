@@ -60,59 +60,16 @@ import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 // Hard-coded representative background colors for built-in themes.
+// Kept as file-level vals so BuiltInThemeCard's AUTO swatch can reference them
+// in its horizontal gradient; the canonical lookup lives in ThemeSelectorLogic.
 private val swatchLiberty = Color(0xFFF5F1EC)
-private val swatchDark = Color(0xFF1A1A2E)
 private val swatchColorDark = Color(0xFF1A1A2E)
+
+// Local fallbacks for custom-theme swatches before the user's JSON is read.
 private val swatchCustomLightFallback = Color(0xFFEEEEEE)
 private val swatchCustomDarkFallback = Color(0xFF2A2A2A)
 
-/** Parses a CSS hex color string (#RGB / #RRGGBB / #RRGGBBAA) to [Color], or null on failure. */
-private fun parseHexColor(hex: String): Color? {
-    val cleaned = hex.trimStart('#')
-    return when (cleaned.length) {
-        3 -> {
-            val r = cleaned[0].toString().repeat(2).toInt(16)
-            val g = cleaned[1].toString().repeat(2).toInt(16)
-            val b = cleaned[2].toString().repeat(2).toInt(16)
-            Color(r, g, b)
-        }
-        6 -> {
-            val r = cleaned.substring(0, 2).toInt(16)
-            val g = cleaned.substring(2, 4).toInt(16)
-            val b = cleaned.substring(4, 6).toInt(16)
-            Color(r, g, b)
-        }
-        8 -> {
-            val r = cleaned.substring(0, 2).toInt(16)
-            val g = cleaned.substring(2, 4).toInt(16)
-            val b = cleaned.substring(4, 6).toInt(16)
-            val a = cleaned.substring(6, 8).toInt(16)
-            Color(r, g, b, a)
-        }
-        else -> null
-    }
-}
-
-/** Extracts the background-color from a MapLibre style JSON string. */
-private fun extractBackgroundColor(json: String, fallback: Color): Color {
-    // Simple regex: find the background layer and its background-color value.
-    val bgLayerPattern = Regex(
-        """"id"\s*:\s*"background"[\s\S]{0,500}?"background-color"\s*:\s*"(#[0-9a-fA-F]{3,8})"""",
-        setOf(RegexOption.DOT_MATCHES_ALL),
-    )
-    val match = bgLayerPattern.find(json) ?: return fallback
-    return parseHexColor(match.groupValues[1]) ?: fallback
-}
-
-private fun swatchColorForStyle(style: MapStyle, vm: MapViewModel): Color = when (style) {
-    MapStyle.LIBERTY -> swatchLiberty
-    MapStyle.DARK -> swatchDark
-    MapStyle.COLOR_DARK -> swatchColorDark
-    // Custom theme swatches should be computed with caching via remember(customThemeVersion)
-    MapStyle.CUSTOM_LIGHT -> swatchCustomLightFallback
-    MapStyle.CUSTOM_DARK -> swatchCustomDarkFallback
-    MapStyle.AUTO -> Color.Unspecified
-}
+// -------- Pure helpers are extracted to ThemeSelectorLogic.kt --------
 
 @Composable
 fun ThemeSelectorPanel(
@@ -137,7 +94,7 @@ fun ThemeSelectorPanel(
     fun resolvedSwatchColor(style: MapStyle): Color = when (style) {
         MapStyle.CUSTOM_LIGHT -> customLightSwatch
         MapStyle.CUSTOM_DARK -> customDarkSwatch
-        else -> swatchColorForStyle(style, vm)
+        else -> swatchColorForStyle(style)
     }
 
     val importLauncher = rememberLauncherForActivityResult(
@@ -611,10 +568,3 @@ private fun ActionLabel(text: String, modifier: Modifier = Modifier) {
     )
 }
 
-/** Approximate luminance for Color for swatch text contrast decisions. */
-private fun Color.luminance(): Float {
-    val r = red
-    val g = green
-    val b = blue
-    return 0.2126f * r + 0.7152f * g + 0.0722f * b
-}
