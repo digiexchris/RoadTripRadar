@@ -42,6 +42,7 @@ import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
 import ca.voiditswarranty.roadtripradar.data.resolvedStyleUri
 import ca.voiditswarranty.roadtripradar.model.MapStyle
+import ca.voiditswarranty.roadtripradar.model.RadarRingsData
 import ca.voiditswarranty.roadtripradar.model.buildRadarRingsData
 import ca.voiditswarranty.roadtripradar.model.ringDistancesForZoom
 import ca.voiditswarranty.roadtripradar.ui.tutorial.LocalTutorialAnchors
@@ -51,6 +52,7 @@ import ca.voiditswarranty.roadtripradar.ui.tutorial.rememberTutorialAnchorsState
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import androidx.compose.runtime.CompositionLocalProvider
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -58,10 +60,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.CameraState
 import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.layers.Anchor
 import org.maplibre.compose.location.BearingUpdate
 import org.maplibre.compose.location.LocationTrackingEffect
+import org.maplibre.compose.location.UserLocationState
 import org.maplibre.compose.location.rememberDefaultLocationProvider
 import org.maplibre.compose.location.rememberNullLocationProvider
 import org.maplibre.compose.location.rememberUserLocationState
@@ -71,6 +75,7 @@ import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
 import org.maplibre.spatialk.geojson.Position
+import org.maplibre.spatialk.units.Length
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -243,6 +248,142 @@ fun MapScreen(
     }
 
     // UI
+    val state = MapScreenState(
+        useMetric = vm.useMetric,
+        useGps = vm.useGps,
+        isTrackingCamera = vm.isTrackingCamera,
+        isNorthUp = vm.isNorthUp,
+        keepScreenOn = vm.keepScreenOn,
+        activeWaypoint = vm.activeWaypoint,
+        activeIndex = vm.activeIndex,
+        waypoints = vm.waypoints,
+        poiPosition = vm.poiPosition,
+        showThemeSelector = vm.showThemeSelector,
+        showLegend = vm.showLegend,
+        showTimeline = vm.showTimeline,
+        radarFramePaths = vm.radarFramePaths,
+        radarFrameTimes = vm.radarFrameTimes,
+        currentFrameIndex = vm.currentFrameIndex,
+        weatherWidgetSize = vm.weatherWidgetSize,
+        windEnabled = vm.windEnabled,
+        openMeteoSnapshot = vm.openMeteoSnapshot,
+        temperatureUnit = vm.temperatureUnit,
+        windSpeedUnit = vm.windSpeedUnit,
+        weatherActive = vm.weatherActive,
+        isWeatherPlaying = vm.isWeatherPlaying,
+        poiPipelineActive = vm.poiPipelineActive,
+        nearbyPoiFeatures = vm.nearbyPoiFeatures,
+        userPositionForSearch = vm.userPositionForSearch,
+        screenWidthDp = vm.screenWidthDp,
+        screenHeightDp = vm.screenHeightDp,
+        speedSize = vm.speedSize,
+        navWidgetSize = vm.navWidgetSize,
+        hasFailedCells = vm.hasFailedCells,
+        gpsIconOpacity = vm.gpsIconOpacity,
+        compassWidgetSize = vm.compassWidgetSize,
+        mapCenterOffsetPortraitFraction = vm.mapCenterOffsetPortraitFraction,
+        mapCenterOffsetLandscapeFraction = vm.mapCenterOffsetLandscapeFraction,
+        userPosition = userPosition,
+        userPositionAccuracy = locationState.location?.accuracy,
+        bearing = bearing,
+        poiInfo = poiInfo,
+        cameraPadding = cameraPadding,
+    )
+
+    MapScreenContent(
+        state = state,
+        vm = vm,
+        mapStyle = mapStyle,
+        mapStyleUri = mapStyleUri,
+        onStyleChange = onStyleChange,
+        cameraState = cameraState,
+        scope = scope,
+        hasLocation = hasLocation,
+        hasGpsFix = hasGpsFix,
+        locationState = locationState,
+        isLandscape = isLandscape,
+        bearing = bearing,
+        userPosition = userPosition,
+        poiInfo = poiInfo,
+        radarData = radarData,
+        mapOverlaysDark = mapOverlaysDark,
+    )
+
+    // Tutorial-launch effects (VM-side; live with the other VM effects above)
+    LaunchedEffect(Unit) {
+        vm.evaluateWhatsNewChangelog()
+    }
+
+    LaunchedEffect(vm.showTerms, vm.showActionsDrawer) {
+        if (!vm.showTerms && !vm.showActionsDrawer) {
+            vm.startTutorialIfNotCompleted(TutorialGroup.MAP)
+        }
+    }
+
+    LaunchedEffect(
+        vm.waypoints.isNotEmpty(),
+        vm.showTerms,
+        vm.showActionsDrawer,
+        vm.showRouteEditor,
+        vm.tappedPoi,
+    ) {
+        val chipVisible = vm.waypoints.isNotEmpty()
+        val obstructed = vm.showTerms || vm.showActionsDrawer ||
+            vm.showRouteEditor || vm.tappedPoi != null
+        if (chipVisible && !obstructed) {
+            vm.startTutorialIfNotCompleted(TutorialGroup.ROUTE_EDITOR)
+        }
+    }
+
+    SideEffect {
+        vm.pendingCameraInfo = MapViewModel.CameraInfo(
+            lat = cameraState.position.target.latitude,
+            lon = cameraState.position.target.longitude,
+            zoom = cameraState.position.zoom,
+            bearing = cameraState.position.bearing,
+        )
+        vm.updatePoiMapVisibleBounds(cameraState.projection?.queryVisibleBoundingBox())
+    }
+}
+
+/**
+ * The pure-render surface of [MapScreen]. Hosts the `MaplibreMap` and the
+ * full post-map overlay tree (sheets, popups, drawer, etc.).
+ *
+ * **Staging note:** `state` is plumbed in anticipation of a follow-up refactor
+ * that parameterizes the overlay composables over [MapScreenState] + callbacks
+ * instead of reading `vm` directly. Until that lands, the overlays still
+ * consume `vm`; `state` is the testability surface the plan is building toward
+ * and `@Suppress("UNUSED_PARAMETER")` keeps the build clean. The data class
+ * also stays current with `vm`'s public surface — when a field drifts, the
+ * test suite will surface it.
+ *
+ * @param state the [MapScreenState] snapshot — plumbed but not yet consumed
+ *   by the overlay composables; see staging note above.
+ * @param vm the [MapViewModel]; consumed directly by every overlay until the
+ *   follow-up refactor.
+ */
+@SuppressLint("MissingPermission")
+@Composable
+@Suppress("UNUSED_PARAMETER")
+internal fun MapScreenContent(
+    state: MapScreenState,
+    vm: MapViewModel,
+    mapStyle: MapStyle,
+    mapStyleUri: String,
+    onStyleChange: (MapStyle) -> Unit,
+    cameraState: CameraState,
+    scope: CoroutineScope,
+    hasLocation: Boolean,
+    hasGpsFix: Boolean,
+    locationState: UserLocationState,
+    isLandscape: Boolean,
+    bearing: Double,
+    userPosition: Position?,
+    poiInfo: Pair<Length, Double>?,
+    radarData: RadarRingsData,
+    mapOverlaysDark: Boolean,
+) {
     val tutorialAnchors = rememberTutorialAnchorsState()
     CompositionLocalProvider(LocalTutorialAnchors provides tutorialAnchors) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -341,16 +482,6 @@ fun MapScreen(
             }
         }
 
-        SideEffect {
-            vm.pendingCameraInfo = MapViewModel.CameraInfo(
-                lat = cameraState.position.target.latitude,
-                lon = cameraState.position.target.longitude,
-                zoom = cameraState.position.zoom,
-                bearing = cameraState.position.bearing,
-            )
-            vm.updatePoiMapVisibleBounds(cameraState.projection?.queryVisibleBoundingBox())
-        }
-
         if (vm.isLoadingPois) {
             Box(
                 modifier = Modifier
@@ -434,10 +565,6 @@ fun MapScreen(
             }
         }
 
-        LaunchedEffect(Unit) {
-            vm.evaluateWhatsNewChangelog()
-        }
-
         WhatsNewChangelogSheet(
             visible = vm.showWhatsNewChangelog,
             releases = vm.whatsNewChangelogReleases,
@@ -515,27 +642,6 @@ fun MapScreen(
             onRemoveNavigationTarget = vm::removeNavigationTarget,
         )
 
-        LaunchedEffect(vm.showTerms, vm.showActionsDrawer) {
-            if (!vm.showTerms && !vm.showActionsDrawer) {
-                vm.startTutorialIfNotCompleted(TutorialGroup.MAP)
-            }
-        }
-
-        LaunchedEffect(
-            vm.waypoints.isNotEmpty(),
-            vm.showTerms,
-            vm.showActionsDrawer,
-            vm.showRouteEditor,
-            vm.tappedPoi,
-        ) {
-            val chipVisible = vm.waypoints.isNotEmpty()
-            val obstructed = vm.showTerms || vm.showActionsDrawer ||
-                vm.showRouteEditor || vm.tappedPoi != null
-            if (chipVisible && !obstructed) {
-                vm.startTutorialIfNotCompleted(TutorialGroup.ROUTE_EDITOR)
-            }
-        }
-
         TutorialOverlay(
             activeGroup = vm.tutorialActiveGroup,
             stepIndex = vm.tutorialStepIndex,
@@ -546,4 +652,3 @@ fun MapScreen(
     }
     }
 }
-
