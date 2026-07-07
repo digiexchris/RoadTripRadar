@@ -33,22 +33,26 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.TERMS_AND_CONDITIONS_TEXT
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 @Composable
-fun TermsOverlay(vm: MapViewModel) {
-    if (!vm.showTerms) return
+fun TermsOverlay(
+    visible: Boolean,
+    needsAcceptance: Boolean,
+    onAccept: () -> Unit,
+    onDecline: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    if (!visible) return
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val needsAcceptance = vm.termsNeedAcceptance
 
     if (needsAcceptance) {
         BackHandler {}
     }
 
-    LaunchedEffect(vm.showTerms, needsAcceptance) {
-        if (vm.showTerms && needsAcceptance) {
+    LaunchedEffect(visible, needsAcceptance) {
+        if (visible && needsAcceptance) {
             scrollState.scrollTo(0)
         }
     }
@@ -125,12 +129,12 @@ fun TermsOverlay(vm: MapViewModel) {
                     ) {
                         TextButton(onClick = {
                             (context as? Activity)?.finishAffinity()
-                            System.exit(0)
+                            onDecline()
                         }) {
                             Text(stringResource(R.string.action_decline))
                         }
                         Button(
-                            onClick = { vm.acceptTerms() },
+                            onClick = onAccept,
                             enabled = canAccept,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
@@ -145,7 +149,7 @@ fun TermsOverlay(vm: MapViewModel) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End,
                     ) {
-                        Button(onClick = { vm.dismissTerms() }) {
+                        Button(onClick = onDismiss) {
                             Text(stringResource(R.string.action_close))
                         }
                     }

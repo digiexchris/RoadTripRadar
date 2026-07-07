@@ -71,10 +71,6 @@ import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
 import org.maplibre.spatialk.geojson.Position
-import org.maplibre.spatialk.turf.measurement.bearingTo
-import org.maplibre.spatialk.turf.measurement.distance
-import org.maplibre.spatialk.units.Bearing
-import org.maplibre.spatialk.units.extensions.inDegrees
 
 @SuppressLint("MissingPermission")
 @Composable
@@ -95,7 +91,11 @@ fun MapScreen(
     }
     val locationState = rememberUserLocationState(locationProvider = locationProvider)
     val hasLocation = vm.useGps && locationState.location != null
-    val hasGpsFix = hasLocation && locationState.location!!.accuracy < 50.0
+    val hasGpsFix = hasGoodGpsFix(
+        useGps = vm.useGps,
+        hasLocation = hasLocation,
+        accuracyMeters = locationState.location?.accuracy,
+    )
 
     // Camera
     val configuration = LocalConfiguration.current
@@ -112,9 +112,10 @@ fun MapScreen(
         if (isLandscape) vm.mapCenterOffsetLandscapeFraction else vm.mapCenterOffsetPortraitFraction
 
     // Treat slider value as desired map-center distance from bottom of the usable map area.
-    val desiredBottomOffset = usableHeight * centerOffsetFraction
-    val computedTopPadding = (usableHeight - (desiredBottomOffset * 2f)).coerceAtLeast(0.dp)
-    val computedBottomPadding = ((desiredBottomOffset * 2f) - usableHeight).coerceAtLeast(0.dp)
+    val (computedTopPadding, computedBottomPadding) = computeCameraOffsetPadding(
+        usableHeight = usableHeight,
+        centerOffsetFraction = centerOffsetFraction,
+    )
     val cameraPadding = PaddingValues(
         top = topInset + computedTopPadding,
         bottom = bottomInset + computedBottomPadding,
@@ -210,12 +211,10 @@ fun MapScreen(
     }
 
     val poiInfo = remember(userPosition?.latitude, userPosition?.longitude, vm.poiPosition) {
-        val user = userPosition ?: return@remember null
-        val poi = vm.poiPosition ?: return@remember null
-        val dist = distance(user, poi)
-        val poiBearing = user.bearingTo(poi)
-        val poiBearingDeg = (poiBearing - Bearing.North).inDegrees
-        Pair(dist, poiBearingDeg)
+        computePoiInfo(
+            userPosition = userPosition,
+            poiPosition = vm.poiPosition,
+        )
     }
 
     // Feed camera info to ViewModel for search
@@ -439,24 +438,70 @@ fun MapScreen(
             vm.evaluateWhatsNewChangelog()
         }
 
-        WhatsNewChangelogSheet(vm = vm)
-        FullChangelogSheet(vm = vm)
+        WhatsNewChangelogSheet(
+            visible = vm.showWhatsNewChangelog,
+            releases = vm.whatsNewChangelogReleases,
+            onDismiss = vm::dismissWhatsNewChangelog,
+        )
+        FullChangelogSheet(
+            visible = vm.showFullChangelog,
+            releases = vm.fullChangelogReleases,
+            onDismiss = vm::closeFullChangelog,
+        )
 
         // Legend detail sheet
-        LegendDetailSheet(vm = vm)
+        LegendDetailSheet(visible = vm.showLegendDetail, onClose = vm::closeLegendDetail)
 
         // POI search dialog
-        PoiSearchDialog(vm = vm)
+        PoiSearchDialog(
+            visible = vm.showPoiSearch,
+            onClose = vm::closePoiSearch,
+            query = vm.searchQuery,
+            onQueryChange = vm::updateSearchQuery,
+            isSearching = vm.isSearching,
+            results = vm.searchResults,
+            useMetric = vm.useMetric,
+            onSelectResult = vm::selectSearchResult,
+        )
 
         // POI category picker
-        PoiCategoryPicker(vm = vm)
+        PoiCategoryPicker(
+            visible = vm.showPoiCategoryPicker,
+            enabledCategories = vm.enabledPoiCategories,
+            autostartPoiLoadingOnLaunch = vm.autostartPoiLoadingOnLaunch,
+            onAutostartToggle = vm::updateAutostartPoiLoadingOnLaunch,
+            onToggleCategory = vm::togglePoiCategory,
+            onClose = vm::closePoiCategoryPicker,
+            onSearchVisibleArea = {
+                vm.searchVisibleArea()
+                vm.closePoiCategoryPicker()
+            },
+        )
 
         // Route editor sheet
-        RouteEditorSheet(vm = vm)
+        RouteEditorSheet(
+            visible = vm.showRouteEditor,
+            waypoints = vm.waypoints,
+            activeWaypointId = vm.activeWaypointId,
+            onSetActive = vm::setActiveWaypoint,
+            onRemove = vm::removeWaypoint,
+            onMoveCommit = vm::moveWaypoint,
+            onClearRoute = {
+                vm.clearRoute()
+                vm.closeRouteEditor()
+            },
+            onClose = vm::closeRouteEditor,
+        )
 
         // Tapped POI info popup
         TappedPoiPopup(
-            vm = vm,
+            poi = vm.tappedPoi,
+            origin = vm.tappedPoiOrigin,
+            waypoints = vm.waypoints,
+            userPosition = vm.userPositionForSearch,
+            useMetric = vm.useMetric,
+            onDismiss = vm::dismissTappedPoi,
+            onBack = vm::tappedPoiBackToSearch,
             onCenterOnMap = { pos ->
                 vm.dismissTappedPoi()
                 vm.isTrackingCamera = false
@@ -466,6 +511,8 @@ fun MapScreen(
                     )
                 }
             },
+            onAddWaypoint = vm::addWaypointFromTapped,
+            onRemoveNavigationTarget = vm::removeNavigationTarget,
         )
 
         LaunchedEffect(vm.showTerms, vm.showActionsDrawer) {
@@ -489,7 +536,13 @@ fun MapScreen(
             }
         }
 
-        TutorialOverlay(vm = vm)
+        TutorialOverlay(
+            activeGroup = vm.tutorialActiveGroup,
+            stepIndex = vm.tutorialStepIndex,
+            onBack = vm::tutorialBack,
+            onSkip = vm::skipTutorial,
+            onNext = vm::tutorialNext,
+        )
     }
     }
 }

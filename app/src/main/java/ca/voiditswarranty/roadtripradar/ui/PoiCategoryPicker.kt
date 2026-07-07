@@ -42,13 +42,20 @@ import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.MAX_POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.PoiCategory
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 @Composable
-fun PoiCategoryPicker(vm: MapViewModel) {
+fun PoiCategoryPicker(
+    visible: Boolean,
+    enabledCategories: Set<String>,
+    autostartPoiLoadingOnLaunch: Boolean,
+    onAutostartToggle: (Boolean) -> Unit,
+    onToggleCategory: (PoiCategory) -> Unit,
+    onClose: () -> Unit,
+    onSearchVisibleArea: () -> Unit,
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(
-            visible = vm.showPoiCategoryPicker,
+            visible = visible,
             enter = fadeIn(),
             exit = fadeOut(),
         ) {
@@ -59,17 +66,17 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                    ) { vm.closePoiCategoryPicker() }
+                    ) { onClose() }
             )
         }
 
         AnimatedVisibility(
-            visible = vm.showPoiCategoryPicker,
+            visible = visible,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
             modifier = Modifier.align(Alignment.BottomCenter),
         ) {
-            val enabledCount = vm.enabledPoiCategories.size
+            val enabledCount = enabledCategories.size
             val atLimit = enabledCount >= MAX_POI_CATEGORIES
 
             Surface(
@@ -101,8 +108,8 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                             )
                         }
                         Switch(
-                            checked = vm.autostartPoiLoadingOnLaunch,
-                            onCheckedChange = { vm.updateAutostartPoiLoadingOnLaunch(it) },
+                            checked = autostartPoiLoadingOnLaunch,
+                            onCheckedChange = onAutostartToggle,
                         )
                     }
 
@@ -116,13 +123,13 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         items(POI_CATEGORIES) { category ->
-                            val selected = vm.enabledPoiCategories.contains(category.query)
+                            val selected = enabledCategories.contains(category.query)
                             val enabled = selected || !atLimit
                             CategoryToggleButton(
                                 category = category,
                                 selected = selected,
                                 enabled = enabled,
-                                onClick = { vm.togglePoiCategory(category) },
+                                onClick = { onToggleCategory(category) },
                             )
                         }
                     }
@@ -154,7 +161,7 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 LargeFloatingActionButton(
-                                    onClick = { vm.closePoiCategoryPicker() },
+                                    onClick = onClose,
                                     shape = buttonShape,
                                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -165,10 +172,7 @@ fun PoiCategoryPicker(vm: MapViewModel) {
                                     Text(stringResource(R.string.action_cancel), style = MaterialTheme.typography.titleMedium)
                                 }
                                 LargeFloatingActionButton(
-                                    onClick = {
-                                        vm.searchVisibleArea()
-                                        vm.closePoiCategoryPicker()
-                                    },
+                                    onClick = onSearchVisibleArea,
                                     shape = buttonShape,
                                     containerColor = if (enabledCount > 0)
                                         MaterialTheme.colorScheme.primaryContainer

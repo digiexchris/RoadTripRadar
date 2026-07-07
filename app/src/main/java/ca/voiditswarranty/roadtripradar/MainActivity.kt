@@ -77,7 +77,15 @@ fun RoadTripRadarApp() {
                     },
                     locationPermissionGranted = locationGranted,
                 )
-                TermsOverlay(vm = vm)
+                TermsOverlay(
+                    visible = vm.showTerms,
+                    needsAcceptance = vm.termsNeedAcceptance,
+                    onAccept = vm::acceptTerms,
+                    onDecline = {
+                        System.exit(0)
+                    },
+                    onDismiss = vm::dismissTerms,
+                )
             }
         }
     }

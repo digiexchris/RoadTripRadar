@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private data class LegendDetailEntry(
     val category: Int,
@@ -56,10 +55,10 @@ private val legendDetailEntries = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LegendDetailSheet(vm: MapViewModel) {
-    if (!vm.showLegendDetail) return
+fun LegendDetailSheet(visible: Boolean, onClose: () -> Unit) {
+    if (!visible) return
 
-    ModalBottomSheet(onDismissRequest = { vm.closeLegendDetail() }) {
+    ModalBottomSheet(onDismissRequest = onClose) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()

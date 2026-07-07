@@ -91,7 +91,7 @@ import ca.voiditswarranty.roadtripradar.ui.tutorial.stepsFor
 import ca.voiditswarranty.roadtripradar.ui.tutorial.tutorialAnchor
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
-private data class DrawerAction(
+internal data class DrawerAction(
     val label: String,
     val icon: ImageVector,
     val enabled: Boolean = true,
@@ -383,7 +383,18 @@ fun ActionsDrawer(
                                 DrawerTopActionsGrid(actions = weatherTopActions)
                                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                                 WeatherDrawerSettingsContent(
-                                    vm = vm,
+                                    weatherActive = vm.weatherActive,
+                                    radarOpacity = vm.radarOpacity,
+                                    onRadarOpacityChange = vm::updateRadarOpacity,
+                                    onRadarOpacityCommit = vm::saveRadarOpacity,
+                                    windEnabled = vm.windEnabled,
+                                    windSpeedUnit = vm.windSpeedUnit,
+                                    onWindSpeedUnitChange = vm::updateWindSpeedUnit,
+                                    temperatureUnit = vm.temperatureUnit,
+                                    onTemperatureUnitChange = vm::updateTemperatureUnit,
+                                    weatherWidgetSize = vm.weatherWidgetSize,
+                                    onWeatherWidgetSizeChange = vm::updateWeatherWidgetSize,
+                                    onWeatherWidgetSizeCommit = vm::saveWeatherWidgetSize,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(bottom = 8.dp),
@@ -410,7 +421,21 @@ fun ActionsDrawer(
                                 DrawerTopActionsGrid(actions = settingsTopActions)
                                 HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                                 SettingsDrawerContent(
-                                    vm = vm,
+                                    useGps = vm.useGps,
+                                    gpsIconOpacity = vm.gpsIconOpacity,
+                                    onGpsIconOpacityChange = vm::updateGpsIconOpacity,
+                                    onGpsIconOpacityCommit = vm::saveGpsIconOpacity,
+                                    speedSize = vm.speedSize,
+                                    onSpeedSizeChange = vm::updateSpeedSize,
+                                    onSpeedSizeCommit = vm::saveSpeedSize,
+                                    compassWidgetSize = vm.compassWidgetSize,
+                                    onCompassWidgetSizeChange = vm::updateCompassWidgetSize,
+                                    onCompassWidgetSizeCommit = vm::saveCompassWidgetSize,
+                                    navWidgetSize = vm.navWidgetSize,
+                                    onNavWidgetSizeChange = vm::updateNavWidgetSize,
+                                    onNavWidgetSizeCommit = vm::saveNavWidgetSize,
+                                    keepScreenOn = vm.keepScreenOn,
+                                    onKeepScreenOnChange = vm::updateKeepScreenOn,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(bottom = 8.dp),
@@ -651,7 +676,7 @@ fun ActionsDrawer(
 }
 
 @Composable
-private fun DrawerTopActionsGrid(
+internal fun DrawerTopActionsGrid(
     actions: List<DrawerAction>,
     modifier: Modifier = Modifier,
 ) {
@@ -683,7 +708,7 @@ private fun DrawerTopActionsGrid(
 }
 
 @Composable
-private fun DrawerActionFab(
+internal fun DrawerActionFab(
     label: String,
     icon: ImageVector,
     enabled: Boolean,
@@ -750,7 +775,7 @@ private fun DrawerActionFab(
 }
 
 @Composable
-private fun DrawerToggleFab(
+internal fun DrawerToggleFab(
     label: String,
     icon: ImageVector,
     enabled: Boolean,

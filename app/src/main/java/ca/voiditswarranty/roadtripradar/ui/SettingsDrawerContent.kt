@@ -26,12 +26,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import ca.voiditswarranty.roadtripradar.R
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import java.util.Locale
 
 @Composable
 fun SettingsDrawerContent(
-    vm: MapViewModel,
+    useGps: Boolean,
+    gpsIconOpacity: Float,
+    onGpsIconOpacityChange: (Float) -> Unit,
+    onGpsIconOpacityCommit: () -> Unit,
+    speedSize: Float,
+    onSpeedSizeChange: (Float) -> Unit,
+    onSpeedSizeCommit: () -> Unit,
+    compassWidgetSize: Float,
+    onCompassWidgetSizeChange: (Float) -> Unit,
+    onCompassWidgetSizeCommit: () -> Unit,
+    navWidgetSize: Float,
+    onNavWidgetSizeChange: (Float) -> Unit,
+    onNavWidgetSizeCommit: () -> Unit,
+    keepScreenOn: Boolean,
+    onKeepScreenOnChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -40,7 +53,7 @@ fun SettingsDrawerContent(
     ) {
         Text(stringResource(R.string.settings_display), style = MaterialTheme.typography.titleMedium)
 
-        if (vm.useGps) {
+        if (useGps) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -48,14 +61,14 @@ fun SettingsDrawerContent(
                 ) {
                     Text(stringResource(R.string.settings_status_icon_opacity), style = MaterialTheme.typography.titleSmall)
                     Text(
-                        "${(vm.gpsIconOpacity * 100).toInt()}%",
+                        "${(gpsIconOpacity * 100).toInt()}%",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 GloveFriendlySlider(
-                    value = vm.gpsIconOpacity,
-                    onValueChange = { vm.updateGpsIconOpacity(it) },
-                    onValueChangeFinished = { vm.saveGpsIconOpacity() },
+                    value = gpsIconOpacity,
+                    onValueChange = onGpsIconOpacityChange,
+                    onValueChangeFinished = onGpsIconOpacityCommit,
                     valueRange = 0f..1f,
                 )
             }
@@ -64,9 +77,9 @@ fun SettingsDrawerContent(
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(R.string.settings_speedometer_size), style = MaterialTheme.typography.titleSmall)
             GloveFriendlySlider(
-                value = vm.speedSize,
-                onValueChange = { vm.updateSpeedSize(it) },
-                onValueChangeFinished = { vm.saveSpeedSize() },
+                value = speedSize,
+                onValueChange = onSpeedSizeChange,
+                onValueChangeFinished = onSpeedSizeCommit,
                 valueRange = 24f..96f,
             )
         }
@@ -74,9 +87,9 @@ fun SettingsDrawerContent(
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(R.string.settings_compass_size), style = MaterialTheme.typography.titleSmall)
             GloveFriendlySlider(
-                value = vm.compassWidgetSize,
-                onValueChange = { vm.updateCompassWidgetSize(it) },
-                onValueChangeFinished = { vm.saveCompassWidgetSize() },
+                value = compassWidgetSize,
+                onValueChange = onCompassWidgetSizeChange,
+                onValueChangeFinished = onCompassWidgetSizeCommit,
                 valueRange = 24f..96f,
             )
         }
@@ -84,9 +97,9 @@ fun SettingsDrawerContent(
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(stringResource(R.string.settings_nav_widget_size), style = MaterialTheme.typography.titleSmall)
             GloveFriendlySlider(
-                value = vm.navWidgetSize,
-                onValueChange = { vm.updateNavWidgetSize(it) },
-                onValueChangeFinished = { vm.saveNavWidgetSize() },
+                value = navWidgetSize,
+                onValueChange = onNavWidgetSizeChange,
+                onValueChangeFinished = onNavWidgetSizeCommit,
                 valueRange = 24f..96f,
             )
         }
@@ -102,8 +115,8 @@ fun SettingsDrawerContent(
         ) {
             Text(stringResource(R.string.settings_keep_screen_on), style = MaterialTheme.typography.titleSmall)
             Switch(
-                checked = vm.keepScreenOn,
-                onCheckedChange = { vm.updateKeepScreenOn(it) },
+                checked = keepScreenOn,
+                onCheckedChange = onKeepScreenOnChange,
             )
         }
 

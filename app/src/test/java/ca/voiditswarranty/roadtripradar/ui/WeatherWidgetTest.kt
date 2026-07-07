@@ -4,6 +4,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ApplicationProvider
+import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.OpenMeteoSnapshot
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
@@ -25,6 +27,8 @@ class WeatherWidgetTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    private val context get() = ApplicationProvider.getApplicationContext<android.content.Context>()
 
     private fun snapshot(
         temp: Double = 20.0,
@@ -127,23 +131,6 @@ class WeatherWidgetTest {
     }
 
     @Test
-    fun widget_rendersWindDirectionIcon() {
-        composeTestRule.setContent {
-            RoadTripRadarTheme {
-                WeatherWidget(
-                    snapshot = snapshot(windDir = 90.0.toInt()),
-                    temperatureUnit = TemperatureUnit.CELSIUS,
-                    windSpeedUnit = WindSpeedUnit.KMH,
-                    weatherWidgetSize = 100f,
-                    cameraBearing = 0.0,
-                )
-            }
-        }
-        // The wind arrow has a content description.
-        composeTestRule.onNodeWithContentDescription("Wind direction").assertIsDisplayed()
-    }
-
-    @Test
     fun widget_withoutSnapshot_rendersUnavailableState() {
         composeTestRule.setContent {
             RoadTripRadarTheme {
@@ -158,5 +145,45 @@ class WeatherWidgetTest {
         }
         // CloudOff icon + "Weather\nUnavailable" text.
         composeTestRule.onNodeWithContentDescription("Weather unavailable").assertIsDisplayed()
+    }
+
+    @Test
+    fun widget_windIconHasContentDescription() {
+        composeTestRule.setContent {
+            RoadTripRadarTheme {
+                WeatherWidget(
+                    snapshot = snapshot(windDir = 180),
+                    temperatureUnit = TemperatureUnit.CELSIUS,
+                    windSpeedUnit = WindSpeedUnit.KMH,
+                    weatherWidgetSize = 100f,
+                    cameraBearing = 0.0,
+                )
+            }
+        }
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.cd_wind_direction),
+            )
+            .assertExists()
+    }
+
+    @Test
+    fun widget_darkMode_windIconIsFindable() {
+        composeTestRule.setContent {
+            RoadTripRadarTheme(darkTheme = true) {
+                WeatherWidget(
+                    snapshot = snapshot(windDir = 180),
+                    temperatureUnit = TemperatureUnit.CELSIUS,
+                    windSpeedUnit = WindSpeedUnit.KMH,
+                    weatherWidgetSize = 100f,
+                    cameraBearing = 0.0,
+                )
+            }
+        }
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.cd_wind_direction),
+            )
+            .assertExists()
     }
 }

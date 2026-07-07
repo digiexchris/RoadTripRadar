@@ -40,7 +40,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.Waypoint
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private data class RouteEditorRowItem(
     val waypoint: Waypoint,
@@ -50,20 +49,29 @@ private data class RouteEditorRowItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RouteEditorSheet(vm: MapViewModel) {
-    if (!vm.showRouteEditor) return
+fun RouteEditorSheet(
+    visible: Boolean,
+    waypoints: List<Waypoint>,
+    activeWaypointId: String?,
+    onSetActive: (String) -> Unit,
+    onRemove: (String) -> Unit,
+    onMoveCommit: (Int, Int) -> Unit,
+    onClearRoute: () -> Unit,
+    onClose: () -> Unit,
+) {
+    if (!visible) return
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showClearConfirm by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val unnamedTemplate = stringResource(R.string.waypoint_unnamed)
-    val rowItems = vm.waypoints.mapIndexed { idx, wp ->
-        RouteEditorRowItem(wp, idx, isActive = wp.id == vm.activeWaypointId)
+    val rowItems = waypoints.mapIndexed { idx, wp ->
+        RouteEditorRowItem(wp, idx, isActive = wp.id == activeWaypointId)
     }
 
     ModalBottomSheet(
-        onDismissRequest = { vm.closeRouteEditor() },
+        onDismissRequest = onClose,
         sheetState = sheetState,
     ) {
         Column(
@@ -88,9 +96,9 @@ fun RouteEditorSheet(vm: MapViewModel) {
                     }
                     val adapter = RouteEditorAdapter(
                         unnamedTemplate = unnamedTemplate,
-                        onSetActive = { id -> vm.setActiveWaypoint(id) },
-                        onRemove = { id -> vm.removeWaypoint(id) },
-                        onMoveCommit = { from, to -> vm.moveWaypoint(from, to) },
+                        onSetActive = onSetActive,
+                        onRemove = onRemove,
+                        onMoveCommit = onMoveCommit,
                     )
                     rv.adapter = adapter
                     ItemTouchHelper(adapter.itemTouchCallback).attachToRecyclerView(rv)
@@ -127,8 +135,8 @@ fun RouteEditorSheet(vm: MapViewModel) {
             confirmButton = {
                 TextButton(onClick = {
                     showClearConfirm = false
-                    vm.clearRoute()
-                    vm.closeRouteEditor()
+                    onClearRoute()
+                    onClose()
                 }) { Text(stringResource(R.string.action_clear_target)) }
             },
             dismissButton = {

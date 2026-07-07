@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.data.InsertPosition
+import ca.voiditswarranty.roadtripradar.data.Waypoint
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import org.maplibre.spatialk.geojson.Point
@@ -58,19 +59,25 @@ import org.maplibre.spatialk.turf.measurement.distance
 
 @Composable
 fun TappedPoiPopup(
-    vm: MapViewModel,
-    onCenterOnMap: (Position) -> Unit = {},
+    poi: MapViewModel.TappedPoiInfo?,
+    origin: MapViewModel.TappedPoiOrigin?,
+    waypoints: List<Waypoint>,
+    userPosition: Position?,
+    useMetric: Boolean,
+    onDismiss: () -> Unit,
+    onBack: () -> Unit,
+    onCenterOnMap: (Position) -> Unit,
+    onAddWaypoint: (InsertPosition) -> Unit,
+    onRemoveNavigationTarget: () -> Unit,
 ) {
-    val poi = vm.tappedPoi
-    val origin = vm.tappedPoiOrigin
     val isFromSearch = origin == MapViewModel.TappedPoiOrigin.Search
     val isNavigationTarget = origin == MapViewModel.TappedPoiOrigin.NavigationTarget
 
     BackHandler(enabled = poi != null) {
         if (isFromSearch) {
-            vm.tappedPoiBackToSearch()
+            onBack()
         } else {
-            vm.dismissTappedPoi()
+            onDismiss()
         }
     }
 
@@ -87,7 +94,7 @@ fun TappedPoiPopup(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                    ) { vm.dismissTappedPoi() }
+                    ) { onDismiss() }
             )
         }
 
@@ -106,10 +113,9 @@ fun TappedPoiPopup(
                     .navigationBarsPadding(),
             ) {
                 if (poi != null) {
-                    val userPos = vm.userPositionForSearch
-                    val distanceText = if (userPos != null) {
-                        val dist = distance(Point(userPos), Point(poi.position))
-                        formatDistanceLabel(dist, vm.useMetric)
+                    val distanceText = if (userPosition != null) {
+                        val dist = distance(Point(userPosition), Point(poi.position))
+                        formatDistanceLabel(dist, useMetric)
                     } else null
 
                     Column(
@@ -157,7 +163,7 @@ fun TappedPoiPopup(
                                     )
                                 }
                             }
-                            IconButton(onClick = { vm.dismissTappedPoi() }) {
+                            IconButton(onClick = { onDismiss() }) {
                                 Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cd_close))
                             }
                         }
@@ -165,19 +171,20 @@ fun TappedPoiPopup(
                         when {
                             isNavigationTarget -> NavigationTargetActions(
                                 onCenter = { onCenterOnMap(poi.position) },
-                                onRemove = { vm.removeNavigationTarget() },
+                                onRemove = { onRemoveNavigationTarget() },
                             )
-                            vm.waypoints.isEmpty() -> EmptyRouteActions(
+                            waypoints.isEmpty() -> EmptyRouteActions(
                                 isFromSearch = isFromSearch,
-                                onBack = { vm.tappedPoiBackToSearch() },
+                                onBack = { onBack() },
                                 onCenter = { onCenterOnMap(poi.position) },
-                                onNavigate = { vm.addWaypointFromTapped(InsertPosition.End) },
+                                onNavigate = { onAddWaypoint(InsertPosition.End) },
                             )
                             else -> ExistingRouteActions(
-                                vm = vm,
+                                waypoints = waypoints,
                                 isFromSearch = isFromSearch,
-                                onBack = { vm.tappedPoiBackToSearch() },
+                                onBack = { onBack() },
                                 onCenter = { onCenterOnMap(poi.position) },
+                                onAddWaypoint = { pos -> onAddWaypoint(pos) },
                             )
                         }
                     }
@@ -302,15 +309,16 @@ private fun EmptyRouteActions(
 
 @Composable
 private fun ExistingRouteActions(
-    vm: MapViewModel,
+    waypoints: List<Waypoint>,
     isFromSearch: Boolean,
     onBack: () -> Unit,
     onCenter: () -> Unit,
+    onAddWaypoint: (InsertPosition) -> Unit,
 ) {
-    val size = vm.waypoints.size
-    val firstLabel = waypointDisplayLabel(vm.waypoints.first(), 0)
+    val size = waypoints.size
+    val firstLabel = waypointDisplayLabel(waypoints.first(), 0)
     val lastIndex = size - 1
-    val lastLabel = waypointDisplayLabel(vm.waypoints.last(), lastIndex)
+    val lastLabel = waypointDisplayLabel(waypoints.last(), lastIndex)
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(
@@ -333,38 +341,42 @@ private fun ExistingRouteActions(
                 )
             }
             Box(modifier = Modifier.weight(1f))
-            OverflowMenu(vm = vm, lastLabel = lastLabel)
+            OverflowMenu(
+                waypoints = waypoints,
+                onAddWaypoint = onAddWaypoint,
+                lastLabel = lastLabel,
+            )
         }
 
         if (size == 1) {
             ActionRow(
                 icon = Icons.Default.Add,
                 label = stringResource(R.string.action_insert_before, firstLabel),
-                onClick = { vm.addWaypointFromTapped(InsertPosition.Start) },
+                onClick = { onAddWaypoint(InsertPosition.Start) },
             )
             ActionRow(
                 icon = Icons.Default.Add,
                 label = stringResource(R.string.action_add_after, firstLabel),
-                onClick = { vm.addWaypointFromTapped(InsertPosition.End) },
+                onClick = { onAddWaypoint(InsertPosition.End) },
             )
         } else {
             ActionRow(
                 icon = Icons.Default.Add,
                 label = stringResource(R.string.action_add_to_start),
                 secondary = firstLabel,
-                onClick = { vm.addWaypointFromTapped(InsertPosition.Start) },
+                onClick = { onAddWaypoint(InsertPosition.Start) },
             )
             ActionRow(
                 icon = Icons.Default.Add,
                 label = stringResource(R.string.action_insert_before_final),
                 secondary = lastLabel,
-                onClick = { vm.addWaypointFromTapped(InsertPosition.BeforeLast) },
+                onClick = { onAddWaypoint(InsertPosition.BeforeLast) },
             )
             ActionRow(
                 icon = Icons.Default.Add,
                 label = stringResource(R.string.action_add_to_end),
                 secondary = lastLabel,
-                onClick = { vm.addWaypointFromTapped(InsertPosition.End) },
+                onClick = { onAddWaypoint(InsertPosition.End) },
             )
         }
     }
@@ -403,9 +415,13 @@ private fun ActionRow(
 }
 
 @Composable
-private fun OverflowMenu(vm: MapViewModel, lastLabel: String) {
+private fun OverflowMenu(
+    waypoints: List<Waypoint>,
+    onAddWaypoint: (InsertPosition) -> Unit,
+    lastLabel: String,
+) {
     var expanded by remember { mutableStateOf(false) }
-    val size = vm.waypoints.size
+    val size = waypoints.size
     Box {
         IconButton(onClick = { expanded = true }) {
             Icon(
@@ -415,27 +431,26 @@ private fun OverflowMenu(vm: MapViewModel, lastLabel: String) {
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             if (size == 1) {
-                val wp = vm.waypoints.first()
+                val wp = waypoints.first()
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.action_replace_waypoint, lastLabel)) },
                     leadingIcon = { Icon(Icons.Default.SwapHoriz, contentDescription = null) },
                     onClick = {
                         expanded = false
-                        vm.addWaypointFromTapped(InsertPosition.ReplaceId(wp.id))
+                        onAddWaypoint(InsertPosition.ReplaceId(wp.id))
                     },
                 )
             } else {
-                val lastWp = vm.waypoints.last()
+                val lastWp = waypoints.last()
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.action_replace_last)) },
                     leadingIcon = { Icon(Icons.Default.SwapHoriz, contentDescription = null) },
                     onClick = {
                         expanded = false
-                        vm.addWaypointFromTapped(InsertPosition.ReplaceId(lastWp.id))
+                        onAddWaypoint(InsertPosition.ReplaceId(lastWp.id))
                     },
                 )
             }
         }
     }
 }
-

@@ -12,8 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import ca.voiditswarranty.roadtripradar.data.RainViewer
 import ca.voiditswarranty.roadtripradar.data.Waypoint
-import ca.voiditswarranty.roadtripradar.data.activeRouteLeg
-import ca.voiditswarranty.roadtripradar.data.inactiveRouteLegs
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.PoiViewportChunks
 import ca.voiditswarranty.roadtripradar.model.RadarRingsData
@@ -226,18 +224,20 @@ fun WaypointRouteLineLayer(
 ) {
     if (waypoints.isEmpty() || activeIndex == null) return
 
-    // Geometry is built by shared helpers in `data.RouteGeometry` so the car surface draws the
-    // same route. Inactive legs are the dashed planned segments; the active leg is the solid
-    // live user→target approach that advances as the active waypoint advances.
-    val inactiveFc = remember(waypoints.toList()) {
+    // Geometry is built by helpers in `ui.RouteLineLayerLogic` (extracted so they can be
+    // unit-tested). Inactive legs are the dashed planned segments strictly before the active
+    // index; the active leg is the solid live user→target approach that advances as the
+    // active waypoint advances. The car surface still uses the `data.RouteGeometry` helpers
+    // directly for now.
+    val inactiveFc = remember(waypoints.toList(), activeIndex) {
         FeatureCollection(
-            inactiveRouteLegs(waypoints).map {
+            pastLegs(waypoints, activeIndex).map {
                 Feature(geometry = it, properties = buildJsonObject {})
             },
         )
     }
     val activeFc = remember(waypoints.toList(), activeIndex, userPosition) {
-        val leg = activeRouteLeg(waypoints, activeIndex, userPosition)
+        val leg = buildActiveLegLineString(waypoints, activeIndex, userPosition)
         FeatureCollection(
             if (leg != null) listOf(Feature(geometry = leg, properties = buildJsonObject {})) else emptyList(),
         )
