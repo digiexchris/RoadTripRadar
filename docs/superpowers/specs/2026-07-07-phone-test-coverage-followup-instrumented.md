@@ -418,6 +418,8 @@ Sections:
    separate spec).
 5. The instrumented tests run in <5 minutes total (so they're
    practical for CI).
+6. The DHU smoke runbook (`docs/dhu-smoke.md`) is committed and
+   cross-references every test file.
 
 ## Out of scope (per scope decision)
 

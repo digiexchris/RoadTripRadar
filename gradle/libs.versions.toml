@@ -17,6 +17,8 @@ androidsvg = "1.4"
 kotlinxSerializationJson = "1.7.3"
 recyclerview = "1.4.0"
 carApp = "1.7.0"
+androidxTestRunnerVersion = "1.6.2"
+androidxTestRulesVersion = "1.6.1"
 robolectric = "4.16.1"
 
 [libraries]
@@ -35,6 +37,8 @@ androidx-car-app-projected = { group = "androidx.car.app", name = "app-projected
 androidx-car-app-testing = { group = "androidx.car.app", name = "app-testing", version.ref = "carApp" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunnerVersion" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidxTestRulesVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }

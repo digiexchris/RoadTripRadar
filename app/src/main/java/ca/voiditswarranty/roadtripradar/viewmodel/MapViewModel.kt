@@ -225,6 +225,33 @@ class MapViewModel(
         notifyRefresh()
     }
 
+    /**
+     * The resolved MapLibre style (`MapStyle`); updated by [updateMapStyle]
+     * (which persists the choice). Test seam for setting [mapStyle] without
+     * going through [updateMapStyle]'s persistence side effect. Tests that
+     * need a particular style branch — e.g. for the theme-switching Robolectric
+     * tests — use this to set it directly. `internal` so it's only visible to
+     * the same module (including the test sourceset).
+     */
+    internal fun setMapStyleForTest(style: MapStyle) {
+        mapStyle = style
+        notifyRefresh()
+    }
+
+    /**
+     * The auto-advance radius in meters; updated by [updateAutoAdvanceThreshold]
+     * (which clamps to 25..500). Test seam for setting
+     * [autoAdvanceThresholdMeters] without going through the clamping /
+     * persistence path. Tests that need a particular radius branch — e.g. for
+     * the route operations Robolectric tests — use this to set it directly.
+     * `internal` so it's only visible to the same module (including the test
+     * sourceset).
+     */
+    internal fun setAutoAdvanceThresholdMetersForTest(meters: Int) {
+        autoAdvanceThresholdMeters = meters
+        notifyRefresh()
+    }
+
     // Settings
     var useMetric by mutableStateOf(prefsRepo.useMetric)
         private set
