@@ -1,15 +1,12 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material3.Icon
@@ -18,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -42,11 +38,11 @@ fun WeatherWidget(
     cameraBearing: Double,
     modifier: Modifier = Modifier,
 ) {
-    val iconSize = weatherWidgetSize.dp
+    val arrowSize = (weatherWidgetSize * 0.22f).dp
     val distFontSize = (weatherWidgetSize * 0.35f).sp
     val nameFontSize = (weatherWidgetSize * 0.25f).sp
-    val windIconSize = (weatherWidgetSize * 0.27f).dp
-    val windBadgeSize = (weatherWidgetSize * 0.34f).dp
+    val windLabelFontSize = (weatherWidgetSize * 0.20f).sp
+    val unavailableIconSize = (weatherWidgetSize * 0.22f).dp
     val context = LocalContext.current
     Column(
         modifier = modifier
@@ -79,33 +75,21 @@ fun WeatherWidget(
             }
             val windArrowRotationDeg =
                 windArrowRotationDeg(snapshot.windDirectionDeg, cameraBearing)
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.size(iconSize),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Navigation,
-                    contentDescription = stringResource(R.string.cd_wind_direction),
-                    modifier = Modifier
-                        .size(iconSize)
-                        .rotate(windArrowRotationDeg),
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(windBadgeSize)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Air,
-                        contentDescription = null,
-                        modifier = Modifier.size(windIconSize),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
-            }
+            Icon(
+                imageVector = Icons.Default.Navigation,
+                contentDescription = stringResource(R.string.cd_wind_direction),
+                modifier = Modifier
+                    .size(arrowSize)
+                    .rotate(windArrowRotationDeg),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = stringResource(R.string.wind_label),
+                fontSize = windLabelFontSize,
+                lineHeight = windLabelFontSize,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
             Text(
                 text = "${windValue(snapshot.windSpeedKmh, windSpeedUnit)}↑${windValue(snapshot.windGustsKmh, windSpeedUnit)}",
                 fontSize = distFontSize,
@@ -128,7 +112,7 @@ fun WeatherWidget(
                 Icon(
                     imageVector = Icons.Default.CloudOff,
                     contentDescription = stringResource(R.string.cd_weather_unavailable),
-                    modifier = Modifier.size(windIconSize),
+                    modifier = Modifier.size(unavailableIconSize),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(

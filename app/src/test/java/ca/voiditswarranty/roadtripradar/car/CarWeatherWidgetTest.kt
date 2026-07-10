@@ -1,7 +1,6 @@
 package ca.voiditswarranty.roadtripradar.car
 
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -70,8 +69,8 @@ class CarWeatherWidgetTest {
         w.view.findViewById(R.id.car_weather_wind_speed)
     private fun windUnitTextOf(w: CarWeatherWidget): TextView =
         w.view.findViewById(R.id.car_weather_wind_unit)
-    private fun badgeOf(w: CarWeatherWidget): FrameLayout =
-        w.view.findViewById(R.id.car_weather_badge)
+    private fun windLabelTextOf(w: CarWeatherWidget): TextView =
+        w.view.findViewById(R.id.car_weather_wind_label)
 
     // -------- visibility --------
 
@@ -282,9 +281,9 @@ class CarWeatherWidgetTest {
             arrowOf(w).imageTintList?.defaultColor,
         )
         assertEquals(
-            "dark badge bg",
-            CarWeatherWidget.darkBadgeBg,
-            badgeOf(w).backgroundTintList?.defaultColor,
+            "dark wind label text color",
+            CarWeatherWidget.darkTextSecondary,
+            windLabelTextOf(w).currentTextColor,
         )
     }
 
@@ -316,9 +315,9 @@ class CarWeatherWidgetTest {
             arrowOf(w).imageTintList?.defaultColor,
         )
         assertEquals(
-            "light badge bg",
-            CarWeatherWidget.lightBadgeBg,
-            badgeOf(w).backgroundTintList?.defaultColor,
+            "light wind label text color",
+            CarWeatherWidget.lightTextSecondary,
+            windLabelTextOf(w).currentTextColor,
         )
     }
 
@@ -374,5 +373,24 @@ class CarWeatherWidgetTest {
             rootBefore,
             (rootOf(w) as LinearLayout).backgroundTintList?.defaultColor,
         )
+    }
+
+    @Test
+    fun update_withSnapshot_setsWindLabelText() {
+        val vm = freshVm()
+        vm.updateWindEnabled(true)
+        vm.setOpenMeteoSnapshotForTest(
+            OpenMeteoSnapshot(
+                temperatureCelsius = 20.0,
+                weatherCode = 0,
+                windSpeedKmh = 10.0,
+                windDirectionDeg = 0,
+                windGustsKmh = 15.0,
+                tempTrendCelsius = 1.0,
+            )
+        )
+        val w = widget(vm)
+        w.update(cameraBearingDegrees = 0.0)
+        assertEquals("Wind", windLabelTextOf(w).text.toString())
     }
 }

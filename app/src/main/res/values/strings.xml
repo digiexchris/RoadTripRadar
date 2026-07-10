@@ -324,6 +324,8 @@
     <string name="wind_unit_kmh">km/h</string>
     <string name="wind_unit_mph">mph</string>
     <string name="wind_unit_kn">kn</string>
+    <!-- Label below the weather widget wind arrow (phone + Android Auto) -->
+    <string name="wind_label">Wind</string>
 
     <!-- 16-point compass directions (wind-from direction on the car weather pane) -->
     <string name="compass_n">N</string>

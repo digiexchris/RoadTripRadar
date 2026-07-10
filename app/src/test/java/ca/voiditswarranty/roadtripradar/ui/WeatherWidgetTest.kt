@@ -148,7 +148,7 @@ class WeatherWidgetTest {
     }
 
     @Test
-    fun widget_windIconHasContentDescription() {
+    fun widget_windArrowHasContentDescription() {
         composeTestRule.setContent {
             RoadTripRadarTheme {
                 WeatherWidget(
@@ -168,7 +168,7 @@ class WeatherWidgetTest {
     }
 
     @Test
-    fun widget_darkMode_windIconIsFindable() {
+    fun widget_darkMode_windArrowIsFindable() {
         composeTestRule.setContent {
             RoadTripRadarTheme(darkTheme = true) {
                 WeatherWidget(
@@ -185,5 +185,21 @@ class WeatherWidgetTest {
                 context.getString(R.string.cd_wind_direction),
             )
             .assertExists()
+    }
+
+    @Test
+    fun widget_withSnapshot_rendersWindLabel() {
+        composeTestRule.setContent {
+            RoadTripRadarTheme {
+                WeatherWidget(
+                    snapshot = snapshot(),
+                    temperatureUnit = TemperatureUnit.CELSIUS,
+                    windSpeedUnit = WindSpeedUnit.KMH,
+                    weatherWidgetSize = 100f,
+                    cameraBearing = 0.0,
+                )
+            }
+        }
+        composeTestRule.onNodeWithText("Wind").assertIsDisplayed()
     }
 }

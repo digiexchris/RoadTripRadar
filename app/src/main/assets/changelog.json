@@ -12,7 +12,8 @@
         "The temperature trend on the weather widget now shows the upcoming change over the next hour (forecast vs. now) instead of the change over the past hour.",
         "Added Android Auto support: project weather, your route, points of interest, search, and settings to your car's screen as a non-navigation app.",
         "The Android Auto screen now shows your live map on the car display — base map, weather radar, your route line, and your location — with pan and pinch-to-zoom and automatic day/night styling.",
-        "On Android Auto, weather now appears as a compact card on the map (temperature, trend, wind direction arrow, and wind speed) instead of a text list — matching the phone, and freezing to a static reading while driving."
+        "On Android Auto, weather now appears as a compact card on the map (temperature, trend, wind direction arrow, and wind speed) instead of a text list — matching the phone, and freezing to a static reading while driving.",
+        "Weather card: removed the wind icon, added a 'Wind' label below the arrow, and slightly reduced the arrow size for a cleaner look."
       ]
     },
     {
