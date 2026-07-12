@@ -21,8 +21,10 @@ import kotlin.math.pow
  * top-level so the [MapViewModelLogicTest] can drive them in isolation.
  *
  * **What's here, what's not:** the helpers that take a [MapViewModel] parameter
- * are gone — every helper is a pure function of its inputs. The VM's `cycleWeatherMode`
- * still exists, but it now calls the pure `nextWeatherModeOnCycle`/`nextWeatherModeOnPlayPauseToggle`
+ * are gone — every helper is a pure function of its inputs. The VM's
+ * `cycleWeatherMode` (the car toolbar's 3-state OFF→PLAYING→ON→OFF button) and
+ * `toggleWeatherPlayPause` (the phone FAB's 2-state play/pause + long-press off)
+ * both call the pure `nextWeatherModeOnCycle`/`nextWeatherModeOnPlayPauseToggle`
  * helpers here. Same pattern for `addWaypoint` / `tutorialNext` / `tutorialBack` /
  * `maybeAutoAdvance` / `evaluateWhatsNewChangelog` / `deleteCustomTheme`.
  *

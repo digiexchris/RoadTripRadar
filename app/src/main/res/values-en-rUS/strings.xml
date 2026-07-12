@@ -413,35 +413,15 @@
 
     <!-- Android Auto (car) UI -->
     <string name="car_home_title">RoadTripRadar</string>
-    <string name="car_home_trend">Trend</string>
-    <string name="car_home_radar">Radar</string>
-    <string name="car_weather_no_data">Weather unavailable</string>
-    <!-- Wind row on the car weather content pane: "Wind NNE" (wind-from compass direction). -->
-    <string name="car_weather_wind_dir">Wind %1$s</string>
-    <string name="car_route_empty">No waypoints</string>
     <string name="car_action_play">Play</string>
     <string name="car_action_pause">Pause</string>
-    <string name="car_action_advance">Next</string>
-    <string name="car_action_regress">Prev</string>
     <string name="car_action_settings">Settings</string>
     <string name="car_action_pois">Places</string>
     <string name="car_action_menu">Menu</string>
     <string name="car_action_recenter">Recenter</string>
-    <string name="car_action_radar_off">Turn radar off</string>
-    <string name="car_radar_off">Off</string>
-    <string name="car_radar_on">On</string>
-    <string name="car_radar_playing">Playing</string>
-
-    <string name="car_weather_title">Weather</string>
-    <string name="car_weather_radar_mode">Radar mode</string>
-    <string name="car_weather_wind_arrow">Wind arrow</string>
-    <string name="car_weather_legend">Legend</string>
-    <string name="car_weather_timeline">Timeline</string>
-    <string name="car_weather_opacity">Radar opacity</string>
-    <string name="car_weather_wind_unit">Wind unit</string>
-    <string name="car_weather_temp_unit">Temperature unit</string>
 
     <string name="car_poi_title">Places</string>
+    <string name="car_poi_utilities_title">Places · More</string>
     <string name="car_poi_status">Status</string>
     <string name="car_poi_max_reached">(max 5)</string>
     <string name="car_poi_search">Search area</string>
@@ -461,22 +441,13 @@
     <string name="car_search_add_end">Add to end</string>
     <string name="car_search_replace_active">Replace active</string>
 
-    <string name="car_route_title">Route</string>
-    <string name="car_route_clear">Clear route</string>
-    <string name="car_route_active_badge">▶ </string>
-    <string name="car_route_move_up">Move up</string>
-    <string name="car_route_remove">Remove</string>
-
     <string name="car_settings_title">Settings</string>
     <string name="car_settings_metric">Metric units</string>
     <string name="car_settings_wind_unit">Wind unit</string>
     <string name="car_settings_temp_unit">Temperature unit</string>
-    <string name="car_settings_map_style">Map style</string>
     <string name="car_settings_keep_screen_on">Keep screen on</string>
     <string name="car_settings_auto_advance">Auto-advance waypoints</string>
     <string name="car_settings_threshold">Auto-advance distance</string>
-    <string name="car_settings_reset">Reset to defaults</string>
-    <string name="car_settings_reset_confirm">Reset all settings and clear the route?</string>
     <string name="car_terms_not_accepted">Terms not accepted</string>
     <string name="car_terms_message">Please open RoadTripRadar on your phone and accept the Terms &amp; Conditions before using it on the car.</string>
 </resources>

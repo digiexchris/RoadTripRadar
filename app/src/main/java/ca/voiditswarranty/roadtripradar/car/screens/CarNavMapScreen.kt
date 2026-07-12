@@ -42,8 +42,8 @@ class CarNavMapScreen(carContext: CarContext) : BaseCarScreen(
                     )
                     .addAction(
                         Action.Builder()
-                            .setIcon(carIcon(radarPlayPauseIcon()))
-                            .setOnClickListener { vm.toggleWeatherPlayPause() }
+                            .setIcon(carIcon(radarCycleIcon()))
+                            .setOnClickListener { vm.cycleWeatherMode() }
                             .build()
                     )
                     .addAction(
@@ -61,10 +61,17 @@ class CarNavMapScreen(carContext: CarContext) : BaseCarScreen(
             )
             .build()
 
-    /** Pause icon while the radar is playing, play icon otherwise — mirroring the phone FAB. */
-    private fun radarPlayPauseIcon(): Int = when (vm.weatherMode) {
+    /**
+     * Icon for the 3-state weather cycle, showing the *next* action a tap performs:
+     * OFF → play (start animating), PLAYING → pause, ON(paused) → off (turn radar off).
+     * Resume-from-pause costs two taps (ON → OFF → PLAYING) — accepted so that turning
+     * the radar fully off is one tap from the paused state, since the car has no
+     * long-press affordance (unlike the phone FAB).
+     */
+    private fun radarCycleIcon(): Int = when (vm.weatherMode) {
+        WeatherMode.OFF -> R.drawable.ic_car_play
         WeatherMode.PLAYING -> R.drawable.ic_car_pause
-        else -> R.drawable.ic_car_play
+        WeatherMode.ON -> R.drawable.ic_car_weather_off
     }
 
     private fun carIcon(drawableRes: Int): CarIcon =

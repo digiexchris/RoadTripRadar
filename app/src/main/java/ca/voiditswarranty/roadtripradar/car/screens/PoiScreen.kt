@@ -22,11 +22,10 @@ import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
  * icon. Categories beyond the cap are shown grayed with "(max 5)" and are non-tappable.
  * Toggling re-runs the pipeline against the phone's current map camera.
  *
- * The header's end action is a single Search action (push the place-search screen). The
- * POI-pipeline utilities — Search area, Clear, Retry failed — live on the HomeScreen menu
- * instead: header end actions are icon-only (no custom title), so the titled controls the POI
- * screen originally packed into the action strip can't live in the header. Pipeline status is
- * shown in the title.
+ * The header carries two icon-only end actions: **Search** (push the place-search screen) and
+ * **More** (push [PoiUtilitiesScreen], which holds the POI-pipeline utilities — Search area,
+ * Clear, Retry failed). Header end actions are icon-only (no custom title), so two icon-only
+ * actions fit GridTemplate's 2-action limit. Pipeline status is shown in the title.
  */
 class PoiScreen(carContext: CarContext) : BaseCarScreen(
     carContext,
@@ -74,6 +73,12 @@ class PoiScreen(carContext: CarContext) : BaseCarScreen(
                         Action.Builder()
                             .setIcon(carIcon(R.drawable.ic_car_search))
                             .setOnClickListener { push(SearchScreen(carContext)) }
+                            .build()
+                    )
+                    .addEndHeaderAction(
+                        Action.Builder()
+                            .setIcon(carIcon(R.drawable.ic_car_more))
+                            .setOnClickListener { push(PoiUtilitiesScreen(carContext)) }
                             .build()
                     )
                     .build()

@@ -24,17 +24,18 @@ import org.robolectric.annotation.Config
 
 /**
  * Tests for [SettingsScreen] — the car surface that surfaces unit toggles (metric,
- * wind speed, temperature), map-style cycle, keep-screen-on, auto-advance + threshold
- * presets, and a parked-only reset row. The screen builds a [ListTemplate] whose row
- * structure changes with two VM-state inputs:
+ * wind speed, temperature), keep-screen-on, and auto-advance + threshold presets. Map-style
+ * cycling and reset-to-defaults are phone-only and are intentionally absent from the car
+ * settings screen. The screen builds a [ListTemplate] whose row structure changes with two
+ * VM-state inputs:
  *
  * - Whether the user has accepted the current [PrefsDefaults.TERMS_VERSION] (controls
  *   the "terms not accepted" parked-only row at the top of the list).
- * - The current [MapViewModel.useMetric] / wind / temperature / map-style / etc.
- *   values (control each row's text + the click delegate's effect).
+ * - The current [MapViewModel.useMetric] / wind / temperature / etc. values (control
+ *   each row's text + the click delegate's effect).
  *
  * The test pins:
- * - the structure (which rows appear, terms-row present/absent),
+ * - the structure (which rows appear, terms-row present/absent, map-style + reset absent),
  * - the toggle initial state (metric toggle reflects `vm.useMetric`),
  * - the unit-row click behavior (cycles to the next enum entry),
  * - the threshold click behavior (cycles through 25/50/100/200/500 m).
@@ -198,21 +199,11 @@ class SettingsScreenTest {
         )
     }
 
-    // -------- map style cycle row --------
+    // -------- map style row (removed — phone-only) --------
 
-    @Test
-    fun settingsScreen_mapStyleRow_clickCyclesToNext() {
-        val v = vm()
-        v.updateMapStyle(MapStyle.LIBERTY)
-        val template = buildScreen()
-        val styleRow = rowByTitle(template, context.getString(R.string.car_settings_map_style))
-        clickRow(styleRow)
-        assertEquals(
-            "map style click must cycle to the next enum entry",
-            MapStyle.DARK,
-            v.mapStyle,
-        )
-    }
+    // The map-style row's absence is pinned by settingsScreen_retainedRowsAreExact
+    // below (an exact-list assertion that would fail if the row were re-added), so
+    // no separate absence test is needed here.
 
     // -------- auto-advance threshold row --------
 
@@ -258,15 +249,34 @@ class SettingsScreenTest {
         assertTrue("keep-screen-on toggle should be checked when enabled", row.toggle!!.isChecked)
     }
 
-    // -------- reset row --------
+    // -------- reset row (removed — phone-only) --------
+
+    // The reset row's absence is pinned by settingsScreen_retainedRowsAreExact below
+    // (an exact-list assertion that would fail if the row were re-added), so no
+    // separate absence test is needed here.
+
+    // -------- retained rows (exact list) --------
 
     @Test
-    fun settingsScreen_resetRow_isPresent() {
-        val template = buildScreen()
-        val titles = rowTitles(template)
-        assertTrue(
-            "settings must always show the reset row; got $titles",
-            titles.contains(context.getString(R.string.car_settings_reset)),
+    fun settingsScreen_retainedRowsAreExact() {
+        // With terms accepted (@Before default), the screen surfaces exactly the six
+        // retained adjustable rows, in order: metric, wind unit, temp unit,
+        // keep-screen-on, auto-advance, auto-advance threshold. This exact-list check
+        // is the regression guard against re-adding the removed map-style and reset
+        // rows — either would change the list.
+        val titles = rowTitles(buildScreen())
+        val expected = listOf(
+            R.string.car_settings_metric,
+            R.string.car_settings_wind_unit,
+            R.string.car_settings_temp_unit,
+            R.string.car_settings_keep_screen_on,
+            R.string.car_settings_auto_advance,
+            R.string.car_settings_threshold,
+        ).map { context.getString(it) }
+        assertEquals(
+            "settings must have exactly the retained rows (no map-style, no reset)",
+            expected,
+            titles,
         )
     }
 }

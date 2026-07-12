@@ -12,16 +12,14 @@ import androidx.car.app.model.Toggle
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
 import ca.voiditswarranty.roadtripradar.car.nextCycle
-import ca.voiditswarranty.roadtripradar.data.PreferencesRepository
 import ca.voiditswarranty.roadtripradar.model.PrefsDefaults
 import ca.voiditswarranty.roadtripradar.ui.tempUnitSymbol
 import ca.voiditswarranty.roadtripradar.ui.windUnitLabel
 
 /**
- * Settings: units, map style, keep-screen-on, auto-advance. Reset is parked-only and
- * pushes a confirmation [MessageTemplate]. Tutorials/terms/changelog/theme-import are
- * phone-only. If terms haven't been accepted, a parked-only row directs the user to the
- * phone app.
+ * Settings: units, keep-screen-on, auto-advance. Map-style cycling and reset-to-defaults are
+ * phone-only. Tutorials/terms/changelog/theme-import are phone-only. If terms haven't been
+ * accepted, a parked-only row directs the user to the phone app.
  */
 class SettingsScreen(carContext: CarContext) : BaseCarScreen(
     carContext,
@@ -74,14 +72,6 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
 
             addItem(
                 Row.Builder()
-                    .setTitle(carContext.getString(R.string.car_settings_map_style))
-                    .addText(carContext.getString(vm.mapStyle.displayNameRes))
-                    .setOnClickListener { vm.updateMapStyle(vm.mapStyle.nextCycle()) }
-                    .build()
-            )
-
-            addItem(
-                Row.Builder()
                     .setTitle(carContext.getString(R.string.car_settings_keep_screen_on))
                     .setToggle(
                         Toggle.Builder { on -> vm.updateKeepScreenOn(on) }
@@ -112,15 +102,6 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
                     }
                     .build()
             )
-
-            addItem(
-                Row.Builder()
-                    .setTitle(carContext.getString(R.string.car_settings_reset))
-                    .setOnClickListener(
-                        ParkedOnlyOnClickListener.create { push(ResetConfirmScreen(carContext)) }
-                    )
-                    .build()
-            )
         }.build()
 
         return ListTemplate.Builder()
@@ -138,39 +119,6 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
         val presets = listOf(25, 50, 100, 200, 500)
         val idx = presets.indexOf(current).takeIf { it >= 0 } ?: 2
         return presets[(idx + 1) % presets.size]
-    }
-}
-
-/** Confirmation screen for "reset to defaults" (parked-only to reach). */
-class ResetConfirmScreen(carContext: CarContext) : BaseCarScreen(
-    carContext,
-    CarViewModelHolder.ensureInitialized(carContext.applicationContext),
-) {
-    override fun buildTemplate(): MessageTemplate {
-        return MessageTemplate.Builder(carContext.getString(R.string.car_settings_reset_confirm))
-            .setHeader(
-                Header.Builder()
-                    .setTitle(carContext.getString(R.string.car_settings_reset))
-                    .setStartHeaderAction(Action.BACK)
-                    .build()
-            )
-            .addAction(
-                Action.Builder()
-                    .setTitle(carContext.getString(R.string.car_settings_reset))
-                    .setOnClickListener {
-                        val systemDefault = PreferencesRepository.defaultMapStyleFor(carContext)
-                        vm.resetToDefaults(systemDefault) { vm.updateMapStyle(it) }
-                        pop()
-                    }
-                    .build()
-            )
-            .addAction(
-                Action.Builder()
-                    .setTitle(carContext.getString(R.string.action_cancel))
-                    .setOnClickListener { pop() }
-                    .build()
-            )
-            .build()
     }
 }
 

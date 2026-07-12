@@ -4,6 +4,7 @@ import androidx.car.app.OnDoneCallback
 import androidx.car.app.model.GridItem
 import androidx.car.app.model.GridTemplate
 import androidx.car.app.testing.TestCarContext
+import androidx.car.app.testing.TestScreenManager
 import androidx.test.core.app.ApplicationProvider
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
@@ -109,6 +110,38 @@ class PoiScreenTest {
         assertNotNull(
             "PoiScreen is a pushed screen; must have a BACK header action",
             template.header!!.startHeaderAction,
+        )
+    }
+
+    // -------- end-header actions (Search + More) --------
+
+    @Test
+    fun poiScreen_moreAction_pushesPoiUtilitiesScreen() {
+        // PoiScreen's header carries two icon-only end actions: Search (geocode)
+        // and More (POI-pipeline utilities). Clicking through them, one must push
+        // PoiUtilitiesScreen — the new home for Search area / Clear / Retry failed.
+        val carContext = TestCarContext.createCarContext(context)
+        val screen = PoiScreen(carContext)
+        val template = screen.onGetTemplate() as GridTemplate
+        val endActions = template.header!!.endHeaderActions
+        assertEquals(
+            "PoiScreen header must have two end actions (Search + More)",
+            2,
+            endActions.size,
+        )
+        assertTrue(
+            "both end actions must be icon-only; got titles=${
+                endActions.map { it.title?.toCharSequence()?.toString() }
+            }",
+            endActions.all { it.icon != null },
+        )
+        for (action in endActions) {
+            action.onClickDelegate!!.sendClick(object : OnDoneCallback {})
+        }
+        val pushed = carContext.getCarService(TestScreenManager::class.java).screensPushed
+        assertTrue(
+            "an end action must push PoiUtilitiesScreen; got $pushed",
+            pushed.any { it is PoiUtilitiesScreen },
         )
     }
 

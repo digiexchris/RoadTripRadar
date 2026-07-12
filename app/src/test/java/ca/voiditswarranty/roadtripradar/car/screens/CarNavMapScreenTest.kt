@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.car.screens
 
+import androidx.car.app.OnDoneCallback
 import androidx.car.app.model.Action
 import androidx.car.app.model.CarIcon
 import androidx.car.app.navigation.model.NavigationTemplate
@@ -21,9 +22,10 @@ import org.robolectric.annotation.Config
  * screen builds a [NavigationTemplate] with two action strips:
  *
  * - The top action strip has three custom-icon actions: Menu (pushes
- *   [HomeScreen]), Play/Pause (toggles the radar — pause icon when
- *   [MapViewModel.weatherMode] is [WeatherMode.PLAYING], play icon otherwise),
- *   and Recenter.
+ *   [HomeScreen]), Weather (a 3-state cycle OFF → PLAYING → ON(paused) → OFF via
+ *   [MapViewModel.cycleWeatherMode]; the icon shows the *next* action —
+ *   [R.drawable.ic_car_play] / [R.drawable.ic_car_pause] /
+ *   [R.drawable.ic_car_weather_off]), and Recenter.
  * - The map action strip has exactly one action: [Action.PAN] (required for
  *   the host to forward pan / pinch gestures to the [CarMapRenderer]).
  *
@@ -140,18 +142,37 @@ class CarNavMapScreenTest {
     }
 
     @Test
-    fun carNavMapScreen_radarIconIsPlayWhenOnButNotPlaying() {
-        // ON (not PLAYING) shows the play icon too — only PLAYING gets the
-        // pause icon.
+    fun carNavMapScreen_radarIconIsOffWhenPaused() {
+        // ON (paused, radar visible) — the next tap turns the radar fully off,
+        // so the icon shows the off affordance (ic_car_weather_off).
         val v = vm()
         v.updateWeatherMode(WeatherMode.ON)
         val template = buildScreen()
         val secondIcon = actionIconRes(template.actionStrip!!.actions[1])
         assertEquals(
-            "second action must use the play icon when weatherMode is ON (not PLAYING)",
-            R.drawable.ic_car_play,
+            "second action must use the off icon when weatherMode is ON (paused)",
+            R.drawable.ic_car_weather_off,
             secondIcon,
         )
+    }
+
+    @Test
+    fun carNavMapScreen_weatherAction_clickCyclesOffToPlayingToOnToOff() {
+        // The weather action is a 3-state cycle: OFF -> PLAYING -> ON -> OFF.
+        // Driving three clicks from OFF must land back on OFF. (Today the
+        // listener is toggleWeatherPlayPause, whose cycle is OFF -> PLAYING ->
+        // ON -> PLAYING, so the third click yields PLAYING, not OFF — this test
+        // fails until the listener switches to cycleWeatherMode.)
+        val v = vm()
+        v.updateWeatherMode(WeatherMode.OFF)
+        val template = buildScreen()
+        val weatherAction = template.actionStrip!!.actions[1]
+        weatherAction.onClickDelegate!!.sendClick(object : OnDoneCallback {})
+        assertEquals("OFF -> PLAYING on first tap", WeatherMode.PLAYING, v.weatherMode)
+        weatherAction.onClickDelegate!!.sendClick(object : OnDoneCallback {})
+        assertEquals("PLAYING -> ON on second tap", WeatherMode.ON, v.weatherMode)
+        weatherAction.onClickDelegate!!.sendClick(object : OnDoneCallback {})
+        assertEquals("ON -> OFF on third tap", WeatherMode.OFF, v.weatherMode)
     }
 
     // -------- map action strip --------
