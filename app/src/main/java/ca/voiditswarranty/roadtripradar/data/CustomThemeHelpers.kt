@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.data
 
+import androidx.annotation.StringRes
 import ca.voiditswarranty.roadtripradar.R
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -117,7 +118,7 @@ fun rewriteFonts(json: String): String =
 
 /** Thrown when a user-supplied file is not a valid MapLibre style document. */
 class InvalidStyleJsonException(
-    @androidx.annotation.StringRes val messageRes: Int,
+    @param:StringRes val messageRes: Int,
     val formatArg: String? = null,
     cause: Throwable? = null,
 ) : Exception(cause)

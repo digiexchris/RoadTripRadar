@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar.car.screens
 
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
+import androidx.car.app.model.Header
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.ParkedOnlyOnClickListener
@@ -86,8 +87,12 @@ class RouteScreen(carContext: CarContext) : BaseCarScreen(
 
         return ListTemplate.Builder()
             .setSingleList(itemList)
-            .setTitle(carContext.getString(R.string.car_route_title))
-            .setHeaderAction(Action.BACK)
+            .setHeader(
+                Header.Builder()
+                    .setTitle(carContext.getString(R.string.car_route_title))
+                    .setStartHeaderAction(Action.BACK)
+                    .build()
+            )
             .build()
     }
 }

@@ -86,7 +86,7 @@ class WeatherScreenTest {
     fun weatherScreen_titleIsWeatherTitle() {
         val template = buildScreen()
         val expected = context.getString(R.string.car_weather_title)
-        assertEquals(expected, template.title!!.toCharSequence().toString())
+        assertEquals(expected, template.header!!.title!!.toCharSequence().toString())
     }
 
     @Test
@@ -94,7 +94,7 @@ class WeatherScreenTest {
         val template = buildScreen()
         assertNotNull(
             "WeatherScreen is a pushed screen; must have a BACK header action",
-            template.headerAction,
+            template.header!!.startHeaderAction,
         )
     }
 

@@ -20,11 +20,6 @@ import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
  *
  * On a car configuration change (e.g. day → night) the root map screen is asked to reload its
  * map style so the base map follows the car's day/night mode (MR-1).
- *
- * NOTE: the root is currently [CarNavMapScreen] (a plain root [androidx.car.app.navigation.model.
- * NavigationTemplate]) as a diagnostic to test whether the split→full-screen surface blanking is
- * caused by embedding the NavigationTemplate in a TabTemplate. The tabbed [ca.voiditswarranty.
- * roadtripradar.car.screens.CarTabScreen] is retained but unused meanwhile.
  */
 class RoadTripRadarSession : Session() {
     private var countedActive = false

@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar.ui
 
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.computeWindowSizeClass
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,7 +22,9 @@ class LayoutConfigTest {
     @Test
     fun fromWindow_compactPhone_returnsDefaultConfig() {
         // 400dp wide, 300dp tall — both below the (600, 480) breakpoint.
-        val sizeClass = WindowSizeClass.compute(400f, 300f)
+        // BREAKPOINTS_V1.computeWindowSizeClass is the non-deprecated replacement for
+        // WindowSizeClass.compute; both pick the same bucket from {0,600,840}×{0,480,900}.
+        val sizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(400f, 300f)
         val config = LayoutConfig.fromWindow(sizeClass)
         // Default (compact) values.
         assertEquals(1.0f, config.widgetScale, 0.0001f)
@@ -33,7 +36,7 @@ class LayoutConfigTest {
     @Test
     fun fromWindow_tablet_returnsScaledConfig() {
         // 800dp wide, 600dp tall — both above the (600, 480) breakpoint.
-        val sizeClass = WindowSizeClass.compute(800f, 600f)
+        val sizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(800f, 600f)
         val config = LayoutConfig.fromWindow(sizeClass)
         // Tablet values.
         assertEquals(1.2f, config.widgetScale, 0.0001f)
@@ -48,7 +51,7 @@ class LayoutConfigTest {
         // uses `isAtLeastBreakpoint` which is inclusive, so 600dp is
         // tablet-width. But height must also be ≥ 480 to qualify. Test
         // 600×400 (height below) — should be compact.
-        val sizeClass = WindowSizeClass.compute(600f, 400f)
+        val sizeClass = WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(600f, 400f)
         val config = LayoutConfig.fromWindow(sizeClass)
         // Height is below the breakpoint, so it's still compact.
         assertEquals(1.0f, config.widgetScale, 0.0001f)

@@ -56,7 +56,11 @@ class BaseCarScreenTest {
         BaseCarScreen(carContext, vm) {
         override fun buildTemplate(): Template = ListTemplate.Builder()
             .setSingleList(androidx.car.app.model.ItemList.Builder().build())
-            .setTitle("probe")
+            .setHeader(
+                androidx.car.app.model.Header.Builder()
+                    .setTitle("probe")
+                    .build()
+            )
             .build()
     }
 

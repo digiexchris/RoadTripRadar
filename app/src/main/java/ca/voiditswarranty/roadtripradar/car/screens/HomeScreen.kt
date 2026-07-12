@@ -3,6 +3,7 @@ package ca.voiditswarranty.roadtripradar.car.screens
 import androidx.car.app.CarContext
 import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
+import androidx.car.app.model.Header
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.ParkedOnlyOnClickListener
@@ -27,17 +28,15 @@ import kotlin.math.roundToInt
  * The menu hub: a list of rows for the four feature groups (weather, route, POIs, settings)
  * plus a radar status row and the POI-pipeline utilities (Search area / Clear / Retry failed).
  *
- * The rows themselves are built by [carMenuRows] so they can be reused both as a pushed screen
- * (this class, with a BACK header that pops back to the caller) and as the Menu tab's content
- * inside [ca.voiditswarranty.roadtripradar.car.screens.CarTabScreen] (no BACK header — the tab
- * bar replaces it; embedded-template headers are ignored anyway).
+ * The rows themselves are built by [carMenuRows]. Pushed from the map screen's toolbar menu
+ * action, with a BACK header that pops back to the caller.
  *
  * Implemented as a [ListTemplate] rather than a PaneTemplate: PaneTemplate's action strip
  * (ACTIONS_CONSTRAINTS_SIMPLE) allows only one custom-titled action, and its pane action list
  * only two — too few for a 4-section hub. ListTemplate holds many tap-to-navigate rows (rows
  * are not title-constrained) and rows may also carry action listeners (the POI-pipeline rows
  * perform an action rather than navigating). The radar play/pause control lives on the map
- * tab's toolbar, not here. Waypoint advance/regress controls live on [RouteScreen], where
+ * screen's toolbar, not here. Waypoint advance/regress controls live on [RouteScreen], where
  * they belong.
  */
 class HomeScreen(carContext: CarContext) : BaseCarScreen(
@@ -46,14 +45,13 @@ class HomeScreen(carContext: CarContext) : BaseCarScreen(
 ) {
 
     override fun buildTemplate(): ListTemplate =
-        menuListTemplate(carContext, vm, asTabContent = false)
+        menuListTemplate(carContext, vm)
 }
 
 /**
- * Build the shared menu [ItemList] (weather / active waypoint / radar / POIs / POI-pipeline
- * utilities / settings). Used both by [HomeScreen] (pushed) and by the Menu tab in
- * [ca.voiditswarranty.roadtripradar.car.screens.CarTabScreen]. Row click listeners push the
- * relevant sub-screen onto the car screen stack.
+ * Build the menu [ItemList] (weather / active waypoint / radar / POIs / POI-pipeline
+ * utilities / settings). Row click listeners push the relevant sub-screen onto the car
+ * screen stack.
  */
 fun carMenuRows(carContext: CarContext, vm: MapViewModel): ItemList =
     ItemList.Builder().apply {
@@ -184,14 +182,15 @@ fun carMenuRows(carContext: CarContext, vm: MapViewModel): ItemList =
     }.build()
 
 /**
- * Build the menu [ListTemplate]. When [asTabContent] is true (the Menu tab inside CarTabScreen)
- * there is no BACK header — the tab bar occupies the header space and embedded-template headers
- * are ignored. When false (the pushed [HomeScreen]) a BACK header pops back to the caller.
+ * Build the menu [ListTemplate]. A BACK header action pops back to the caller (the map screen).
  */
-fun menuListTemplate(carContext: CarContext, vm: MapViewModel, asTabContent: Boolean): ListTemplate {
-    val builder = ListTemplate.Builder()
-        .setSingleList(carMenuRows(carContext, vm))
+fun menuListTemplate(carContext: CarContext, vm: MapViewModel): ListTemplate {
+    val header = Header.Builder()
         .setTitle(carContext.getString(R.string.car_home_title))
-    if (!asTabContent) builder.setHeaderAction(Action.BACK)
-    return builder.build()
+        .setStartHeaderAction(Action.BACK)
+        .build()
+    return ListTemplate.Builder()
+        .setSingleList(carMenuRows(carContext, vm))
+        .setHeader(header)
+        .build()
 }

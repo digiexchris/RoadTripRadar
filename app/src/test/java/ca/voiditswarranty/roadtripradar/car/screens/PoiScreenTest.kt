@@ -33,7 +33,7 @@ import org.robolectric.annotation.Config
  * - **At-cap, not enabled**: have a click listener disabled (text shows the
  *   "max reached" string) so tapping is a no-op.
  *
- * The test pins all three branches plus the action-strip search push, the
+ * The test pins all three branches plus the header Search action, the
  * status text, and that enabling 5 categories clamps the rest.
  *
  * Uses Robolectric + `TestCarContext` so the `GridTemplate` builds with a real
@@ -95,7 +95,7 @@ class PoiScreenTest {
         // The template title is "<car_poi_title> · <status>". Pin the
         // car_poi_title portion to the resource.
         val template = buildScreen()
-        val title = template.title!!.toCharSequence().toString()
+        val title = template.header!!.title!!.toCharSequence().toString()
         val expected = context.getString(R.string.car_poi_title)
         assertTrue(
             "title must start with the localized POI title; got '$title'",
@@ -108,7 +108,7 @@ class PoiScreenTest {
         val template = buildScreen()
         assertNotNull(
             "PoiScreen is a pushed screen; must have a BACK header action",
-            template.headerAction,
+            template.header!!.startHeaderAction,
         )
     }
 
@@ -218,7 +218,7 @@ class PoiScreenTest {
         // @Before leaves pendingCameraInfo = null and no pipeline activity. The
         // status should be the "no map" string directing the user to the phone.
         val template = buildScreen()
-        val title = template.title!!.toCharSequence().toString()
+        val title = template.header!!.title!!.toCharSequence().toString()
         val noMap = context.getString(R.string.car_poi_no_map)
         assertTrue(
             "no-map status should appear in the title; got '$title'",
@@ -234,7 +234,7 @@ class PoiScreenTest {
         val v = vm()
         v.pendingCameraInfo = MapViewModel.CameraInfo(lat = 45.4, lon = -75.7, zoom = 12.0)
         val template = buildScreen()
-        val title = template.title!!.toCharSequence().toString()
+        val title = template.header!!.title!!.toCharSequence().toString()
         val idle = context.getString(R.string.car_poi_idle, 0)
         assertTrue(
             "idle status should appear in the title; got '$title'",
@@ -250,7 +250,7 @@ class PoiScreenTest {
         // cellsRemaining > 0 flips it to true.
         v.setCellsRemainingForTest(1)
         val template = buildScreen()
-        val title = template.title!!.toCharSequence().toString()
+        val title = template.header!!.title!!.toCharSequence().toString()
         val loading = context.getString(R.string.car_poi_loading, 0)
         assertTrue(
             "loading status should appear in the title; got '$title'",
@@ -277,7 +277,7 @@ class PoiScreenTest {
             )
         )
         val template = buildScreen()
-        val title = template.title!!.toCharSequence().toString()
+        val title = template.header!!.title!!.toCharSequence().toString()
         val failed = context.getString(R.string.car_poi_failed, 0)
         assertTrue(
             "failed status should appear in the title; got '$title'",

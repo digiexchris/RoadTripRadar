@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar.car.screens
 
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
+import androidx.car.app.model.Header
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.MessageTemplate
@@ -124,8 +125,12 @@ class SettingsScreen(carContext: CarContext) : BaseCarScreen(
 
         return ListTemplate.Builder()
             .setSingleList(itemList)
-            .setTitle(carContext.getString(R.string.car_settings_title))
-            .setHeaderAction(Action.BACK)
+            .setHeader(
+                Header.Builder()
+                    .setTitle(carContext.getString(R.string.car_settings_title))
+                    .setStartHeaderAction(Action.BACK)
+                    .build()
+            )
             .build()
     }
 
@@ -143,8 +148,12 @@ class ResetConfirmScreen(carContext: CarContext) : BaseCarScreen(
 ) {
     override fun buildTemplate(): MessageTemplate {
         return MessageTemplate.Builder(carContext.getString(R.string.car_settings_reset_confirm))
-            .setTitle(carContext.getString(R.string.car_settings_reset))
-            .setHeaderAction(Action.BACK)
+            .setHeader(
+                Header.Builder()
+                    .setTitle(carContext.getString(R.string.car_settings_reset))
+                    .setStartHeaderAction(Action.BACK)
+                    .build()
+            )
             .addAction(
                 Action.Builder()
                     .setTitle(carContext.getString(R.string.car_settings_reset))
@@ -172,8 +181,12 @@ class TermsMessageScreen(carContext: CarContext) : BaseCarScreen(
 ) {
     override fun buildTemplate(): MessageTemplate {
         return MessageTemplate.Builder(carContext.getString(R.string.car_terms_message))
-            .setTitle(carContext.getString(R.string.car_terms_not_accepted))
-            .setHeaderAction(Action.BACK)
+            .setHeader(
+                Header.Builder()
+                    .setTitle(carContext.getString(R.string.car_terms_not_accepted))
+                    .setStartHeaderAction(Action.BACK)
+                    .build()
+            )
             .addAction(
                 Action.Builder()
                     .setTitle(carContext.getString(R.string.action_back))

@@ -2,12 +2,14 @@ package ca.voiditswarranty.roadtripradar.car.screens
 
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
-import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.Badge
 import androidx.car.app.model.CarColor
+import androidx.car.app.model.CarIcon
 import androidx.car.app.model.GridItem
 import androidx.car.app.model.GridTemplate
+import androidx.car.app.model.Header
 import androidx.car.app.model.ItemList
+import androidx.core.graphics.drawable.IconCompat
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
 import ca.voiditswarranty.roadtripradar.car.MakiIcons
@@ -20,11 +22,10 @@ import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
  * icon. Categories beyond the cap are shown grayed with "(max 5)" and are non-tappable.
  * Toggling re-runs the pipeline against the phone's current map camera.
  *
- * The action strip holds a single Search action (push the place-search screen). The POI-pipeline
- * utilities — Search area, Clear, Retry failed — live on the HomeScreen menu instead, because
- * `GridTemplate.setActionStrip` validates against `ACTIONS_CONSTRAINTS_SIMPLE` (max 2 actions,
- * max 1 with a custom title), so the four controls the POI screen originally packed into the
- * strip threw `IllegalArgumentException` at build time and crashed on tap. Pipeline status is
+ * The header's end action is a single Search action (push the place-search screen). The
+ * POI-pipeline utilities — Search area, Clear, Retry failed — live on the HomeScreen menu
+ * instead: header end actions are icon-only (no custom title), so the titled controls the POI
+ * screen originally packed into the action strip can't live in the header. Pipeline status is
  * shown in the title.
  */
 class PoiScreen(carContext: CarContext) : BaseCarScreen(
@@ -65,13 +66,13 @@ class PoiScreen(carContext: CarContext) : BaseCarScreen(
 
         return GridTemplate.Builder()
             .setSingleList(itemList)
-            .setTitle(carContext.getString(R.string.car_poi_title) + " · " + poiStatusText())
-            .setHeaderAction(Action.BACK)
-            .setActionStrip(
-                ActionStrip.Builder()
-                    .addAction(
+            .setHeader(
+                Header.Builder()
+                    .setTitle(carContext.getString(R.string.car_poi_title) + " · " + poiStatusText())
+                    .setStartHeaderAction(Action.BACK)
+                    .addEndHeaderAction(
                         Action.Builder()
-                            .setTitle(carContext.getString(R.string.car_action_search))
+                            .setIcon(carIcon(R.drawable.ic_car_search))
                             .setOnClickListener { push(SearchScreen(carContext)) }
                             .build()
                     )
@@ -79,6 +80,9 @@ class PoiScreen(carContext: CarContext) : BaseCarScreen(
             )
             .build()
     }
+
+    private fun carIcon(drawableRes: Int): CarIcon =
+        CarIcon.Builder(IconCompat.createWithResource(carContext, drawableRes)).build()
 
     private fun poiStatusText(): String {
         val count = vm.nearbyPoiFeatures.features.size

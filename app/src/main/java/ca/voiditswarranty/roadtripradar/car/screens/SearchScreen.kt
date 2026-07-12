@@ -2,6 +2,7 @@ package ca.voiditswarranty.roadtripradar.car.screens
 
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
+import androidx.car.app.model.Header
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Pane
@@ -109,8 +110,12 @@ class SearchResultDetailScreen(
         }.build()
 
         return PaneTemplate.Builder(pane)
-            .setTitle(carContext.getString(R.string.car_search_title))
-            .setHeaderAction(Action.BACK)
+            .setHeader(
+                Header.Builder()
+                    .setTitle(carContext.getString(R.string.car_search_title))
+                    .setStartHeaderAction(Action.BACK)
+                    .build()
+            )
             .build()
     }
 

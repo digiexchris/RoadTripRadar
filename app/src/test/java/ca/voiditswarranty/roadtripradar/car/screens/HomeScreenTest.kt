@@ -89,23 +89,22 @@ class HomeScreenTest {
 
     @Test
     fun homeScreen_titleMatchesCarHomeTitleString() {
-        // The template's title is the source of truth for what the car host shows in
+        // The header's title is the source of truth for what the car host shows in
         // the header. Pinned to the string resource so the test references the
         // source of truth — adding a new locale won't drift the contract.
         val template = buildHomeScreen()
         val expected = context.getString(R.string.car_home_title)
-        assertEquals(expected, template.title!!.toCharSequence().toString())
+        assertEquals(expected, template.header!!.title!!.toCharSequence().toString())
     }
 
     @Test
     fun homeScreen_hasBackHeaderAction() {
-        // HomeScreen is a pushed screen (not a tab); the host requires a BACK header
-        // action so the user can return to the caller. (Tab content omits it because
-        // the tab bar replaces it.)
+        // HomeScreen is a pushed screen; the host requires a BACK header action so
+        // the user can return to the caller (the map screen).
         val template = buildHomeScreen()
         assertNotNull(
             "pushed HomeScreen must have a header action (BACK)",
-            template.headerAction,
+            template.header!!.startHeaderAction,
         )
     }
 

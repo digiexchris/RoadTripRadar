@@ -76,7 +76,7 @@
              .metaData (the <application> tag), NOT ServiceInfo.metaData, so it must live
              here as a direct child of <application> — putting it inside <service> causes
              "Min API level not declared in manifest" at bind time. -->
-        <!-- TabTemplate + NavigationTemplate (the self-rendered map tab) require Car API
+        <!-- NavigationTemplate (the self-rendered map) and the Header API require Car API
              level 7+. -->
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"

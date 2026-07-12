@@ -13,15 +13,8 @@ import ca.voiditswarranty.roadtripradar.car.CarViewModelHolder
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 
 /**
- * Root map screen for a DIAGNOSTIC experiment: a plain [NavigationTemplate] (NOT embedded in a
- * [androidx.car.app.model.TabTemplate]) that renders our MapLibre map on the Android Auto surface
- * via [CarMapRenderer], with the menu reachable by pushing [HomeScreen] from the toolbar.
- *
- * This exists to isolate whether the split→full-screen blanking also happens with a *root*
- * NavigationTemplate, or only when the NavigationTemplate is embedded in a tab (see
- * [CarTabScreen]). If the map survives the tap-to-expand here, the tab embedding is the cause;
- * if it still blanks, NavigationTemplate itself doesn't composite in full-screen and we fall back
- * to `MapWithContentTemplate`.
+ * Root map screen: a plain [NavigationTemplate] that renders our MapLibre map on the Android Auto
+ * surface via [CarMapRenderer], with the menu reachable by pushing [HomeScreen] from the toolbar.
  *
  * `NavigationTemplate` **requires** a top [setActionStrip] (build throws if null), so the three
  * primary controls (Menu / Play-Pause / Recenter) live there. The map action strip holds only

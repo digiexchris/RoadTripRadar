@@ -102,7 +102,7 @@ class RouteScreenTest {
         val template = buildScreen()
         assertNotNull(
             "RouteScreen must always have a BACK header action",
-            template.headerAction,
+            template.header!!.startHeaderAction,
         )
     }
 
