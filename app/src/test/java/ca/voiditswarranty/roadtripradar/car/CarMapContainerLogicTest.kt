@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.car
 
+import ca.voiditswarranty.roadtripradar.data.Waypoint
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -292,5 +293,93 @@ class CarMapContainerLogicTest {
             """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-79.3832,43.6532],[-79.3,43.7]]}}]}""",
             lineStringGeoJson(leg),
         )
+    }
+
+    // -------- buildWaypointMarkerFeatures --------
+
+    private fun wp(id: String, lat: Double, lon: Double) = Waypoint(
+        id = id,
+        lat = lat,
+        lon = lon,
+    )
+
+    @Test
+    fun buildWaypointMarkerFeatures_emptyWaypoints_bothEmpty() {
+        val (inactive, active) = buildWaypointMarkerFeatures(emptyList(), activeWaypointId = null)
+        assertEquals("""{"type":"FeatureCollection","features":[]}""", inactive)
+        assertEquals("""{"type":"FeatureCollection","features":[]}""", active)
+    }
+
+    @Test
+    fun buildWaypointMarkerFeatures_oneWaypointNotActive_inactiveHasOne() {
+        val wps = listOf(wp("a", 0.0, 0.0))
+        val (inactive, active) = buildWaypointMarkerFeatures(wps, activeWaypointId = null)
+        assertEquals(1, countFeatures(inactive))
+        assertEquals(0, countFeatures(active))
+    }
+
+    @Test
+    fun buildWaypointMarkerFeatures_oneWaypointActive_activeHasOne() {
+        val wps = listOf(wp("a", 0.0, 0.0))
+        val (inactive, active) = buildWaypointMarkerFeatures(wps, activeWaypointId = "a")
+        assertEquals(0, countFeatures(inactive))
+        assertEquals(1, countFeatures(active))
+    }
+
+    @Test
+    fun buildWaypointMarkerFeatures_fourWaypointsActiveIsThird_inactiveHasThreeActiveHasOne() {
+        val wps = listOf(
+            wp("a", 0.0, 0.0),
+            wp("b", 1.0, 1.0),
+            wp("c", 2.0, 2.0),
+            wp("d", 3.0, 3.0),
+        )
+        val (inactive, active) = buildWaypointMarkerFeatures(wps, activeWaypointId = "c")
+        assertEquals(3, countFeatures(inactive))
+        assertEquals(1, countFeatures(active))
+    }
+
+    @Test
+    fun buildWaypointMarkerFeatures_labelsAreOneBasedAndStableAcrossActiveChange() {
+        // The label is the position in the FULL waypoint list, not a filtered index.
+        // When active changes, the labels for the remaining inactive waypoints stay the same.
+        val wps = listOf(
+            wp("a", 0.0, 0.0),
+            wp("b", 1.0, 1.0),
+            wp("c", 2.0, 2.0),
+        )
+        val (inactive, active) = buildWaypointMarkerFeatures(wps, activeWaypointId = "b")
+        // inactive has features for "a" (label "1") and "c" (label "3"); active has "b" (label "2").
+        assertTrue(inactive.contains(""""label":"1""""))
+        assertTrue(inactive.contains(""""label":"3""""))
+        assertTrue(active.contains(""""label":"2""""))
+    }
+
+    @Test
+    fun buildWaypointMarkerFeatures_includesAllWaypointsEvenWithIconName() {
+        // Per the spec, the car treats iconName waypoints as numbered circles —
+        // unlike the phone, it does not branch them into a separate maki-icon path.
+        val wps = listOf(
+            Waypoint(id = "a", lat = 0.0, lon = 0.0, iconName = "restaurant"),
+            Waypoint(id = "b", lat = 1.0, lon = 1.0, iconName = null),
+        )
+        val (inactive, active) = buildWaypointMarkerFeatures(wps, activeWaypointId = null)
+        assertEquals(2, countFeatures(inactive))
+    }
+
+    @Test
+    fun buildWaypointMarkerFeatures_idPropertyMatchesWaypointId() {
+        val wps = listOf(wp("alpha", 0.0, 0.0), wp("beta", 1.0, 1.0))
+        val (inactive, _) = buildWaypointMarkerFeatures(wps, activeWaypointId = null)
+        assertTrue(inactive.contains(""""id":"alpha""""))
+        assertTrue(inactive.contains(""""id":"beta""""))
+    }
+
+    /** Count the number of feature entries in a GeoJSON FeatureCollection string. */
+    private fun countFeatures(geoJson: String): Int {
+        // Each feature contains a `"type":"Feature"` token. The closing `"` after
+        // "Feature" distinguishes it from the surrounding "FeatureCollection" token,
+        // so counting occurrences across the whole string is safe.
+        return geoJson.split("\"type\":\"Feature\"").size - 1
     }
 }

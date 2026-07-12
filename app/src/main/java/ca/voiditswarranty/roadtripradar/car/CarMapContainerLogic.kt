@@ -1,5 +1,6 @@
 package ca.voiditswarranty.roadtripradar.car
 
+import ca.voiditswarranty.roadtripradar.data.Waypoint
 import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import org.maplibre.spatialk.geojson.LineString
 import org.maplibre.spatialk.geojson.Position
@@ -158,4 +159,69 @@ internal fun lineStringGeoJson(leg: LineString?): String {
     if (leg == null) return """{"type":"FeatureCollection","features":[]}"""
     val coords = leg.coordinates.joinToString(",") { "[${it.longitude},${it.latitude}]" }
     return """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coords]}}]}"""
+}
+
+/**
+ * Serialize a list of point features to a GeoJSON `FeatureCollection`. Each feature is
+ * a `Point` with the given `id` and `label` properties. Empty input → empty
+ * collection so the caller doesn't have to null-check.
+ *
+ * Used by the car waypoint-marker layer to push inactive / active waypoint features
+ * to their respective GeoJson sources.
+ */
+internal fun featureCollectionGeoJson(
+    points: List<Position>,
+    ids: List<String>,
+    labels: List<String>,
+): String {
+    if (points.isEmpty()) return """{"type":"FeatureCollection","features":[]}"""
+    val features = points.indices.joinToString(",") { i ->
+        val p = points[i]
+        """{"type":"Feature","geometry":{"type":"Point","coordinates":[${p.longitude},${p.latitude}]},"properties":{"id":"${ids[i]}","label":"${labels[i]}"}}"""
+    }
+    return """{"type":"FeatureCollection","features":[$features]}"""
+}
+
+/**
+ * Split waypoints into inactive and active marker features for the car map.
+ * Each feature carries a 1-based number label (from the position in the full
+ * list, NOT a filtered index) and the waypoint's stable id (used to look it up
+ * on click to set the active waypoint).
+ *
+ * Returns `(inactiveJson, activeJson)` as two GeoJSON strings ready to push
+ * to the corresponding GeoJsonSources. Empty waypoints → empty collections.
+ *
+ * Per the design spec, the car renders ALL waypoints as numbered circles —
+ * unlike the phone, it does not branch on `iconName` to render maki icons.
+ * (The phone has a separate maki-icon path for iconName waypoints; the car
+ * does not port that path.)
+ */
+internal fun buildWaypointMarkerFeatures(
+    waypoints: List<Waypoint>,
+    activeWaypointId: String?,
+): Pair<String, String> {
+    val inactivePoints = mutableListOf<Position>()
+    val inactiveIds = mutableListOf<String>()
+    val inactiveLabels = mutableListOf<String>()
+    val activePoints = mutableListOf<Position>()
+    val activeIds = mutableListOf<String>()
+    val activeLabels = mutableListOf<String>()
+
+    waypoints.forEachIndexed { idx, wp ->
+        val label = (idx + 1).toString()
+        if (wp.id == activeWaypointId) {
+            activePoints += wp.position
+            activeIds += wp.id
+            activeLabels += label
+        } else {
+            inactivePoints += wp.position
+            inactiveIds += wp.id
+            inactiveLabels += label
+        }
+    }
+
+    return Pair(
+        featureCollectionGeoJson(inactivePoints, inactiveIds, inactiveLabels),
+        featureCollectionGeoJson(activePoints, activeIds, activeLabels),
+    )
 }

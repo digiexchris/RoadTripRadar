@@ -38,7 +38,7 @@ fun WeatherWidget(
     cameraBearing: Double,
     modifier: Modifier = Modifier,
 ) {
-    val arrowSize = (weatherWidgetSize * 0.22f).dp
+    val arrowSize = (weatherWidgetSize * 0.72f).dp
     val distFontSize = (weatherWidgetSize * 0.35f).sp
     val nameFontSize = (weatherWidgetSize * 0.25f).sp
     val windLabelFontSize = (weatherWidgetSize * 0.20f).sp

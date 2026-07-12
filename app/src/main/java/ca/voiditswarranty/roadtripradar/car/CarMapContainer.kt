@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.car.app.CarContext
 import ca.voiditswarranty.roadtripradar.data.RainViewer
+import ca.voiditswarranty.roadtripradar.data.RouteStyle
 import ca.voiditswarranty.roadtripradar.data.activeRouteLeg
 import ca.voiditswarranty.roadtripradar.data.inactiveRouteLegs
 import ca.voiditswarranty.roadtripradar.data.isDarkForAppTheme
@@ -31,6 +32,7 @@ import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapLibreMapOptions
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.maps.Style
+import org.maplibre.android.style.expressions.Expression
 import org.maplibre.android.style.layers.CircleLayer
 import org.maplibre.android.style.layers.LineLayer
 import org.maplibre.android.style.layers.PropertyFactory.circleColor
@@ -44,7 +46,14 @@ import org.maplibre.android.style.layers.PropertyFactory.lineJoin
 import org.maplibre.android.style.layers.PropertyFactory.lineOpacity
 import org.maplibre.android.style.layers.PropertyFactory.lineWidth
 import org.maplibre.android.style.layers.PropertyFactory.rasterOpacity
+import org.maplibre.android.style.layers.PropertyFactory.textAllowOverlap
+import org.maplibre.android.style.layers.PropertyFactory.textColor
+import org.maplibre.android.style.layers.PropertyFactory.textField
+import org.maplibre.android.style.layers.PropertyFactory.textFont
+import org.maplibre.android.style.layers.PropertyFactory.textIgnorePlacement
+import org.maplibre.android.style.layers.PropertyFactory.textSize
 import org.maplibre.android.style.layers.RasterLayer
+import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.GeoJsonSource
 import org.maplibre.android.style.sources.RasterSource
 import org.maplibre.android.style.sources.TileSet
@@ -179,6 +188,23 @@ class CarMapContainer(
                         // phone (vm.onZoomChanged -> prefsRepo.zoomLevel) but on the car's own
                         // key so the two surfaces keep independent zoom levels.
                         persistCarZoom(map.cameraPosition.zoom)
+                    }
+                    // Tapping a waypoint marker's hit area (a transparent 24px circle over the
+                    // visible 12-14px marker, see setupOverlays) sets that waypoint as the active
+                    // one. The hit layers are queried first; if none match we return false so the
+                    // click falls through to the host (e.g. for pan/recenter behavior).
+                    map.addOnMapClickListener { point ->
+                        val screen = map.projection.toScreenLocation(point)
+                        val features = map.queryRenderedFeatures(
+                            screen,
+                            WAYPOINT_INACTIVE_HIT_LAYER_ID,
+                            WAYPOINT_ACTIVE_HIT_LAYER_ID,
+                        )
+                        val first = features.firstOrNull() ?: return@addOnMapClickListener false
+                        val id = first.getStringProperty("id")
+                        if (id.isNullOrEmpty()) return@addOnMapClickListener false
+                        vm.setActiveWaypoint(id)
+                        true  // consume the click
                     }
                     refreshFromVm()
                     // Center on the current position immediately so the map opens on the user,
@@ -490,6 +516,75 @@ class CarMapContainer(
                 circleStrokeWidth(3f),
             )
         )
+
+        // Waypoint markers — 2 sources (inactive + active), 8 layers total. Layer order from
+        // top to bottom: puck → active hit → inactive hit → active label → inactive label
+        // → active bg → inactive bg → route → range rings. Built bottom-up via addLayerAbove:
+        // each new layer slots just above the named one, so the puck stays at the very top of
+        // the z-order. Each pair (bg circle, label text, hit area) shares one source; the hit
+        // area is a transparent 24px circle that widens the tap target (Task 8 wires the
+        // click handler). Active markers get a green ring + larger radius, mirroring the
+        // phone's ui.MapLayers.WaypointMarkersLayer.
+        style.addSource(GeoJsonSource(WAYPOINT_INACTIVE_BG_SOURCE_ID, EMPTY_FEATURE_COLLECTION))
+        style.addSource(GeoJsonSource(WAYPOINT_ACTIVE_BG_SOURCE_ID, EMPTY_FEATURE_COLLECTION))
+        style.addLayerAbove(
+            CircleLayer(WAYPOINT_INACTIVE_BG_LAYER_ID, WAYPOINT_INACTIVE_BG_SOURCE_ID).withProperties(
+                circleRadius(WAYPOINT_VISIBLE_RADIUS_PX),
+                circleColor(WAYPOINT_BG_COLOR),
+                circleStrokeColor(0xFFFFFFFF.toInt()),
+                circleStrokeWidth(2f),
+            ),
+            ROUTE_ACTIVE_LAYER_ID,
+        )
+        style.addLayerAbove(
+            CircleLayer(WAYPOINT_ACTIVE_BG_LAYER_ID, WAYPOINT_ACTIVE_BG_SOURCE_ID).withProperties(
+                circleRadius(WAYPOINT_ACTIVE_RADIUS_PX),
+                circleColor(WAYPOINT_BG_COLOR),
+                circleStrokeColor(WAYPOINT_ACTIVE_RING_COLOR),
+                circleStrokeWidth(3.5f),
+            ),
+            WAYPOINT_INACTIVE_BG_LAYER_ID,
+        )
+        style.addLayerAbove(
+            SymbolLayer(WAYPOINT_INACTIVE_LABEL_LAYER_ID, WAYPOINT_INACTIVE_BG_SOURCE_ID).withProperties(
+                textField(Expression.get("label")),
+                textFont(arrayOf("Noto Sans Regular")),
+                textSize(14f),
+                textColor(WAYPOINT_LABEL_COLOR),
+                textAllowOverlap(true),
+                textIgnorePlacement(true),
+            ),
+            WAYPOINT_ACTIVE_BG_LAYER_ID,
+        )
+        style.addLayerAbove(
+            SymbolLayer(WAYPOINT_ACTIVE_LABEL_LAYER_ID, WAYPOINT_ACTIVE_BG_SOURCE_ID).withProperties(
+                textField(Expression.get("label")),
+                textFont(arrayOf("Noto Sans Regular")),
+                textSize(14f),
+                textColor(WAYPOINT_LABEL_COLOR),
+                textAllowOverlap(true),
+                textIgnorePlacement(true),
+            ),
+            WAYPOINT_INACTIVE_LABEL_LAYER_ID,
+        )
+        style.addLayerAbove(
+            CircleLayer(WAYPOINT_INACTIVE_HIT_LAYER_ID, WAYPOINT_INACTIVE_BG_SOURCE_ID).withProperties(
+                circleRadius(WAYPOINT_HIT_RADIUS_PX),
+                circleColor(0x00000000),
+                circleStrokeColor(0x00000000),
+                circleStrokeWidth(0f),
+            ),
+            WAYPOINT_ACTIVE_LABEL_LAYER_ID,
+        )
+        style.addLayerAbove(
+            CircleLayer(WAYPOINT_ACTIVE_HIT_LAYER_ID, WAYPOINT_ACTIVE_BG_SOURCE_ID).withProperties(
+                circleRadius(WAYPOINT_HIT_RADIUS_PX),
+                circleColor(0x00000000),
+                circleStrokeColor(0x00000000),
+                circleStrokeWidth(0f),
+            ),
+            WAYPOINT_INACTIVE_HIT_LAYER_ID,
+        )
     }
 
     /** Re-sync all overlays from the VM. Must run on the main thread. */
@@ -510,6 +605,7 @@ class CarMapContainer(
         updateRadar(style)
         updateRangeRings(style)
         updateRoute(style)
+        updateWaypointMarkers(style)
         updatePuck(style)
         routeWidget?.update(bearing)
         weatherWidget?.update(bearing)
@@ -611,6 +707,20 @@ class CarMapContainer(
             ?.setGeoJson(lineStringsGeoJson(inactive))
         (style.getSource(ROUTE_ACTIVE_SOURCE_ID) as? GeoJsonSource)
             ?.setGeoJson(lineStringGeoJson(active))
+    }
+
+    private fun updateWaypointMarkers(style: Style) {
+        // The VM exposes the active waypoint as an index, not an id — resolve to the id the
+        // shared helper expects (matches the phone's active-route lookup pattern).
+        val activeId = vm.waypoints.getOrNull(vm.activeIndex ?: -1)?.id
+        val (inactiveJson, activeJson) = buildWaypointMarkerFeatures(
+            waypoints = vm.waypoints,
+            activeWaypointId = activeId,
+        )
+        (style.getSource(WAYPOINT_INACTIVE_BG_SOURCE_ID) as? GeoJsonSource)
+            ?.setGeoJson(inactiveJson)
+        (style.getSource(WAYPOINT_ACTIVE_BG_SOURCE_ID) as? GeoJsonSource)
+            ?.setGeoJson(activeJson)
     }
 
     private fun updatePuck(style: Style) {
@@ -754,7 +864,7 @@ class CarMapContainer(
         // MOVEMENT_DEG_THRESHOLD (~11 m per poll) lives in CarMapContainerLogic so the pure
         // isDriving() helper can default to it; both surfaces read the same constant.
         private const val ANIM_INTERVAL_MS = 500L
-        private const val ROUTE_COLOR = 0xFF2E7D32.toInt()
+        private val ROUTE_COLOR = RouteStyle.ARGB
         private const val ROUTE_WIDTH = 6f
         private const val ACTIVE_OPACITY = 0.95f
         private const val INACTIVE_OPACITY = 0.6f
@@ -765,6 +875,23 @@ class CarMapContainer(
         private const val ROUTE_ACTIVE_LAYER_ID = "car-route-active-layer"
         private const val PUCK_SOURCE_ID = "car-puck"
         private const val PUCK_LAYER_ID = "car-puck-layer"
+        // Waypoint markers (mirrors the phone's ui.MapLayers.WaypointMarkersLayer,
+        // minus the maki-icon path for iconName waypoints — per user scope: car treats
+        // all waypoints as numbered circles).
+        private const val WAYPOINT_HIT_RADIUS_PX = 24f
+        private const val WAYPOINT_VISIBLE_RADIUS_PX = 12f
+        private const val WAYPOINT_ACTIVE_RADIUS_PX = 14f
+        private const val WAYPOINT_BG_COLOR = 0xFFE53935.toInt()
+        private const val WAYPOINT_ACTIVE_RING_COLOR = 0xFF2E7D32.toInt()
+        private const val WAYPOINT_LABEL_COLOR = 0xFFFFFFFF.toInt()
+        private const val WAYPOINT_INACTIVE_BG_SOURCE_ID = "car-waypoint-inactive-bg"
+        private const val WAYPOINT_INACTIVE_BG_LAYER_ID = "car-waypoint-inactive-bg-layer"
+        private const val WAYPOINT_INACTIVE_HIT_LAYER_ID = "car-waypoint-inactive-hit-layer"
+        private const val WAYPOINT_INACTIVE_LABEL_LAYER_ID = "car-waypoint-inactive-label-layer"
+        private const val WAYPOINT_ACTIVE_BG_SOURCE_ID = "car-waypoint-active-bg"
+        private const val WAYPOINT_ACTIVE_BG_LAYER_ID = "car-waypoint-active-bg-layer"
+        private const val WAYPOINT_ACTIVE_HIT_LAYER_ID = "car-waypoint-active-hit-layer"
+        private const val WAYPOINT_ACTIVE_LABEL_LAYER_ID = "car-waypoint-active-label-layer"
         // Range rings (mirrors the phone's ui/MapLayers.RadarRingsLayers). Line width/opacity/
         // dash are fixed; color is theme-aware — set per-load by setupOverlays via
         // carRingColor(isDark), re-derived on each style change in reloadStyleIfNeeded.
