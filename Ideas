@@ -1,5 +1,0 @@
-- Accept location from another app and load target position from it, as a navigation app
-- Android Back aware navigation to the menu
-- Save and recall points and places
-- import waypoints from gpx
-- navigate via multiple waypoints (add waypoint to route)

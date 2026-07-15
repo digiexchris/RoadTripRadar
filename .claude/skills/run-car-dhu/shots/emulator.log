@@ -1,0 +1,137 @@
+INFO         | Android emulator version 36.6.11.0 (build_id 15507667) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+INFO         | Found systemPath /home/chris/Android/Sdk/system-images/android-33/google_apis/x86_64/
+INFO         | Guest GLES Driver: Auto (ext controls)
+ERROR        | Your GPU cannot be used for hardware rendering. Consider using software rendering.
+INFO         | emuglConfig_init: vulkan_mode_selected:host gles_mode_selected:host
+INFO         | emuglConfig_get_vulkan_hardware_gpu_support_info: Found physical GPU 'NVIDIA GeForce RTX 4090', type: VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU, apiVersion: 1.4.329, driverVersion: 595.71
+
+INFO         | emuglConfig_get_vulkan_hardware_gpu_support_info: Found physical GPU 'NVIDIA GeForce RTX 4090', type: VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU, apiVersion: 1.4.329, driverVersion: 595.71
+
+INFO         | emuglConfig_get_vulkan_hardware_gpu_support_info: Found physical GPU 'llvmpipe (LLVM 21.0.0, 256 bits)', type: VK_PHYSICAL_DEVICE_TYPE_CPU, apiVersion: 1.4.318, driverVersion: 25.2.4
+
+INFO         | Checking system compatibility:
+INFO         |   Checking: hasSufficientDiskSpace
+INFO         |      Ok: Disk space requirements to run avd: `Medium_Phone` are met
+INFO         |   Checking: hasSufficientHwGpu
+INFO         |      Ok: Hardware GPU requirements to run avd: `Medium_Phone` are passed
+INFO         |   Checking: hasSufficientSystem
+INFO         |      Ok: System requirements to run avd: `Medium_Phone` are met
+WARNING      | Feature QuickbootFileBacked is disabled due to stability issues, if you really want that, the environment variable ANDROID_EMU_FORCE_QUICKBOOT_FILE_BACKED need to set to 1
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_default_environment_selected() (:0, )
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_none_selected() (:0, )
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_custom_image_selected() (:0, )
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_custom_video_selected() (:0, )
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_custom_360_image_selected() (:0, )
+INFO         | Storing crashdata in: /tmp/android-chris/emu-crash-36.6.11.db, detection is enabled for process: 55117
+INFO         | Initializing gfxstream backend
+INFO         | startOpenglesRendererImpl: gpu info
+INFO         | 
+INFO         | SharedLibrary::open for [/home/chris/Android/Sdk/emulator/qemu/linux-x86_64/lib64/vulkan/libvulkan.so]
+INFO         | SharedLibrary::open for [/home/chris/Android/Sdk/emulator/qemu/linux-x86_64/lib64/vulkan/libvulkan.so.1]
+INFO         | SharedLibrary::open for [/home/chris/Android/Sdk/emulator/lib64/vulkan/libvulkan.so]
+INFO         | Added library: /home/chris/Android/Sdk/emulator/lib64/vulkan/libvulkan.so
+INFO         | Selecting Vulkan device: NVIDIA GeForce RTX 4090, Version: 1.4.329
+INFO         | Using Vulkan externalMemoryMode: OpaqueFd for VkEmulation
+INFO         | SharedLibrary::open for [libX11]
+INFO         | SharedLibrary::open for [libX11-xcb]
+WARNING      | Could not open libX11-xcb.so, try libX11-xcb.so.1
+INFO         | SharedLibrary::open for [libX11-xcb.so.1]
+INFO         | SharedLibrary::open for [libGL.so.1]
+INFO         | Initializing VkEmulation features:
+INFO         |     glInteropSupported: true
+INFO         |     useDeferredCommands: true
+INFO         |     createResourceWithRequirements: true
+INFO         |     useVulkanComposition: false
+INFO         |     useVulkanNativeSwapchain: false
+INFO         |     enable guestRenderDoc: false
+INFO         |     ASTC LDR emulation mode: Gpu
+INFO         |     enable ETC2 emulation: true
+INFO         |     enable Ycbcr emulation: false
+INFO         |     guestVulkanOnly: false
+INFO         |     useDedicatedAllocations: false
+INFO         |     guestVulkanMaxApiVersion: 1.3.0
+INFO         |     enableProtectedMemoryEmulation: false
+INFO         | Graphics Adapter Vendor Google (NVIDIA Corporation)
+INFO         | Graphics Adapter Android Emulator OpenGL ES Translator (NVIDIA GeForce RTX 4090/PCIe/SSE2)
+INFO         | Graphics API Version OpenGL ES 3.0 (4.5.0 NVIDIA 595.71.05)
+INFO         | Graphics API Extensions GL_OES_EGL_sync GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_depth24 GL_OES_depth32 GL_OES_element_index_uint GL_OES_texture_float GL_OES_texture_float_linear GL_OES_compressed_paletted_texture GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth_texture GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_packed_depth_stencil GL_OES_vertex_half_float GL_OES_texture_npot GL_OES_rgb8_rgba8 GL_OVR_multiview2 GL_EXT_multiview_texture_multisample GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_texture_format_BGRA8888 GL_APPLE_texture_format_BGRA8888 GL_EXT_texture_buffer 
+INFO         | Graphics Device Extensions N/A
+INFO         | Disabling sparse binding feature support
+INFO         | Sending adb public key [QAAAAH3Jn7wrSNZaJw74tJhWMAMAGi3msoNqkVatwp0cK4bRcizRFo6VkQgotIDfk/cWtU7RwRsin6BQV5omFhZKlG6kgMNcP3Y1p6EA2bIuH+cYJjOINIrCi8LNy+CPgqC3iQadLJ43Q/zsdd3V8eus0YIyfhWk1AvGEl8I4Rio9BFgL0BEIhKtei5ZQI1Upvnw7nTAyIRTGo7gcKaRuksug195hZ+X3IMDH3gLSW5T80irU+DtbDfA0yZmThKgbafU2IkDmd1DfDFnWVdA2+qWk3y+ushmcMGhEVMy/DOdFon8pJt81XvUOZmjC5aDA/qwNKj1WKuq3QkDxNGndaSQ7JQ8GBC1jSASkK1T9XJ0WwzRFzIVGfXOgEU1wJoL12qFY4G2Byi6ugup/HqDm/BNjgDOaopqiNwh6O71Nb4nBYI/60Ys0f+n74MIiwCxBb9JudtHAg5QNx1QfMHxbKFIQfgZnhfQkNMwU8WKG+inLUcVG7xxvm7JhQqd61q0D7wtJsbSrm/RWi6B69nugoOwnLBBnMWeqFp7601t4QCtfhJ6EYGDfk4DY/yHMH3eZca8uFNYVjIa9QcUW+InlAeCykKlnNLlm3imFy+eP6utXcqcXeA2K5FiqmdskMVR9ND/NOZgNd+NOsiZo/JezPADTDZ6ApRwm/tpApSUEXisTxGlI8E9QQEAAQA= chris@unknown]
+INFO         | Userspace boot properties:
+INFO         |   androidboot.boot_devices=pci0000:00/0000:00:03.0 pci0000:00/0000:00:06.0
+INFO         |   androidboot.dalvik.vm.heapsize=512m
+INFO         |   androidboot.debug.hwui.renderer=skiagl
+INFO         |   androidboot.debug.sf.nobootanimation=1
+INFO         |   androidboot.hardware=ranchu
+INFO         |   androidboot.hardware.gltransport=pipe
+INFO         |   androidboot.hardware.vulkan=ranchu
+INFO         |   androidboot.logcat=*:V
+INFO         |   androidboot.opengles.version=196609
+INFO         |   androidboot.qemu=1
+INFO         |   androidboot.qemu.adb.pubkey=QAAAAH3Jn7wrSNZaJw74tJhWMAMAGi3msoNqkVatwp0cK4bRcizRFo6VkQgotIDfk/cWtU7RwRsin6BQV5omFhZKlG6kgMNcP3Y1p6EA2bIuH+cYJjOINIrCi8LNy+CPgqC3iQadLJ43Q/zsdd3V8eus0YIyfhWk1AvGEl8I4Rio9BFgL0BEIhKtei5ZQI1Upvnw7nTAyIRTGo7gcKaRuksug195hZ+X3IMDH3gLSW5T80irU+DtbDfA0yZmThKgbafU2IkDmd1DfDFnWVdA2+qWk3y+ushmcMGhEVMy/DOdFon8pJt81XvUOZmjC5aDA/qwNKj1WKuq3QkDxNGndaSQ7JQ8GBC1jSASkK1T9XJ0WwzRFzIVGfXOgEU1wJoL12qFY4G2Byi6ugup/HqDm/BNjgDOaopqiNwh6O71Nb4nBYI/60Ys0f+n74MIiwCxBb9JudtHAg5QNx1QfMHxbKFIQfgZnhfQkNMwU8WKG+inLUcVG7xxvm7JhQqd61q0D7wtJsbSrm/RWi6B69nugoOwnLBBnMWeqFp7601t4QCtfhJ6EYGDfk4DY/yHMH3eZca8uFNYVjIa9QcUW+InlAeCykKlnNLlm3imFy+eP6utXcqcXeA2K5FiqmdskMVR9ND/NOZgNd+NOsiZo/JezPADTDZ6ApRwm/tpApSUEXisTxGlI8E9QQEAAQA= chris@unknown
+INFO         |   androidboot.qemu.avd_name=Medium_Phone
+INFO         |   androidboot.qemu.camera_hq_edge_processing=0
+INFO         |   androidboot.qemu.camera_protocol_ver=1
+INFO         |   androidboot.qemu.cpuvulkan.version=4202496
+INFO         |   androidboot.qemu.gltransport.drawFlushInterval=800
+INFO         |   androidboot.qemu.gltransport.name=pipe
+INFO         |   androidboot.qemu.hwcodec.avcdec=2
+INFO         |   androidboot.qemu.hwcodec.hevcdec=2
+INFO         |   androidboot.qemu.hwcodec.vpxdec=2
+INFO         |   androidboot.qemu.settings.system.screen_off_timeout=2147483647
+INFO         |   androidboot.qemu.skin=1080x2400
+INFO         |   androidboot.qemu.virtiowifi=1
+INFO         |   androidboot.qemu.vsync=60
+INFO         |   androidboot.serialno=EMULATOR36X6X11X0
+INFO         |   androidboot.vbmeta.digest=cc2acf6c582b63336b71fe51ed136e1a7a577e9e868ae7ba916ef6b3965324e5
+INFO         |   androidboot.vbmeta.hash_alg=sha256
+INFO         |   androidboot.vbmeta.size=6592
+INFO         |   androidboot.veritymode=enforcing
+WARNING: cannnot unmap ptr 0x7fd319201000 as it is in the protected range from 0x7fd299200000 to 0x7fd319400000
+INFO         | Monitoring duration of emulator setup.
+WARNING      | The emulator now requires a signed jwt token for gRPC access! Use the -grpc flag if you really want an open unprotected grpc port
+INFO         | Using security allow list from: /home/chris/Android/Sdk/emulator/lib/emulator_access.json
+INFO         | The active JSON Web Key Sets can be found here: /run/user/1000/avd/running/55117/jwks/9a149879-df43-469d-a21e-998395e2e4ab/active.jwk
+INFO         | Scanning /run/user/1000/avd/running/55117/jwks/9a149879-df43-469d-a21e-998395e2e4ab for jwk keys.
+INFO         | Started GRPC server at 127.0.0.1:8554, security: Local, auth: +token
+INFO         | Advertising in: /run/user/1000/avd/running/pid_55117.ini
+INFO         | Successfully initialized netsim WiFi
+INFO         | Activated packet streamer for bluetooth emulation
+INFO         | Setting display: 0 configuration to: 1080x2400, dpi: 420x420 
+INFO         | setDisplayActiveConfig: id:0, 1080x2400
+WARNING      | getEnvironmentConfig: No environment config is provided
+INFO         | getEnvironmentConfig: Using default virtual scene mode for the environment.
+INFO         | getEnvironmentConfig: Using default configuration for mode mesh3d for the environment.
+INFO         | Initializing a scene with mode: mesh3d, argument: Toren1BD.obj
+INFO         | Checking system compatibility:
+INFO         |   Checking: hasSufficientDiskSpace
+INFO         |      Ok: Disk space requirements to run avd: `Medium_Phone` are met
+INFO         |   Checking: hasSufficientHwGpu
+INFO         |      Ok: Hardware GPU requirements to run avd: `Medium_Phone` are passed
+INFO         |   Checking: hasSufficientSystem
+INFO         |      Ok: System requirements to run avd: `Medium_Phone` are met
+INFO         | Loading snapshot 'default_boot'...
+WARNING      | Device 'cache' does not have the requested snapshot 'default_boot'
+
+WARNING      | Failed to load snapshot 'default_boot'
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_rgbcSensorValueWidget_valueChanged() (:0, )
+INFO         | Warning: QMetaObject::connectSlotsByName: No matching signal for on_posture_valueChanged(int) (:0, )
+INFO         | Warning: QObject::connect: Cannot queue arguments of type 'std::vector<android::emulation::control::SnapshotInfo>'
+(Make sure 'std::vector<android::emulation::control::SnapshotInfo>' is registered using qRegisterMetaType().) (:0, )
+INFO         | AVD supportsNativeGLES=1, supportsGuestAngle=0
+INFO         | Platform does not support Guest Angle
+INFO         | Created extended window in 213.839ms
+INFO         | Boot completed in 18898 ms
+INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+ERROR        | bad color buffer handle 101
+INFO         | Boot completed in 14588 ms
+INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+INFO         | Boot completed in 14601 ms
+INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+ERROR        | bad color buffer handle 483
+INFO         | Boot completed in 14611 ms
+INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+INFO         | Boot completed in 14640 ms
+INFO         | Increasing screen off timeout, logcat buffer size to 2M.

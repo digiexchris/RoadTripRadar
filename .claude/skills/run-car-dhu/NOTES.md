@@ -156,3 +156,184 @@ hardcoded.
 3. Once DHU stays alive past `connected.`, tap the RoadTripRadar entry in the AA
    app list (debug package `ca.voiditswarranty.roadtripradar.debug` must be
    installed) to load the car surface.
+
+---
+
+# Addendum (2026-07-12): the path that actually works on this machine
+
+The original SKILL.md (API 36.1 Play image + the 10-tap dev-mode flow) does
+not work on this machine. The downloaded "Play" image was actually a stripped
+AOSP build with no GApps, so the `gearhead` package is just a stub that
+deeplinks to the Play Store and bounces back. Switching to a `google_apis`
+(non-Play) image doesn't help — same stub problem, just no Play Store to
+deeplink to.
+
+The fix is a community-documented root + module + APK swap path. Full
+reference: https://github.com/Rikj000/Android-Auto-Ultimate-Dev-Unit
+(a community-maintained guide for testing AA car apps in emulators).
+
+## Validated AVD setup (what works on this box)
+
+- **AVD**: `Medium_Phone` (Android Studio's "Medium Phone" device profile,
+  AVD id `Medium_Phone`, dir `~/.android/avd/Medium_Phone.avd`).
+- **System image**: `system-images;android-33;google_apis;x86_64`, revision 17,
+  build `TE1A.240213.009`. **`userdebug` build with `ro.debuggable=1` and
+  `ro.secure=1`**, which is critical — `google_apis` images are debuggable
+  so `adb root` works, unlike `google_apis_playstore` which is production.
+- **API 33, x86_64, Google APIs (NOT playstore).** This is exactly what the
+  Rikj000 guide recommends.
+- **17.1 real AA APK** (`com.google.android.projection.gearhead` v17.1.662418)
+  installed from a user-supplied `.apkm` bundle, base + x86_64 + en + xxhdpi
+  splits, via `adb install-multiple -i com.android.vending -r`. The
+  `-i com.android.vending` flag is the "install as Play Store" trick — AA
+  checks its installer identity and only enables full features when it
+  thinks it came from the Play Store.
+
+## Step-by-step (the validated recipe)
+
+1. **Root with Magisk**:
+   ```bash
+   git clone https://github.com/newbit1/rootAVD.git ~/rootAVD
+   ~/rootAVD/rootAVD.sh system-images/android-33/google_apis/x86_64/ramdisk.img
+   ```
+   The script patches `ramdisk.img` with Magisk init, installs `Magisk.apk`,
+   and shuts down the AVD. Manually re-launch the AVD after the script ends.
+   First launch on a new AVD boots in ~20s with a saved snapshot, ~10-15 min
+   on a true cold boot.
+
+2. **Magisk → Settings → Zygisk** (toggle ON) → "Reboot to apply changes".
+   On the next boot, `adb shell "su 0 id"` returns `uid=0(root)`.
+
+3. **Grant root to adb shell** (the per-app toggle in Magisk's Superuser
+   tab — toggle ON for `com.android.shell`). Without this, `adb shell su -c`
+   always returns "Permission denied" even with Magisk installed.
+
+4. **Install `aa4mg` Magisk module** (replaces the system AA stub):
+   - Download `aa4mg-vX.Y.Z.zip` from
+     https://github.com/sn-00-x/aa4mg/releases
+   - Push to `/sdcard/Download/` on the AVD.
+   - Magisk app → Modules tab → "Install from storage" → pick the zip.
+   - The module's `customize.sh` runs 4 prompts with volume keys:
+     "Install Fake Google Maps/Search/Speech Services stub?" and
+     "Install Android Auto - XLauncher Unlocked?". The 3 stub prompts
+     default to NO after 20s timeout (volume keys can't be sent on the
+     emulator). The XLauncher Unlocked prompt defaults to YES after 10s
+     and that's what we want. Net result: XLauncher is installed.
+
+5. **Reboot** (`adb shell "su -c reboot"`) to load the module. The system
+   `gearhead` package is now provided by `AndroidAutoStubPrebuilt.apk` in
+   `/data/adb/modules/aa4mg/system/product/priv-app/`. The XLauncher
+   (`com.google.android.projection.gearhead.xunlocked`) appears in the
+   app drawer.
+
+6. **Grant root to XLauncher** (Magisk Superuser tab → toggle ON for
+   `com.google.android.projection.gearhead.xunlocked`). XLauncher's
+   "Developer Settings" entry requires root; without granting, tapping
+   it bounces back to the launcher.
+
+7. **Install the real AA APK over the stub** (the key swap):
+   - Get the latest Android Auto x86_64 release from APKMirror
+     (currently v17.1.662418, ~25 MB `.apkm` bundle, includes base +
+     split_config.x86_64 + per-locale + per-density splits).
+   - Extract the bundle (it's a regular zip):
+     ```bash
+     unzip *.apkm -d /tmp/aa-extract
+     ```
+   - Push the base + x86_64 + en + xxhdpi splits to the AVD:
+     ```bash
+     adb push /tmp/aa-extract/base.apk /data/local/tmp/aa-base.apk
+     adb push /tmp/aa-extract/split_config.x86_64.apk /data/local/tmp/aa-x86_64.apk
+     adb push /tmp/aa-extract/split_config.en.apk /data/local/tmp/aa-en.apk
+     adb push /tmp/aa-extract/split_config.xxhdpi.apk /data/local/tmp/aa-xxhdpi.apk
+     ```
+   - Install as "from Play Store" via `adb install-multiple -i com.android.vending`:
+     ```bash
+     adb install-multiple -r -i com.android.vending \
+       /tmp/aa-extract/base.apk \
+       /tmp/aa-extract/split_config.x86_64.apk \
+       /tmp/aa-extract/split_config.en.apk \
+       /tmp/aa-extract/split_config.xxhdpi.apk
+     ```
+     Result: `Success`. AA's `installerPackageName` is now
+     `com.android.vending`, and `versionName=17.1.662418-release` (the real
+     AA, not the stub).
+
+8. **Disable the aa4mg stub** (it would otherwise serve the old stub APK
+   and crash the new AA at startup with `ClassNotFoundException`):
+   ```bash
+   adb shell "su -c touch /data/adb/modules/aa4mg/disable"
+   adb shell "su -c reboot"
+   ```
+   The `disable` flag tells Magisk to skip mounting this module on next
+   boot. The system then uses the new AA APK installed at `/data/app/...`
+   instead of the stub at `/product/priv-app/...`.
+
+9. **Enable AA developer mode** (the 10-tap dance, now on real AA 17.x):
+   - Launch AA settings: `adb shell am start -n com.google.android.projection.gearhead/.companion.settings.DefaultSettingsActivity`
+   - Scroll to the bottom (5-6 swipes) to find the "Version" row.
+   - **The Version row IS the tap target** — in AA 17.x, the version number
+     is rendered inside the same row as the "Version" label, not as a
+     separate text node. Tapping anywhere on the row 10 times works.
+   - Stop at 10, then tap **OK** on the "Allow development settings?" dialog.
+   - Open the overflow (top-right "More options" at `(1027, 146)`) and tap
+     **"Start head unit server"**. The overflow also shows
+     "Developer settings" and "Quit developer mode" as new entries —
+     proof dev mode is on.
+
+10. **Verify head unit server is up**:
+    ```bash
+    adb shell "ps -A | grep gearhead:projection"  # process exists
+    adb shell "netstat -tlnp | grep 5277"          # tcp6 listening
+    adb logcat -d | grep "GH.DHUService"           # "Network server running on port 5277"
+    ```
+
+11. **Forward + DHU**:
+    ```bash
+    adb forward tcp:5277 tcp:5277
+    $ANDROID_HOME/extras/google/auto/desktop-head-unit --adb=5277
+    ```
+    DHU prints `[I]: connected.` — protocol handshake complete. The Qt
+    window then opens. In a headless environment the window exits shortly
+    after, but `[I]: connected.` is the success signal.
+
+## Why the original SKILL.md path doesn't work on this machine
+
+- The downloaded `system-images;android-36.1;google_apis_playstore;x86_64`
+  is actually a dev-keys stripped build with no GApps — 88 packages, no
+  `com.google.android.projection.gearhead`, no Play Store. The system
+  image's `build.display.id` reads `BE4B.251210.005 dev-keys` (debug
+  build, not the production image the tag suggests). Replacing with a
+  current `google_apis_playstore` image is the "version wall" fix in
+  the original SKILL.md, but we couldn't get sdkmanager to download
+  cleanly (mismatched SDK installs at `/opt/android-sdk` vs
+  `/home/chris/Android/Sdk`).
+- The `google_apis` (non-Play) API 37.1 image (downloaded as
+  `x86_64-ps16k-37.1_r06.zip`) HAS GApps but ships `gearhead 1.8` —
+  the **stub** AA that deeplinks to Play Store and bounces back. No
+  way to make it functional without a Google sign-in (which we
+  chose not to do for privacy).
+- The community `aa4mg` + real-APK-sideload path works around both
+  problems: it gives us a full non-stub AA 17.1 without needing a
+  Google account or a Play Store image.
+
+## How this maps to the existing `run.sh`
+
+`run.sh` only does steps 9-11 (the dev-mode tap flow + DHU launch). It
+assumes steps 1-8 are already done on the AVD — the AVD should be
+booted, rooted, with a real AA installed and the head unit server
+ready to start. If you boot a fresh AVD, run steps 1-8 first; if the
+AVD is already set up (this state persists across reboots), just run
+`./.claude/skills/run-car-dhu/run.sh --skip-emulator` and it will
+handle the rest.
+
+The `AVD="Pixel_8"` line in `run.sh` is wrong for this recipe — we use
+`AVD="Medium_Phone"` (the AVD with API 33 + google_apis). The dev-mode
+flow in `run.sh` works as-is; only the AVD name needs to change.
+
+## Files saved to the skill
+
+- `shots/avd-aa-settings.png` — screenshot of the AVD window after
+  AA dev mode is enabled (Settings → About → Version row visible).
+- `shots/dhu.log` and `shots/dhu2.log` — DHU logs showing
+  `[I]: connected.` (the success signal). DHU exits shortly after in
+  this headless environment but the handshake completed.
