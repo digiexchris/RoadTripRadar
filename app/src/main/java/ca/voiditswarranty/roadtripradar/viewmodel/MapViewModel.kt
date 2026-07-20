@@ -502,6 +502,30 @@ class MapViewModel(
 
     private var lastGenerated = 0L
     private var localWeatherAnchor: Position? = null
+
+    /**
+     * The most recent user-location fix, promoted from a local `val` in
+     * `MapScreen` to observable ViewModel state so the dev-only test harness
+     * can report it over the WebSocket API. `MapScreen` calls this from the
+     * same `LaunchedEffect` that previously consumed the local val; the
+     * downstream UI reads `userPosition` / `userPositionAccuracy` / etc.
+     * exactly as before. Production behaviour is unchanged.
+     */
+    var userPosition by mutableStateOf<Position?>(null)
+        private set
+    var userPositionAccuracy by mutableStateOf<Double?>(null)
+        private set
+    var userPositionBearing by mutableStateOf<Double?>(null)
+        private set
+    var userPositionSpeed by mutableStateOf<Double?>(null)
+        private set
+
+    fun updateUserPosition(pos: Position?, accuracy: Double?, bearing: Double?, speed: Double?) {
+        userPosition = pos
+        userPositionAccuracy = accuracy
+        userPositionBearing = bearing
+        userPositionSpeed = speed
+    }
     private var weatherPollingJob: Job? = null
     private var localWeatherPollJob: Job? = null
     private var weatherAnimationJob: Job? = null

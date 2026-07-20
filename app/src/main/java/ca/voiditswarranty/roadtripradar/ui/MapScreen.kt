@@ -204,11 +204,22 @@ fun MapScreen(
         }
     }
 
-    val userPosition = locationState.location?.position
-    LaunchedEffect(userPosition) {
-        vm.setLocalWeatherAnchor(userPosition)
-        if (userPosition != null) vm.maybeAutoAdvance(userPosition)
+    // Push the live location fix into the ViewModel so the dev-only test harness
+    // can observe it over the WebSocket API. The downstream UI reads
+    // `vm.userPosition` (and the accuracy/bearing/speed companions) exactly as
+    // it previously read the local val — production behaviour is unchanged.
+    val locationFix = locationState.location
+    LaunchedEffect(locationFix) {
+        vm.updateUserPosition(
+            pos = locationFix?.position,
+            accuracy = locationFix?.accuracy,
+            bearing = locationFix?.bearing,
+            speed = locationFix?.speed,
+        )
+        vm.setLocalWeatherAnchor(locationFix?.position)
+        if (locationFix != null) vm.maybeAutoAdvance(locationFix.position)
     }
+    val userPosition = vm.userPosition
     val bearing = cameraState.position.bearing
     val ringsCenter = if (hasLocation && userPosition != null) userPosition else cameraState.position.target
     val radarData = remember(ringsCenter.latitude, ringsCenter.longitude, zoomTier, bearing, vm.useMetric) {
@@ -284,7 +295,7 @@ fun MapScreen(
         mapCenterOffsetPortraitFraction = vm.mapCenterOffsetPortraitFraction,
         mapCenterOffsetLandscapeFraction = vm.mapCenterOffsetLandscapeFraction,
         userPosition = userPosition,
-        userPositionAccuracy = locationState.location?.accuracy,
+        userPositionAccuracy = vm.userPositionAccuracy,
         bearing = bearing,
         poiInfo = poiInfo,
         cameraPadding = cameraPadding,
@@ -532,7 +543,7 @@ internal fun MapScreenContent(
             bearing = bearing,
             hasLocation = hasLocation,
             hasGpsFix = hasGpsFix,
-            speedMps = locationState.location?.speed ?: 0.0,
+            speedMps = vm.userPositionSpeed ?: 0.0,
             poiInfo = poiInfo,
             cameraState = cameraState,
             scope = scope,

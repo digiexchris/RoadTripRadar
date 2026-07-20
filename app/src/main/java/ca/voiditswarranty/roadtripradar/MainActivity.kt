@@ -1,10 +1,12 @@
 package ca.voiditswarranty.roadtripradar
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -43,6 +45,33 @@ fun RoadTripRadarApp() {
     val context = LocalContext.current
     val uiMode = LocalConfiguration.current.uiMode
     val vm: MapViewModel = viewModel(factory = MapViewModelFactory(context))
+
+    // Dev-only test harness: start a loopback WebSocket server in the debug
+    // build so an external test harness can observe/mutate live state. The
+    // harness classes live in the `debug` source set and are reflectively
+    // loaded here so the main source set doesn't compile against them —
+    // release builds are structurally free of harness code.
+    DisposableEffect(Unit) {
+        var server: Any? = null
+        if (BuildConfig.DEBUG) {
+            try {
+                val cls = Class.forName("ca.voiditswarranty.roadtripradar.harness.HarnessBootstrap")
+                val start = cls.getMethod("start", android.content.Context::class.java, MapViewModel::class.java)
+                server = start.invoke(null, context, vm)
+            } catch (e: ClassNotFoundException) {
+                // Expected in release (debug source set not compiled in).
+            } catch (e: Exception) {
+                Log.e("HarnessBootstrap", "failed to start harness server", e)
+            }
+        }
+        onDispose {
+            try {
+                server?.javaClass?.getMethod("stop")?.invoke(server)
+            } catch (_: Exception) {
+                // Already stopped or never started.
+            }
+        }
+    }
 
     // Gate background polling on this surface being in the foreground. The shared VM
     // only polls (weather/radar/animation) while at least one surface is active; the

@@ -26,6 +26,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             resValue("string", "app_name", "RoadTripRadar Dev")
+            buildConfigField("int", "HARNESS_PORT", "8765")
         }
         release {
             resValue("string", "app_name", "RoadTripRadar")
@@ -144,4 +145,6 @@ dependencies {
     androidTestImplementation(libs.androidx.test.rules)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.nanohttpd)
+    debugImplementation(libs.nanohttpd.websocket)
 }
