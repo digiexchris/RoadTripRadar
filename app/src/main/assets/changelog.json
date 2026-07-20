@@ -5,6 +5,7 @@
       "versionCode": 99,
       "showInApp": true,
       "items": [
+        "Renamed the first-launch \"Terms & Conditions\" to \"Legal Disclaimer\" and moved the safety notice out of it into its own popup that appears right after you accept, with an OK button and a \"Don't Show Again\" option. The safety notice is also available from Help & Info.",
         "Fixed the route line from your position to the next waypoint staying stuck on the first waypoint as you advanced along the route. It now follows your current target, and is drawn in the same green as the rest of the route, a bit more prominent.",
         "The active route line (from your position to the next waypoint) is now solid, and all the dashed legs between waypoints are the same width as it. The dashed leg between the previous and next waypoint now stays visible underneath the solid approach line instead of disappearing once you've passed a waypoint.",
         "The wind direction arrow on the weather widget now has a clearer wind icon on it, so it's more obvious that it's showing wind direction.",

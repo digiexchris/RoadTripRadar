@@ -135,3 +135,6 @@ INFO         | Boot completed in 14611 ms
 INFO         | Increasing screen off timeout, logcat buffer size to 2M.
 INFO         | Boot completed in 14640 ms
 INFO         | Increasing screen off timeout, logcat buffer size to 2M.
+INFO         | Wait for emulator (pid 55117) 20 seconds to shutdown gracefully before kill;you can set environment variable ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL(in seconds) to change the default value (20 seconds)
+
+WARNING      | Netsim Wifi localhost:36573 is gone due to CANCELLED

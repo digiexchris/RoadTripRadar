@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import ca.voiditswarranty.roadtripradar.ui.LocationPermissionGate
 import ca.voiditswarranty.roadtripradar.ui.MapScreen
 import ca.voiditswarranty.roadtripradar.ui.TermsOverlay
+import ca.voiditswarranty.roadtripradar.ui.SafetyOverlay
 import ca.voiditswarranty.roadtripradar.ui.theme.RoadTripRadarTheme
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModelFactory
@@ -85,6 +86,11 @@ fun RoadTripRadarApp() {
                         System.exit(0)
                     },
                     onDismiss = vm::dismissTerms,
+                )
+                SafetyOverlay(
+                    visible = vm.showSafety,
+                    onOk = vm::dismissSafety,
+                    onDontShowAgain = vm::dontShowSafety,
                 )
             }
         }

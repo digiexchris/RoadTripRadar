@@ -455,6 +455,8 @@ class MapViewModel(
         private set
     var termsNeedAcceptance by mutableStateOf(false)
         private set
+    var showSafety by mutableStateOf(false)
+        private set
 
     // Tutorial
     var tutorialActiveGroup by mutableStateOf<TutorialGroup?>(null)
@@ -558,6 +560,10 @@ class MapViewModel(
         if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
             showTerms = true
             termsNeedAcceptance = true
+        } else if (prefsRepo.acceptedSafetyVersion != PrefsDefaults.SAFETY_VERSION) {
+            // Terms already accepted on a prior launch but the safety notice
+            // hasn't been acknowledged with "Don't Show Again" yet — show it.
+            showSafety = true
         }
         // Polling is started lazily by the first surface to become active
         // (see [onSurfaceActive] / [reconcilePolling]).
@@ -899,10 +905,26 @@ class MapViewModel(
         prefsRepo.acceptedTermsVersion = PrefsDefaults.TERMS_VERSION
         termsNeedAcceptance = false
         showTerms = false
+        // Show the safety notice immediately after first-launch T&C acceptance.
+        showSafety = true
     }
 
     fun dismissTerms() {
         showTerms = false
+    }
+
+    fun viewSafety() {
+        closeActionsDrawer()
+        showSafety = true
+    }
+
+    fun dismissSafety() {
+        showSafety = false
+    }
+
+    fun dontShowSafety() {
+        prefsRepo.acceptedSafetyVersion = PrefsDefaults.SAFETY_VERSION
+        showSafety = false
     }
 
     // --- Tutorial ---

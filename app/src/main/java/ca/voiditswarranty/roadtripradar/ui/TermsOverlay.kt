@@ -32,7 +32,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
-import ca.voiditswarranty.roadtripradar.model.TERMS_AND_CONDITIONS_TEXT
+import ca.voiditswarranty.roadtripradar.model.LEGAL_DISCLAIMER_TEXT
+import ca.voiditswarranty.roadtripradar.model.SAFETY_NOTICE_TEXT
 
 @Composable
 fun TermsOverlay(
@@ -92,7 +93,7 @@ fun TermsOverlay(
                             .verticalScroll(scrollState),
                     ) {
                         Text(
-                            text = TERMS_AND_CONDITIONS_TEXT.trimIndent().trim(),
+                            text = LEGAL_DISCLAIMER_TEXT.trimIndent().trim(),
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -152,6 +153,73 @@ fun TermsOverlay(
                         Button(onClick = onDismiss) {
                             Text(stringResource(R.string.action_close))
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SafetyOverlay(
+    visible: Boolean,
+    onOk: () -> Unit,
+    onDontShowAgain: () -> Unit,
+) {
+    if (!visible) return
+
+    BackHandler { onOk() }
+
+    val scrollMaxHeight = (LocalConfiguration.current.screenHeightDp * 0.5f).dp.coerceAtMost(480.dp)
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.6f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            shape = RoundedCornerShape(16.dp),
+            tonalElevation = 6.dp,
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = scrollMaxHeight),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState()),
+                    ) {
+                        Text(
+                            text = SAFETY_NOTICE_TEXT.trimIndent().trim(),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.End),
+                ) {
+                    TextButton(onClick = onDontShowAgain) {
+                        Text(stringResource(R.string.action_dont_show_again))
+                    }
+                    Button(
+                        onClick = onOk,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    ) {
+                        Text(stringResource(R.string.action_ok))
                     }
                 }
             }

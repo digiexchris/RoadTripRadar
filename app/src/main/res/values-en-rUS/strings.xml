@@ -10,6 +10,7 @@
     <string name="action_share">Share</string>
     <string name="action_ok">OK</string>
     <string name="action_decline">Decline</string>
+    <string name="action_dont_show_again">Don\'t Show Again</string>
     <string name="action_accept">Accept</string>
     <string name="action_got_it">Got it</string>
     <string name="action_back">Back</string>
@@ -63,7 +64,8 @@
     <!-- Help page -->
     <string name="help_documentation_info">Full documentation and legal information are available from the buttons below.</string>
     <string name="help_show_tutorial">Show Tutorial</string>
-    <string name="help_terms">Terms &amp; Conditions</string>
+    <string name="help_terms">Legal Disclaimer</string>
+    <string name="help_safety">Safety Notice</string>
     <string name="help_radar_legend">Radar Legend</string>
     <string name="help_documentation">Documentation</string>
     <string name="help_privacy_policy">Privacy Policy</string>
@@ -133,7 +135,7 @@
     <string name="tutorial_menu_submenu_system_title">System Submenu</string>
     <string name="tutorial_menu_submenu_system_body">Change language, widget sizes, units, screen behavior, and reset to defaults.</string>
     <string name="tutorial_menu_submenu_help_title">Help &amp; Info</string>
-    <string name="tutorial_menu_submenu_help_body">Find documentation, terms and conditions, the changelog, and replay this tutorial.</string>
+    <string name="tutorial_menu_submenu_help_body">Find documentation, the legal disclaimer, the changelog, and replay this tutorial.</string>
     <!-- MapFabs -->
     <string name="fab_recenter">Recenter</string>
     <string name="fab_retry_failed">Retry Failed</string>
@@ -448,6 +450,6 @@
     <string name="car_settings_keep_screen_on">Keep screen on</string>
     <string name="car_settings_auto_advance">Auto-advance waypoints</string>
     <string name="car_settings_threshold">Auto-advance distance</string>
-    <string name="car_terms_not_accepted">Terms not accepted</string>
-    <string name="car_terms_message">Please open RoadTripRadar on your phone and accept the Terms &amp; Conditions before using it on the car.</string>
+    <string name="car_terms_not_accepted">Disclaimer not accepted</string>
+    <string name="car_terms_message">Please open RoadTripRadar on your phone and accept the Legal Disclaimer before using it on the car.</string>
 </resources>

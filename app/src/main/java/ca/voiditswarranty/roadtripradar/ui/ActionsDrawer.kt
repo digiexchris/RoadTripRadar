@@ -45,6 +45,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Gavel
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Explore
@@ -458,6 +459,11 @@ fun ActionsDrawer(
                                     label = stringResource(R.string.help_terms),
                                     icon = Icons.Default.Gavel,
                                     onClick = { vm.viewTerms() },
+                                ),
+                                DrawerAction(
+                                    label = stringResource(R.string.help_safety),
+                                    icon = Icons.Default.Warning,
+                                    onClick = { vm.viewSafety() },
                                 ),
                                 DrawerAction(
                                     label = stringResource(R.string.help_radar_legend),

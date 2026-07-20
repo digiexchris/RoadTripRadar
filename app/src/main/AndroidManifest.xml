@@ -65,7 +65,7 @@
             android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="androidx.car.app.CarAppService" />
-<!--    Intentionally disabled, ask the user if you would like to re-enable it.            <category android:name="androidx.car.app.category.NAVIGATION" />-->
+                <category android:name="androidx.car.app.category.NAVIGATION" />
                 <category android:name="androidx.car.app.category.WEATHER" />
                 <category android:name="androidx.car.app.category.POI" />
             </intent-filter>

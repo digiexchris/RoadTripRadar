@@ -232,6 +232,10 @@ class PreferencesRepository(
         get() = prefs.getInt("accepted_terms_version", -1)
         set(value) = prefs.edit().putInt("accepted_terms_version", value).apply()
 
+    var acceptedSafetyVersion: Int
+        get() = prefs.getInt("accepted_safety_version", -1)
+        set(value) = prefs.edit().putInt("accepted_safety_version", value).apply()
+
     var completedTutorialGroups: Set<String>
         get() {
             val csv = prefs.getString("completed_tutorial_groups", null)
