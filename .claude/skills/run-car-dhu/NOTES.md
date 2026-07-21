@@ -191,15 +191,20 @@ reference: https://github.com/Rikj000/Android-Auto-Ultimate-Dev-Unit
 
 ## Step-by-step (the validated recipe)
 
-1. **Root with Magisk**:
+1. **Root with Magisk** (now automated by `run.sh --setup` via the bundled
+   `rootAVD` submodule at `.claude/skills/run-car-dhu/rootAVD`; this is the
+   manual equivalent for reference):
    ```bash
-   git clone https://github.com/newbit1/rootAVD.git ~/rootAVD
-   ~/rootAVD/rootAVD.sh system-images/android-33/google_apis/x86_64/ramdisk.img
+   # submodule must be initialized: git submodule update --init --recursive
+   .claude/skills/run-car-dhu/rootAVD/rootAVD.sh \
+     system-images/android-33/google_apis/x86_64/ramdisk.img
    ```
-   The script patches `ramdisk.img` with Magisk init, installs `Magisk.apk`,
-   and shuts down the AVD. Manually re-launch the AVD after the script ends.
-   First launch on a new AVD boots in ~20s with a saved snapshot, ~10-15 min
-   on a true cold boot.
+   Run with the AVD **offline** so rootAVD uses its bundled `Magisk.zip`
+   instead of popping an interactive Magisk-version menu. The script
+   patches `ramdisk.img` with Magisk init, installs `Magisk.apk`, stamps a
+   `ramdisk.img.backup`, and shuts down the AVD. Manually re-launch the AVD
+   after the script ends. First launch on a new AVD boots in ~20s with a
+   saved snapshot, ~10-15 min on a true cold boot.
 
 2. **Magisk → Settings → Zygisk** (toggle ON) → "Reboot to apply changes".
    On the next boot, `adb shell "su 0 id"` returns `uid=0(root)`.
@@ -318,17 +323,16 @@ reference: https://github.com/Rikj000/Android-Auto-Ultimate-Dev-Unit
 
 ## How this maps to the existing `run.sh`
 
-`run.sh` only does steps 9-11 (the dev-mode tap flow + DHU launch). It
-assumes steps 1-8 are already done on the AVD — the AVD should be
-booted, rooted, with a real AA installed and the head unit server
-ready to start. If you boot a fresh AVD, run steps 1-8 first; if the
-AVD is already set up (this state persists across reboots), just run
-`./.claude/skills/run-car-dhu/run.sh --skip-emulator` and it will
-handle the rest.
+`run.sh --setup` automates steps 1-8 (Magisk via the bundled `rootAVD`
+submodule, Zygisk + immediate reboot, aa4mg module + disable, real AA APK,
+XLauncher root) — it inspects the booted AVD at each step and only acts if
+the step isn't already done. The default `run.sh` (no `--setup`) does
+steps 9-11 (the dev-mode tap flow + DHU launch) and assumes steps 1-8 are
+already in place. So: run `./.claude/skills/run-car-dhu/run.sh --setup` once
+on a fresh AVD, then `./.claude/skills/run-car-dhu/run.sh` (or `--skip-emulator`
+if the AVD is already booted) for the per-run DHU flow.
 
-The `AVD="Pixel_8"` line in `run.sh` is wrong for this recipe — we use
-`AVD="Medium_Phone"` (the AVD with API 33 + google_apis). The dev-mode
-flow in `run.sh` works as-is; only the AVD name needs to change.
+`AVD="Medium_Phone"` (the API 33 + google_apis AVD) is set in `run.sh`.
 
 ## Files saved to the skill
 
@@ -337,3 +341,83 @@ flow in `run.sh` works as-is; only the AVD name needs to change.
 - `shots/dhu.log` and `shots/dhu2.log` — DHU logs showing
   `[I]: connected.` (the success signal). DHU exits shortly after in
   this headless environment but the handshake completed.
+---
+
+# Addendum (2026-07-20): the API 35 path (supersedes Magisk/aa4mg)
+
+The API 33 / Magisk / aa4mg recipe above works, but moving to **API 35
+`google_apis` (userdebug)** gave a cleaner path that needs no Magisk, no
+aa4mg module, no ramdisk patching — and fixed a blocker the API 33 path
+never hit. This is now what `run.sh --setup` implements.
+
+## Why API 35, and why it changed the setup
+
+- **`adb root` works directly.** The `google_apis` (not playstore) image
+  is `userdebug`; `adb root` drops the shell to uid 0 with no prompt.
+  No Magisk, no `su 0` "Permission denied" (which on a Magisk AVD is a
+  hidden grant prompt the agent can't see — the original reason the
+  fresh-AVD detour happened).
+- **`-writable-system` overlayfs replaces Magisk module overlays.**
+  Boot with `-writable-system`, `adb root`, `adb remount` → overlayfs on
+  /system + /product ("Verity disabled; overlayfs enabled"), live after a
+  reboot, persisted in a scratch partition. This is how we both delete the
+  platform AA stub AND install the real AA as a system priv-app. The
+  overlay is only mounted on `-writable-system` boots, so EVERY launch
+  (setup + per-run) must carry the flag.
+- **The real blocker: Android 15's CDM role requirement.** This is the
+  thing the API 33 path didn't hit and is the crux of the whole detour.
+  The `:car` process crashes on DHU connect:
+  `FATAL EXCEPTION: CarService: IllegalStateException: Failed to register
+  vehicle with CDM` caused by `SecurityException: ...
+  REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION to associate with a
+  device with SYSTEM_AUTOMOTIVE_PROJECTION profile`. That permission has
+  protection level **`internal|role`** — granted ONLY to the holder of
+  `android.app.role.SYSTEM_AUTOMOTIVE_PROJECTION`.
+  - `pm grant` sets `granted=true` but is **ineffective** (it's a role
+    permission, not a normal grant).
+  - `cmd role add-role-holder` rejects a user-installed (in `/data/app`)
+    AA with **"Package does not qualify for the role"** — the role
+    requires a **system app**.
+  - `cmd role set-bypassing-role-qualification true` alone does NOT bypass
+    on this build.
+  - **Fix:** copy the real AA's `base.apk` into
+    `/product/priv-app/AndroidAuto/` (via the live overlay) + reboot →
+    PMS flags it `SYSTEM`/`PRIVILEGED` (the `/data/app` install with its
+    splits stays the running `UPDATED_SYSTEM_APP`) → now `add-role-holder`
+    succeeds → the permission lands `granted=true, flags=[GRANTED_BY_ROLE]`
+    → CDM check passes → `:car` no longer crashes.
+  This is the "No 0p checker" / "0p first-launch car-setup" failure, and
+  it's specific to Android 15 enforcing the CDM automotive-projection
+  role. API 33's older platform didn't gate it.
+
+## The two earlier disconnect causes (also fixed)
+
+Before the CDM crash surfaced, the DHU connected then self-exited ~2s
+after `connected.` for two other reasons, both on the API 35 image:
+
+1. **Background Activity Launch (BAL)** blocked AA's
+   `com.google.android.gms.carsetup.START_DUPLEX` / `FirstActivityImpl`
+   ("0p" first-launch car-setup) activity
+   (`callingUidHasAnyVisibleWindow: false`, result 102 BAL_BLOCK).
+   Foregrounding AA works around it; the per-run flow's `am start` on
+   the settings activity avoids the BAL path.
+2. **AA's troubleshooter tore down the car-client** because the 14
+   dangerous runtime permissions weren't granted. Fix: `pm grant` them
+   all in `--setup` step 4 → `TROUBLESHOOTER_ISSUE_RESOLVED`.
+
+## One manual step the agent can't do
+
+After `--setup`, the user must **open Android Auto on the AVD once and
+complete its first-launch onboarding/consent** (the safety notices,
+permission prompts). The runtime perms are pre-granted, but AA still
+runs its own first-launch flow, and the head unit server connects
+reliably only after it. In this session the DHU only stayed connected
+after the user did that first-launch setup on the phone.
+
+## What this obsoletes
+
+- The `rootAVD` submodule, `aa4mg` module, Zygisk, XLauncher, the 10-tap
+  dev-mode-doesn't-survive-wipe dance, and the `aa4mg/disable` flag —
+  none of those are on the API 35 path. `run.sh` no longer references
+  them. The submodule is left in the tree (untouched — it's a
+  third-party repo we don't edit) but is unused by the current script.
