@@ -22,15 +22,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.voiditswarranty.roadtripradar.R
+import ca.voiditswarranty.roadtripradar.model.SearchResult
 import ca.voiditswarranty.roadtripradar.model.formatDistanceLabel
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 @Composable
-fun PoiSearchDialog(vm: MapViewModel) {
-    if (!vm.showPoiSearch) return
+fun PoiSearchDialog(
+    visible: Boolean,
+    onClose: () -> Unit,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    isSearching: Boolean,
+    results: List<SearchResult>,
+    useMetric: Boolean,
+    onSelectResult: (SearchResult) -> Unit,
+) {
+    if (!visible) return
 
     AlertDialog(
-        onDismissRequest = { vm.closePoiSearch() },
+        onDismissRequest = onClose,
         title = { Text(stringResource(R.string.search_location_title)) },
         text = {
             Column {
@@ -40,14 +49,14 @@ fun PoiSearchDialog(vm: MapViewModel) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 OutlinedTextField(
-                    value = vm.searchQuery,
-                    onValueChange = { vm.updateSearchQuery(it) },
+                    value = query,
+                    onValueChange = onQueryChange,
                     label = { Text(stringResource(R.string.search_address_placeholder)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                if (vm.isSearching) {
+                if (isSearching) {
                     Text(
                         stringResource(R.string.search_searching),
                         fontSize = 14.sp,
@@ -55,13 +64,11 @@ fun PoiSearchDialog(vm: MapViewModel) {
                     )
                 }
                 LazyColumn {
-                    items(vm.searchResults) { result ->
+                    items(results) { result ->
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    vm.selectSearchResult(result)
-                                }
+                                .clickable { onSelectResult(result) }
                                 .padding(vertical = 8.dp),
                         ) {
                             Row(
@@ -77,7 +84,7 @@ fun PoiSearchDialog(vm: MapViewModel) {
                                 )
                                 if (result.distance != null) {
                                     Text(
-                                        text = formatDistanceLabel(result.distance, vm.useMetric),
+                                        text = formatDistanceLabel(result.distance, useMetric),
                                         fontSize = 13.sp,
                                         color = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.padding(start = 8.dp),
@@ -98,7 +105,7 @@ fun PoiSearchDialog(vm: MapViewModel) {
         },
         confirmButton = {},
         dismissButton = {
-            TextButton(onClick = { vm.closePoiSearch() }) {
+            TextButton(onClick = onClose) {
                 Text(stringResource(R.string.action_cancel))
             }
         },

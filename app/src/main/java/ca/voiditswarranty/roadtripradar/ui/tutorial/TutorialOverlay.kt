@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -39,22 +38,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 private val ScrimColor = Color.Black.copy(alpha = 0.65f)
 private val SpotlightPaddingPx = 12f
 private val SpotlightCornerDp = 16.dp
 
 @Composable
-fun TutorialOverlay(vm: MapViewModel) {
-    val group = vm.tutorialActiveGroup ?: return
+fun TutorialOverlay(
+    activeGroup: TutorialGroup?,
+    stepIndex: Int,
+    onBack: () -> Unit,
+    onSkip: () -> Unit,
+    onNext: () -> Unit,
+) {
+    val group = activeGroup ?: return
     val steps = remember(group) { stepsFor(group) }
-    val index = vm.tutorialStepIndex.coerceIn(0, steps.lastIndex)
+    val index = stepIndex.coerceIn(0, steps.lastIndex)
     val step = steps[index]
     val anchors = LocalTutorialAnchors.current
     val anchorRect: Rect? = anchors?.get(step.anchorId)
 
-    BackHandler { vm.skipTutorial() }
+    BackHandler { onSkip() }
 
     val density = LocalDensity.current
     val cornerRadiusPx = with(density) { SpotlightCornerDp.toPx() }
@@ -135,9 +139,9 @@ fun TutorialOverlay(vm: MapViewModel) {
                     step = step,
                     stepIndex = index,
                     stepCount = steps.size,
-                    onBack = { vm.tutorialBack() }.takeIf { index > 0 },
-                    onSkip = { vm.skipTutorial() },
-                    onNext = { vm.tutorialNext() },
+                    onBack = onBack.takeIf { index > 0 },
+                    onSkip = onSkip,
+                    onNext = onNext,
                     modifier = captionModifier,
                 )
             }
@@ -176,9 +180,9 @@ fun TutorialOverlay(vm: MapViewModel) {
                     step = step,
                     stepIndex = index,
                     stepCount = steps.size,
-                    onBack = { vm.tutorialBack() }.takeIf { index > 0 },
-                    onSkip = { vm.skipTutorial() },
-                    onNext = { vm.tutorialNext() },
+                    onBack = onBack.takeIf { index > 0 },
+                    onSkip = onSkip,
+                    onNext = onNext,
                     modifier = captionModifier
                         .align(
                             if (placeBelow) Alignment.TopCenter else Alignment.BottomCenter

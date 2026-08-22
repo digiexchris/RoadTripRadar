@@ -60,59 +60,16 @@ import ca.voiditswarranty.roadtripradar.model.MapStyle
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 // Hard-coded representative background colors for built-in themes.
+// Kept as file-level vals so BuiltInThemeCard's AUTO swatch can reference them
+// in its horizontal gradient; the canonical lookup lives in ThemeSelectorLogic.
 private val swatchLiberty = Color(0xFFF5F1EC)
-private val swatchDark = Color(0xFF1A1A2E)
 private val swatchColorDark = Color(0xFF1A1A2E)
+
+// Local fallbacks for custom-theme swatches before the user's JSON is read.
 private val swatchCustomLightFallback = Color(0xFFEEEEEE)
 private val swatchCustomDarkFallback = Color(0xFF2A2A2A)
 
-/** Parses a CSS hex color string (#RGB / #RRGGBB / #RRGGBBAA) to [Color], or null on failure. */
-private fun parseHexColor(hex: String): Color? {
-    val cleaned = hex.trimStart('#')
-    return when (cleaned.length) {
-        3 -> {
-            val r = cleaned[0].toString().repeat(2).toInt(16)
-            val g = cleaned[1].toString().repeat(2).toInt(16)
-            val b = cleaned[2].toString().repeat(2).toInt(16)
-            Color(r, g, b)
-        }
-        6 -> {
-            val r = cleaned.substring(0, 2).toInt(16)
-            val g = cleaned.substring(2, 4).toInt(16)
-            val b = cleaned.substring(4, 6).toInt(16)
-            Color(r, g, b)
-        }
-        8 -> {
-            val r = cleaned.substring(0, 2).toInt(16)
-            val g = cleaned.substring(2, 4).toInt(16)
-            val b = cleaned.substring(4, 6).toInt(16)
-            val a = cleaned.substring(6, 8).toInt(16)
-            Color(r, g, b, a)
-        }
-        else -> null
-    }
-}
-
-/** Extracts the background-color from a MapLibre style JSON string. */
-private fun extractBackgroundColor(json: String, fallback: Color): Color {
-    // Simple regex: find the background layer and its background-color value.
-    val bgLayerPattern = Regex(
-        """"id"\s*:\s*"background"[\s\S]{0,500}?"background-color"\s*:\s*"(#[0-9a-fA-F]{3,8})"""",
-        setOf(RegexOption.DOT_MATCHES_ALL),
-    )
-    val match = bgLayerPattern.find(json) ?: return fallback
-    return parseHexColor(match.groupValues[1]) ?: fallback
-}
-
-private fun swatchColorForStyle(style: MapStyle, vm: MapViewModel): Color = when (style) {
-    MapStyle.LIBERTY -> swatchLiberty
-    MapStyle.DARK -> swatchDark
-    MapStyle.COLOR_DARK -> swatchColorDark
-    // Custom theme swatches should be computed with caching via remember(customThemeVersion)
-    MapStyle.CUSTOM_LIGHT -> swatchCustomLightFallback
-    MapStyle.CUSTOM_DARK -> swatchCustomDarkFallback
-    MapStyle.AUTO -> Color.Unspecified
-}
+// -------- Pure helpers are extracted to ThemeSelectorLogic.kt --------
 
 @Composable
 fun ThemeSelectorPanel(
@@ -137,7 +94,7 @@ fun ThemeSelectorPanel(
     fun resolvedSwatchColor(style: MapStyle): Color = when (style) {
         MapStyle.CUSTOM_LIGHT -> customLightSwatch
         MapStyle.CUSTOM_DARK -> customDarkSwatch
-        else -> swatchColorForStyle(style, vm)
+        else -> swatchColorForStyle(style)
     }
 
     val importLauncher = rememberLauncherForActivityResult(
@@ -246,25 +203,47 @@ fun ThemeSelectorPanel(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
                 BuiltInThemeActions(
                     style = currentStyle,
-                    vm = vm,
-                    onStyleChange = onStyleChange,
+                    customTargetExists = if (currentStyle.intrinsicallyDark) vm.hasCustomDark else vm.hasCustomLight,
                     onOpenMaputnik = { url ->
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     },
-                    importLauncher = { target ->
-                        pendingImportTarget = target
-                        importLauncher.launch(arrayOf("application/json", "*/*"))
+                    onUseAsCustomBase = { target ->
+                        if (currentStyle.intrinsicallyDark) {
+                            vm.initCustomThemeFromAsset(currentStyle, target, onStyleChange)
+                        } else {
+                            vm.initCustomThemeFromUrl(currentStyle.styleUri, target, onStyleChange)
+                        }
                     },
                 )
             } else if (showCustomActions) {
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
+                val autoEnabled = if (currentStyle == MapStyle.CUSTOM_LIGHT) vm.customLightAutoEnabled else vm.customDarkAutoEnabled
                 val exportChooserTitle = stringResource(R.string.theme_export)
+                val exportUri = vm.customThemeRepo.exportThemeUri(currentStyle)
                 CustomThemeActions(
                     style = currentStyle,
-                    vm = vm,
-                    onStyleChange = onStyleChange,
+                    autoEnabled = autoEnabled,
+                    onAutoModeChange = { enabled ->
+                        if (currentStyle == MapStyle.CUSTOM_LIGHT) vm.updateCustomLightAutoEnabled(enabled)
+                        else vm.updateCustomDarkAutoEnabled(enabled)
+                    },
                     onEditColors = onEditColors,
-                    onShare = { uri ->
+                    onSaveToDownloads = { style ->
+                        val name = vm.customThemeRepo.saveToDownloads(style)
+                        val msg = if (name != null) {
+                            context.getString(R.string.theme_saved_to_downloads, name)
+                        } else {
+                            context.getString(R.string.theme_save_failed)
+                        }
+                        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
+                    },
+                    onOpenMaputnik = {
+                        context.startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse("https://maplibre.org/maputnik/")),
+                        )
+                    },
+                    onShare = {
+                        val uri = exportUri ?: return@CustomThemeActions
                         val intent = Intent(Intent.ACTION_SEND).apply {
                             type = "application/json"
                             putExtra(Intent.EXTRA_STREAM, uri)
@@ -272,6 +251,10 @@ fun ThemeSelectorPanel(
                         }
                         context.startActivity(Intent.createChooser(intent, exportChooserTitle))
                     },
+                    onDelete = { style ->
+                        vm.deleteCustomTheme(style, style, onStyleChange)
+                    },
+                    shareEnabled = exportUri != null,
                 )
             }
         }
@@ -294,7 +277,7 @@ fun ThemeSelectorPanel(
 }
 
 @Composable
-private fun AutoThemeCard(
+internal fun AutoThemeCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -347,7 +330,7 @@ private fun AutoThemeCard(
 }
 
 @Composable
-private fun BuiltInThemeCard(
+internal fun BuiltInThemeCard(
     style: MapStyle,
     swatchColor: Color,
     selected: Boolean,
@@ -405,7 +388,7 @@ private fun BuiltInThemeCard(
 }
 
 @Composable
-private fun ImportThemeCard(
+internal fun ImportThemeCard(
     label: String,
     onClick: () -> Unit,
 ) {
@@ -446,17 +429,15 @@ private fun ImportThemeCard(
 }
 
 @Composable
-private fun BuiltInThemeActions(
+internal fun BuiltInThemeActions(
     style: MapStyle,
-    vm: MapViewModel,
-    onStyleChange: (MapStyle) -> Unit,
+    customTargetExists: Boolean,
     onOpenMaputnik: (String) -> Unit,
-    importLauncher: (MapStyle) -> Unit,
+    onUseAsCustomBase: (MapStyle) -> Unit,
 ) {
     val maputnikUrl = style.maputnikUrl
     // Which custom slot does this built-in map to?
     val customTarget = if (style.intrinsicallyDark) MapStyle.CUSTOM_DARK else MapStyle.CUSTOM_LIGHT
-    val customExists = if (customTarget == MapStyle.CUSTOM_DARK) vm.hasCustomDark else vm.hasCustomLight
 
     Row(
         modifier = Modifier
@@ -478,33 +459,29 @@ private fun BuiltInThemeActions(
         }
         Spacer(Modifier.weight(1f))
         if (!style.intrinsicallyDark) {
-            TextButton(onClick = {
-                vm.initCustomThemeFromUrl(style.styleUri, customTarget, onStyleChange)
-            }) {
-                Text(if (customExists) stringResource(R.string.theme_overwrite_custom_light) else stringResource(R.string.theme_use_as_custom_light_base))
+            TextButton(onClick = { onUseAsCustomBase(customTarget) }) {
+                Text(if (customTargetExists) stringResource(R.string.theme_overwrite_custom_light) else stringResource(R.string.theme_use_as_custom_light_base))
             }
         } else {
-            TextButton(onClick = {
-                vm.initCustomThemeFromAsset(style, customTarget, onStyleChange)
-            }) {
-                Text(if (customExists) stringResource(R.string.theme_overwrite_custom_dark) else stringResource(R.string.theme_use_as_custom_dark_base))
+            TextButton(onClick = { onUseAsCustomBase(customTarget) }) {
+                Text(if (customTargetExists) stringResource(R.string.theme_overwrite_custom_dark) else stringResource(R.string.theme_use_as_custom_dark_base))
             }
         }
     }
 }
 
 @Composable
-private fun CustomThemeActions(
+internal fun CustomThemeActions(
     style: MapStyle,
-    vm: MapViewModel,
-    onStyleChange: (MapStyle) -> Unit,
+    autoEnabled: Boolean,
+    onAutoModeChange: (Boolean) -> Unit,
     onEditColors: (MapStyle) -> Unit,
-    onShare: (Uri) -> Unit,
+    onSaveToDownloads: (MapStyle) -> Unit,
+    onOpenMaputnik: () -> Unit,
+    onShare: () -> Unit,
+    onDelete: (MapStyle) -> Unit,
+    shareEnabled: Boolean,
 ) {
-    val context = LocalContext.current
-    val autoEnabled = if (style == MapStyle.CUSTOM_LIGHT) vm.customLightAutoEnabled else vm.customDarkAutoEnabled
-    var savedToast by remember { mutableStateOf<String?>(null) }
-
     Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
         // Auto mode toggle
         Row(
@@ -525,10 +502,7 @@ private fun CustomThemeActions(
             )
             Switch(
                 checked = autoEnabled,
-                onCheckedChange = { enabled ->
-                    if (style == MapStyle.CUSTOM_LIGHT) vm.updateCustomLightAutoEnabled(enabled)
-                    else vm.updateCustomDarkAutoEnabled(enabled)
-                },
+                onCheckedChange = onAutoModeChange,
             )
         }
 
@@ -544,34 +518,24 @@ private fun CustomThemeActions(
                 Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.cd_edit_colors))
             }
 
-            FilledTonalIconButton(onClick = {
-                val name = vm.customThemeRepo.saveToDownloads(style)
-                savedToast = if (name != null) context.getString(R.string.theme_saved_to_downloads, name) else context.getString(R.string.theme_save_failed)
-            }) {
+            FilledTonalIconButton(onClick = { onSaveToDownloads(style) }) {
                 Icon(Icons.Default.Save, contentDescription = stringResource(R.string.cd_save_json_downloads))
             }
 
-            FilledTonalIconButton(onClick = {
-                context.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse("https://maplibre.org/maputnik/")),
-                )
-            }) {
+            FilledTonalIconButton(onClick = onOpenMaputnik) {
                 Icon(Icons.Default.OpenInBrowser, contentDescription = stringResource(R.string.cd_open_maputnik))
             }
 
             Spacer(Modifier.weight(1f))
 
-            val exportUri = vm.customThemeRepo.exportThemeUri(style)
             FilledTonalIconButton(
-                onClick = { exportUri?.let { onShare(it) } },
-                enabled = exportUri != null,
+                onClick = onShare,
+                enabled = shareEnabled,
             ) {
                 Icon(Icons.Default.Share, contentDescription = stringResource(R.string.action_share))
             }
 
-            FilledTonalIconButton(onClick = {
-                vm.deleteCustomTheme(style, style, onStyleChange)
-            }) {
+            FilledTonalIconButton(onClick = { onDelete(style) }) {
                 Icon(
                     Icons.Default.Delete,
                     contentDescription = stringResource(R.string.cd_delete_custom_theme),
@@ -593,16 +557,10 @@ private fun CustomThemeActions(
             ActionLabel(stringResource(R.string.theme_action_delete), Modifier.width(48.dp))
         }
     }
-
-    // Feedback toast
-    savedToast?.let { msg ->
-        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
-        savedToast = null
-    }
 }
 
 @Composable
-private fun ActionLabel(text: String, modifier: Modifier = Modifier) {
+internal fun ActionLabel(text: String, modifier: Modifier = Modifier) {
     Text(
         text,
         style = MaterialTheme.typography.labelSmall,
@@ -611,10 +569,3 @@ private fun ActionLabel(text: String, modifier: Modifier = Modifier) {
     )
 }
 
-/** Approximate luminance for Color for swatch text contrast decisions. */
-private fun Color.luminance(): Float {
-    val r = red
-    val g = green
-    val b = blue
-    return 0.2126f * r + 0.7152f * g + 0.0722f * b
-}

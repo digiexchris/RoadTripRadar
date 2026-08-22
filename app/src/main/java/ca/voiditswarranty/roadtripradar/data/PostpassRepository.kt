@@ -1,21 +1,17 @@
 package ca.voiditswarranty.roadtripradar.data
 
 import android.content.Context
-import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.put
 import org.maplibre.spatialk.geojson.BoundingBox
 import org.maplibre.spatialk.geojson.Feature
 import org.maplibre.spatialk.geojson.FeatureCollection
 import org.maplibre.spatialk.geojson.Point
-import org.maplibre.spatialk.geojson.Position
 import java.net.URL
 
 /** Thrown internally when Postpass fails with a server-side error (429 or 5xx) after retries. */
@@ -33,24 +29,17 @@ sealed interface TileFetchResult {
  * Operational notes: [postpass-ops](https://github.com/woodpeck/postpass-ops) documents this
  * public instance but does not publish fixed numeric rate limits. Use modest concurrency,
  * backoff on errors, and avoid oversized queries to stay within fair use.
+ *
+ * [baseUrl] is the Postpass interpreter endpoint. The default is the public Geofabrik
+ * instance; the constructor accepts an override so unit tests can point at a local
+ * MockWebServer.
  */
-class PostpassRepository(context: Context) {
+class PostpassRepository(
+    context: Context,
+    private val baseUrl: String = "https://postpass.geofabrik.de/api/0.2/interpreter",
+) {
 
     private val appContext: Context = context.applicationContext
-
-    private val categoryTagMap: Map<String, String> by lazy {
-        val map = mutableMapOf<String, String>()
-        for (cat in POI_CATEGORIES) {
-            val tag = when (cat.query) {
-                "camp_site", "viewpoint", "information" -> "tourism"
-                "parking", "rest_area" -> "amenity"
-                "park" -> "leisure"
-                else -> "amenity"
-            }
-            map[cat.query] = tag
-        }
-        map
-    }
 
     suspend fun fetchPoisForTile(
         bounds: BoundingBox,
@@ -63,33 +52,16 @@ class PostpassRepository(context: Context) {
             val features = json["features"]?.jsonArray?.mapNotNull {
                 parsePostpassFeature(it.jsonObject, categories)
             } ?: emptyList()
-            TileFetchResult.Success(FeatureCollection(features))
+            @Suppress("UNCHECKED_CAST")
+            TileFetchResult.Success(FeatureCollection(features) as FeatureCollection<Point, JsonObject>)
         } catch (e: PostpassServerException) {
             TileFetchResult.ServerError(e.message ?: "Server error")
+        } catch (e: kotlinx.serialization.SerializationException) {
+            TileFetchResult.Failed(e.message ?: "Parse error")
         } catch (e: java.io.IOException) {
             TileFetchResult.Failed(e.message ?: "Network error")
         }
     }
-
-    private fun buildPostpassQuery(bounds: BoundingBox, categories: Set<String>): String {
-        val w = bounds.southwest.longitude
-        val s = bounds.southwest.latitude
-        val e = bounds.northeast.longitude
-        val n = bounds.northeast.latitude
-        val tagConditions = categories.joinToString(" OR ") { cat ->
-            val tag = categoryTagMap[cat] ?: "amenity"
-            "tags->>'$tag' = '$cat'"
-        }
-        return buildString {
-            append("SELECT osm_id, osm_type, tags, ST_Centroid(geom) AS geom\n")
-            append("FROM postpass_pointpolygon\n")
-            append("WHERE ($tagConditions)\n")
-            append("  AND geom && ST_MakeEnvelope($w, $s, $e, $n, 4326)\n")
-            append("LIMIT 2000")
-        }
-    }
-
-    private val endpoint = "https://postpass.geofabrik.de/api/0.2/interpreter"
 
     private suspend fun executeQuery(query: String): String = withContext(Dispatchers.IO) {
         android.util.Log.d("POI_DEBUG", "Postpass query:\n$query")
@@ -99,7 +71,7 @@ class PostpassRepository(context: Context) {
             if (index > 0) kotlinx.coroutines.delay(1_000)
             try {
                 android.util.Log.d("POI_DEBUG", "Trying Postpass (timeout=${timeout}ms)")
-                val conn = URL(endpoint).openConnection() as java.net.HttpURLConnection
+                val conn = URL(baseUrl).openConnection() as java.net.HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.connectTimeout = minOf(5_000, timeout)
                 conn.readTimeout = timeout
@@ -135,35 +107,6 @@ class PostpassRepository(context: Context) {
         throw ex
     }
 
-    private fun parsePoi(
-        lat: Double,
-        lon: Double,
-        tags: JsonObject,
-        enabledCategories: Set<String>,
-    ): Feature<Point, JsonObject>? {
-        val matchedCategory = enabledCategories.firstOrNull { cat ->
-            val tag = categoryTagMap[cat] ?: "amenity"
-            tags[tag]?.jsonPrimitive?.content == cat
-        } ?: return null
-        val poiCat = POI_CATEGORIES.firstOrNull { it.query == matchedCategory } ?: return null
-        val categoryLabel = appContext.getString(poiCat.labelRes)
-        val name = tags["name"]?.jsonPrimitive?.content?.ifEmpty { null }
-            ?: tags["brand"]?.jsonPrimitive?.content
-            ?: tags["operator"]?.jsonPrimitive?.content
-            ?: categoryLabel
-        return Feature(
-            geometry = Point(Position(latitude = lat, longitude = lon)),
-            properties = buildJsonObject {
-                put("name", name)
-                put("subtitle", buildSubtitle(tags))
-                put("categoryQuery", matchedCategory)
-                put("categoryLabel", categoryLabel)
-                put("iconName", poiCat.iconName)
-                tags["opening_hours"]?.jsonPrimitive?.content?.let { put("openingHours", it) }
-            }
-        )
-    }
-
     private fun parsePostpassFeature(
         feature: JsonObject,
         enabledCategories: Set<String>,
@@ -174,15 +117,13 @@ class PostpassRepository(context: Context) {
         val lon = coords[0].jsonPrimitive.content.toDoubleOrNull() ?: return null
         val lat = coords[1].jsonPrimitive.content.toDoubleOrNull() ?: return null
         val tags = props["tags"]?.jsonObject ?: return null
-        return parsePoi(lat, lon, tags, enabledCategories)
-    }
-
-    private fun buildSubtitle(tags: JsonObject): String {
-        val houseNumber = tags["addr:housenumber"]?.jsonPrimitive?.content
-        val street = tags["addr:street"]?.jsonPrimitive?.content
-        val city = tags["addr:city"]?.jsonPrimitive?.content
-        val streetPart = if (houseNumber != null && street != null) "$houseNumber $street"
-            else street ?: houseNumber
-        return listOfNotNull(streetPart, city).joinToString(", ")
+        val matchedCategory = findMatchedCategory(tags, enabledCategories) ?: return null
+        return buildPoiFeature(
+            lat = lat,
+            lon = lon,
+            tags = tags,
+            matchedCategory = matchedCategory,
+            categoryLabelFor = { cat -> appContext.getString(cat.labelRes) },
+        )
     }
 }

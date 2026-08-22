@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+    <!-- Locate/recenter crosshair, mirroring the phone's Icons.Default.MyLocation:
+         a centered ring with four ticks and a center dot. -->
+    <path
+        android:pathData="M12,12 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2" />
+    <path
+        android:pathData="M12,2 L12,5"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M12,19 L12,22"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M2,12 L5,12"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M19,12 L22,12"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M12,12 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+        android:fillColor="#FFFFFFFF" />
+</vector>

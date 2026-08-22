@@ -1,9 +1,6 @@
 package ca.voiditswarranty.roadtripradar.ui
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -13,12 +10,15 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import ca.voiditswarranty.roadtripradar.data.RainViewer
+import ca.voiditswarranty.roadtripradar.data.RouteStyle
 import ca.voiditswarranty.roadtripradar.data.Waypoint
+import ca.voiditswarranty.roadtripradar.data.activeRouteLeg
+import ca.voiditswarranty.roadtripradar.data.inactiveRouteLegs
 import ca.voiditswarranty.roadtripradar.model.POI_CATEGORIES
 import ca.voiditswarranty.roadtripradar.model.PoiViewportChunks
 import ca.voiditswarranty.roadtripradar.model.RadarRingsData
 import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
-import com.caverock.androidsvg.SVG
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
@@ -68,9 +68,9 @@ fun WeatherRadarLayers(
             val source = remember {
                 RasterSource(
                     id = "rv$pathId",
-                    tiles = listOf("https://tilecache.rainviewer.com$path/512/{z}/{x}/{y}/2/1_1.png"),
-                    options = TileSetOptions(maxZoom = 7),
-                    tileSize = 512,
+                    tiles = listOf(RainViewer.tileUrl(path)),
+                    options = TileSetOptions(maxZoom = RainViewer.MAX_ZOOM),
+                    tileSize = RainViewer.TILE_SIZE_PX,
                 )
             }
             RasterLayer(
@@ -227,31 +227,21 @@ fun WaypointRouteLineLayer(
 ) {
     if (waypoints.isEmpty() || activeIndex == null) return
 
-    // All legs between consecutive waypoints, drawn as the inactive dashed green
-    // route. This deliberately includes the leg from the previous waypoint to the
-    // active target, so the planned segment stays visible (as a dashed line)
-    // underneath the live solid user→target approach drawn by activeFc — it no
-    // longer disappears once you've passed the previous waypoint.
+    // Geometry is built by the shared `data.RouteGeometry` helpers so the phone and the car
+    // surface draw the same route. Inactive legs are all the planned waypoint-to-waypoint
+    // segments (drawn dashed); the active leg is the solid live user→target approach that
+    // advances as the active waypoint advances.
     val inactiveFc = remember(waypoints.toList()) {
-        FeatureCollection((0 until waypoints.size - 1).map { i ->
-            Feature(
-                geometry = LineString(listOf(waypoints[i].position, waypoints[i + 1].position)),
-                properties = buildJsonObject {},
-            )
-        })
+        FeatureCollection(
+            inactiveRouteLegs(waypoints).map {
+                Feature(geometry = it, properties = buildJsonObject {})
+            },
+        )
     }
     val activeFc = remember(waypoints.toList(), activeIndex, userPosition) {
-        val path = listOf(userPosition) + waypoints.map { it.position }
+        val leg = activeRouteLeg(waypoints, activeIndex, userPosition)
         FeatureCollection(
-            if (activeIndex in waypoints.indices) listOf(
-                Feature(
-                    // From the user's live position to the active target (not the
-                    // planned leg between waypoints), so the approach line advances
-                    // as the active waypoint advances.
-                    geometry = LineString(listOf(path[0], path[activeIndex + 1])),
-                    properties = buildJsonObject {},
-                ),
-            ) else emptyList(),
+            if (leg != null) listOf(Feature(geometry = leg, properties = buildJsonObject {})) else emptyList(),
         )
     }
 
@@ -261,17 +251,17 @@ fun WaypointRouteLineLayer(
     LineLayer(
         id = "waypoint-route-inactive",
         source = inactiveSource,
-        color = const(Color.Green),
+        color = const(RouteStyle.COLOR),
         width = const(5.dp),
-        opacity = const(0.6f),
-        dasharray = const(listOf(2, 3)),
+        opacity = const(RouteStyle.INACTIVE_OPACITY),
+        dasharray = const(RouteStyle.INACTIVE_DASH),
     )
     LineLayer(
         id = "waypoint-route-active",
         source = activeSource,
-        color = const(Color.Green),
+        color = const(RouteStyle.COLOR),
         width = const(5.dp),
-        opacity = const(0.95f),
+        opacity = const(RouteStyle.ACTIVE_OPACITY),
     )
 }
 
@@ -460,36 +450,15 @@ fun WaypointMarkersLayer(
     }
 }
 
-private fun loadMakiIcon(context: Context, iconName: String, sizePx: Int = 64): ImageBitmap? {
-    return try {
-        val svg = context.assets.open("maki/$iconName.svg").use { SVG.getFromInputStream(it) }
-        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        val center = sizePx / 2f
-        val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = 0xFFFFFFFF.toInt()
-            style = Paint.Style.FILL
-        }
-        val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = 0xFF999999.toInt()
-            style = Paint.Style.STROKE
-            strokeWidth = 2f
-        }
-        canvas.drawCircle(center, center, center - 1f, bgPaint)
-        canvas.drawCircle(center, center, center - 1f, borderPaint)
-        val iconPadding = sizePx * 0.2f
-        val iconSize = sizePx - 2 * iconPadding
-        svg.documentWidth = iconSize
-        svg.documentHeight = iconSize
-        canvas.save()
-        canvas.translate(iconPadding, iconPadding)
-        svg.renderToCanvas(canvas)
-        canvas.restore()
-        bitmap.asImageBitmap()
-    } catch (_: Exception) {
-        null
-    }
-}
+private fun loadMakiIcon(context: Context, iconName: String, sizePx: Int = 64): ImageBitmap? =
+    renderMakiIcon(
+        context = context,
+        iconName = iconName,
+        sizePx = sizePx,
+        fillArgb = 0xFFFFFFFF.toInt(),
+        borderColor = 0xFF999999.toInt(),
+        borderWidth = 2f,
+    )?.asImageBitmap()
 
 @Composable
 fun NearbyPoiLayers(

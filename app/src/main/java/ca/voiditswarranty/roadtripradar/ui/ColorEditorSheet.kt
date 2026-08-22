@@ -160,6 +160,48 @@ private fun ColorEditorContent(
         )
     }
 
+    val onApply: () -> Unit = {
+        applyAndPreview(vm, style, originalJson, editedColors.value, currentStyle, onStyleChange)
+    }
+
+    ColorEditorBody(
+        style = style,
+        editedColors = editedColors.value,
+        onColorChange = { id, newColor ->
+            editedColors.value = editedColors.value.toMutableMap()
+                .also { it[id] = newColor }
+        },
+        onReset = {
+            editedColors.value = THEME_COLOR_CATEGORIES.associate { cat ->
+                cat.id to (StyleJsonPatcher.extractColor(originalJson, cat) ?: Color.Gray)
+            }
+        },
+        onCancel = onDismiss,
+        onApply = onApply,
+        onSave = {
+            onApply()
+            onDismiss()
+        },
+    )
+}
+
+/**
+ * The body of the color editor: a scrollable list of category rows and
+ * a row of action buttons (Reset / Cancel / Preview / Save). This is
+ * a separate composable from [ColorEditorContent] so tests can drive
+ * the UI primitives directly without a MapViewModel — the production
+ * [ColorEditorContent] wires VM state into a [ColorEditorBody] call.
+ */
+@Composable
+internal fun ColorEditorBody(
+    style: MapStyle,
+    editedColors: Map<String, Color>,
+    onColorChange: (categoryId: String, newColor: Color) -> Unit,
+    onReset: () -> Unit,
+    onCancel: () -> Unit,
+    onApply: () -> Unit,
+    onSave: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,54 +224,61 @@ private fun ColorEditorContent(
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             THEME_COLOR_CATEGORIES.forEach { category ->
-                val currentColor = editedColors.value[category.id] ?: Color.Gray
+                val currentColor = editedColors[category.id] ?: Color.Gray
                 ColorCategoryRow(
                     category = category,
                     color = currentColor,
-                    onColorChange = { newColor ->
-                        editedColors.value = editedColors.value.toMutableMap()
-                            .also { it[category.id] = newColor }
-                    },
+                    onColorChange = { newColor -> onColorChange(category.id, newColor) },
                 )
             }
         }
 
         HorizontalDivider()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            TextButton(onClick = {
-                // Revert to original colors
-                editedColors.value = THEME_COLOR_CATEGORIES.associate { cat ->
-                    cat.id to (StyleJsonPatcher.extractColor(originalJson, cat) ?: Color.Gray)
-                }
-            }) {
-                Text(stringResource(R.string.action_reset))
-            }
+        ColorEditorActions(
+            onReset = onReset,
+            onCancel = onCancel,
+            onApply = onApply,
+            onSave = onSave,
+        )
+    }
+}
 
-            Spacer(Modifier.weight(1f))
+/**
+ * The four action buttons at the bottom of the color editor: Reset,
+ * Cancel, Preview, Save. Extracted from [ColorEditorBody] so it can
+ * be tested in isolation.
+ */
+@Composable
+internal fun ColorEditorActions(
+    onReset: () -> Unit,
+    onCancel: () -> Unit,
+    onApply: () -> Unit,
+    onSave: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextButton(onClick = onReset) {
+            Text(stringResource(R.string.action_reset))
+        }
 
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel))
-            }
+        Spacer(Modifier.weight(1f))
 
-            TextButton(onClick = {
-                applyAndPreview(vm, style, originalJson, editedColors.value, currentStyle, onStyleChange)
-            }) {
-                Text(stringResource(R.string.color_editor_preview))
-            }
+        TextButton(onClick = onCancel) {
+            Text(stringResource(R.string.action_cancel))
+        }
 
-            Button(onClick = {
-                applyAndPreview(vm, style, originalJson, editedColors.value, currentStyle, onStyleChange)
-                onDismiss()
-            }) {
-                Text(stringResource(R.string.action_save))
-            }
+        TextButton(onClick = onApply) {
+            Text(stringResource(R.string.color_editor_preview))
+        }
+
+        Button(onClick = onSave) {
+            Text(stringResource(R.string.action_save))
         }
     }
 }
@@ -252,7 +301,7 @@ private fun applyAndPreview(
 }
 
 @Composable
-private fun ColorCategoryRow(
+internal fun ColorCategoryRow(
     category: ThemeColorCategory,
     color: Color,
     onColorChange: (Color) -> Unit,
@@ -288,7 +337,7 @@ private fun ColorCategoryRow(
 }
 
 @Composable
-private fun ColorSwatch(color: Color, modifier: Modifier = Modifier) {
+internal fun ColorSwatch(color: Color, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(6.dp)
     Box(
         modifier = modifier
@@ -299,7 +348,7 @@ private fun ColorSwatch(color: Color, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun ColorPickerExpanded(
+internal fun ColorPickerExpanded(
     color: Color,
     onColorChange: (Color) -> Unit,
 ) {

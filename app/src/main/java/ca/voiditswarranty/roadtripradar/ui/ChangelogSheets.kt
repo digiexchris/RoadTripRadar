@@ -19,14 +19,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.ChangelogRelease
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WhatsNewChangelogSheet(vm: MapViewModel) {
-    if (!vm.showWhatsNewChangelog) return
-    val releases = vm.whatsNewChangelogReleases
-    ModalBottomSheet(onDismissRequest = { vm.dismissWhatsNewChangelog() }) {
+fun WhatsNewChangelogSheet(
+    visible: Boolean,
+    releases: List<ChangelogRelease>,
+    onDismiss: () -> Unit,
+) {
+    if (!visible) return
+    ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -49,7 +51,7 @@ fun WhatsNewChangelogSheet(vm: MapViewModel) {
                 }
             }
             Button(
-                onClick = { vm.dismissWhatsNewChangelog() },
+                onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.action_got_it))
@@ -60,10 +62,13 @@ fun WhatsNewChangelogSheet(vm: MapViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FullChangelogSheet(vm: MapViewModel) {
-    if (!vm.showFullChangelog) return
-    val releases = vm.fullChangelogReleases
-    ModalBottomSheet(onDismissRequest = { vm.closeFullChangelog() }) {
+fun FullChangelogSheet(
+    visible: Boolean,
+    releases: List<ChangelogRelease>,
+    onDismiss: () -> Unit,
+) {
+    if (!visible) return
+    ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,7 +99,7 @@ fun FullChangelogSheet(vm: MapViewModel) {
                 }
             }
             TextButton(
-                onClick = { vm.closeFullChangelog() },
+                onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.action_close))

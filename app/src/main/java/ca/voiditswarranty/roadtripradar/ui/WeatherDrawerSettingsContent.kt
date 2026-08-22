@@ -17,18 +17,28 @@ import androidx.compose.ui.unit.dp
 import ca.voiditswarranty.roadtripradar.R
 import ca.voiditswarranty.roadtripradar.model.TemperatureUnit
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
-import ca.voiditswarranty.roadtripradar.viewmodel.MapViewModel
 
 @Composable
 fun WeatherDrawerSettingsContent(
-    vm: MapViewModel,
+    weatherActive: Boolean,
+    radarOpacity: Float,
+    onRadarOpacityChange: (Float) -> Unit,
+    onRadarOpacityCommit: () -> Unit,
+    windEnabled: Boolean,
+    windSpeedUnit: WindSpeedUnit,
+    onWindSpeedUnitChange: (WindSpeedUnit) -> Unit,
+    temperatureUnit: TemperatureUnit,
+    onTemperatureUnitChange: (TemperatureUnit) -> Unit,
+    weatherWidgetSize: Float,
+    onWeatherWidgetSizeChange: (Float) -> Unit,
+    onWeatherWidgetSizeCommit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        if (vm.weatherActive) {
+        if (weatherActive) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -36,27 +46,27 @@ fun WeatherDrawerSettingsContent(
                 ) {
                     Text(stringResource(R.string.settings_weather_radar_opacity), style = MaterialTheme.typography.titleSmall)
                     Text(
-                        "${(vm.radarOpacity * 100).toInt()}%",
+                        "${(radarOpacity * 100).toInt()}%",
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 GloveFriendlySlider(
-                    value = vm.radarOpacity,
-                    onValueChange = { vm.updateRadarOpacity(it) },
-                    onValueChangeFinished = { vm.saveRadarOpacity() },
+                    value = radarOpacity,
+                    onValueChange = onRadarOpacityChange,
+                    onValueChangeFinished = onRadarOpacityCommit,
                     valueRange = 0.1f..1.0f,
                 )
             }
         }
 
-        if (vm.windEnabled) {
+        if (windEnabled) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.settings_wind_speed_units), style = MaterialTheme.typography.titleSmall)
                 SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                     WindSpeedUnit.entries.forEachIndexed { index, unit ->
                         SegmentedButton(
-                            selected = vm.windSpeedUnit == unit,
-                            onClick = { vm.updateWindSpeedUnit(unit) },
+                            selected = windSpeedUnit == unit,
+                            onClick = { onWindSpeedUnitChange(unit) },
                             shape = SegmentedButtonDefaults.itemShape(
                                 index,
                                 WindSpeedUnit.entries.size,
@@ -80,8 +90,8 @@ fun WeatherDrawerSettingsContent(
                 SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                     TemperatureUnit.entries.forEachIndexed { index, unit ->
                         SegmentedButton(
-                            selected = vm.temperatureUnit == unit,
-                            onClick = { vm.updateTemperatureUnit(unit) },
+                            selected = temperatureUnit == unit,
+                            onClick = { onTemperatureUnitChange(unit) },
                             shape = SegmentedButtonDefaults.itemShape(
                                 index,
                                 TemperatureUnit.entries.size,
@@ -108,9 +118,9 @@ fun WeatherDrawerSettingsContent(
                 style = MaterialTheme.typography.titleSmall,
             )
             GloveFriendlySlider(
-                value = vm.weatherWidgetSize,
-                onValueChange = { vm.updateWeatherWidgetSize(it) },
-                onValueChangeFinished = { vm.saveWeatherWidgetSize() },
+                value = weatherWidgetSize,
+                onValueChange = onWeatherWidgetSizeChange,
+                onValueChangeFinished = onWeatherWidgetSizeCommit,
                 valueRange = 24f..96f,
             )
         }

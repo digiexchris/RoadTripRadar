@@ -1,3 +1,6 @@
 [submodule "libs/maki"]
 	path = libs/maki
 	url = https://github.com/mapbox/maki.git
+[submodule ".claude/skills/run-car-dhu/rootAVD"]
+	path = .claude/skills/run-car-dhu/rootAVD
+	url = https://github.com/newbit1/rootAVD.git

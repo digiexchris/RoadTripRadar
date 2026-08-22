@@ -26,6 +26,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             resValue("string", "app_name", "RoadTripRadar Dev")
+            buildConfigField("int", "HARNESS_PORT", "8765")
         }
         release {
             resValue("string", "app_name", "RoadTripRadar")
@@ -45,6 +46,16 @@ android {
         compose = true
         buildConfig = true
         resValues = true
+    }
+    // Pull the merged Android resources (the manifest's @string references and the
+    // car widget XML layouts) into the JVM unit-test classpath so Robolectric tests
+    // can inflate layouts, resolve string resources, and read the app manifest.
+    // Without this the unit tests run in `org.robolectric.default` and resource
+    // lookups fail.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 
 }
@@ -114,14 +125,26 @@ dependencies {
     implementation(libs.spatialk.turf)
     implementation(libs.androidsvg)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.car.app)
+    implementation(libs.androidx.car.app.projected)
+    testImplementation(libs.androidx.car.app.testing)
     testImplementation(libs.junit)
     testImplementation(libs.okhttp)
     testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.junit)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    testImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.nanohttpd)
+    debugImplementation(libs.nanohttpd.websocket)
 }

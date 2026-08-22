@@ -42,6 +42,7 @@ import ca.voiditswarranty.roadtripradar.model.WeatherMode
 import ca.voiditswarranty.roadtripradar.model.WindSpeedUnit
 import ca.voiditswarranty.roadtripradar.ui.tutorial.TutorialGroup
 import ca.voiditswarranty.roadtripradar.ui.tutorial.stepsFor
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -50,6 +51,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.JsonObject
+import java.util.concurrent.atomic.AtomicInteger
 import org.maplibre.spatialk.geojson.BoundingBox
 import org.maplibre.spatialk.geojson.Feature
 import org.maplibre.spatialk.geojson.FeatureCollection
@@ -67,8 +69,36 @@ class MapViewModel(
     private val weatherRepo: WeatherRepository = WeatherRepository(),
     private val openMeteoRepo: OpenMeteoRepository = OpenMeteoRepository(),
     val postpassRepo: PostpassRepository = PostpassRepository(appContext),
+    /**
+     * Optional externally-supplied [CoroutineScope]. When null (the phone Activity
+     * path), polling/launch run on [viewModelScope] and are cancelled when the
+     * Activity destroys the ViewModel. When supplied (the Android Auto path via
+     * [ca.voiditswarranty.roadtripradar.car.CarViewModelHolder]), they run on an
+     * app-scoped supervisor scope so they survive Activity destruction while the
+     * car Session is alive.
+     */
+    private val externalScope: CoroutineScope? = null,
 ) : ViewModel() {
+    private val vmScope: CoroutineScope = externalScope ?: viewModelScope
     private val geocodingRepo: GeocodingRepository = GeocodingRepository()
+
+    // --- Refresh bus for Android Auto car screens ---
+    // Car App Library screens are not Jetpack Compose; they rebuild their Template
+    // in onGetTemplate(). Car Screens register a listener that calls invalidate() on
+    // the car host's main executor, so the car UI reflects VM state changes. The
+    // phone UI keeps reacting via Compose snapshot and ignores this bus. Listeners
+    // are invoked on whatever thread the mutation ran on (often Dispatchers.IO), so
+    // registrants must dispatch to the main executor themselves.
+    private val refreshListeners = java.util.concurrent.CopyOnWriteArrayList<(MapViewModel) -> Unit>()
+    fun addRefreshListener(listener: (MapViewModel) -> Unit) {
+        refreshListeners.add(listener)
+    }
+    fun removeRefreshListener(listener: (MapViewModel) -> Unit) {
+        refreshListeners.remove(listener)
+    }
+    private fun notifyRefresh() {
+        refreshListeners.forEach { runCatching { it(this) } }
+    }
 
     // Weather
     var weatherMode by mutableStateOf(prefsRepo.weatherMode)
@@ -90,6 +120,138 @@ class MapViewModel(
     var openMeteoSnapshot by mutableStateOf<OpenMeteoSnapshot?>(null)
         private set
 
+    /**
+     * Test-visible setter for [openMeteoSnapshot]. The production path sets the
+     * snapshot from inside [startLocalWeatherPolling] (via the polling loop's
+     * `onSuccess`); tests that need a non-null snapshot without running the
+     * network poll call this directly. `internal` so it's only visible to the
+     * same module (including the test sourceset).
+     */
+    internal fun setOpenMeteoSnapshotForTest(snap: OpenMeteoSnapshot?) {
+        openMeteoSnapshot = snap
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [failedCellBounds] without running the full POI
+     * pipeline. The production code writes the field from inside the
+     * `permanentlyFailedCells` synchronized block when a cell exhausts retries.
+     * Tests that need to assert the menu hub's "Retry failed" row appears use
+     * this to populate the list directly. `internal` so it's only visible to
+     * the same module (including the test sourceset).
+     */
+    internal fun setFailedCellBoundsForTest(bounds: List<org.maplibre.spatialk.geojson.BoundingBox>) {
+        failedCellBounds = bounds
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [enabledPoiCategories] without going through
+     * [togglePoiCategory] (which has the cap-enforcement and pipeline-rerun
+     * side effects). Tests that need a particular enabled-set state — e.g.
+     * for the PoiScreen grid's enabled / at-cap branches — use this to
+     * populate the set directly. `internal` so it's only visible to the same
+     * module (including the test sourceset).
+     */
+    internal fun setEnabledPoiCategoriesForTest(categories: Set<String>) {
+        enabledPoiCategories = categories
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [poiPipelineActive] without running the pipeline.
+     * The PoiScreen status text branches on this (and on
+     * [hasFailedCells] / [isLoadingPois]) — tests that need a particular
+     * pipeline-state branch use this to flip the flag directly.
+     */
+    internal fun setPoiPipelineActiveForTest(active: Boolean) {
+        poiPipelineActive = active
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [cellsRemaining] (which drives [isLoadingPois]).
+     * Tests that need a particular loading-state branch use this to set the
+     * counter directly.
+     */
+    internal fun setCellsRemainingForTest(remaining: Int) {
+        cellsRemaining = remaining
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [nearbyPoiFeatures] without going through the
+     * pipeline. Tests that need to assert a non-empty FeatureCollection in
+     * the PoiScreen status text use this to populate it directly.
+     */
+    internal fun setNearbyPoiFeaturesForTest(
+        features: org.maplibre.spatialk.geojson.FeatureCollection<
+            org.maplibre.spatialk.geojson.Point,
+            kotlinx.serialization.json.JsonObject,
+        >,
+    ) {
+        nearbyPoiFeatures = features
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [searchQuery] without going through the
+     * debounce-then-fetch pipeline. Tests that need a particular query
+     * string in the Search screen's no-results / searching state machine use
+     * this to set it directly.
+     */
+    internal fun setSearchQueryForTest(query: String) {
+        searchQuery = query
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [searchResults] without running the geocoding
+     * network call. Tests that need the Search screen to render a particular
+     * set of result rows use this to populate the list directly.
+     */
+    internal fun setSearchResultsForTest(results: List<ca.voiditswarranty.roadtripradar.model.SearchResult>) {
+        searchResults = results
+        notifyRefresh()
+    }
+
+    /**
+     * Test seam for setting [isSearching] without going through the
+     * debounce-then-fetch pipeline. Tests that need the Search screen's
+     * loading-state branch use this to flip the flag directly.
+     */
+    internal fun setIsSearchingForTest(searching: Boolean) {
+        isSearching = searching
+        notifyRefresh()
+    }
+
+    /**
+     * The resolved MapLibre style (`MapStyle`); updated by [updateMapStyle]
+     * (which persists the choice). Test seam for setting [mapStyle] without
+     * going through [updateMapStyle]'s persistence side effect. Tests that
+     * need a particular style branch — e.g. for the theme-switching Robolectric
+     * tests — use this to set it directly. `internal` so it's only visible to
+     * the same module (including the test sourceset).
+     */
+    internal fun setMapStyleForTest(style: MapStyle) {
+        mapStyle = style
+        notifyRefresh()
+    }
+
+    /**
+     * The auto-advance radius in meters; updated by [updateAutoAdvanceThreshold]
+     * (which clamps to 25..500). Test seam for setting
+     * [autoAdvanceThresholdMeters] without going through the clamping /
+     * persistence path. Tests that need a particular radius branch — e.g. for
+     * the route operations Robolectric tests — use this to set it directly.
+     * `internal` so it's only visible to the same module (including the test
+     * sourceset).
+     */
+    internal fun setAutoAdvanceThresholdMetersForTest(meters: Int) {
+        autoAdvanceThresholdMeters = meters
+        notifyRefresh()
+    }
+
     // Settings
     var useMetric by mutableStateOf(prefsRepo.useMetric)
         private set
@@ -109,6 +271,12 @@ class MapViewModel(
         private set
     var poiIconOpacity by mutableStateOf(prefsRepo.poiIconOpacity)
         private set
+    var mapStyle by mutableStateOf(
+        try { prefsRepo.mapStyle } catch (_: IllegalArgumentException) {
+            PreferencesRepository.defaultMapStyleFor(appContext)
+        }
+    )
+        private set
     var keepScreenOn by mutableStateOf(prefsRepo.keepScreenOn)
         private set
     var autostartPoiLoadingOnLaunch by mutableStateOf(prefsRepo.autostartPoiLoadingOnLaunch)
@@ -120,6 +288,8 @@ class MapViewModel(
     var mapCenterOffsetPortraitFraction by mutableStateOf(prefsRepo.mapCenterOffsetPortraitFraction)
         private set
     var mapCenterOffsetLandscapeFraction by mutableStateOf(prefsRepo.mapCenterOffsetLandscapeFraction)
+        private set
+    var mapCenterOffsetCarFraction by mutableStateOf(prefsRepo.mapCenterOffsetCarFraction)
         private set
 
     // Network
@@ -177,18 +347,6 @@ class MapViewModel(
         get() = activeWaypoint?.subtitle
 
     // Nearby POIs — cell-based pipeline
-    data class CachedCell(
-        val cellId: String,
-        val features: List<Feature<Point, JsonObject>>,
-        val fetchedAtMs: Long,
-        val bounds: BoundingBox,
-    )
-
-    private data class PendingCell(
-        val cell: PoiGridCell,
-        val retryCount: Int = 0,
-    )
-
     private val cellCache = mutableMapOf<String, CachedCell>()
     private val pendingCells = mutableListOf<PendingCell>()
     private val inFlightCells = mutableSetOf<String>()
@@ -297,6 +455,8 @@ class MapViewModel(
         private set
     var termsNeedAcceptance by mutableStateOf(false)
         private set
+    var showSafety by mutableStateOf(false)
+        private set
 
     // Tutorial
     var tutorialActiveGroup by mutableStateOf<TutorialGroup?>(null)
@@ -342,20 +502,95 @@ class MapViewModel(
 
     private var lastGenerated = 0L
     private var localWeatherAnchor: Position? = null
+
+    /**
+     * The most recent user-location fix, promoted from a local `val` in
+     * `MapScreen` to observable ViewModel state so the dev-only test harness
+     * can report it over the WebSocket API. `MapScreen` calls this from the
+     * same `LaunchedEffect` that previously consumed the local val; the
+     * downstream UI reads `userPosition` / `userPositionAccuracy` / etc.
+     * exactly as before. Production behaviour is unchanged.
+     */
+    var userPosition by mutableStateOf<Position?>(null)
+        private set
+    var userPositionAccuracy by mutableStateOf<Double?>(null)
+        private set
+    var userPositionBearing by mutableStateOf<Double?>(null)
+        private set
+    var userPositionSpeed by mutableStateOf<Double?>(null)
+        private set
+
+    fun updateUserPosition(pos: Position?, accuracy: Double?, bearing: Double?, speed: Double?) {
+        userPosition = pos
+        userPositionAccuracy = accuracy
+        userPositionBearing = bearing
+        userPositionSpeed = speed
+    }
     private var weatherPollingJob: Job? = null
     private var localWeatherPollJob: Job? = null
     private var weatherAnimationJob: Job? = null
     private var searchJob: Job? = null
     private var cellWorkerJob: Job? = null
 
+    /**
+     * Ref-count of "active" surfaces (the phone Activity while resumed, plus each live
+     * Android Auto car [androidx.car.app.Session]). The weather/radar/animation polling
+     * loops only run while at least one surface is active — see [reconcilePolling]. This
+     * keeps the app-scoped singleton ViewModel from polling forever in the background
+     * after the phone app is closed and no car is connected.
+     */
+    private val activeSurfaces = AtomicInteger(0)
+
+    /** Called by a surface when it comes to the foreground / is created. */
+    fun onSurfaceActive() {
+        if (activeSurfaces.getAndIncrement() == 0) reconcilePolling()
+    }
+
+    /** Called by a surface when it goes to the background / is destroyed. */
+    fun onSurfaceInactive() {
+        // Clamp at 0 so a stray inactive call (e.g. onStop without a matching onResume)
+        // can't drive the count negative and starve a future surface.
+        while (true) {
+            val cur = activeSurfaces.get()
+            if (cur <= 0) return
+            if (activeSurfaces.compareAndSet(cur, cur - 1)) {
+                if (cur - 1 == 0) reconcilePolling()
+                return
+            }
+        }
+    }
+
+    /**
+     * Declaratively starts/stops the long-running polling jobs to match the current
+     * state: a job runs iff at least one surface is active AND its condition holds
+     * (radar needs [weatherActive]; animation needs [isWeatherPlaying]; local weather
+     * runs whenever any surface is active). Idempotent — safe to call on every state
+     * change.
+     */
+    private fun reconcilePolling() {
+        val active = activeSurfaces.get() > 0
+        // Local weather polling: run iff a surface is active.
+        if (active) startLocalWeatherPolling()
+        else { localWeatherPollJob?.cancel(); localWeatherPollJob = null }
+        // Radar polling: run iff active and weather is on.
+        if (active && weatherActive) startWeatherPollingIfActive()
+        else { weatherPollingJob?.cancel(); weatherPollingJob = null }
+        // Radar animation: run iff active and playing.
+        if (active && isWeatherPlaying) startWeatherAnimationIfPlaying()
+        else { weatherAnimationJob?.cancel(); weatherAnimationJob = null }
+    }
+
     init {
         if (prefsRepo.acceptedTermsVersion != PrefsDefaults.TERMS_VERSION) {
             showTerms = true
             termsNeedAcceptance = true
+        } else if (prefsRepo.acceptedSafetyVersion != PrefsDefaults.SAFETY_VERSION) {
+            // Terms already accepted on a prior launch but the safety notice
+            // hasn't been acknowledged with "Don't Show Again" yet — show it.
+            showSafety = true
         }
-        startWeatherPollingIfActive()
-        startWeatherAnimationIfPlaying()
-        startLocalWeatherPolling()
+        // Polling is started lazily by the first surface to become active
+        // (see [onSurfaceActive] / [reconcilePolling]).
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
 
@@ -376,26 +611,16 @@ class MapViewModel(
         if (mode != WeatherMode.PLAYING) {
             currentFrameIndex = radarFramePaths.lastIndex.coerceAtLeast(0)
         }
-        startWeatherPollingIfActive()
-        startWeatherAnimationIfPlaying()
+        reconcilePolling()
+        notifyRefresh()
     }
 
     fun cycleWeatherMode() {
-        val next = when (weatherMode) {
-            WeatherMode.OFF -> WeatherMode.PLAYING
-            WeatherMode.PLAYING -> WeatherMode.ON
-            WeatherMode.ON -> WeatherMode.OFF
-        }
-        updateWeatherMode(next)
+        updateWeatherMode(nextWeatherModeOnCycle(weatherMode))
     }
 
     fun toggleWeatherPlayPause() {
-        val next = when (weatherMode) {
-            WeatherMode.OFF -> WeatherMode.PLAYING
-            WeatherMode.PLAYING -> WeatherMode.ON
-            WeatherMode.ON -> WeatherMode.PLAYING
-        }
-        updateWeatherMode(next)
+        updateWeatherMode(nextWeatherModeOnPlayPauseToggle(weatherMode))
     }
 
     fun turnOffWeather() {
@@ -403,25 +628,24 @@ class MapViewModel(
     }
 
     fun toggleWeatherOnOff() {
-        if (weatherActive) {
-            updateWeatherMode(WeatherMode.OFF)
-        } else {
-            updateWeatherMode(WeatherMode.PLAYING)
-        }
+        updateWeatherMode(nextWeatherModeOnOnOffToggle(weatherActive))
     }
 
     fun updateShowLegend(show: Boolean) {
         showLegend = show
         prefsRepo.showLegend = show
+        notifyRefresh()
     }
 
     fun updateShowTimeline(show: Boolean) {
         showTimeline = show
         prefsRepo.showTimeline = show
+        notifyRefresh()
     }
 
     fun updateRadarOpacity(opacity: Float) {
         radarOpacity = opacity
+        notifyRefresh()
     }
 
     fun saveRadarOpacity() {
@@ -429,9 +653,9 @@ class MapViewModel(
     }
 
     private fun startWeatherPollingIfActive() {
-        weatherPollingJob?.cancel()
         if (!weatherActive) return
-        weatherPollingJob = viewModelScope.launch {
+        if (weatherPollingJob?.isActive == true) return
+        weatherPollingJob = vmScope.launch {
             while (true) {
                 val data = weatherRepo.fetchFrames(lastGenerated)
                 if (data != null) {
@@ -446,8 +670,8 @@ class MapViewModel(
     }
 
     private fun startLocalWeatherPolling() {
-        localWeatherPollJob?.cancel()
-        localWeatherPollJob = viewModelScope.launch {
+        if (localWeatherPollJob?.isActive == true) return
+        localWeatherPollJob = vmScope.launch {
             while (true) {
                 val pos = localWeatherAnchor
                 if (pos == null) {
@@ -460,6 +684,7 @@ class MapViewModel(
                 openMeteoRepo.fetchCurrent(pos.latitude, pos.longitude)
                     .onSuccess { snap ->
                         openMeteoSnapshot = snap
+                        notifyRefresh()
                         delay(LOCAL_WEATHER_SUCCESS_MS)
                     }
                     .onFailure {
@@ -474,9 +699,9 @@ class MapViewModel(
     }
 
     private fun startWeatherAnimationIfPlaying() {
-        weatherAnimationJob?.cancel()
         if (weatherMode != WeatherMode.PLAYING) return
-        weatherAnimationJob = viewModelScope.launch {
+        if (weatherAnimationJob?.isActive == true) return
+        weatherAnimationJob = vmScope.launch {
             while (true) {
                 delay(500)
                 if (radarFramePaths.isNotEmpty()) {
@@ -491,6 +716,7 @@ class MapViewModel(
     fun updateUseMetric(metric: Boolean) {
         useMetric = metric
         prefsRepo.useMetric = metric
+        notifyRefresh()
     }
 
     fun updateSpeedSize(size: Float) {
@@ -528,16 +754,19 @@ class MapViewModel(
     fun updateWindEnabled(on: Boolean) {
         windEnabled = on
         prefsRepo.windEnabled = on
+        notifyRefresh()
     }
 
     fun updateWindSpeedUnit(unit: WindSpeedUnit) {
         windSpeedUnit = unit
         prefsRepo.windSpeedUnit = unit
+        notifyRefresh()
     }
 
     fun updateTemperatureUnit(unit: TemperatureUnit) {
         temperatureUnit = unit
         prefsRepo.temperatureUnit = unit
+        notifyRefresh()
     }
 
     fun updatePoiIconOpacity(opacity: Float) {
@@ -551,6 +780,13 @@ class MapViewModel(
     fun updateKeepScreenOn(on: Boolean) {
         keepScreenOn = on
         prefsRepo.keepScreenOn = on
+        notifyRefresh()
+    }
+
+    fun updateMapStyle(style: MapStyle) {
+        mapStyle = style
+        prefsRepo.mapStyle = style
+        notifyRefresh()
     }
 
     fun updateAutostartPoiLoadingOnLaunch(on: Boolean) {
@@ -605,9 +841,22 @@ class MapViewModel(
         prefsRepo.mapCenterOffsetLandscapeFraction = mapCenterOffsetLandscapeFraction
     }
 
+    fun updateMapCenterOffsetCarFraction(value: Float) {
+        mapCenterOffsetCarFraction = value
+    }
+
+    fun saveMapCenterOffsetCarFraction() {
+        prefsRepo.mapCenterOffsetCarFraction = mapCenterOffsetCarFraction
+        notifyRefresh()
+    }
+
     fun saveLastKnownPosition(pos: Position) {
         prefsRepo.lastKnownPosition = pos
     }
+
+    /** Last known device position (persisted by the phone surface). Read by the car map. */
+    val lastKnownPosition: Position?
+        get() = prefsRepo.lastKnownPosition
 
     fun openActionsDrawer() { showActionsDrawer = true }
     fun closeActionsDrawer() { showActionsDrawer = false }
@@ -631,7 +880,7 @@ class MapViewModel(
         }
         if (current <= last) return
         val newReleases = ChangelogRepository.releasesNewSince(bundle, last, current)
-        if (newReleases.isEmpty()) {
+        if (!shouldShowWhatsNew(lastSeenCode = last, currentVersionCode = current, newReleaseCount = newReleases.size)) {
             prefsRepo.setLastSeenChangelogVersionCode(current)
             return
         }
@@ -680,10 +929,26 @@ class MapViewModel(
         prefsRepo.acceptedTermsVersion = PrefsDefaults.TERMS_VERSION
         termsNeedAcceptance = false
         showTerms = false
+        // Show the safety notice immediately after first-launch T&C acceptance.
+        showSafety = true
     }
 
     fun dismissTerms() {
         showTerms = false
+    }
+
+    fun viewSafety() {
+        closeActionsDrawer()
+        showSafety = true
+    }
+
+    fun dismissSafety() {
+        showSafety = false
+    }
+
+    fun dontShowSafety() {
+        prefsRepo.acceptedSafetyVersion = PrefsDefaults.SAFETY_VERSION
+        showSafety = false
     }
 
     // --- Tutorial ---
@@ -706,19 +971,21 @@ class MapViewModel(
     fun tutorialNext() {
         val group = tutorialActiveGroup ?: return
         val steps = stepsFor(group)
-        val next = tutorialStepIndex + 1
-        if (next >= steps.size) {
-            markTutorialGroupCompleted(group)
-            tutorialActiveGroup = null
-            tutorialStepIndex = 0
-        } else {
-            tutorialStepIndex = next
+        when (val next = nextTutorialStep(currentIndex = tutorialStepIndex, stepCount = steps.size)) {
+            is TutorialEnd.End -> {
+                markTutorialGroupCompleted(group)
+                tutorialActiveGroup = null
+                tutorialStepIndex = 0
+            }
+            is Int -> {
+                tutorialStepIndex = next
+            }
         }
     }
 
     fun tutorialBack() {
         if (tutorialActiveGroup == null) return
-        tutorialStepIndex = (tutorialStepIndex - 1).coerceAtLeast(0)
+        tutorialStepIndex = previousTutorialStep(tutorialStepIndex)
     }
 
     fun skipTutorial() {
@@ -784,13 +1051,13 @@ class MapViewModel(
         refreshCustomThemeState()
         // If the deleted theme was active, fall back to built-in equivalent
         if (currentStyle == style) {
-            val fallback = if (style == MapStyle.CUSTOM_LIGHT) MapStyle.LIBERTY else MapStyle.COLOR_DARK
-            onStyleChange(fallback)
+            val fallback = customThemeFallback(style)
+            if (fallback != null) onStyleChange(fallback)
         }
     }
 
     fun importCustomTheme(uri: android.net.Uri, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(Dispatchers.IO) {
             try {
                 customThemeRepo.importTheme(uri, target)
                 withContext(Dispatchers.Main) {
@@ -820,7 +1087,7 @@ class MapViewModel(
 
     /** Creates a custom theme by copying a bundled [source] asset into the [target] custom slot. */
     fun initCustomThemeFromAsset(source: MapStyle, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(Dispatchers.IO) {
             customThemeRepo.initFromAsset(source, target, appContext.assets)
             withContext(Dispatchers.Main) {
                 refreshCustomThemeState()
@@ -832,7 +1099,7 @@ class MapViewModel(
 
     /** Downloads a built-in remote style JSON and saves it to a custom slot. */
     fun initCustomThemeFromUrl(url: String, target: MapStyle, onStyleChange: (MapStyle) -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
+        vmScope.launch(Dispatchers.IO) {
             try {
                 val body = java.net.URL(url).readText()
                 customThemeRepo.writeThemeJson(target, body)
@@ -884,15 +1151,12 @@ class MapViewModel(
         )
     }
 
-    private fun formatLatLng(position: Position): String =
-        "%.5f, %.5f".format(position.latitude, position.longitude)
-
     private fun triggerReverseGeocode(position: Position) {
         val loadingSuffix = appContext.getString(ca.voiditswarranty.roadtripradar.R.string.address_loading)
         if (tappedPoi?.position == position) {
             tappedPoi = tappedPoi?.copy(subtitle = "$loadingSuffix\n${formatLatLng(position)}")
         }
-        viewModelScope.launch {
+        vmScope.launch {
             val address = geocodingRepo.reverseGeocode(position.latitude, position.longitude)
             val newSubtitle = if (address != null) {
                 "$address\n${formatLatLng(position)}"
@@ -913,6 +1177,7 @@ class MapViewModel(
         waypoints.clear()
         activeWaypointId = null
         persistRoute()
+        notifyRefresh()
     }
 
     fun moveWaypoint(fromIndex: Int, toIndex: Int) {
@@ -923,6 +1188,7 @@ class MapViewModel(
         val wp = waypoints.removeAt(fromIndex)
         waypoints.add(target, wp)
         persistRoute()
+        notifyRefresh()
     }
 
     fun addWaypoint(
@@ -941,10 +1207,6 @@ class MapViewModel(
             iconName = iconName,
         )
         when (at) {
-            InsertPosition.Start -> waypoints.add(0, wp)
-            InsertPosition.BeforeLast -> waypoints.add((waypoints.size - 1).coerceAtLeast(0), wp)
-            InsertPosition.End -> waypoints.add(wp)
-            is InsertPosition.Index -> waypoints.add(at.i.coerceIn(0, waypoints.size), wp)
             is InsertPosition.ReplaceId -> {
                 val idx = waypoints.indexOfFirst { it.id == at.id }
                 if (idx >= 0) {
@@ -955,9 +1217,19 @@ class MapViewModel(
                     waypoints.add(wp)
                 }
             }
+            else -> {
+                val insertIdx = addWaypointIndex(
+                    currentSize = waypoints.size,
+                    at = at,
+                    activeWaypointId = activeWaypointId,
+                    findById = { id -> waypoints.indexOfFirst { it.id == id } },
+                )
+                waypoints.add(insertIdx, wp)
+            }
         }
         if (activeWaypointId == null) activeWaypointId = wp.id
         persistRoute()
+        notifyRefresh()
         return wp.id
     }
 
@@ -965,6 +1237,7 @@ class MapViewModel(
         if (waypoints.any { it.id == id }) {
             activeWaypointId = id
             persistRoute()
+            notifyRefresh()
         }
     }
 
@@ -983,10 +1256,12 @@ class MapViewModel(
     fun updateAutoAdvanceEnabled(enabled: Boolean) {
         autoAdvanceEnabled = enabled
         prefsRepo.autoAdvanceEnabled = enabled
+        notifyRefresh()
     }
 
     fun updateAutoAdvanceThreshold(meters: Int) {
         autoAdvanceThresholdMeters = meters.coerceIn(25, 500)
+        notifyRefresh()
     }
 
     fun saveAutoAdvanceThreshold() {
@@ -995,14 +1270,18 @@ class MapViewModel(
 
     /** Called from the map on each user-location update. Advances the active waypoint when within threshold. */
     fun maybeAutoAdvance(userPos: Position) {
-        if (!autoAdvanceEnabled) return
         val idx = activeIndex ?: return
-        if (idx >= waypoints.size - 1) return
         val active = waypoints.getOrNull(idx) ?: return
         val distMeters = distance(Point(userPos), Point(active.position)).inMeters
-        if (distMeters < autoAdvanceThresholdMeters) {
-            advanceActiveWaypoint()
-        }
+        val next = maybeAutoAdvanceNextIndex(
+            autoAdvanceEnabled = autoAdvanceEnabled,
+            activeIndex = activeIndex,
+            totalWaypoints = waypoints.size,
+            distanceMeters = distMeters,
+            thresholdMeters = autoAdvanceThresholdMeters,
+        ) ?: return
+        val nextWp = waypoints.getOrNull(next) ?: return
+        setActiveWaypoint(nextWp.id)
     }
 
     /** Add the currently-tapped POI to the route at the requested position, then dismiss the popup. */
@@ -1039,6 +1318,7 @@ class MapViewModel(
             searchQuery = ""
             searchResults = emptyList()
         }
+        notifyRefresh()
     }
 
     private inline fun updateActiveWaypointIf(
@@ -1082,6 +1362,7 @@ class MapViewModel(
                 updateCellCounters()
             }
         }
+        notifyRefresh()
     }
 
     fun searchVisibleArea() {
@@ -1111,6 +1392,7 @@ class MapViewModel(
         enqueueCells(missingCells, cameraTarget)
         startCellWorker()
         poiCategoriesVersion++
+        notifyRefresh()
     }
 
     fun clearNearbyPois() {
@@ -1126,6 +1408,7 @@ class MapViewModel(
         poiPipelineActive = false
         poiCategoriesVersion++
         updateCellCounters()
+        notifyRefresh()
     }
 
     fun openPoiCategoryPicker() { showPoiCategoryPicker = true }
@@ -1194,47 +1477,34 @@ class MapViewModel(
             activeWaypointId = waypoints.firstOrNull()?.id
         }
         persistRoute()
+        notifyRefresh()
     }
 
     fun removeNavigationTarget() {
         val id = tappedWaypointId
         if (id != null) removeWaypoint(id)
         dismissTappedPoi()
+        notifyRefresh()
     }
 
     // --- Cell pipeline helpers ---
 
     private fun rebuildMergedFeatures() {
-        val allFeatures = cellCache.values.flatMap { it.features }
-        nearbyPoiFeatures = FeatureCollection(allFeatures)
-        if (cellCache.isEmpty()) {
-            poiFetchRegion = null
-        } else {
-            var minLat = Double.MAX_VALUE
-            var maxLat = -Double.MAX_VALUE
-            var minLon = Double.MAX_VALUE
-            var maxLon = -Double.MAX_VALUE
-            for (cell in cellCache.values) {
-                val sw = cell.bounds.southwest
-                val ne = cell.bounds.northeast
-                minLat = min(minLat, sw.latitude)
-                maxLat = max(maxLat, ne.latitude)
-                minLon = min(minLon, sw.longitude)
-                maxLon = max(maxLon, ne.longitude)
-            }
-            poiFetchRegion = BoundingBox(
-                southwest = Position(latitude = minLat, longitude = minLon),
-                northeast = Position(latitude = maxLat, longitude = maxLon),
-            )
-        }
+        val snapshot = synchronized(cellCache) { cellCache.toMap() }
+        val result = ca.voiditswarranty.roadtripradar.viewmodel.rebuildMergedFeatures(snapshot)
+        nearbyPoiFeatures = FeatureCollection(result.features)
+        poiFetchRegion = result.region
+        notifyRefresh()
     }
 
     /** Drops cached cells that do not intersect the current POI load plate (padded viewport, max 350 km side). */
     private fun evictCachedCellsOutsideLoadPlate(loadPlate: BoundingBox) {
         val toRemove = synchronized(cellCache) {
-            cellCache.entries
-                .filter { (_, cached) -> !PoiViewportChunks.boundingBoxesIntersect(cached.bounds, loadPlate) }
-                .map { it.key }
+            evictableCachedCellIds(
+                cache = cellCache,
+                loadPlate = loadPlate,
+                intersects = PoiViewportChunks::boundingBoxesIntersect,
+            )
         }
         if (toRemove.isNotEmpty()) {
             synchronized(cellCache) { for (key in toRemove) cellCache.remove(key) }
@@ -1250,13 +1520,20 @@ class MapViewModel(
     }
 
     private fun enqueueCells(cells: List<PoiGridCell>, cameraCenter: Position) {
-        synchronized(pendingCells) {
-            for (cell in cells) {
-                if (cellCache.containsKey(cell.id)) continue
-                if (synchronized(inFlightCells) { inFlightCells.contains(cell.id) }) continue
-                if (pendingCells.any { it.cell.id == cell.id }) continue
-                if (synchronized(permanentlyFailedCells) { permanentlyFailedCells.any { it.id == cell.id } }) continue
-                pendingCells.add(PendingCell(cell))
+        val cachedIds = synchronized(cellCache) { cellCache.keys.toSet() }
+        val inFlightIds = synchronized(inFlightCells) { inFlightCells.toSet() }
+        val pendingIds = synchronized(pendingCells) { pendingCells.map { it.cell.id }.toSet() }
+        val failedIds = synchronized(permanentlyFailedCells) { permanentlyFailedCells.map { it.id }.toSet() }
+        val toEnqueue = cellsToEnqueue(
+            cells = cells,
+            cachedIds = cachedIds,
+            inFlightIds = inFlightIds,
+            pendingIds = pendingIds,
+            failedIds = failedIds,
+        )
+        if (toEnqueue.isNotEmpty()) {
+            synchronized(pendingCells) {
+                for (cell in toEnqueue) pendingCells.add(PendingCell(cell))
             }
         }
         reprioritizePendingCells(cameraCenter)
@@ -1279,7 +1556,7 @@ class MapViewModel(
 
     private fun startCellWorker() {
         if (cellWorkerJob?.isActive == true) return
-        cellWorkerJob = viewModelScope.launch {
+        cellWorkerJob = vmScope.launch {
             for (signal in workSignal) {
                 cellWorkerLoop()
             }
@@ -1337,7 +1614,7 @@ class MapViewModel(
             }
             is TileFetchResult.ServerError -> {
                 android.util.Log.e("POI_DEBUG", "Cell ${pending.cell.id} server error: ${result.message}")
-                delay(min(1000L * (1 shl pending.retryCount), MAX_INTER_CELL_DELAY_MS))
+                delay(retryDelayMs(pending.retryCount))
                 reEnqueueIfRetriable(pending)
             }
             is TileFetchResult.Failed -> {
@@ -1370,6 +1647,7 @@ class MapViewModel(
         if (cells.isEmpty()) return
         val cam = pendingCameraInfo ?: return
         enqueueCells(cells, Position(latitude = cam.lat, longitude = cam.lon))
+        notifyRefresh()
     }
 
     /**
@@ -1392,11 +1670,18 @@ class MapViewModel(
 
         if (!networkStatus.connected) return
 
-        val missingCells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate).filter { cell ->
-            !cellCache.containsKey(cell.id)
-                && synchronized(inFlightCells) { !inFlightCells.contains(cell.id) }
-                && synchronized(pendingCells) { pendingCells.none { it.cell.id == cell.id } }
-                && synchronized(permanentlyFailedCells) { permanentlyFailedCells.none { it.id == cell.id } }
+        val missingCells = run {
+            val cachedIds = synchronized(cellCache) { cellCache.keys.toSet() }
+            val inFlightIds = synchronized(inFlightCells) { inFlightCells.toSet() }
+            val pendingIds = synchronized(pendingCells) { pendingCells.map { it.cell.id }.toSet() }
+            val failedIds = synchronized(permanentlyFailedCells) { permanentlyFailedCells.map { it.id }.toSet() }
+            cellsToEnqueue(
+                cells = PoiViewportChunks.worldGridCellsIntersecting(loadPlate),
+                cachedIds = cachedIds,
+                inFlightIds = inFlightIds,
+                pendingIds = pendingIds,
+                failedIds = failedIds,
+            )
         }
         if (missingCells.isNotEmpty()) {
             android.util.Log.d("POI_DEBUG", "onCameraSettled: ${missingCells.size} new cells to enqueue")
@@ -1433,9 +1718,10 @@ class MapViewModel(
         searchJob?.cancel()
         if (searchQuery.length < 2) {
             searchResults = emptyList()
+            notifyRefresh()
             return
         }
-        searchJob = viewModelScope.launch {
+        searchJob = vmScope.launch {
             isSearching = true
             delay(300L)
             val cam = pendingCameraInfo ?: return@launch
@@ -1448,6 +1734,7 @@ class MapViewModel(
                 userPosition = userPositionForSearch,
             )
             isSearching = false
+            notifyRefresh()
         }
     }
 
@@ -1478,16 +1765,10 @@ class MapViewModel(
         poiMapVisibleBounds
             ?: PoiViewportChunks.approximateViewportBounds(lat, lon, zoom, screenWidthDp, screenHeightDp)
 
-    private fun computeViewBox(lat: Double, lon: Double, zoom: Double): ViewBox {
-        val latDelta = 360.0 / Math.pow(2.0, zoom) * 0.5
-        val lonDelta = latDelta / Math.cos(Math.toRadians(lat))
-        return ViewBox(
-            west = lon - lonDelta,
-            south = lat - latDelta,
-            east = lon + lonDelta,
-            north = lat + latDelta,
+    private fun computeViewBox(lat: Double, lon: Double, zoom: Double): ViewBox =
+        ca.voiditswarranty.roadtripradar.viewmodel.computeViewBox(
+            lat = lat, lon = lon, zoom = zoom, screenWidthDp = screenWidthDp, screenHeightDp = screenHeightDp,
         )
-    }
 
     // --- Reset ---
 
@@ -1536,8 +1817,8 @@ class MapViewModel(
         prefsRepo.resetToDefaults(systemDefault)
         showResetConfirm = false
         showActionsDrawer = false
-        startWeatherPollingIfActive()
-        startWeatherAnimationIfPlaying()
+        reconcilePolling()
+        notifyRefresh()
     }
 
     // --- Zoom ---

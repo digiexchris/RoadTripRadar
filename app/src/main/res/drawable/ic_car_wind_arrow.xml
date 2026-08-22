@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Upward navigation arrow; tinted + rotated programmatically by CarRouteWidget. -->
+    <path
+        android:pathData="M12,3 L20,19 L12,16 L4,19 Z"
+        android:fillColor="#FFFFFF" />
+</vector>

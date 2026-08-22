@@ -20,7 +20,9 @@ data class ViewBox(
     val north: Double,
 )
 
-class GeocodingRepository {
+class GeocodingRepository(
+    private val baseUrl: String = "https://photon.komoot.io",
+) {
 
     suspend fun searchByName(
         query: String,
@@ -31,7 +33,7 @@ class GeocodingRepository {
     ): List<SearchResult> {
         return try {
             val url = buildString {
-                append("https://photon.komoot.io/api/?q=")
+                append("$baseUrl/api/?q=")
                 append(URLEncoder.encode(query, "UTF-8"))
                 append("&limit=10")
                 append("&lat=$centerLat&lon=$centerLon")
@@ -70,7 +72,7 @@ class GeocodingRepository {
 
     suspend fun reverseGeocode(lat: Double, lon: Double): String? {
         return try {
-            val url = "https://photon.komoot.io/reverse?lat=$lat&lon=$lon&limit=1"
+            val url = "$baseUrl/reverse?lat=$lat&lon=$lon&limit=1"
             val jsonStr = withContext(Dispatchers.IO) { URL(url).readText() }
             val props = Json.parseToJsonElement(jsonStr).jsonObject["features"]
                 ?.jsonArray?.firstOrNull()?.jsonObject?.get("properties")?.jsonObject
